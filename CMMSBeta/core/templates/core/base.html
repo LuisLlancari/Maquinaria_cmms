@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'core/vendor/bootstrap5/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/base.css' %}">
+    <title>{% block titulo %}{% endblock  %}</title>
+ 
+</head>
+
+<body>
+    <div class="wrapper">
+        <aside id="sidebar">
+            <div class="d-flex">
+                <button class="toggle-btn" type="button">
+                    <i class="lni lni-grid-alt"></i>
+                </button>
+                <div class="sidebar-logo">
+                    <a href="{% url 'home' %}">Maquinaria</a>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item">
+                    <a href="{% url 'home' %}" class="sidebar-link" data-path="inicio">
+                        <i class="lni lni-user"></i>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+            
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
+                        <i class="lni lni-protection"></i>
+                        <span>Auth</span>
+                    </a>
+                    <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Login</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'test' %}" class="sidebar-link" data-path="test">test</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#hola1" aria-expanded="false" aria-controls="hola1">
+                        <i class="lni lni-protection"></i>
+                        <span>hola1</span>
+                    </a>
+                    <ul id="hola1" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Login</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Register</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#hola2" aria-expanded="false" aria-controls="hola2">
+                        <i class="lni lni-protection"></i>
+                        <span>hola2</span>
+                    </a>
+                    <ul id="hola2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Login</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Register</a>
+                        </li>
+                    </ul>
+                </li>
+          
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="lni lni-popup"></i>
+                        <span>Notification</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="lni lni-cog"></i>
+                        <span>Setting</span>
+                    </a>
+                </li>
+            </ul>
+            {% if user.is_authenticated %}
+                <div class="sidebar-footer">
+                    <a href="{% url 'logout' %}" class="sidebar-link">
+                        <i class="lni lni-exit"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            {% endif %}
+        </aside>
+        
+        <div class="main p-3">
+            {% block contenido %} {% endblock %}
+        </div>
+    </div>
+  
+    <script src="{% static 'core/vendor/bootstrap5/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'core/js/base.js' %}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var currentPath = window.location.pathname; // Obtener la ruta actual
+            console.log(currentPath)
+            var dropdownLinks = document.querySelectorAll(".sidebar-link.has-dropdown");
+
+            if (currentPath === "/") {
+                currentPath = "inicio";
+                var itemLink = item.querySelector(".sidebar-link");
+                var itemPath = itemLink.getAttribute("data-path");
+            }
+            
+            dropdownLinks.forEach(function(link) {
+                var dropdown = link.nextElementSibling;
+                var dropdownItems = dropdown.querySelectorAll(".sidebar-item");
+                
+                dropdownItems.forEach(function(item) {
+                    var itemLink = item.querySelector(".sidebar-link");
+                    var itemPath = itemLink.getAttribute("data-path"); // Obtener el atributo data-path
+                    console.log(itemPath)
+
+                      // Eliminar la barra diagonal inicial de currentPath si existe
+                    if (currentPath.charAt(0) === '/') {
+                        currentPath = currentPath.substring(1);
+                    }
+                    
+                    // Comprobar si la ruta actual coincide con el atributo data-path del ítem del dropdown
+                    if (currentPath === itemPath) {
+                        dropdown.classList.add("show"); // Abrir el dropdown
+                        itemLink.classList.add("active"); // Marcar la opción activa
+                        itemLink.classList.add("hover"); // Marcar la opción como hover
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
