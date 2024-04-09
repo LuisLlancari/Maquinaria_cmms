@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Sede(models.Model):
     idsede = models.AutoField(primary_key=True)

@@ -1,8 +1,10 @@
 from django.db import models
+from localizacion.models import Sede
+
 
 class Fundo(models.Model):
     idfundo = models.AutoField(primary_key=True)
-    idsede = models.ForeignKey(sede, on_delete=models.SET_NULL, null=True, verbose_name="Sede")
+    idsede = models.ForeignKey(Sede, on_delete=models.SET_NULL, null=True, verbose_name="Sede")
     fundo = models.CharField(max_length=30, unique=True, verbose_name='Fundo')
     estado = models.BooleanField(default=True, verbose_name='Estado')
 

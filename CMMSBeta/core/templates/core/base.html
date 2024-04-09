@@ -31,7 +31,7 @@
                         <span>Inicio</span>
                     </a>
                 </li>
-            
+            {% comment %} Inicio de la opcion dropdown {% endcomment %}
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
@@ -40,7 +40,7 @@
                     </a>
                     <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Login</a>
+                            <a href="#" class="sidebar-link" data-path="login">Login</a>
                         </li>
                         <li class="sidebar-item">
                             <a href="{% url 'test' %}" class="sidebar-link" data-path="test">test</a>
@@ -49,34 +49,25 @@
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#hola1" aria-expanded="false" aria-controls="hola1">
+                        data-bs-target="#implemento" aria-expanded="false" aria-controls="implemento">
                         <i class="lni lni-protection"></i>
-                        <span>hola1</span>
+                        <span>implemento</span>
                     </a>
-                    <ul id="hola1" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <ul id="implemento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Login</a>
+                            <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Register</a>
+                            <a href="#" class="sidebar-link" data-path="login">Tipo implemento</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'test' %}" class="sidebar-link" data-path="s">Detalle implemento</a>
                         </li>
                     </ul>
                 </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#hola2" aria-expanded="false" aria-controls="hola2">
-                        <i class="lni lni-protection"></i>
-                        <span>hola2</span>
-                    </a>
-                    <ul id="hola2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Login</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Register</a>
-                        </li>
-                    </ul>
-                </li>
+            {% comment %} fin del dropdown {% endcomment %}
+
+              
           
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">

@@ -1,40 +1,43 @@
 from django.db import models
+from localizacion.models import Area
+from ceco.models import Ceco
+from componente_pieza.models import Pieza
 
 class TipoImplemento(models.Model):
-    idTipoimplemento = models.AutoField(primary_key=True)
-    tipoImplemento = models.CharField(unique=True, max_length=45, verbose_name="Tipo Implemento")
+    idtipoimplemento = models.AutoField(primary_key=True)
+    tipoimplemento = models.CharField(unique=True, max_length=45, verbose_name="Tipo Implemento")
     estado = models.BooleanField(default=True, verbose_name="Estado")
 
     class Meta:
         verbose_name = "Tipo Implemento"
         verbose_name_plural = "Tipos de Implementos"
-        ordering = ['tipoImplemento']
+        ordering = ['tipoimplemento']
 
     def __str__(self):
-        return self.tipoImplemento
+        return self.tipoimplemento
 
 class Implemento(models.Model):
-    idImplemento = models.AutoField(primary_key=True)
+    idimplemento = models.AutoField(primary_key=True)
     implemento = models.CharField(max_length=45, verbose_name="Implemento")
-    tiempoVida = models.IntegerField(verbose_name="Tiempo de vida")
-    nroImplemento = models.CharField(max_length=12, verbose_name="Numero de Implemento")
-    horasDeUso = models.IntegerField(verbose_name="Horas de Uso")
-    codImplimento = models.CharField(max_length=12, verbose_name="Codigo de Implemento")
-    idTipoimplemento = models.ForeignKey(TipoImplemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Tipo Implemento")
-    idArea = models.ForeignKey(Areamodel, on_delete=models.SET_DEFAULT, default=None, verbose_name="Area")
+    tiempovida = models.IntegerField(verbose_name="Tiempo de vida")
+    nroimplemento = models.CharField(max_length=12, verbose_name="Numero de Implemento")
+    #horasdeuso = models.IntegerField(verbose_name="Horas de Uso")
+    codimplemento = models.CharField(max_length=12, verbose_name="Codigo de Implemento")
+    idtipoimplemento = models.ForeignKey(TipoImplemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Tipo Implemento")
+    idarea = models.ForeignKey(Area, on_delete=models.SET_DEFAULT, default=None,verbose_name="Area")
     estado = models.BooleanField(default=True, verbose_name="Estado")
-    creadoEn = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    actualizadoEn = models.DateField(auto_now=True, verbose_name="Fecha de edición")
+    creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")
 
     class Meta:
         verbose_name = "Implemento"
         verbose_name_plural = "Implementos"
-        ordering = ['implemento', 'idTipoimplemento',]
+        ordering = ['implemento', 'idtipoimplemento',]
     def __str__(self):
         return self.implemento
 
 class Responsable(models.Model):
-    idResponsable = models.AutoField(primary_key=True)
+    idresponsable = models.AutoField(primary_key=True)
     responsable = models.CharField(max_length=40, blank=True, null=True, verbose_name="Responsable")
     estado = models.BooleanField(default=True, verbose_name="Estado")
 
@@ -46,16 +49,16 @@ class Responsable(models.Model):
         return self.responsable
 
 class DetImplementos(models.Model):
-    idDetalleimplemento = models.AutoField(primary_key=True)
-    idResponsable = models.ForeignKey(Responsable, on_delete=models.SET_DEFAULT, default=None, verbose_name="Responsable")
-    idPieza = models.ForeignKey(Piezamodel, on_delete=models.SET_DEFAULT, default=None, verbose_name="Pieza")
-    idCeco = models.ForeignKey(Cecomodel, on_delete=models.SET_DEFAULT, default=None, verbose_name="CECO")
-    idImplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
+    iddetalleimplemento = models.AutoField(primary_key=True)
+    idresponsable = models.ForeignKey(Responsable, on_delete=models.SET_DEFAULT, default=None, verbose_name="Responsable")
+    idpieza = models.ForeignKey(Pieza, on_delete=models.SET_DEFAULT, default=None, verbose_name="Pieza")
+    idceco = models.ForeignKey(Ceco, on_delete=models.SET_DEFAULT, default=None, verbose_name="CECO")
+    idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
     estado = models.BooleanField(default=True, verbose_name="Estado")
-    creadoEn = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    actualizadoEn = models.DateField(auto_now=True, verbose_name="Fecha de edición")
+    creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")
 
     class Meta:
         verbose_name = "Detalle Implemento"
         verbose_name_plural = "Detalle Implementos"
-        ordering = ['idPieza', 'idResponsable', 'creadoEn']
+        ordering = ['idpieza', 'idresponsable', 'creado_en']

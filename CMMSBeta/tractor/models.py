@@ -1,5 +1,7 @@
 from django.db import models
 from usuario.models import Usuario
+from django.contrib.auth.models import User
+
 
 class TipoTractor(models.Model):
     idtipotractor = models.AutoField(primary_key=True)
@@ -16,7 +18,7 @@ class TipoTractor(models.Model):
 class Tractor(models.Model):
     idtractor = models.AutoField(primary_key=True)
     idtipotractor = models.ForeignKey(TipoTractor, on_delete=models.PROTECT, verbose_name='Tipo Tractor', null=True)
-    #idusuario = models.ForeignKey(Usuario, on_delete=models.PROTECT, verbose_name='Usuario', null=True)
+    idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.PROTECT, verbose_name='Usuario', null=True)
     nrotractor = models.IntegerField(verbose_name='Número Tractor')
     horainicial = models.IntegerField(verbose_name='Hora Inicial')
     horauso = models.IntegerField(verbose_name='Hora Uso')
@@ -31,7 +33,7 @@ class Tractor(models.Model):
     
 class ReporteTractor(models.Model):
     idreportetractor = models.AutoField(primary_key=True)
-    #idusuario = models.ForeignKey(Usuario, on_delete=models.PROTECT, verbose_name='Usuario', null=True)
+    idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.PROTECT, verbose_name='Usuario', null=True)
     horometroinicial = models.IntegerField(verbose_name='Horómetro Inicial')
     horometrofinal = models.IntegerField(verbose_name='Horómetro Final')
     correlativo = models.IntegerField(verbose_name='Correlativo')

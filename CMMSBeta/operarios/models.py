@@ -15,7 +15,7 @@ class TipoSolicitante(models.Model):
     
 class Solicitante(models.Model):
     idsolicitante = models.AutoField(primary_key=True)
-    idtiposolicitante = models.ForeignKey(TipoSolicitante, on_delete=models.SET_DEFAULT, verbose_name="Tipo Solicitante")
+    idtiposolicitante = models.ForeignKey(TipoSolicitante, on_delete=models.SET_DEFAULT, default=None,verbose_name="Tipo Solicitante")
     apellidos = models.CharField(max_length=45, verbose_name="Apellidos")
     nombres = models.CharField(max_length=45, verbose_name="Nombres")
     codigo =  models.CharField(max_length=12, verbose_name="Codigo")
@@ -29,7 +29,7 @@ class Solicitante(models.Model):
     def __str__(self):
         return self.codigo
     
-class Tractoristas(models.Model):
+class Tractorista(models.Model):
     idtractorista = models.AutoField(primary_key=True)
     apellidos = models.CharField(max_length=45, verbose_name="Apellidos")
     nombres = models.CharField(max_length=45, verbose_name="Nombres")
