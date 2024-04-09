@@ -49,19 +49,37 @@
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#componente" aria-expanded="false" aria-controls="componente">
+                        <i class="lni lni-protection"></i>
+                        <span>Componentes</span>
+                    </a>
+                    <ul id="componente" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'componente' %}" class="sidebar-link" data-path="">Componentes</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'pieza'%}" class="sidebar-link" data-path="tipos">Pieza</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'sistema' %}" class="sidebar-link" data-path="detalle">Sistema</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#implemento" aria-expanded="false" aria-controls="implemento">
                         <i class="lni lni-protection"></i>
                         <span>implemento</span>
                     </a>
                     <ul id="implemento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
+                            <a href="{% url 'implemento' %}" class="sidebar-link" data-path="">implemento</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link" data-path="login">Tipo implemento</a>
+                            <a href="{% url 'tipoimplemento'%}" class="sidebar-link" data-path="tipos">Tipo implemento</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'test' %}" class="sidebar-link" data-path="s">Detalle implemento</a>
+                            <a href="{% url 'detalleimplemento' %}" class="sidebar-link" data-path="detalle">Detalle implemento</a>
                         </li>
                     </ul>
                 </li>

@@ -3,5 +3,7 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-  path('implemento', views.implento , name='implemento')
+  path('', views.implento , name='implemento'),
+  path('tipos', views.tipoImplemento , name='tipoimplemento'),
+  path('detalle', views.detalleImplemento   , name='detalleimplemento'),
 ]
