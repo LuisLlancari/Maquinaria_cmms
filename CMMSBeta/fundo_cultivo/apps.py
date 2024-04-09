@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class LocalizacionConfig(AppConfig):
+class FundoCultivoConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'localizacion'
+    name = 'fundo_cultivo'
