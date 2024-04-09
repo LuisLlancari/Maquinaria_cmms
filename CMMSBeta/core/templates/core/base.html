@@ -65,6 +65,28 @@
                         </li>
                     </ul>
                 </li>
+                <li class="sidebar-item">
+                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#fundo" aria-expanded="false" aria-controls="fundo">
+                        <i class="lni lni-sprout"></i>
+                        <span>Fundo - Cultivo</span>
+                    </a>
+                    <ul id="fundo" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'fundo' %}" class="sidebar-link" data-path="login">Fundo</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'cultivo' %}" class="sidebar-link" data-path="login">Cultivo</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'variedad' %}" class="sidebar-link" data-path="login">Variedad</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'lote' %}" class="sidebar-link" data-path="login">Lote</a>
+                        </li>
+                    </ul>
+                </li>
             {% comment %} fin del dropdown {% endcomment %}
 
               
