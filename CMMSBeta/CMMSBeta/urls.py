@@ -25,6 +25,8 @@ urlpatterns = [
     path('usuario/', include('django.contrib.auth.urls')),
     path('usuario/', include('usuario.urls')),
     path('implemento/', include('implemento.urls')),
+    path('tractor/', include('tractor.urls')),
+    path('localizacion/', include('localizacion.urls')),
 
     # Importamos las vistas del login y logout
     path('login',usuario_views.login_user, name="login"),
