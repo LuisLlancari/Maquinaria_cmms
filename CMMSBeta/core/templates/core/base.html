@@ -87,6 +87,22 @@
                         </li>
                     </ul>
                 </li>
+                <li class="sidebar-item">
+                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#ceco" aria-expanded="false" aria-controls="ceco">
+                        <i class="lni lni-sprout"></i>
+                        <span>CECO - RESPONSABLE</span>
+                    </a>
+                    <ul id="ceco" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'ceco' %}" class="sidebar-link" data-path="login">CECO</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'responsable' %}" class="sidebar-link" data-path="login">Responsable</a>
+                        </li>
+                    </ul>
+                </li>
             {% comment %} fin del dropdown {% endcomment %}
 
               
@@ -158,6 +174,8 @@
             });
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

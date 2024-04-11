@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Fundo
 
-# Register your models here.
+@admin.register(Fundo)
+class FundoAdmin(admin.ModelAdmin):
+    readonly_fields = ['estado']

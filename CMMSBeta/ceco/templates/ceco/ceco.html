@@ -1,0 +1,104 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}Centro de Costos{% endblock %}
+
+{% block contenido %}
+
+<div class="container">
+    <h1 class="text-start mb-3">Gestion de Costos</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoCeco">Nuevo Ceco</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped" id="tabla-area">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Centro de costo</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Operacion</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for data in datos %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ data.ceco }}</td>
+                    <td>{{ data.estado }}</td>
+                    <td>
+                        <button class='btn btn-warning btn-sm editar' id="ceco" data-toggle="modal" data-target="#modalEditarCeco" data-idceco="{{ data.idceco }}" data-nombrececo="{{ data.ceco }}" type='button'>Editar</button>                       
+                    </td>  
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Registrar Ceco -->
+    <div class="modal fade" id="modalNuevoCeco" tabindex="-1" role="dialog" aria-labelledby="modalNuevoCecoLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalNuevoCecoLabel">Nuevo Centro de Costo</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'registrar_ceco' %}" autocomplete="off" id="form-ceco">
+                        {% csrf_token %}
+                        {{ form }}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Ceco -->
+    <div class="modal fade" id="modalEditarCeco" tabindex="-1" role="dialog" aria-labelledby="modalEditarCecoLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarCecoLabel">Editar Centro de Costo</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'editar_ceco' %}" autocomplete="off" id="form-editar-ceco">
+                        {% csrf_token %}
+                        <input type="hidden" id="ceco_id" name="ceco_id">
+                        <div class="form-group">
+                            <label for="nombre_ceco">Nombre del Centro de Costo:</label>
+                            <!-- el forms toma el name-->
+                            <input type="text" class="form-control mb-2" id="nombre_ceco" name="ceco" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        var editButtons = document.querySelectorAll('.editar');
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var idCeco = this.dataset.idceco;
+                var nombreCeco = this.dataset.nombrececo;
+                document.getElementById("ceco_id").value = idCeco;
+                document.getElementById("nombre_ceco").value = nombreCeco;
+            });
+        });
+    });  
+</script>
+ 
+    
+</script>
+
+
+{% endblock %}

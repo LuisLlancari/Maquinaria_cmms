@@ -17,3 +17,6 @@ def variedad(request):
 @login_required(login_url='login', redirect_field_name='')
 def cultivo(request):
   return render(request, 'fundo_cultivo/cultivo.html')
+
+
+# LOGICA FUNDO

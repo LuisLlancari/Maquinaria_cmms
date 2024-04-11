@@ -1,7 +1,41 @@
 {% extends 'core/base.html' %}
 
-{% block titulo %}implemento{% endblock%}
+{% block titulo %}Fundos{% endblock%}
 
 {% block contenido %} 
-<h1>Hola FUNDO</h1>
+<div class="container">
+    <h1 class="text-start mb-3">Gestion de Fundos</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <!-- Colocamos data-bs-toggle="modal" data-bs-target="#modalNuevaArea" : para abrir el modal sin usar JS -->
+            <button type="button" class="btn btn-success" id="btnNuevaArea">Nueva Área</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped" id="tabla-area">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Área</th>
+                    <th scope="col">Base</th>
+                    <th scope="col">Sede</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Nombre Área 1</td>
+                    <td>Nombre Base 1</td>
+                    <td>Nombre Sede 1</td>
+                </tr>
+                <!--Render-->
+            </tbody>
+            <h1 id="h1-remplazar" class="text-center"></h1>
+        </table>
+    </div>
+</div>
 {% endblock %}

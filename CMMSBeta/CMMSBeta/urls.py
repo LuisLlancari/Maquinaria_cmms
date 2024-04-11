@@ -26,6 +26,7 @@ urlpatterns = [
     path('usuario/', include('usuario.urls')),
     path('implemento/', include('implemento.urls')),
     path('fundo/', include('fundo_cultivo.urls')),
+    path('ceco/', include('ceco.urls')),
 
     # Importamos las vistas del login y logout
     path('login',usuario_views.login_user, name="login"),
