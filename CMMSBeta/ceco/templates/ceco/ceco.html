@@ -33,7 +33,11 @@
                     <td>{{ data.ceco }}</td>
                     <td>{{ data.estado }}</td>
                     <td>
-                        <button class='btn btn-warning btn-sm editar' id="ceco" data-toggle="modal" data-target="#modalEditarCeco" data-idceco="{{ data.idceco }}" data-nombrececo="{{ data.ceco }}" type='button'>Editar</button>                       
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="ceco" data-toggle="modal" data-target="#modalEditarCeco" data-idceco="{{ data.idceco }}" data-nombrececo="{{ data.ceco }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <form action="{% url 'eliminar_ceco' data.idceco %}" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form>  
                     </td>  
                 </tr>
                 {% endfor %}
@@ -51,7 +55,7 @@
                 <div class="modal-body">
                     <form method="post" action="{% url 'registrar_ceco' %}" autocomplete="off" id="form-ceco">
                         {% csrf_token %}
-                        {{ form }}
+                        {{ form_ceco }}
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
