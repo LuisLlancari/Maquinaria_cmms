@@ -121,7 +121,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var currentPath = window.location.pathname; // Obtener la ruta actual
-            console.log(currentPath)
+            // console.log(currentPath)
             var dropdownLinks = document.querySelectorAll(".sidebar-link.has-dropdown");
 
             if (currentPath === "/") {
@@ -137,7 +137,7 @@
                 dropdownItems.forEach(function(item) {
                     var itemLink = item.querySelector(".sidebar-link");
                     var itemPath = itemLink.getAttribute("data-path"); // Obtener el atributo data-path
-                    console.log(itemPath)
+                    // console.log(itemPath)
 
                       // Eliminar la barra diagonal inicial de currentPath si existe
                     if (currentPath.charAt(0) === '/') {
