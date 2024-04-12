@@ -17,7 +17,7 @@
 
     </div>
     <div class="col-md-3 mb-3">
-        <button type="button" class="btn btn-primary" id="registro-implemento" data-bs-toggle="modal" data-bs-target="#modal-sistema">Agregar Sistema</button>
+        <button type="button" class="btn btn-primary" id="registrar" data-bs-toggle="modal" data-bs-target="#modal-sistema">Agregar Sistema</button>
     </div>
 </div>
 
@@ -74,6 +74,8 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
 
+        const modalvisor = new bootstrap.Modal(document.getElementById('modal-implemento'));
+
         var editButtons = document.querySelectorAll('.editar');
         editButtons.forEach(function(button) {
             button.addEventListener('click', function() {
@@ -85,6 +87,10 @@
                 // document.getElementById("nombre_ceco").value = nombreCeco;
             });
         });
+
+
+
+
     });
 </script>
 
