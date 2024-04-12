@@ -2,11 +2,10 @@ from django.contrib import admin
 from .models import Sede, Base, Area
 
 # Register your models here.
-'''
-@admin.register(admin.Sede)
+@admin.register(Sede)
 class SedeAdmin(admin.ModelAdmin):
-    pass
-
+    readonly_fields = ['estado']
+'''
 @admin.register(admin.Base)
 
 class BaseAdmin(admin.ModelAdmin):

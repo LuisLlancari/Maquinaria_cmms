@@ -43,6 +43,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        <h1 id="h1-remplazar" class="text-center"></h1>
     </div>
 
     <!-- Modal Registrar Ceco -->
@@ -88,6 +89,32 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+
+        const h1 = document.querySelector('#h1-remplazar');
+        const buscador = document.querySelector('#buscador');
+        const filasTabla = document.querySelectorAll('#tabla-area tbody tr');
+
+        //Funciones
+        function filtrarTabla() {
+            const valorBusqueda = buscador.value.trim().toLowerCase();
+            let noHayResultados = true;
+            filasTabla.forEach(fila => {
+                const personal = fila.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                const coincide = personal.includes(valorBusqueda);
+
+                if (coincide) {
+                    fila.style.display = 'table-row';
+                    noHayResultados = false;
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+            h1.textContent = noHayResultados ? 'Datos no encontrados' : '';
+        }
+
+        //Eventos
+        buscador.addEventListener('input', filtrarTabla);
+
         var editButtons = document.querySelectorAll('.editar');
         editButtons.forEach(function(button) {
             button.addEventListener('click', function() {

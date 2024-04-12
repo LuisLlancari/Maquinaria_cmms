@@ -12,7 +12,7 @@
         <div class="col-md-6"></div>
         <div class="col-md-2">
             <!-- Colocamos data-bs-toggle="modal" data-bs-target="#modalNuevaArea" : para abrir el modal sin usar JS -->
-            <button type="button" class="btn btn-success" id="btnNuevaArea">Nueva Área</button>
+            <button type="button" class="btn btn-success" id="btnNuevaArea">Nuevo Fundo</button>
         </div>
     </div>
     <div class="table-responsive">
@@ -20,17 +20,23 @@
             <thead>
                 <tr>
                     <th scope="col">N°</th>
-                    <th scope="col">Área</th>
-                    <th scope="col">Base</th>
+                    <th scope="col">Fundo</th>
                     <th scope="col">Sede</th>
+                    <th scope="col">Operaciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <th scope="row">1</th>
-                    <td>Nombre Área 1</td>
-                    <td>Nombre Base 1</td>
-                    <td>Nombre Sede 1</td>
+                    <td>Santa Clara</td>
+                    <td>Ica</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="#" data-toggle="modal" data-target="#" data-id#="{{ data. }}" data-#="{{ data. }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <form action="" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form> 
+                    </td>
                 </tr>
                 <!--Render-->
             </tbody>

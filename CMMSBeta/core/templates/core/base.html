@@ -96,10 +96,29 @@
                     </a>
                     <ul id="ceco" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="{% url 'ceco' %}" class="sidebar-link" data-path="login">CECO</a>
+                            <a href="{% url 'ceco' %}" class="sidebar-link" data-path="login">Centro de Costo</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'responsable' %}" class="sidebar-link" data-path="login">Responsable</a>
+                            <a href="{% url 'responsable' %}" class="sidebar-link" data-path="login">Personal Responsable</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#programacion" aria-expanded="false" aria-controls="programacion">
+                        <i class="lni lni-pencil-alt"></i>
+                        <span>Programacion</span>
+                    </a>
+                    <ul id="programacion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="" class="sidebar-link" data-path="login">Tipos de Labores</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="" class="sidebar-link" data-path="login">Crear Programacion</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="" class="sidebar-link" data-path="login">Detalles Programacion</a>
                         </li>
                     </ul>
                 </li>
