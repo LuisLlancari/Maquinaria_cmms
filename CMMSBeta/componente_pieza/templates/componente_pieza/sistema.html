@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 
-{% block titulo %}Componente{% endblock%}
+{% block titulo %}Sistema{% endblock%}
 
 {% block contenido %}
 <h1 class="text-center mb-2">Gestion de Sistema de Componentes</h1>
@@ -40,7 +40,7 @@
         <td>{{forloop.counter}}</td>
         <td>{{dato.sistema}}</td>
         <td>
-            <button class="btn btn-warning editar flex-fill" data-id="{{dato.idsistema}}" data-reg="{{dato}}" data-bs-toggle="modal" data-bs-target="#modal-sistema"><i class="lni lni-pencil editar"></i></button>
+            <button class="btn btn-warning editar flex-fill" data-id="{{dato.idsistema}}" data-reg="{{dato}}" data-bs-toggle="modal" data-bs-target="#modal-editar"><i class="lni lni-pencil editar"></i></button>
             <form action="{% url 'eliminar_sistema' dato.idsistema %}" class="flex-fill" method="POST">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
@@ -52,6 +52,27 @@
 </table>
 
 <div class="modal fade" id="modal-sistema" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Implemento</h1>
+            </div>
+                <form action="{% url 'sistema_registro' %}" autocomplete="off" id="form-implemento" method="POST">
+                    <div class="modal-body">
+                        
+                            {% csrf_token %}
+                            {{form}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-editar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header bg-primary justify-content-center" >
@@ -79,12 +100,17 @@
         var editButtons = document.querySelectorAll('.editar');
         editButtons.forEach(function(button) {
             button.addEventListener('click', function() {
-                var idCeco = this.dataset
-                var nombreCeco = this.dataset.reg;
-                console.log(nombreCeco);
-                console.log(idCeco);
+                var idsistema = this.dataset.id
+                var sistema = this.dataset.reg;
+     
+                
+
+
                 // document.getElementById("ceco_id").value = idCeco;
                 // document.getElementById("nombre_ceco").value = nombreCeco;
+
+
+
             });
         });
 
