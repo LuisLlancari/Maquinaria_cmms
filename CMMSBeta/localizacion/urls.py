@@ -7,4 +7,5 @@ urlpatterns = [
     path('sede', sede.sede , name='sede'),
     path('eliminar_sede/<int:idsede>', sede.eliminar_sede, name='eliminar_sede'), 
     path('registrar_sede', sede.registrar_sede, name='registrar_sede'), 
+    path('editar_sede/<int:idsede>', sede.editar_sede, name='editar_sede'), 
 ]

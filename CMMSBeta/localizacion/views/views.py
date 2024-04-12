@@ -42,16 +42,16 @@ def eliminar_sede(request, sede_id):
     return render(request, 'localizacion/confirmar_eliminacion.html', {'sede': sede})
 
 @login_required(login_url='login')
-def editar_sede(request, sede_id):
-    sede_instance = get_object_or_404(Sede, pk=sede_id)
+def editar_sede(request, idsede):
+    sede_instance = get_object_or_404(Sede, pk = idsede)
     
     if request.method == 'POST':
-        form = SedeForm(request.POST, instance=sede_instance)
+        form = SedeForm(request.POST, instance = sede_instance)
         if form.is_valid():
             form.save()
             return redirect('sede')
     else:
-        form = SedeForm(instance=sede_instance)
+        form = SedeForm(instance = sede_instance)
     
     return render(request, 'localizacion/editar_sede.html', {'form': form})
 
