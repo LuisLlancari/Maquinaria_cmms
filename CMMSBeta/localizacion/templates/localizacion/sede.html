@@ -1,7 +1,37 @@
 {% extends "core/base.html" %}
 
 {% block titulo %}
-    Gestion de Sedes
+Gestion de Sedes
+{% endblock titulo %}
+
+{% block contenido %}
+    {% for sede in sedes %}
+        
+    {% endfor %}
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment "sede" %}
+{% extends "core/base.html" %}
+
+{% block titulo %}
+Gestion de Sedes
 {% endblock titulo %}
 
 {% block contenido %}
@@ -28,18 +58,18 @@
             </thead>
             <tbody>
                 {% for sede in sedes %}
-                    <tr>
-                        <td class="text-center">{{ sede.idsede }}</td>
-                        <td class="text-center">{{ sede.sede }}</td>
-                        <td class="text-center">{{ sede.estado }}</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarSede{{ sede.idsede }}">Editar</button>
-                            <form action="{% url 'eliminar_sede' sede.idsede %}" method="POST" style="display: inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
+                <tr>
+                    <td class="text-center">{{ sede.idsede }}</td>
+                    <td class="text-center">{{ sede.sede }}</td>
+                    <td class="text-center">{{ sede.estado }}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarSede{{ sede.idsede }}">Editar</button>
+                        <form action="{% url 'eliminar_sede' sede.idsede %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -48,27 +78,27 @@
 
 <!-- Modal para editar sede -->
 {% for sede in sedes %}
-    <div class="modal fade" id="modalEditarSede{{ sede.idsede }}" tabindex="-1" aria-labelledby="modalEditarSedeLabel{{ sede.idsede }}" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditarSedeLabel{{ sede.idsede }}">Editar Sede</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{% url 'editar_sede' sede.idsede %}" method="POST">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            {{ form.sede }}
-                            Estado: <input type="checkbox" name="estado" {% if not form.estado.value %}checked{% endif %}>
-                        </div>
-                        <button type="submit" class="btn btn-primary editar">Guardar</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    </form>
-                </div>
+<div class="modal fade" id="modalEditarSede{{ sede.idsede }}" tabindex="-1" aria-labelledby="modalEditarSedeLabel{{ sede.idsede }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarSedeLabel{{ sede.idsede }}">Editar Sede</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'editar_sede' sede.idsede %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ form.sede }}
+                        Estado: <input type="checkbox" name="estado" {% if not form.estado.value %}checked{% endif %}>
+                    </div>
+                    <button type="submit" class="btn btn-primary editar">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 {% endfor %}
 
 <!-- Modal para agregar nueva sede -->
@@ -91,3 +121,5 @@
 </div>
 
 {% endblock %}
+
+{% endcomment %}

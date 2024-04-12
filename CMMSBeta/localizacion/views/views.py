@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Sede
-from .forms import SedeForm
+from ..models import Sede
+from ..forms import SedeForm
 
 @login_required(login_url='login')
 def area(request):
@@ -12,16 +12,12 @@ def base(request):
     return render(request, 'localizacion/base.html')
 
 @login_required(login_url='login')
-def sede(request, sede_id=None):
+def sedeall(request):
     sedes = Sede.objects.all()
-    
-    if sede_id:
-        sede_instance = get_object_or_404(Sede, pk=sede_id)
-        form = SedeForm(instance=sede_instance)
-    else:
-        form = SedeForm()
+    return render(request, 'localizacion/sede.html', {'sedes': sedes})
 
-    return render(request, 'localizacion/sede.html', {'sedes': sedes, 'form': form})
+
+
 
 @login_required(login_url='login')
 def registrar_sede(request):
