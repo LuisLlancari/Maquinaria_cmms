@@ -8,109 +8,57 @@ Gestion de Sedes
     {% for sede in sedes %}
         
     {% endfor %}
-{% endblock %}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{% comment "sede" %}
-{% extends "core/base.html" %}
-
-{% block titulo %}
-Gestion de Sedes
-{% endblock titulo %}
-
-{% block contenido %}
-<div class="container">
-    <h1 class="text-center mb-4">Gestion de Sedes</h1>
-    <div class="row">
-        <div class="col-md-4">
-            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+    <div class="container">
+        <h1 class="text-start mb-3">Gestion de Costos</h1>
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevaSede">Nuevo Ceco</button>
+            </div>
         </div>
-        <div class="col-md-6"></div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevaSede">Nueva Sede</button>
+        <div class="table-responsive">
+            <table class="table table-striped" id="tabla-area">
+                <thead>
+                    <tr>
+                        <th scope="col">N°</th>
+                        <th scope="col">Centro de costo</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Operacion</th>
+                    </tr>
+                </thead>
+    
+                <tbody>
+                    {% for data in sedes %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ data.sede }}</td>
+                        <td>{{ data.estado }}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm editar d-inline-block" id="ceco" data-toggle="modal" data-target="#modalEditarSede" data-idsede="{{ data.idsede }}" data-nombresede="{{ data.sede }}" type="button"><i class="lni lni-pencil"></i></button>
+                            <form action="{% url 'eliminar_sede' data.idsede %}" class="d-inline-block" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                            </form>  
+                        </td>  
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-striped" id="tabla-sedes">
-            <thead>
-                <tr>
-                    <th class="text-center" scope="col">N° Sede</th>
-                    <th class="text-center" scope="col">Sede</th>
-                    <th class="text-center" scope="col">Estado</th>
-                    <th class="text-center" scope="col">ACCION</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for sede in sedes %}
-                <tr>
-                    <td class="text-center">{{ sede.idsede }}</td>
-                    <td class="text-center">{{ sede.sede }}</td>
-                    <td class="text-center">{{ sede.estado }}</td>
-                    <td class="text-center">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarSede{{ sede.idsede }}">Editar</button>
-                        <form action="{% url 'eliminar_sede' sede.idsede %}" method="POST" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
 
-<!-- Modal para editar sede -->
-{% for sede in sedes %}
-<div class="modal fade" id="modalEditarSede{{ sede.idsede }}" tabindex="-1" aria-labelledby="modalEditarSedeLabel{{ sede.idsede }}" aria-hidden="true">
-    <div class="modal-dialog">
+        <!-- Modal Registrar Ceco -->
+<div class="modal fade" id="modalNuevaSede" tabindex="-1" role="dialog" aria-labelledby="modalNuevaSedeLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalEditarSedeLabel{{ sede.idsede }}">Editar Sede</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="modalNuevaSedeLabel">Nueva Sede</h5>
             </div>
             <div class="modal-body">
-                <form action="{% url 'editar_sede' sede.idsede %}" method="POST">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        {{ form.sede }}
-                        Estado: <input type="checkbox" name="estado" {% if not form.estado.value %}checked{% endif %}>
-                    </div>
-                    <button type="submit" class="btn btn-primary editar">Guardar</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
-
-<!-- Modal para agregar nueva sede -->
-<div class="modal fade" id="modalNuevaSede" tabindex="-1" aria-labelledby="modalNuevaSedeLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalNuevaSedeLabel">Agregar Nueva Sede</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="{% url 'registrar_sede' %}" id="form-nueva-sede" method="POST">
+                <form method="post" action="{% url 'registrar_sede' %}" autocomplete="off" id="form-ceco">
                     {% csrf_token %}
                     {{form}}
                     <button type="submit" class="btn btn-primary">Guardar</button>
@@ -119,7 +67,11 @@ Gestion de Sedes
         </div>
     </div>
 </div>
-
+    
+        
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock %}
 
-{% endcomment %}
+
+
