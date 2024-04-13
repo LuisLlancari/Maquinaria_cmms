@@ -5,5 +5,100 @@
 {% endblock titulo %}
 
 {% block contenido %}
-    
-{% endblock  %}
+<div class="container">
+    <h1 class="text-start mb-3">Gestion de Areas</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevaArea">Nueva Area</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped" id="tabla-area">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Area</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Base</th>
+                    <th scope="col">Operacion</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for data in areas %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{data.area}}</td>
+                    <td>{{data.estado}}</td>
+                    <td>{{data.idbase_id}}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="area" data-toggle="modal" data-target="#modalEditarArea" data-idarea="{{ data.idarea }}" data-nombrearea="{{ data.area }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <form action="{% url 'eliminar_area' data.idarea %}" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form>  
+                    </td>  
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Registrar Sede -->
+<div class="modal fade" id="modalNuevaArea" tabindex="-1" role="dialog" aria-labelledby="modalNuevaAreaLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modalNuevaAreaLabel">Nueva Area</h5>
+        </div>
+        <div class="modal-body">
+            <form method="post" action="{% url 'registrar_area' %}" autocomplete="off" id="form-area">
+                {% csrf_token %}
+                {{formArea}}
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal Editar Base -->
+<div class="modal fade" id="modalEditarArea" tabindex="-1" role="dialog" aria-labelledby="modalEditarAreaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarAreaLabel">Editar Area</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'editar_area' %}" autocomplete="off" id="form-editar-area">
+                    {% csrf_token %}
+                    <input type="hidden" id="idarea" name="idarea">
+                    {{formArea}}
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </form>                   
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    var editButtons = document.querySelectorAll('.editar');
+    editButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var idArea = this.dataset.idarea;
+            var nombreArea = this.dataset.nombrearea;
+            document.getElementById("area_id").value = idArea;
+            document.getElementById("area_sede").value = nombreArea;
+        });
+    });
+});  
+</script>
+     
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

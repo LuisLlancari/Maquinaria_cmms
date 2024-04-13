@@ -11,7 +11,7 @@ class Sede(models.Model):
         verbose_name = "Sede"
         verbose_name_plural = "Sedes"
         
-    def __self__(self):
+    def __str__(self):
         return self.sede
     
 class Base(models.Model):
@@ -24,7 +24,7 @@ class Base(models.Model):
         verbose_name = "Base"
         verbose_name_plural = "Bases"
         
-    def __self__(self):
+    def __str__(self):
         return self.base
 
 class Area(models.Model):
@@ -32,3 +32,10 @@ class Area(models.Model):
     idbase = models.ForeignKey(Base, on_delete=models.PROTECT, null=True)
     area = models.CharField(max_length=50, verbose_name='Area')
     estado = models.BooleanField(default=True, verbose_name='Estado')
+
+    class Meta:
+        verbose_name = "Area"
+        verbose_name_plural = "Area"
+        
+    def __str__(self):
+        return self.area

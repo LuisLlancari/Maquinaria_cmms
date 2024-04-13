@@ -25,13 +25,10 @@ def registrar_sede(request):
         form = SedeForm()
         return render(request, '../templates/localizacion/sede.html', {'form': form})
 
-from django.shortcuts import render, redirect, get_object_or_404
-from ..models import Sede
-from ..forms import SedeForm
-
 def editar_sede(request):
     if request.method == 'POST':
         sede_id = request.POST.get('sede_id')
+        
         sede = get_object_or_404(Sede, pk = sede_id)
         form = SedeForm(request.POST, instance = sede)
 
@@ -42,7 +39,7 @@ def editar_sede(request):
     else:
         return redirect('sede')
 
-    return render(request, '../templates/localizacion/sede.html', {'form': form})
+    return render(request, '', {'form': form})
     
     
     

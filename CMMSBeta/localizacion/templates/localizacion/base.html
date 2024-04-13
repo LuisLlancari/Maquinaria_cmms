@@ -5,8 +5,100 @@
 {% endblock titulo %}
 
 {% block contenido %}
-    <h1>
-        Base
-        <hr>
-    </h1>
+<div class="container">
+    <h1 class="text-start mb-3">Gestion Bases</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevaBase">Nueva Base</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped" id="tabla-area">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Base</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Sede</th>
+                    <th scope="col">Operacion</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for data in bases %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ data.base }}</td>
+                    <td>{{ data.estado }}</td>
+                    <td>{{ data.idsede_id }}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="ceco" data-toggle="modal" data-target="#modalEditarBase" data-idbase="{{ data.idbase }}" data-nombrebase="{{ data.base }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <form action="{% url 'eliminar_base' data.idbase %}" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form>  
+                    </td>  
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Registrar Base -->
+<div class="modal fade" id="modalNuevaBase" tabindex="-1" role="dialog" aria-labelledby="modalNuevaBaseLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNuevaBaseLabel">Nueva Base</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'registrar_base' %}" autocomplete="off" id="form-ceco">
+                    {% csrf_token %}
+                    {{formBase}}
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Base -->
+<div class="modal fade" id="modalEditarBase" tabindex="-1" role="dialog" aria-labelledby="modalEditarBaseLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarBaseLabel">Editar Base</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'editar_base' %}" autocomplete="off" id="form-editar-base">
+                    {% csrf_token %}
+                    <input type="hidden" id="idbase" name="idbase">
+                    {{ formBase }}
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </form>                   
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        var editButtons = document.querySelectorAll('.editar');
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var idBase = this.dataset.idbase;
+                var nombreBase = this.dataset.nombrebase;
+                document.getElementById("idbase").value = idBase;
+                document.getElementById("nombre_base").value = nombreBase;
+
+            });
+        });
+    });  
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock  %}
