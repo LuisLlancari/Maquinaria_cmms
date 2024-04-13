@@ -12,10 +12,9 @@ urlpatterns = [
     path('eliminar_tipolabor/<int:id_tipolabor>', tipolabor_view.eliminar_tipolabor, name='eliminar_tipolabor'),
 
 
-    #Urls de detalle labor
-    path('detallelabor', detallelabor_view.detallelabor, name='detallelabor'),
-
-
     #Urls de programacion
     path('programacion', programacion_view.programacion, name='programacion'),
+
+    #Urls de detalle labor
+    path('detallelabor', detallelabor_view.detallelabor, name='detallelabor'),
 ]
