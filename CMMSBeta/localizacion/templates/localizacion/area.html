@@ -49,22 +49,22 @@
     </div>
 
     <!-- Modal Registrar Sede -->
-<div class="modal fade" id="modalNuevaArea" tabindex="-1" role="dialog" aria-labelledby="modalNuevaAreaLabel" aria-hidden="true">
-<div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="modalNuevaAreaLabel">Nueva Area</h5>
+    <div class="modal fade" id="modalNuevaArea" tabindex="-1" role="dialog" aria-labelledby="modalNuevaAreaLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalNuevaAreaLabel">Nueva Area</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'registrar_area' %}" autocomplete="off" id="form-area">
+                        {% csrf_token %}
+                        {{formArea}}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-            <form method="post" action="{% url 'registrar_area' %}" autocomplete="off" id="form-area">
-                {% csrf_token %}
-                {{formArea}}
-                <button type="submit" class="btn btn-primary">Guardar</button>
-            </form>
         </div>
-    </div>
-</div>
-</div>
 
 <!-- Modal Editar Base -->
 <div class="modal fade" id="modalEditarArea" tabindex="-1" role="dialog" aria-labelledby="modalEditarAreaLabel" aria-hidden="true">
@@ -76,7 +76,6 @@
             <div class="modal-body">
                 <form method="post" action="{% url 'editar_area' %}" autocomplete="off" id="form-editar-area">
                     {% csrf_token %}
-                    <input type="hidden" id="idarea" name="idarea">
                     {{formArea}}
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </form>                   
@@ -92,8 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         button.addEventListener('click', function() {
             var idArea = this.dataset.idarea;
             var nombreArea = this.dataset.nombrearea;
-            document.getElementById("area_id").value = idArea;
-            document.getElementById("area_sede").value = nombreArea;
+            document.getElementById("idarea").value = idArea;
         });
     });
 });  

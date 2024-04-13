@@ -1,8 +1,76 @@
 {% extends "core/base.html" %}
 
 {% block titulo %}
-    Tractor
-{% endblock  %}
-{% block contenido %}
+    Base
+{% endblock titulo %}
 
+{% block contenido %}
+<div class="container">
+    <h1 class="text-start mb-3">Gestion Tractores</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoTractor">Nuevo Tractor</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped" id="tabla-area">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Tipo Tractor</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Nro Tractor</th>
+                    <th scope="col">Hora Inicial</th>
+                    <th scope="col">Hora de Uso</th>
+                    <th scope="col">Accion</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for data in tractores %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ data.idtipotractor }}</td>
+                    <td>{{ data.idusuario }}</td>
+                    <td>{{ data.nrotractor }}</td>
+                    <td>{{ data.horainicial }}</td>
+                    <td>{{ data.horauso }}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="tractor" data-toggle="modal" data-target="#modalEditarTractor" data-idtractor="{{ data.idtractor }}" data-nombretractor="{{ data.nrotractor }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <form action="{% url 'eliminartractor' data.idtractor %}" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form>  
+                    </td>  
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+        <!-- Modal Registrar Sede -->
+<div class="modal fade" id="modalNuevoTractor" tabindex="-1" role="dialog" aria-labelledby="modalNuevoTractorLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modalNuevoTractorLabel">Nuevo Tractor</h5>
+        </div>
+        <div class="modal-body">
+            <form method="post" action="{% url 'registrar_tractor' %}" autocomplete="off" id="form-area">
+                {% csrf_token %}
+                {{form}}
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock  %}

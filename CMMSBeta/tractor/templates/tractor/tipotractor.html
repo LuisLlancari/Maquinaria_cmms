@@ -54,7 +54,7 @@
                         <div class="modal-body">
                             <form method="post" action="{% url 'registrar_tipotractor'  %}" autocomplete="off" id="form-ceco">
                                 {% csrf_token %}
-                                {{formTipo}}
+                                {{form}}
                                 <button type="submit" class="btn btn-primary">Guardar</button>
                             </form>
                         </div>

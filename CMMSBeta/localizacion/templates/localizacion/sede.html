@@ -65,43 +65,6 @@ Gestion de Sedes
     </div>
 </div>
 
-<!-- Modal Editar Sede -->
-<div class="modal fade" id="modalEditarSede" tabindex="-1" role="dialog" aria-labelledby="modalEditarSedeLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalEditarSedeLabel">Editar Sede</h5>
-            </div>
-            <div class="modal-body">
-                <form method="post" action="{% url 'editar_sede' %}" autocomplete="off" id="form-editar-sede">
-                    {% csrf_token %}
-                    <input type="hidden" id="sede_id" name="sede_id">
-                    <div class="form-group">
-                        <label for="nombre_sede">Nombre de la Sede:</label>
-                        <!-- el forms toma el name-->
-                        <input type="text" class="form-control mb-2" id="nombre_sede" name="sede" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                </form>                    
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        var editButtons = document.querySelectorAll('.editar');
-        editButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var idSede = this.dataset.idsede;
-                var nombreSede = this.dataset.nombresede;
-                document.getElementById("sede_id").value = idSede;
-                document.getElementById("nombre_sede").value = nombreSede;
-            });
-        });
-    });  
-</script>
          
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

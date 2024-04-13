@@ -42,4 +42,4 @@ def editar_area(request):
     else:
         return redirect('area')
 
-    return render(request, '../templates/localizacion/area.html', {'form': form})
+    return render(request, 'localizacion/area.html', {'form': form})
