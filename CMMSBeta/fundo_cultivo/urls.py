@@ -23,4 +23,7 @@ urlpatterns = [
 
   #Urls de lote
   path('lote', lote_view.lote , name='lote'),
+  path('registrar_lote', lote_view.registrar_lote , name='registrar_lote'),
+  path('editar_lote', lote_view.editar_lote , name='editar_lote'),
+  path('eliminar_lote/<int:id_lote>', lote_view.eliminar_lote , name='eliminar_lote'),
 ]

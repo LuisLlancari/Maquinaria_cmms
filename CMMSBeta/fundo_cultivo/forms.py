@@ -1,5 +1,5 @@
 from django import forms
-from .models import Fundo, Cultivo, Variedad
+from .models import Fundo, Cultivo, Variedad, Lote
 
 class FundoForm(forms.ModelForm):
     class Meta:
@@ -29,5 +29,15 @@ class VariedadForm(forms.ModelForm):
         fields = ['variedad']
         widgets = {
             'variedad': forms.TextInput(attrs={'class': 'form-control mb-2'}),
+            'idcultivo': forms.Select(attrs={'class': 'form-control mb-2'}),
+        }
+
+class LoteForm(forms.ModelForm):
+    class Meta:
+        model = Lote
+        fields = ['lote', 'idvariedad', 'idcultivo']
+        widgets = {
+            'lote': forms.TextInput(attrs={'class': 'form-control mb-2'}),
+            'idvariedad': forms.Select(attrs={'class': 'form-control mb-2'}),
             'idcultivo': forms.Select(attrs={'class': 'form-control mb-2'}),
         }
