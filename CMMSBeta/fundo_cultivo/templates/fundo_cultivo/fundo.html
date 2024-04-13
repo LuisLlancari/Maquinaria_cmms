@@ -12,11 +12,11 @@
         <div class="col-md-6"></div>
         <div class="col-md-2">
             <!-- Colocamos data-bs-toggle="modal" data-bs-target="#modalNuevaArea" : para abrir el modal sin usar JS -->
-            <button type="button" class="btn btn-success" id="btnNuevaArea">Nuevo Fundo</button>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalRegistrar">Nuevo Fundo</button>
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table table-striped" id="tabla-area">
+        <table class="table table-striped" id="tabla-fundo">
             <thead>
                 <tr>
                     <th scope="col">N°</th>
@@ -26,22 +26,117 @@
                 </tr>
             </thead>
             <tbody>
+                {% for data in datos %}
                 <tr>
-                    <th scope="row">1</th>
-                    <td>Santa Clara</td>
-                    <td>Ica</td>
+                    <th scope="row">{{ forloop.counter}}</th>
+                    <td>{{ data.fundo}}</td>
+                    <td>{{ data.idsede }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm editar d-inline-block" id="#" data-toggle="modal" data-target="#" data-id#="{{ data. }}" data-#="{{ data. }}" type="button"><i class="lni lni-pencil"></i></button>
-                        <form action="" class="d-inline-block" method="POST">
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="fundo" data-toggle="modal" data-target="#modalActualizar" data-idfundo='{{ data.idfundo }}' data-nombrefundo="{{ data.fundo }}" data-idsede="{{ data.idsede.idsede }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <form action="{% url 'eliminar_fundo' data.idfundo %}" class="d-inline-block" method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
-                        </form> 
+                        </form>      
                     </td>
                 </tr>
+                {% endfor %}
                 <!--Render-->
             </tbody>
             <h1 id="h1-remplazar" class="text-center"></h1>
         </table>
     </div>
+
+    <div class="modal fade" id="modalRegistrar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Nuevo Centro de Costo</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'registrar_fundo' %}" autocomplete="off" id="form-fundo">
+                        {% csrf_token %}
+                        {{ form_fundo }}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--MODAL PARA ACTUALIZAR-->
+    <div class="modal fade" id="modalActualizar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Editar Fundos</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'editar_fundo' %}" autocomplete="" id="form-editar-fundo">
+                        {% csrf_token %}
+                        <input type="hidden" name="fundo_id" id="fundo_id">
+                        <div class="form-group">
+                            <label for="nombrefundo">Fundo</label>
+                            <input type="text" class="form-control" name="fundo" id="nombrefundo">
+                        </div>
+
+                        <label for="idsede" class="form-label mt-3">Sede</label>
+                        <select name="idsede" id="nombresede" class="form-control">
+                            {% for sede in sedes %}
+                                <option value="{{ sede.idsede }}">{{ sede.sede }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        
+                        <button type="submit" class="btn btn-primary mt-2">Guardar Cambios</button>
+                    </form>
+                                    
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const h1 = document.querySelector('#h1-remplazar');
+        const buscador = document.querySelector('#buscador');
+        const filasTabla = document.querySelectorAll('#tabla-fundo tbody tr');
+
+        //Funciones
+        function filtrarTabla() {
+            const valorBusqueda = buscador.value.trim().toLowerCase();
+            let noHayResultados = true;
+            filasTabla.forEach(fila => {
+                const fundo = fila.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                const coincide = fundo.includes(valorBusqueda);
+
+                if (coincide) {
+                    fila.style.display = 'table-row';
+                    noHayResultados = false;
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+            h1.textContent = noHayResultados ? 'Datos no encontrados' : '';
+        }
+
+        //Eventos
+        buscador.addEventListener('input', filtrarTabla);
+
+
+        var editButtons = document.querySelectorAll('.editar');
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var idFundo = this.dataset.idfundo;
+                var nombrefundo = this.dataset.nombrefundo;
+                var idSede = this.dataset.idsede;
+
+                document.querySelector('#fundo_id').value = idFundo;
+                document.querySelector('#nombrefundo').value = nombrefundo;
+                document.querySelector('#nombresede').value = idSede;
+            });
+        });
+    });
+</script>
+
 {% endblock %}
