@@ -5,8 +5,100 @@
 {% endblock  %}
 
 {% block contenido %}
-    <h1>
-        Tipo Tractor
-        <hr>
-    </h1>
+<div class="container">
+    <h1 class="text-start mb-3">Gestión de Tractores</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoTipo">Nuevo Tractor</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped" id="tabla-area">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Tipo Tractor</th>
+                    <th scope="col">Operación</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in tipotractor %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ data.TipoTractor }}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="tipo" data-toggle="modal" data-target="#modalEditarTipo" data-idtipo="{{ data.idtipotractor }}" data-nombretipotractor="{{ data.tipotractor }}" type="button"><i class="lni lni-pencil"></i></button>
+
+                        <form action="{% url 'eliminar_tipotractor' data.idtipotractor %}" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form>  
+                    </td>  
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+            <!-- Modal Registrar Sede -->
+            <div class="modal fade" id="modalNuevoTipo" tabindex="-1" aria-labelledby="modalNuevoTipoLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalNuevoTipoLabel">Nuevo Tipo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="{% url 'registrar_tipotractor'  %}" autocomplete="off" id="form-ceco">
+                                {% csrf_token %}
+                                {{formTipo}}
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!-- Modal Editar Base -->
+<div class="modal fade" id="modalEditarTipo" tabindex="-1" role="dialog" aria-labelledby="modalEditarTipoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarTipoLabel">Editar Tipo</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'editar_tipo' %}" autocomplete="off" id="form-editar-tipo">
+                    {% csrf_token %}
+                    <input type="hidden" id="idtipo" name="nombre_tipo">
+                    {{form}}
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </form>                   
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        var editButtons = document.querySelectorAll('.editar');
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var idTipo = this.dataset.idtipotractor;
+                var nombreTipo = this.dataset.nombretipotractor;
+                document.getElementById("idtipo").value = idTipo;
+                document.getElementById("nombre_tipo").value = nombreTipo;
+
+            });
+        });
+    });  
+</script>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 {% endblock %}
+ 

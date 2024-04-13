@@ -32,7 +32,7 @@ def registrar_base(request):
 
 def editar_base(request):
     if request.method == 'POST':
-        idbase = request.POST.get('idarea')
+        idbase = request.POST.get('idbase')
         base = get_object_or_404(Base, pk = idbase)
         form = BaseForm(request.POST, instance=base)
 
