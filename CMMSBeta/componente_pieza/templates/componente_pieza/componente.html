@@ -17,37 +17,116 @@
 
     </div>
     <div class="col-md-3 mb-3">
-        <button type="button" class="btn btn-primary" id="registro-implemento" data-bs-toggle="modal" data-bs-target="#modal-sistema">Agregar Componente</button>
+        <button type="button" class="btn btn-primary" id="registrar-componente" data-bs-toggle="modal" data-bs-target="#modal-componente">Agregar Componente</button>
     </div>
 </div>
 
-<table class="table table-striped  table-sm table-bordered text-center" id="tabla-sistema">
+<table class="table table-striped  table-sm table-bordered text-center" id="tabla-componente">
     <thead class="thead-dark">
-        <colgroup>
+        <!-- <colgroup>
             <col width="20%">       
             <col width="20%">
             <col width="20%">
             <col width="20%">
             <col width="20%">
-        </colgroup>
+            <col width="20%">
+        </colgroup> -->
         <tr>
             <th scope="col">Sistema</th>
             <th scope="col">Componente</th>
             <th scope="col">Codigo Componente</th>
             <th scope="col">Hora instalacion</th>
             <th scope="col">Tiempo vida</th>
+            <th scope="col">Operaciones</th>
         </tr>
     </thead>
     <tbody>
     {% for dato in datos_componente %}
-     <tr>
         <td>{{dato.idsistema}}</td>
         <td>{{dato.componente}}</td>
         <td>{{dato.codcomponente}}</td>
         <td>{{dato.horainstalacion}}</td>
         <td>{{dato.tiempovida}}</td>
+        <td>
+            <button class="btn btn-warning editar" id ="editar-sistema" data-id="{{dato.idcomponente}}" data-bs-toggle="modal" data-bs-target="#modal-componente"><i class="lni lni-pencil editar"></i></button>
+            <form action="{% url 'eliminar_componente' dato.idcomponente %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-danger eliminar"><i class="lni lni-trash-can eliminar"></i></button>
+            </form>
+        </td>
+
      </tr>
     {% endfor %}
     </tbody>
 </table>
+
+<div class="modal fade" id="modal-componente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal"></h1>
+            </div>
+                <form autocomplete="off" id="form-modal">
+                    <div class="modal-body">
+                            {% csrf_token %}
+                            {{form}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // const modalvisor = new bootstrap.Modal(document.getElementById('modal-s'))
+    const formModal = document.getElementById("form-modal")
+    const btnAgregar = document.getElementById("registrar-componente");
+    const titulo_modal = document.getElementById("titulo-modal");
+    const btnModificar = document.querySelectorAll(".editar")
+
+        
+    function obtener_componentes(id){
+    fetch(`./obtener/${id}`)
+        .then(res => res.json())
+        .then(datos => {
+            console.log(datos)
+            titulo_modal.textContent = "Editar Componente" ;
+            formModal.setAttribute("action", `./modificar/${id}`);
+            formModal.setAttribute("method", "POST");
+            txtComponente.value = datos.componentes[0].componente;           
+            txtCodigoComp.value = datos.componentes[0].codcomponente;           
+            txthoraInstalacion.value = datos.componentes[0].horainstalacion;           
+            txtTiempovida.value = datos.componentes[0].tiempovida;           
+            txtSistema.value = datos.componentes[0].idsistema;           
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
+    btnAgregar.addEventListener("click", function() {
+        titulo_modal.textContent = "Agregar Componente" ;
+        formModal.reset();
+        formModal.setAttribute("action", "{% url 'componente_registro' %}");
+        formModal.setAttribute("method", "POST");
+    });
+
+    btnModificar.forEach(function(boton) {
+    boton.addEventListener("click", function(event) {
+        let id_registro = event.target.dataset.id;
+        console.log(id_registro)
+        obtener_componentes(id_registro);
+        });
+    });
+
+
+
+});
+
+</script>
 {% endblock %}

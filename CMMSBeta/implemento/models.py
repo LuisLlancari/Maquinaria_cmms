@@ -1,6 +1,6 @@
 from django.db import models
 from localizacion.models import Area
-from ceco.models import Ceco
+from ceco.models import Ceco, Responsable
 from componente_pieza.models import Pieza
 
 class TipoImplemento(models.Model):
@@ -35,18 +35,6 @@ class Implemento(models.Model):
         ordering = ['implemento', 'idtipoimplemento',]
     def __str__(self):
         return self.implemento
-
-class Responsable(models.Model):
-    idresponsable = models.AutoField(primary_key=True)
-    responsable = models.CharField(max_length=40, blank=True, null=True, verbose_name="Responsable")
-    estado = models.BooleanField(default=True, verbose_name="Estado")
-
-    class Meta:
-        verbose_name = "Responsable"
-        verbose_name_plural = "Responsables"
-        ordering = ['responsable']
-    def __str__(self):
-        return self.responsable
 
 class DetImplementos(models.Model):
     iddetalleimplemento = models.AutoField(primary_key=True)

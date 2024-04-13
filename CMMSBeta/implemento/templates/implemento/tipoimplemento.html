@@ -17,17 +17,17 @@
 
     </div>
     <div class="col-md-3 mb-3">
-        <button type="button" class="btn btn-primary" id="registro-implemento" data-bs-toggle="modal" data-bs-target="#modal-sistema">Agregar Sistema</button>
+        <button type="button" class="btn btn-primary" id="registrar-implemento" data-bs-toggle="modal" data-bs-target="#modal-tipoimplemento">Agregar Tipo</button>
     </div>
 </div>
 
 <table class="table table-striped  table-sm table-bordered text-center" id="tabla-sistema">
     <thead class="thead-dark">
-        <colgroup>
+        <!-- <colgroup>
             <col width="20%">
             <col width="45%">
             <col width="45%">
-        </colgroup>
+        </colgroup> -->
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Tipo implemento</th>
@@ -35,13 +35,13 @@
         </tr>
     </thead>
     <tbody>
-    {% for dato in datos_sistema %}
+    {% for dato in datos %}
      <tr>
         <td>{{forloop.counter}}</td>
-        <td>{{dato.sistema}}</td>
+        <td>{{dato.tipoimplemento}}</td>
         <td>
-            <button class="btn btn-warning editar flex-fill" data-id="{{dato.idsistema}}" data-reg="{{dato}}" data-bs-toggle="modal" data-bs-target="#modal-editar"><i class="lni lni-pencil editar"></i></button>
-            <form action="{% url 'eliminar_sistema' dato.idsistema %}" class="flex-fill" method="POST">
+            <button class="btn btn-warning editar flex-fill" data-id="{{dato.idtipoimplemento}}" data-reg="{{dato}}" data-bs-toggle="modal" data-bs-target="#modal-tipoimplemento"><i class="lni lni-pencil editar"></i></button>
+            <form action="{% url 'eliminar_tipo' dato.idtipoimplemento %}" class="flex-fill" method="POST">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
             </form>
@@ -50,4 +50,71 @@
     {% endfor %}
     </tbody>
 </table>
+<div class="modal fade" id="modal-tipoimplemento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal"></h1>
+            </div>
+                <form autocomplete="off" id="form-modal">
+                    <div class="modal-body">
+                        
+                            {% csrf_token %}
+                            {{form}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="agregar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    
+        // const modalvisor = new bootstrap.Modal(document.getElementById('modal-sistema'))
+        const formModal = document.getElementById("form-modal")
+        const btnAgregar = document.getElementById("registrar-implemento");
+        const titulo_modal = document.getElementById("titulo-modal");
+        const btnModificar = document.querySelectorAll(".editar")
+    
+        
+        function obtener_tipo(id){
+        fetch(`./tipos/obtener/${id}`)
+        .then(res => res.json())
+        .then(datos => {
+            console.log(datos)
+            titulo_modal.textContent = "Editar Tipo Implemento" ;
+            formModal.setAttribute("action", `./tipos/modificar/${id}`);
+            formModal.setAttribute("method", "POST");
+            txtTipoImplemento.value = datos.tipos[0].tipoimplemento;           
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+        }
+    
+        btnAgregar.addEventListener("click", function() {
+            titulo_modal.textContent = "Agregar Tipo Implemento" ;
+            formModal.reset();
+            formModal.setAttribute("action", "{% url 'registrar_tipo' %}");
+            formModal.setAttribute("method", "POST");
+        });
+    
+        btnModificar.forEach(function(boton) {
+        boton.addEventListener("click", function(event) {
+            let id_tipo = event.target.dataset.id;
+            // console.log(id_pieza);
+            obtener_tipo(id_tipo);
+            });
+        });
+    
+    
+    
+    });
+    
+    
+</script>
 {% endblock %}

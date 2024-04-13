@@ -1,0 +1,125 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}Tractoristas{% endblock%}
+
+{% block contenido %} 
+<h1 class="text-center mb-2">Tractoristas</h1>
+<div class="row mt-4">
+    <div class="col md-3 mb-3">
+        <form>
+            <div class="input-group">
+                <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
+                <button class="btn btn-md btn-outline-secondary">Buscar</i></button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-3 mb-3">
+
+    </div>
+    <div class="col-md-3 mb-3">
+        <button type="button" class="btn btn-primary" id="registrar-tractorista" data-bs-toggle="modal" data-bs-target="#modal-tractorista">Agregar Tractorista</button>
+    </div>
+</div>
+
+<table class="table table-striped  table-sm table-bordered text-center" id="tabla-sistema">
+    <thead class="thead-dark">
+        <!-- <colgroup>
+            <col width="25%">
+            <col width="25%">       
+            <col width="25%">
+            <col width="25%">
+        </colgroup> -->
+        <tr>
+            <th scope="col">Apellidos</th>
+            <th scope="col">Nombres</th>
+            <th scope="col">Codigo</th>
+            <th scope="col">DNI</th>
+            <th scope="col">Operaciones</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for dato in datos_tractoristas %}
+     <tr>
+        <td>{{dato.apellidos}}</td>
+        <td>{{dato.nombres}}</td>
+        <td>{{dato.codigo}}</td>
+        <td>{{dato.dni}}</td>
+        <td>
+            <button onclick="" class="btn btn-warning editar flex-fill" id="editar-pieza" data-id="{{dato.idtractorista}}" data-bs-toggle="modal" data-bs-target="#modal-tractorista"><i class="lni lni-pencil editar"></i></button>
+            <form action="{% url 'tractorista_eliminar' dato.idtractorista %}" class="flex-fill" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+            </form>
+        </td>
+     </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div class="modal fade" id="modal-tractorista" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar tractorista</h1>
+            </div>
+                <form autocomplete="off" id="form-modal">
+                    <div class="modal-body">
+                            {% csrf_token %}
+                            {{form.as_p}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal-tractorista"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+// constsc modalvisor = new bootstrap.Modal(document.getElementById('modal-sistema'))
+const formModal = document.getElementById("form-modal")
+const btnAgregar = document.getElementById("registrar-tractorista");
+const titulo_modal = document.getElementById("titulo-modal");
+const btnModificar = document.querySelectorAll(".editar")
+
+
+    function obtener_pieza(id){
+    fetch(`./tractorista/obtener/${id}`)
+    .then(res => res.json())
+    .then(datos => {
+        // console.log(datos)
+        titulo_modal.textContent = "Editar Tractorista" ;
+        formModal.setAttribute("action", `./tractorista/modificar/${id}`);
+        formModal.setAttribute("method", "POST");
+        txtApellidos.value = datos.tractorista[0].apellidos;           
+        txtNombres.value = datos.tractorista[0].nombres;           
+        txtCodigo.value = datos.tractorista[0].codigo;           
+        txtDni.value = datos.tractorista[0].estado;           
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+    }
+
+    btnAgregar.addEventListener("click", function() {
+        titulo_modal.textContent = "Agregar Tractorista" ;
+        formModal.reset();
+        formModal.setAttribute("action", "{% url 'tractorista_registro' %}");
+        formModal.setAttribute("method", "POST");
+    });
+
+    btnModificar.forEach(function(boton) {
+    boton.addEventListener("click", function(event) {
+        let id_pieza = event.target.dataset.id;
+        // console.log(id_pieza);
+        obtener_pieza(id_pieza);
+        });
+    });
+
+
+});
+
+</script>
+{% endblock %}

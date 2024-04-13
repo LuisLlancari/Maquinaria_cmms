@@ -17,19 +17,19 @@
 
     </div>
     <div class="col-md-3 mb-3">
-        <button type="button" class="btn btn-primary" id="registrar" data-bs-toggle="modal" data-bs-target="#modal-sistema">Agregar Sistema</button>
+        <button type="button" class="btn btn-primary" id="registrar-sistema" data-bs-toggle="modal" data-bs-target="#modal-sistema">Agregar Sistema</button>
     </div>
 </div>
 
 <table class="table table-striped  table-sm table-bordered text-center" id="tabla-sistema">
     <thead class="thead-dark">
-        <colgroup>
+        <!-- <colgroup>
             <col width="20%">
             <col width="45%">
             <col width="45%">
-        </colgroup>
+        </colgroup> -->
         <tr>
-            <th scope="col">ID</th>
+            <th scope="col">N°</th>
             <th scope="col">Sistema</th>
             <th scope="col">Operaciones</th>
         </tr>
@@ -40,7 +40,7 @@
         <td>{{forloop.counter}}</td>
         <td>{{dato.sistema}}</td>
         <td>
-            <button class="btn btn-warning editar flex-fill" data-id="{{dato.idsistema}}" data-reg="{{dato}}" data-bs-toggle="modal" data-bs-target="#modal-editar"><i class="lni lni-pencil editar"></i></button>
+            <button onclick="" class="btn btn-warning editar flex-fill" id="editar-sistema" data-id="{{dato.idsistema}}" data-bs-toggle="modal" data-bs-target="#modal-sistema "><i class="lni lni-pencil editar"></i></button>
             <form action="{% url 'eliminar_sistema' dato.idsistema %}" class="flex-fill" method="POST">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
@@ -55,37 +55,17 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header bg-primary justify-content-center" >
-                <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Implemento</h1>
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal"></h1>
             </div>
-                <form action="{% url 'sistema_registro' %}" autocomplete="off" id="form-implemento" method="POST">
+                <form autocomplete="off" id="form-modal">
                     <div class="modal-body">
                         
                             {% csrf_token %}
                             {{form}}
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
-                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
-                    </div>
-                </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modal-editar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header bg-primary justify-content-center" >
-                <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Implemento</h1>
-            </div>
-                <form action="{% url 'sistema_registro' %}" autocomplete="off" id="form-implemento" method="POST">
-                    <div class="modal-body">
-                            {% csrf_token %}
-                            {{form}}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
-                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                        <button type="submit" id="agregar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
                     </div>
                 </form>
         </div>
@@ -95,29 +75,44 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
 
-        const modalvisor = new bootstrap.Modal(document.getElementById('modal-implemento'));
-
-        var editButtons = document.querySelectorAll('.editar');
-        editButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var idsistema = this.dataset.id
-                var sistema = this.dataset.reg;
-     
-                
-
-
-                // document.getElementById("ceco_id").value = idCeco;
-                // document.getElementById("nombre_ceco").value = nombreCeco;
-
-
-
-            });
+        const modalvisor = new bootstrap.Modal(document.getElementById('modal-sistema'))
+        const formModal = document.getElementById("form-modal")
+        const btnAgregar = document.getElementById("registrar-sistema");
+        const titulo_modal = document.getElementById("titulo-modal");
+        const btnModificar = document.querySelectorAll(".editar")
+            console.log(btnModificar)
+            
+    function obtener_sistema(id){
+    fetch(`./obtener/${id}`)
+        .then(res => res.json())
+        .then(datos => {
+            titulo_modal.textContent = "Editar Sistema" ;
+            formModal.setAttribute("action", `./modificar/${id}`);
+            formModal.setAttribute("method", "POST");
+            txtsistema.value = datos.componentes[0].sistema;           
+        })
+        .catch((error) => {
+            console.log(error);
         });
-
-
-
-
+    }
+    
+    btnAgregar.addEventListener("click", function() {
+        titulo_modal.textContent = "Agregar Sistema" ;
+        formModal.reset();
+        formModal.setAttribute("action", "{% url 'sistema_registro' %}");
+        formModal.setAttribute("method", "POST");
     });
-</script>
 
+    btnModificar.forEach(function(boton) {
+    boton.addEventListener("click", function(event) {
+        let idsis = event.target.dataset.id;
+        obtener_sistema(idsis);
+        });
+    });
+    
+
+
+});
+
+</script>
 {% endblock %}
