@@ -17,6 +17,9 @@ urlpatterns = [
 
   #Urls de variedad
   path('variedad', variedad_view.variedad , name='variedad'),
+  path('registrar_variedad', variedad_view.registrar_variedad , name='registrar_variedad'),
+  path('editar_variedad', variedad_view.editar_variedad , name='editar_variedad'),
+  path('eliminar_variedad/<int:id_variedad>', variedad_view.eliminar_variedad , name='eliminar_variedad'),
 
   #Urls de lote
   path('lote', lote_view.lote , name='lote'),
