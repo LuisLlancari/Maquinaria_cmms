@@ -2,17 +2,21 @@ from django.shortcuts import render, redirect, get_object_or_404
 from ..models import *  
 from ..forms import *
 from django.http import HttpResponse
+from django.contrib.auth.models import User
 
 from django.contrib.auth.decorators import login_required
 
 # Ceco
 @login_required(login_url='login', redirect_field_name='')
 def ceco(request):
+    #usuario = request.user
+    #print("Usuario logueado:", usuario)
     cecos = Ceco.objects.filter(estado=True)
     for ceco in cecos:
-        #MANEJO DE ESTADO
         ceco.estado = 'Activo' if ceco.estado else 'Inactivo'
-    return render(request, 'ceco/ceco.html', {'datos': cecos, 'form_ceco': CecoForm})
+
+    return render(request, 'ceco/ceco.html', {'datos': cecos, 'form_ceco': CecoForm, })
+
 
 @login_required(login_url='login', redirect_field_name='')
 def registrar_ceco(request):

@@ -4,6 +4,7 @@ from tractor.models import Tractor
 from operarios.models import Tractorista, Solicitante
 from implemento.models import Implemento
 from django.contrib.auth.models import User
+from usuario.models import Usuario
 
 
 class TipoLabor(models.Model):
@@ -21,7 +22,7 @@ class TipoLabor(models.Model):
 class Programacion(models.Model):
 
     TURNO_CHOICES = (
-        ('M', 'Manana'),
+        ('M', 'Mañana'),
         ('T', 'Tarde'),
         ('N', 'Noche'),
     )
@@ -30,7 +31,7 @@ class Programacion(models.Model):
     idtipolabor = models.ForeignKey(TipoLabor, on_delete=models.SET_NULL, null=True, verbose_name="Tipo de labor")
     idlote = models.ForeignKey(Lote, on_delete=models.SET_NULL, null=True, verbose_name="Lote")
     idtractor = models.ForeignKey(Tractor, on_delete=models.SET_NULL, null=True, verbose_name="Tractor")
-    idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.SET_NULL, null=True, verbose_name="Usuario")
+    idusuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, verbose_name="Usuario")
     idtractorista = models.ForeignKey(Tractorista, on_delete=models.SET_NULL, null=True, verbose_name="Tractorista")
     idsolicitante = models.ForeignKey(Solicitante, on_delete=models.SET_NULL, null=True, verbose_name="Solicitante")
     fechahora = models.DateField(auto_now=False, auto_now_add=False, verbose_name='Fecha')
@@ -49,5 +50,13 @@ class DetalleLabor(models.Model):
     idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_NULL, null=True, verbose_name="Implemento")
     idprogramacion = models.ForeignKey(Programacion, on_delete=models.SET_NULL, null=True, verbose_name="Programacion")
     horadeuso = models.TimeField(auto_now=False, auto_now_add=False, verbose_name='Hora de uso Implemento')
+    estado = models.BooleanField(default=True, verbose_name='Estado')
+
+    class Meta:
+        verbose_name = 'Detalle Labor'
+        verbose_name_plural = 'Detalles de labor'
+
+    def __str__(self):
+        return self.iddetlabor
     
 
