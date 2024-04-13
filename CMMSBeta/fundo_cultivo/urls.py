@@ -11,6 +11,9 @@ urlpatterns = [
 
   #Urls de lote
   path('cultivo', cultivo_view.cultivo , name='cultivo'),
+  path('registrar_cultivo', cultivo_view.registrar_cultivo , name='registrar_cultivo'),
+  path('editar_cultivo', cultivo_view.editar_cultivo , name='editar_cultivo'),
+  path('eliminar_cultivo/<int:id_cultivo>', cultivo_view.eliminar_cultivo , name='eliminar_cultivo'),
 
   #Urls de variedad
   path('variedad', variedad_view.variedad , name='variedad'),

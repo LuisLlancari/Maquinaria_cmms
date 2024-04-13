@@ -25,6 +25,7 @@ class Cultivo(models.Model):
         verbose_name = 'Cultivo'
         verbose_name_plural = 'Cultivos'
 
+    #DEVUELVE EL NOMBRE
     def __str__(self):
         return self.cultivo
     
