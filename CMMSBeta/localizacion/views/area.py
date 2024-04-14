@@ -3,7 +3,7 @@ from ..models import Area
 from ..forms import AreaForm
 
 def area(request):
-    areas = Area.objects.all()
+    areas = Area.objects.filter(estado = True)
     formArea = AreaForm()
     datos = {
         'areas': areas,
@@ -14,7 +14,8 @@ def area(request):
 def eliminar_area(request, idarea):
     area = get_object_or_404(Area, pk = idarea)
     if request.method == 'POST':
-        area.delete()
+        area.estado = False
+        area.save()
         return redirect('area')
     
     return render(request, '', {'area': area})

@@ -4,25 +4,26 @@ from .models import TipoTractor, Tractor
 class TipoTractorForm(forms.ModelForm):
     class Meta:
         model = TipoTractor
-        fields = ['TipoTractor', 'estado']
+        fields = ['idtipotractor', 'TipoTractor']
         widgets = {
+            'idtipotractor': forms.HiddenInput(),
             'TipoTractor': forms.TextInput(attrs={'class': 'form-control'}),
-            'estado': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+
         }
         
 class TractorForm(forms.ModelForm):
     class Meta:
         model = Tractor
-        fields = '__all__'
+        fields = ['idtractor','idtipotractor', 'idusuario', 'nrotractor', 'horainicial', 'horauso']
         widgets = {
+            'idtractor': forms.HiddenInput(),  # Campo oculto
             'idtipotractor': forms.Select(attrs={'class': 'form-control'}),
             'idusuario': forms.Select(attrs={'class': 'form-control'}),
             'nrotractor': forms.TextInput(attrs={'class': 'form-control'}),
             'horainicial': forms.NumberInput(attrs={'class': 'form-control'}),
             'horauso': forms.NumberInput(attrs={'class': 'form-control'}),
-            'estado': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'idtractor': forms.HiddenInput(),  # Campo oculto
         }
+
 
 from django import forms
 from .models import ReporteTractor

@@ -1,8 +1,8 @@
 {% extends "core/base.html" %} 
-{% block titulo %} Area {% endblock titulo %} 
+{% block titulo %} Roles {% endblock titulo %} 
 {% block contenido %}
 <div class="container">
-  <h1 class="text-start mb-3">Gestion de Areas</h1>
+  <h1 class="text-start mb-3">Gestion de Roles</h1>
   <div class="row">
     <div class="col-md-4">
       <input
@@ -18,9 +18,9 @@
         type="button"
         class="btn btn-success"
         data-toggle="modal"
-        data-target="#modalNuevaArea"
+        data-target="#modalNuevoRol"
       >
-        Nueva Area
+        Nuevo Rol
       </button>
     </div>
   </div>
@@ -29,32 +29,30 @@
       <thead>
         <tr>
           <th scope="col">N°</th>
-          <th scope="col">Area</th>
-          <th scope="col">Base</th>
+          <th scope="col">Rol</th>
           <th scope="col">Operacion</th>
         </tr>
       </thead>
 
       <tbody>
-        {% for data in areas %}
+        {% for data in roles %}
         <tr>
           <th scope="row">{{ forloop.counter }}</th>
-          <td>{{data.area}}</td>
-          <td>{{data.idbase_id}}</td>
+          <td>{{ data.rol }}</td>
           <td>
             <button
               class="btn btn-warning btn-sm editar d-inline-block"
-              id="area"
+              id="rol"
               data-toggle="modal"
-              data-target="#modalEditarArea"
-              data-idarea="{{ data.idarea }}"
-              data-nombrearea="{{ data.area }}"
+              data-target="#modalEditarRol"
+              data-idrol="{{ data.idrol }}"
+              data-nombrerol="{{ data.rol }}"
               type="button"
             >
               <i class="lni lni-pencil"></i>
             </button>
             <form
-              action="{% url 'eliminar_area' data.idarea %}"
+              action="{% url 'eliminar_rol' data.idrol %}"
               class="d-inline-block"
               method="POST"
             >
@@ -70,30 +68,29 @@
     </table>
   </div>
 
-  <!-- Modal Registrar Area -->
+  <!-- Modal Registrar Base -->
   <div
     class="modal fade"
-    id="modalNuevaArea"
+    id="modalNuevoRol"
     tabindex="-1"
     role="dialog"
-    aria-labelledby="modalNuevaAreaLabel"
+    aria-labelledby="modalNuevoRolLabel"
     aria-hidden="true"
   >
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalNuevaAreaLabel">Nueva Area</h5>
+          <h5 class="modal-title" id="modalNuevoRolLabel">Nuevo Rol</h5>
         </div>
         <div class="modal-body">
           <form
             method="post"
-            action="{% url 'registrar_area' %}"
+            action="{% url 'registrar_rol' %}"
             autocomplete="off"
-            id="form-area"
+            id="form-ceco"
           >
-            {% csrf_token %}
-            <input type="text" id="nombreArea" name="area" />
-            {{formArea.Base}}
+            {% csrf_token %} 
+            {{form}}
             <button type="submit" class="btn btn-primary">Guardar</button>
           </form>
         </div>
@@ -101,36 +98,31 @@
     </div>
   </div>
 
-  <!-- Modal Editar Area -->
+  <!-- Modal Editar Base -->
   <div
     class="modal fade"
-    id="modalEditarArea"
+    id="modalEditarRol"
     tabindex="-1"
     role="dialog"
-    aria-labelledby="modalEditarAreaLabel"
+    aria-labelledby="modalEditarRolLabel"
     aria-hidden="true"
   >
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalEditarAreaLabel">Editar Area</h5>
+          <h5 class="modal-title" id="modalEditarRolLabel">Editar Rol</h5>
         </div>
         <div class="modal-body">
           <form
             method="post"
-            action="{% url 'editar_area' %}"
+            action="{% url 'editar_rol' %}"
             autocomplete="off"
-            id="form-editar-area"
+            id="form-editar-rol"
           >
             {% csrf_token %}
-            <input type="hidden" id="idarea" name="idarea" />
-            <input
-              type="text"
-              class="form-control mb-3"
-              id="nombreArea"
-              name="area"
-            />
-            {{formArea.Base}}
+            <input type="hidden" id="idrol" name="idrol" />
+            <input type="text" id="rol" name="rol" class="form-control mb-3" />
+
             <button type="submit" class="btn btn-primary mt-3">
               Guardar Cambios
             </button>
@@ -145,15 +137,14 @@
       var editButtons = document.querySelectorAll(".editar");
       editButtons.forEach(function (button) {
         button.addEventListener("click", function () {
-          var idArea = this.dataset.idarea;
-          var nombreArea = this.dataset.nombrearea;
-          document.getElementById("idarea").value = idArea;
-          document.getElementById("nombreArea").value = nombreArea;
+          var idRol = this.dataset.idrol;
+          var nombreRol = this.dataset.nombrerol;
+          document.getElementById("idrol").value = idRol;
+          document.getElementById("rol").value = nombreRol;
         });
       });
     });
   </script>
-
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   {% endblock %}

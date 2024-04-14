@@ -14,6 +14,7 @@ urlpatterns = [
     #funciones tractores
     path('eliminartractor/<int:idtractor>', tractor.eliminar_tractor, name='eliminartractor'), 
     path('registrar_tractor', tractor.registrar_tractor, name='registrar_tractor'), 
+    path('editar_tractor', tractor.editar_tractor, name='editar_tractor'), 
     
     #funciones reporte tractores
     path('eliminar_reporte/<int:idreporte>', reportetractor.eliminar_reporte, name='eliminar_reporte'), 

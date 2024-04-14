@@ -3,7 +3,7 @@ from ..models import Base
 from ..forms import BaseForm
 
 def base(request):
-    bases = Base.objects.all()
+    bases = Base.objects.filter(estado = True)
     formBase = BaseForm()
     datos = {
         'bases': bases,
@@ -14,7 +14,8 @@ def base(request):
 def eliminar_base(request, idbase):
     base = get_object_or_404(Base, pk = idbase)
     if request.method == 'POST':
-        base.delete()
+        base.estado = False
+        base.save()
         return redirect('base')
     
     return render(request, '', {'sede': base})

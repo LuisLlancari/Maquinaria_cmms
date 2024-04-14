@@ -1,73 +1,109 @@
-{% extends "core/base.html" %}
-
-{% block titulo %}
-    Base
-{% endblock titulo %}
-
+{% extends "core/base.html" %} 
+{% block titulo %} Reporte Tractor {% endblock titulo %} 
 {% block contenido %}
 <div class="container">
-    <h1 class="text-start mb-3">Reporte de Tractores</h1>
-    <div class="row">
-        <div class="col-md-4">
-            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
-        </div>
-        <div class="col-md-6"></div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoReporte">Nuevo Reporte</button>
-        </div>
+  <h1 class="text-start mb-3">Reporte de Tractores</h1>
+  <div class="row">
+    <div class="col-md-4">
+      <input
+        type="text"
+        id="buscador"
+        class="form-control mb-2"
+        placeholder="Buscar..."
+      />
     </div>
-    <div class="table-responsive">
-        <table class="table table-striped" id="tabla-area">
-            <thead>
-                <tr>
-                    <th scope="col">N°</th>
-                    <th scope="col">Usuario</th>
-                    <th scope="col">Horometro Inicial</th>
-                    <th scope="col">Horometro Final</th>
-                    <th scope="col">Correlativo</th>
-                    <th scope="col">Accion</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for data in reporte %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ data.idusuario }}</td>
-                    <td>{{ data.horometroinicial }}</td>
-                    <td>{{ data.horometrofinal }}</td>
-                    <td>{{ data.correlativo }}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm editar d-inline-block" id="reporte" data-toggle="modal" data-target="#modalEditarReporte" data-idreporte="{{ data.idreportetractor }}" data-nombrereportetractor="{{ data.idreportetractor }}" type="button"><i class="lni lni-pencil"></i></button>
-                        <form action="{% url 'eliminar_reporte' data.idreportetractor %}" class="d-inline-block" method="POST">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
-                        </form>  
-                    </td>  
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="col-md-6"></div>
+    <div class="col-md-2">
+      <button
+        type="button"
+        class="btn btn-success"
+        data-toggle="modal"
+        data-target="#modalNuevoReporte"
+      >
+        Nuevo Reporte
+      </button>
     </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-striped" id="tabla-area">
+      <thead>
+        <tr>
+          <th scope="col">N°</th>
+          <th scope="col">Usuario</th>
+          <th scope="col">Horometro Inicial</th>
+          <th scope="col">Horometro Final</th>
+          <th scope="col">Correlativo</th>
+          <th scope="col">Accion</th>
+        </tr>
+      </thead>
 
+      <tbody>
+        {% for data in reporte %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{ data.idusuario }}</td>
+          <td>{{ data.horometroinicial }}</td>
+          <td>{{ data.horometrofinal }}</td>
+          <td>{{ data.correlativo }}</td>
+          <td>
+            <button
+              class="btn btn-warning btn-sm editar d-inline-block"
+              id="reporte"
+              data-toggle="modal"
+              data-target="#modalEditarReporte"
+              data-idreporte="{{ data.idreportetractor }}"
+              data-nombrereportetractor="{{ data.idreportetractor }}"
+              type="button"
+            >
+              <i class="lni lni-pencil"></i>
+            </button>
+            <form
+              action="{% url 'eliminar_reporte' data.idreportetractor %}"
+              class="d-inline-block"
+              method="POST"
+            >
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">
+                <i class="lni lni-trash-can"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-<div class="modal fade" id="modalNuevoReporte" tabindex="-1" role="dialog" aria-labelledby="modalNuevoReporterLabel" aria-hidden="true">
-<div class="modal-dialog" role="document">
-    <div class="modal-content">
+  <div
+    class="modal fade"
+    id="modalNuevoReporte"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="modalNuevoReporterLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="modalNuevoReporteLabel">Nuevo Reporte</h5>
+          <h5 class="modal-title" id="modalNuevoReporteLabel">Nuevo Reporte</h5>
         </div>
         <div class="modal-body">
-            <form method="post" action="{% url 'registrar_reporte' %}" autocomplete="off" id="form-area">
-                {% csrf_token %}
-                {{form}}
-                <button type="submit" class="btn btn-primary">Guardar</button>
-            </form>
+          <form
+            method="post"
+            action="{% url 'registrar_reporte' %}"
+            autocomplete="off"
+            id="form-area"
+          >
+            {% csrf_token %}
+            {{form}}
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </form>
         </div>
+      </div>
     </div>
-</div>
-</div>
+  </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-{% endblock  %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  {% endblock %}
+</div>

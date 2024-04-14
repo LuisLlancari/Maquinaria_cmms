@@ -5,7 +5,7 @@ from ..forms import ReporteTractorForm
 
 @login_required(login_url='login', redirect_field_name='')
 def reportetractor(request):
-    reporte = ReporteTractor.objects.all()
+    reporte = ReporteTractor.objects.filter(estado = True)
     form = ReporteTractorForm()
     data = {
         'reporte' : reporte,
@@ -18,7 +18,8 @@ def reportetractor(request):
 def eliminar_reporte(request, idreporte):
     reportetractor = get_object_or_404(ReporteTractor, pk=idreporte)
     if request.method == 'POST':
-        reportetractor.delete()
+        reportetractor.estado = False
+        reportetractor.save()
         return redirect('reportetractor')
     
     return render(request, 'tractor/reportetractor.html', {'reporte': reportetractor})
