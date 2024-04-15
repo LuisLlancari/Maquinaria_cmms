@@ -6,8 +6,7 @@ from .models import Sede, Base, Area
 class SedeAdmin(admin.ModelAdmin):
     readonly_fields = ['estado']
 
-@admin.register(admin.Base)
-
+@admin.register(Base)
 class BaseAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
 

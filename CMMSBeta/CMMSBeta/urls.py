@@ -25,15 +25,12 @@ urlpatterns = [
     path('usuario/', include('django.contrib.auth.urls')),
     path('usuario/', include('usuario.urls')),
     path('implemento/', include('implemento.urls')),
-<<<<<<< HEAD
     path('componente/', include('componente_pieza.urls')),
     path('operarios/', include('operarios.urls')),
 
-=======
     path('fundo/', include('fundo_cultivo.urls')),
     path('ceco/', include('ceco.urls')),
     path('programacion/', include('programacion_labor.urls')),
->>>>>>> Backend-Harold
 
     # Importamos las vistas del login y logout
     path('login',usuario_views.login_user, name="login"),

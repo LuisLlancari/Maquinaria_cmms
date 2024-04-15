@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -50,7 +50,7 @@
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#componente" aria-expanded="false" aria-controls="componente">
-                        <i class="lni lni-protection"></i>
+                        <i class="lni lni-cog"></i>
                         <span>Componentes</span>
                     </a>
                     <ul id="componente" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
@@ -192,43 +192,9 @@
   
     <script src="{% static 'core/vendor/bootstrap5/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'core/js/base.js' %}"></script>
-
-
-<<<<<<< HEAD
-=======
-            if (currentPath === "/") {
-                currentPath = "inicio";
-                var itemLink = item.querySelector(".sidebar-link");
-                var itemPath = itemLink.getAttribute("data-path");
-            }
-            
-            dropdownLinks.forEach(function(link) {
-                var dropdown = link.nextElementSibling;
-                var dropdownItems = dropdown.querySelectorAll(".sidebar-item");
-                
-                dropdownItems.forEach(function(item) {
-                    var itemLink = item.querySelector(".sidebar-link");
-                    var itemPath = itemLink.getAttribute("data-path"); // Obtener el atributo data-path
-                    console.log(itemPath)
-
-                      // Eliminar la barra diagonal inicial de currentPath si existe
-                    if (currentPath.charAt(0) === '/') {
-                        currentPath = currentPath.substring(1);
-                    }
-                    
-                    // Comprobar si la ruta actual coincide con el atributo data-path del ítem del dropdown
-                    if (currentPath === itemPath) {
-                        dropdown.classList.add("show"); // Abrir el dropdown
-                        itemLink.classList.add("active"); // Marcar la opción activa
-                        itemLink.classList.add("hover"); // Marcar la opción como hover
-                    }
-                });
-            });
-        });
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
->>>>>>> Backend-Harold
 </body>
 
 </html>

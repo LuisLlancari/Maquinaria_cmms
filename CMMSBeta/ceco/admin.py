@@ -1,16 +1,4 @@
 from django.contrib import admin
-<<<<<<< HEAD
-from .models import Ceco, Responsable
-
-@admin.register(Responsable)
-class responsableAdmin(admin.ModelAdmin):
-  readonly_fields= ['estado']
-
-@admin.register(Ceco)
-class cecoAdmin(admin.ModelAdmin):
-  readonly_fields= ['estado']
-
-=======
 from .models import Ceco , Responsable
 
 
@@ -21,4 +9,3 @@ class CecoAdmin(admin.ModelAdmin):
 @admin.register(Responsable)
 class ResponsableAdmin(admin.ModelAdmin):
     readonly_fields = ['estado']
->>>>>>> Backend-Harold

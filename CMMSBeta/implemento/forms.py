@@ -21,10 +21,10 @@ class DetImplementoForms(forms.ModelForm):
     model = DetImplementos
     fields = ['idresponsable','idpieza', 'idceco', 'idimplemento']
     widgets = {
-      'idresponsable': forms.TextInput(attrs={'class':'form-control', 'id':'txtIdResponsable'}),
-      'idpieza': forms.TextInput(attrs={'class':'form-control', 'id':'txtIdpieza'}),
-      'idceco': forms.TextInput(attrs={'class':'form-control', 'id':'txtIdCeco'}),
-      'idimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtIdImplemento'}),
+      'idresponsable': forms.Select(attrs={'class':'form-control', 'id':'txtIdResponsable'}),
+      'idpieza': forms.Select(attrs={'class':'form-control', 'id':'txtIdpieza'}),
+      'idceco': forms.Select(attrs={'class':'form-control', 'id':'txtIdCeco'}),
+      'idimplemento': forms.Select(attrs={'class':'form-control', 'id':'txtIdImplemento'}),
     }
 
 class TipoImplementoForms(forms.ModelForm):
