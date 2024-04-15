@@ -3,21 +3,20 @@ from usuario.models import Usuario
 from django.contrib.auth.models import User
 
 
+from django.db import models
+
 class TipoTractor(models.Model):
     idtipotractor = models.AutoField(primary_key=True)
-    tipotractor = models.CharField(max_length=50, verbose_name='Tipo Tractor')
-    estado = models.BooleanField(default=True, verbose_name='Estado')
-    
-    class Meta:
-        verbose_name = "Tipo Tractor"
-        verbose_name_plural = "Tipos Tractores"
-        
+    TipoTractor = models.CharField(max_length=100)
+    estado = models.BooleanField(default=True)
+
     def __str__(self):
-        return self.tipotractor
+        return self.TipoTractor
+
     
 class Tractor(models.Model):
     idtractor = models.AutoField(primary_key=True)
-    idtipotractor = models.ForeignKey(TipoTractor, on_delete=models.PROTECT, verbose_name='Tipo Tractor', null=True)
+    idtipotractor = models.ForeignKey(TipoTractor, on_delete=models.PROTECT, verbose_name='Tipo Tractor')
     idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.PROTECT, verbose_name='Usuario', null=True)
     nrotractor = models.IntegerField(verbose_name='Número Tractor')
     horainicial = models.IntegerField(verbose_name='Hora Inicial')

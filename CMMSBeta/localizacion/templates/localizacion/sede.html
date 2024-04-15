@@ -1,0 +1,169 @@
+{% extends "core/base.html" %} 
+{% block titulo %} Gestion de Sedes {% endblock titulo %} 
+{% block contenido %}
+
+<div class="container">
+  <h1 class="text-start mb-3">Gestion de Sedes</h1>
+  <div class="row">
+    <div class="col-md-4">
+      <input
+        type="text"
+        id="buscador"
+        class="form-control mb-2"
+        placeholder="Buscar..."
+      />
+    </div>
+    <div class="col-md-6"></div>
+    <div class="col-md-2">
+      <button
+        type="button"
+        class="btn btn-success"
+        data-toggle="modal"
+        data-target="#modalNuevaSede"
+      >
+        Nuevo Ceco
+      </button>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-striped" id="tabla-area">
+      <thead>
+        <tr>
+          <th scope="col">N°</th>
+          <th scope="col">Centro de costo</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Operacion</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for data in sedes %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{ data.sede }}</td>
+          <td>{{ data.estado }}</td>
+          <td>
+            <button
+              class="btn btn-warning btn-sm editar d-inline-block"
+              id="ceco"
+              data-toggle="modal"
+              data-target="#modalEditarSede"
+              data-idsede="{{ data.idsede }}"
+              data-nombresede="{{ data.sede }}"
+              type="button"
+            >
+              <i class="lni lni-pencil"></i>
+            </button>
+            <form
+              action="{% url 'eliminar_sede' data.idsede %}"
+              class="d-inline-block"
+              method="POST"
+            >
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">
+                <i class="lni lni-trash-can"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Registrar Sede -->
+  <div
+    class="modal fade"
+    id="modalNuevaSede"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="modalNuevaSedeLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalNuevaSedeLabel">Nueva Sede</h5>
+        </div>
+        <div class="modal-body">
+          <form
+            method="post"
+            action="{% url 'registrar_sede' %}"
+            autocomplete="off"
+            id="form-ceco"
+          >
+            {% csrf_token %} 
+            {{form}}
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Sede -->
+  <div
+    class="modal fade"
+    id="modalEditarSede"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="modalEditarSedeLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarSedeLabel">Editar Sede</h5>
+        </div>
+        <div class="modal-body">
+          <form
+            method="post"
+            action="{% url 'editar_sede' %}"
+            autocomplete="off"
+            id="form-editar-rol"
+          >
+            {% csrf_token %}
+            <input
+              type="hidden"
+              id="idsede"
+              name="idsede"
+              class="form-control"
+            />
+
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                class="form-control"
+                aria-label="Recipient's username"
+                name="sede"
+                id="sede"
+              />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              Guardar Cambios
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      var editButtons = document.querySelectorAll(".editar");
+      editButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var idSede = this.dataset.idsede;
+          var nombreSede = this.dataset.nombresede;
+          document.getElementById("idsede").value = idSede;
+          document.getElementById("sede").value = nombreSede;
+        });
+      });
+    });
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  {% endblock %}
+</div>
