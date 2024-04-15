@@ -1,3 +1,1 @@
-from django.shortcuts import render
-
-# Create your views here.
+# CADA ARCHIVO SE ENCUENTRA SE PROPIO DIRECTORIO

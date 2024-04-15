@@ -1,0 +1,127 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}implemento{% endblock%}
+
+{% block contenido %} 
+<div class="container">
+    <h1 class="text-start mb-3">Gestion de Variedad</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalEditar">Nuevo Ceco</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped" id="tabla-variedad">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Variedad</th>
+                    <th scope="col">Operacion</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for data in datos %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ data.variedad }}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="variedad" data-toggle="modal" data-target="#modalActualizar" data-idvariedad="{{ data.idvariedad }}" data-nombrevariedad="{{ data.variedad }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <form action="{% url 'eliminar_variedad' data.idvariedad %}" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form>                       
+                    </td>  
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h1 id="h1-remplazar" class="text-center"></h1>
+    </div>
+
+    <!-- Modal Registrar Ceco -->
+    <div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalNuevoCecoLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalNuevoCecoLabel">Nuevo Centro de Costo</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'registrar_variedad' %}" autocomplete="off" id="form-variedad">
+                        {% csrf_token %}
+                        {{ form_variedad }}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Ceco -->
+    <div class="modal fade" id="modalActualizar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Editar Variedad</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'editar_variedad' %}" autocomplete="off" id="form-editar-ceco">
+                        {% csrf_token %}
+                        <input type="hidden" id="variedad_id" name="variedad_id">
+                        <div class="form-group">
+                            <label for="nombre_variedad">Nombre la variedad:</label>
+                            <!-- el forms toma el name-->
+                            <input type="text" class="form-control mb-2" id="nombre_variedad" name="variedad" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const h1 = document.querySelector('#h1-remplazar');
+        const buscador = document.querySelector('#buscador');
+        const filasTabla = document.querySelectorAll('#tabla-variedad tbody tr');
+
+        //Funciones
+        function filtrarTabla() {
+            const valorBusqueda = buscador.value.trim().toLowerCase();
+            let noHayResultados = true;
+            filasTabla.forEach(fila => {
+                const variedad = fila.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                const coincide = variedad.includes(valorBusqueda);
+
+                if (coincide) {
+                    fila.style.display = 'table-row';
+                    noHayResultados = false;
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+            h1.textContent = noHayResultados ? 'Datos no encontrados' : '';
+        }
+
+        //Eventos
+        buscador.addEventListener('input', filtrarTabla);
+
+        var editButtons = document.querySelectorAll('.editar');
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var idvariedad = this.dataset.idvariedad;
+                var nombre_variedad = this.dataset.nombrevariedad;
+                document.getElementById("variedad_id").value = idvariedad;
+                document.getElementById("nombre_variedad").value = nombre_variedad;
+            });
+        });
+    });
+</script>
+{% endblock %}

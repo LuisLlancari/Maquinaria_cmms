@@ -1,0 +1,158 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}Lotes{% endblock%}
+
+{% block contenido %} 
+<div class="container">
+    <h1 class="text-start mb-3">Gestion de Lotes</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <!-- Colocamos data-bs-toggle="modal" data-bs-target="#modalNuevaArea" : para abrir el modal sin usar JS -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalRegistrar">Nuevo Lote</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped" id="tabla-lote">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Lote</th>
+                    <th scope="col">Cultivo</th>
+                    <th scope="col">Sede</th>
+                    <th scope="col">Variedad</th>
+                    <th scope="col">Operaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in datos %}
+                <tr>
+                    <th scope="row">{{ forloop.counter}}</th>
+                    <td>{{ data.lote}}</td>
+                    <td>{{ data.idcultivo }}</td>
+                    <td>{{ data.idcultivo.idfundo.fundo }}</td>
+                    <td>{{ data.idvariedad }}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="lote" data-toggle="modal" data-target="#modalActualizar" data-idlote='{{ data.idlote }}' data-nombrelote="{{ data.lote }}" data-idcultivo="{{ data.idcultivo.idcultivo }}" data-idvariedad="{{ data.idvariedad.idvariedad }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <form action="{% url 'eliminar_lote' data.idlote %}" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form>      
+                    </td>
+                </tr>
+                {% endfor %}
+                <!--Render-->
+            </tbody>
+        </table>
+        <h1 id="h1-remplazar" class="text-center"></h1>
+    </div>
+
+    <div class="modal fade" id="modalRegistrar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Nuevo Cultivo</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'registrar_lote' %}" autocomplete="off" id="form-lote">
+                        {% csrf_token %}
+                        {{ form_lote }}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--MODAL PARA ACTUALIZAR-->
+    <div class="modal fade" id="modalActualizar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Editar Fundos</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'editar_lote' %}" autocomplete="" id="form-editar-cultivo">
+                        {% csrf_token %}
+                        <input type="hidden" name="lote_id" id="lote_id">
+                        <div class="form-group">
+                            <label for="nombrelote">Lote</label>
+                            <input type="text" class="form-control" name="lote" id="nombrelote">
+                        </div>
+
+                        <label for="idcultivo" class="form-label mt-3">Cultivo</label>
+                        <select name="idcultivo" id="nombrecultivo" class="form-control">
+                            {% for cultivo in cultivos %}
+                                <option value="{{ cultivo.idcultivo }}">{{ cultivo.cultivo }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <label for="idvariedad" class="form-label mt-3">Variedad</label>
+                        <select name="idvariedad" id="nombrevariedad" class="form-control">
+                            {% for variedad in variedades %}
+                                <option value="{{ variedad.idvariedad }}">{{ variedad.variedad }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        
+                        <button type="submit" class="btn btn-primary mt-2">Guardar Cambios</button>
+                    </form>
+                                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const h1 = document.querySelector('#h1-remplazar');
+        const buscador = document.querySelector('#buscador');
+        const filasTabla = document.querySelectorAll('#tabla-lote tbody tr');
+
+        //Funciones
+        function filtrarTabla() {
+            const valorBusqueda = buscador.value.trim().toLowerCase();
+            let noHayResultados = true;
+            filasTabla.forEach(fila => {
+                const lote = fila.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                const coincide = lote.includes(valorBusqueda);
+
+                if (coincide) {
+                    fila.style.display = 'table-row';
+                    noHayResultados = false;
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+            h1.textContent = noHayResultados ? 'Datos no encontrados' : '';
+        }
+
+        //Eventos
+        buscador.addEventListener('input', filtrarTabla);
+
+
+        var editButtons = document.querySelectorAll('.editar');
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var idlote = this.dataset.idlote;
+                var nombrelote = this.dataset.nombrelote;
+                var idCultivo = this.dataset.idcultivo;
+                var idVariedad = this.dataset.idvariedad;
+
+                document.querySelector('#lote_id').value = idlote;
+                document.querySelector('#nombrelote').value = nombrelote;
+                document.querySelector('#nombrecultivo').value = idCultivo;
+                document.querySelector('#nombrevariedad').value = idVariedad;
+
+                console.log(idVariedad)
+
+            });
+        });
+    });
+</script>
+
+{% endblock %}

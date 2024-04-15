@@ -101,6 +101,63 @@
                         </li>
                     </ul>
                 </li>
+                <li class="sidebar-item">
+                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#fundo" aria-expanded="false" aria-controls="fundo">
+                        <i class="lni lni-sprout"></i>
+                        <span>Fundo - Cultivo</span>
+                    </a>
+                    <ul id="fundo" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'fundo' %}" class="sidebar-link" data-path="login">Fundo</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'cultivo' %}" class="sidebar-link" data-path="login">Cultivo</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'variedad' %}" class="sidebar-link" data-path="login">Variedad</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'lote' %}" class="sidebar-link" data-path="login">Lote</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#ceco" aria-expanded="false" aria-controls="ceco">
+                        <i class="lni lni-invest-monitor"></i>
+                        <span>CECO - RESPONSABLE</span>
+                    </a>
+                    <ul id="ceco" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'ceco' %}" class="sidebar-link" data-path="login">Centro de Costo</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'responsable' %}" class="sidebar-link" data-path="login">Personal Responsable</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#programacion" aria-expanded="false" aria-controls="programacion">
+                        <i class="lni lni-pencil-alt"></i>
+                        <span>Programacion</span>
+                    </a>
+                    <ul id="programacion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href=" {% url 'tipolabor' %}" class="sidebar-link" data-path="login">Tipos de Labores</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href=" {% url 'programacion' %} " class="sidebar-link" data-path="login">Crear Programacion</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href=" {% url 'detallelabor' %}" class="sidebar-link" data-path="login">Detalles Programacion</a>
+                        </li>
+                    </ul>
+                </li>
             {% comment %} fin del dropdown {% endcomment %}
 
               
@@ -137,6 +194,41 @@
     <script src="{% static 'core/js/base.js' %}"></script>
 
 
+<<<<<<< HEAD
+=======
+            if (currentPath === "/") {
+                currentPath = "inicio";
+                var itemLink = item.querySelector(".sidebar-link");
+                var itemPath = itemLink.getAttribute("data-path");
+            }
+            
+            dropdownLinks.forEach(function(link) {
+                var dropdown = link.nextElementSibling;
+                var dropdownItems = dropdown.querySelectorAll(".sidebar-item");
+                
+                dropdownItems.forEach(function(item) {
+                    var itemLink = item.querySelector(".sidebar-link");
+                    var itemPath = itemLink.getAttribute("data-path"); // Obtener el atributo data-path
+                    console.log(itemPath)
+
+                      // Eliminar la barra diagonal inicial de currentPath si existe
+                    if (currentPath.charAt(0) === '/') {
+                        currentPath = currentPath.substring(1);
+                    }
+                    
+                    // Comprobar si la ruta actual coincide con el atributo data-path del ítem del dropdown
+                    if (currentPath === itemPath) {
+                        dropdown.classList.add("show"); // Abrir el dropdown
+                        itemLink.classList.add("active"); // Marcar la opción activa
+                        itemLink.classList.add("hover"); // Marcar la opción como hover
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+>>>>>>> Backend-Harold
 </body>
 
 </html>

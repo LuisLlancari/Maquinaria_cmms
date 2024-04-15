@@ -1,0 +1,136 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}Gestion de responsable{% endblock %}
+
+{% block contenido %}
+
+<div class="container">
+    <h1 class="text-start mb-3">Gestion de Responsables</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoCeco">Nuevo Ceco</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped" id="tabla-area">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Nombre responsable</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Operacion</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for data in datos %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ data.responsable }}</td>
+                    <td>{{ data.estado }}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="responsable" data-toggle="modal" data-target="#modalEditarResponsable" data-idresponsable="{{ data.idresponsable }}" data-responsable="{{ data.responsable }}" type="button">Editar</button>
+                        <form action="{% url 'eliminar_responsable' data.idresponsable %}" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form>
+                    </td>  
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h1 id="h1-remplazar" class="text-center"></h1>
+    </div>
+
+    <!-- Modal Registrar Ceco -->
+    <div class="modal fade" id="modalNuevoCeco" tabindex="-1" role="dialog" aria-labelledby="modalNuevoResposableLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalNuevoResposableLabel">Registrar al responsable</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'registrar_responsable' %}" autocomplete="off" id="form-ceco">
+                        {% csrf_token %}
+                        {{ form_responsable }}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Responsable -->
+    <div class="modal fade" id="modalEditarResponsable" tabindex="-1" role="dialog" aria-labelledby="modalEditarResponsableLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Editar el responsable</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'editar_responsable' %}" autocomplete="off" id="form-editar-ceco">
+                        {% csrf_token %}
+                        <input type="hidden" id="responsable_id" name="responsable_id">
+                        <div class="form-group">
+                            <label for="nombre_responsable">Nombre del Centro de Costo:</label>
+                            <input type="text" class="form-control mb-2" id="nombre_responsable" name="responsable" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const h1 = document.querySelector('#h1-remplazar');
+        const buscador = document.querySelector('#buscador');
+        const filasTabla = document.querySelectorAll('#tabla-area tbody tr');
+
+        //Funciones
+        function filtrarTabla() {
+            const valorBusqueda = buscador.value.trim().toLowerCase();
+            let noHayResultados = true;
+            filasTabla.forEach(fila => {
+                const personal = fila.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                const coincide = personal.includes(valorBusqueda);
+
+                if (coincide) {
+                    fila.style.display = 'table-row';
+                    noHayResultados = false;
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+            h1.textContent = noHayResultados ? 'Datos no encontrados' : '';
+        }
+
+        //Eventos
+        buscador.addEventListener('input', filtrarTabla);
+
+        var editButtons = document.querySelectorAll('.editar');
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var idResponsable = this.dataset.idresponsable;
+                var nombreResponsable = this.dataset.responsable;
+                document.getElementById("responsable_id").value = idResponsable;
+                document.getElementById("nombre_responsable").value = nombreResponsable;
+            });
+        });
+    });  
+</script>
+
+
+ 
+    
+</script>
+
+
+{% endblock %}

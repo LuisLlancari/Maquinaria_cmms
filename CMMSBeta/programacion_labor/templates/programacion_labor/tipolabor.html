@@ -1,0 +1,128 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}Tipos de labores{% endblock%}
+
+{% block contenido %} 
+<div class="container">
+    <h1 class="text-start mb-3">Gestion de Tipos de Labor</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevo">Nueva Labor </button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped" id="tabla-tipolabor">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Tipo de Labor</th>
+                    <th scope="col">Operacion</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for data in datos %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ data.tipolabor }}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="tipolabor" data-toggle="modal" data-target="#modalEditar" data-idtipolabor="{{ data.idtipolabor }}" data-nombretipolabor="{{ data.tipolabor }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <form action="{% url 'eliminar_tipolabor' data.idtipolabor %}" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form>                       
+                    </td>  
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h1 id="h1-remplazar" class="text-center"></h1>
+    </div>
+
+    <!-- Modal Registrar Ceco -->
+    <div class="modal fade" id="modalNuevo" tabindex="-1" role="dialog" aria-labelledby="modalNuevoCecoLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalNuevoCecoLabel">Nuevo Tipo de labor</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'registrar_tipolabor' %}" autocomplete="off" id="form-ceco">
+                        {% csrf_token %}
+                        {{ form_tipolabor }}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Ceco -->
+    <div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Editar Tipo de labor</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'editar_tipolabor' %}" autocomplete="off" id="form-editar-ceco">
+                        {% csrf_token %}
+                        <input type="hidden" id="tipolabor_id" name="tipolabor_id">
+                        <div class="form-group">
+                            <label for="nombre_ceco">Nombre del Centro de Costo:</label>
+                            <!-- el forms toma el name-->
+                            <input type="text" class="form-control mb-2" id="nombre_tipolabor" name="tipolabor" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const h1 = document.querySelector('#h1-remplazar');
+        const buscador = document.querySelector('#buscador');
+        const filasTabla = document.querySelectorAll('#tabla-tipolabor tbody tr');
+
+        //Funciones
+        function filtrarTabla() {
+            const valorBusqueda = buscador.value.trim().toLowerCase();
+            let noHayResultados = true;
+            filasTabla.forEach(fila => {
+                const tipolabor = fila.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                const coincide = tipolabor.includes(valorBusqueda);
+
+                if (coincide) {
+                    fila.style.display = 'table-row';
+                    noHayResultados = false;
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+            h1.textContent = noHayResultados ? 'Datos no encontrados' : '';
+        }
+
+        //Eventos
+        buscador.addEventListener('input', filtrarTabla); 
+
+        var editButtons = document.querySelectorAll('.editar');
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var idTipolabor = this.dataset.idtipolabor;
+                var nombreTipolabor = this.dataset.nombretipolabor;
+                document.getElementById("tipolabor_id").value = idTipolabor;
+                document.getElementById("nombre_tipolabor").value = nombreTipolabor;
+            });
+        });
+    });
+</script>
+
+
+{% endblock %}

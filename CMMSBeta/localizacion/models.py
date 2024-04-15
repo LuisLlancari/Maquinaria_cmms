@@ -11,6 +11,8 @@ class Sede(models.Model):
         verbose_name = "Sede"
         verbose_name_plural = "Sedes"
         
+    # def __str__(self):
+    #     return str(self.idsede)
     def __str__(self):
         return self.sede
     
