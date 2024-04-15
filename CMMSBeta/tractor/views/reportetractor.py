@@ -24,7 +24,7 @@ def eliminar_reporte(request, idreporte):
     
     return render(request, 'tractor/reportetractor.html', {'reporte': reportetractor})
 
-
+@login_required(login_url='login', redirect_field_name='')
 def registrar_reporte(request):
     if request.method == 'POST':
         form = ReporteTractorForm(request.POST)
@@ -34,7 +34,7 @@ def registrar_reporte(request):
     else:
         form = ReporteTractorForm()
         return render(request, 'tractor/reportetractor.html', {'form': form})
-    
+@login_required(login_url='login', redirect_field_name='')
 def editar_reporte(request):
     if request.method == 'POST':
         idreporte = request.POST.get('idtipo')

@@ -16,7 +16,7 @@ class TipoTractor(models.Model):
     
 class Tractor(models.Model):
     idtractor = models.AutoField(primary_key=True)
-    idtipotractor = models.ForeignKey(TipoTractor, on_delete=models.PROTECT, verbose_name='Tipo Tractor', null=True)
+    idtipotractor = models.ForeignKey(TipoTractor, on_delete=models.PROTECT, verbose_name='Tipo Tractor')
     idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.PROTECT, verbose_name='Usuario', null=True)
     nrotractor = models.IntegerField(verbose_name='Número Tractor')
     horainicial = models.IntegerField(verbose_name='Hora Inicial')

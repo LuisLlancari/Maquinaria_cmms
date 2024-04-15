@@ -25,7 +25,7 @@ def eliminar_tipotractor(request, idtractor):
     
     return render(request, '', {'tipotractor': tipotractor})
 
-
+@login_required(login_url='login', redirect_field_name='')
 def registrar_tipotractor(request):
     if request.method == 'POST':
         form = TipoTractorForm(request.POST)
@@ -36,6 +36,7 @@ def registrar_tipotractor(request):
         form = TipoTractorForm()
         return render(request, '', {'form': form})
     
+@login_required(login_url='login', redirect_field_name='')
 def editar_tipo(request):
     if request.method == 'POST':
         idtipo = request.POST.get('idtipotractor')

@@ -1,8 +1,10 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from ..models import Tractor
 from ..forms import TractorForm
 
+@login_required(login_url='login', redirect_field_name='')
 def tractor(request):
     tractores = Tractor.objects.filter(estado = True)
     form = TractorForm()
@@ -13,6 +15,7 @@ def tractor(request):
     
     return render(request, 'tractor/tractor.html', data)
 
+@login_required(login_url='login', redirect_field_name='')
 def eliminar_tractor(request, idtractor):
     tractor = get_object_or_404(Tractor, pk = idtractor)
     if request.method == 'POST':
@@ -20,6 +23,7 @@ def eliminar_tractor(request, idtractor):
         tractor.save()
         return redirect('tractor')
     
+@login_required(login_url='login', redirect_field_name='')
 def registrar_tractor(request):
     if request.method == 'POST':
         form = TractorForm(request.POST)
@@ -30,6 +34,7 @@ def registrar_tractor(request):
         form = TractorForm()
         return render(request, '', {'form': form})
     
+@login_required(login_url='login', redirect_field_name='')
 def editar_tractor(request):
     if request.method == 'POST':
         idtractor = request.POST.get('idtractor')

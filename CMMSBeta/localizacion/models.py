@@ -14,11 +14,9 @@ class Sede(models.Model):
     def __str__(self):
         return self.sede
 
-
 class Base(models.Model):
     idbase = models.AutoField(primary_key=True)
-    idsede = models.ForeignKey(
-        Sede, on_delete=models.PROTECT, null=True, verbose_name='Sede')
+    idsede = models.ForeignKey(Sede, on_delete=models.PROTECT, verbose_name='Sede')
     base = models.CharField(max_length=50, verbose_name='Base')
     estado = models.BooleanField(default=True, verbose_name='Estado')
 
@@ -32,7 +30,7 @@ class Base(models.Model):
 
 class Area(models.Model):
     idarea = models.AutoField(primary_key=True)
-    idbase = models.ForeignKey(Base, on_delete=models.PROTECT, null=True)
+    idbase = models.ForeignKey(Base, on_delete=models.PROTECT)
     area = models.CharField(max_length=50, verbose_name='Area')
     estado = models.BooleanField(default=True, verbose_name='Estado')
 
