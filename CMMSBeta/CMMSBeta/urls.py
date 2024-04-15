@@ -26,6 +26,7 @@ urlpatterns = [
     path('usuario/', include('usuario.urls')),
     path('implemento/', include('implemento.urls')),
 <<<<<<< HEAD
+<<<<<<< HEAD
     path('componente/', include('componente_pieza.urls')),
     path('operarios/', include('operarios.urls')),
 
@@ -34,6 +35,10 @@ urlpatterns = [
     path('ceco/', include('ceco.urls')),
     path('programacion/', include('programacion_labor.urls')),
 >>>>>>> Backend-Harold
+=======
+    path('tractor/', include('tractor.urls')),
+    path('localizacion/', include('localizacion.urls')),
+>>>>>>> BackEnd-Fabian
 
     # Importamos las vistas del login y logout
     path('login',usuario_views.login_user, name="login"),
