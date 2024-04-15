@@ -37,8 +37,8 @@
         <td>{{forloop.counter}}</td>
         <td>{{dato.tiposolicitante}}</td>
         <td>
-            <button onclick="" class="btn btn-warning editar flex-fill" id="editar-pieza" data-id="{{dato.idtiposolicitante}}" data-bs-toggle="modal" data-bs-target="#modal-tipo"><i class="lni lni-pencil editar"></i></button>
-            <form action="{% url 'tiposolicitante_eliminar' dato.idtiposolicitante %}" class="flex-fill" method="POST">
+            <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="{{dato.idtiposolicitante}}" data-bs-toggle="modal" data-bs-target="#modal-tipo"><i class="lni lni-pencil editar"></i></button>
+            <form action="{% url 'tiposolicitante_eliminar' dato.idtiposolicitante %}" class="d-inline-block" method="POST">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
             </form>

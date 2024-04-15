@@ -52,8 +52,8 @@
         <td>{{dato.frecuenciaMP}}</td>
         <td>{{dato.idcomponente}}</td>
         <td>
-            <button onclick="" class="btn btn-warning editar flex-fill" id="editar-pieza" data-id="{{dato.idpieza}}" data-bs-toggle="modal" data-bs-target="#modal-pieza"><i class="lni lni-pencil editar"></i></button>
-            <form action="{% url 'eliminar_pieza' dato.idpieza %}" class="flex-fill" method="POST">
+            <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="{{dato.idpieza}}" data-bs-toggle="modal" data-bs-target="#modal-pieza"><i class="lni lni-pencil editar"></i></button>
+            <form action="{% url 'eliminar_pieza' dato.idpieza %}" class="d-inline-block" method="POST">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
             </form>

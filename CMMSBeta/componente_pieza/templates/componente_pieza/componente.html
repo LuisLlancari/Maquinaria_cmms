@@ -48,8 +48,8 @@
         <td>{{dato.horainstalacion}}</td>
         <td>{{dato.tiempovida}}</td>
         <td>
-            <button class="btn btn-warning editar" id ="editar-sistema" data-id="{{dato.idcomponente}}" data-bs-toggle="modal" data-bs-target="#modal-componente"><i class="lni lni-pencil editar"></i></button>
-            <form action="{% url 'eliminar_componente' dato.idcomponente %}" method="POST">
+            <button class="btn btn-warning editar d-inline-block" id ="editar-sistema" data-id="{{dato.idcomponente}}" data-bs-toggle="modal" data-bs-target="#modal-componente"><i class="lni lni-pencil editar"></i></button>
+            <form action="{% url 'eliminar_componente' dato.idcomponente %}" class="d-inline-block" method="POST">
                 {% csrf_token %}
                 <button class="btn btn-danger eliminar"><i class="lni lni-trash-can eliminar"></i></button>
             </form>

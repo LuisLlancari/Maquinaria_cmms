@@ -51,8 +51,8 @@
         <td>{{dato.nroimplemento}}</td>
         <td>{{dato.codimplemento}}</td>
         <td>
-            <button onclick="" class="btn btn-warning editar flex-fill" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento"><i class="lni lni-pencil editar"></i></button>
-            <form action="{% url 'eliminar_implemento' dato.idimplemento %}" class="flex-fill" method="POST">
+            <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento"><i class="lni lni-pencil editar"></i></button>
+            <form action="{% url 'eliminar_implemento' dato.idimplemento %}" class="d-inline-block" method="POST">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
             </form>
