@@ -11,28 +11,23 @@ class SedeForm(forms.ModelForm):
             'sede': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-
 class BaseForm(forms.ModelForm):
-    idsede_id = forms.ModelChoiceField(queryset=Sede.objects.all(
-    ), empty_label=None, widget=forms.Select(attrs={'class': 'form-control'}))
-
     class Meta:
         model = Base
-        fields = ['idbase', 'base', 'idsede_id']
+        fields = ['idbase', 'base', 'idsede']
         widgets = {
-            'idbase': forms.HiddenInput(attrs={'id': 'idbase', 'name': 'idbase'}),
+            'idbase': forms.HiddenInput(),
             'base': forms.TextInput(attrs={'class': 'form-control'}),
+            'idsede': forms.Select(attrs={'class': 'form-control mb-2'}),
         }
 
-
 class AreaForm(forms.ModelForm):
-    Base = forms.ModelChoiceField(queryset=Base.objects.all(
-    ), empty_label=None, widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Area
-        fields = ['idarea', 'area']
+        fields = ['idarea', 'area', 'idbase']
         widgets = {
             'idarea': forms.HiddenInput(attrs={'id': 'idarea', 'name': 'idarea'}),
-            'area': forms.TextInput(attrs={'class': 'form-control'}),
+            'area': forms.TextInput(attrs={'class': 'form-control' }),
+            'idbase': forms.Select(attrs={'class': 'form-control mb-2'}),
         }

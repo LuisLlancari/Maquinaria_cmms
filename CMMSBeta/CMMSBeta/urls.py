@@ -25,25 +25,13 @@ urlpatterns = [
     path('usuario/', include('django.contrib.auth.urls')),
     path('usuario/', include('usuario.urls')),
     path('implemento/', include('implemento.urls')),
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> b8a58059b4557b4c2cb8384f64f584a6a594b99c
     path('componente/', include('componente_pieza.urls')),
     path('operarios/', include('operarios.urls')),
-
     path('fundo/', include('fundo_cultivo.urls')),
     path('ceco/', include('ceco.urls')),
     path('programacion/', include('programacion_labor.urls')),
-<<<<<<< HEAD
-=======
->>>>>>> Backend-Harold
-=======
     path('tractor/', include('tractor.urls')),
     path('localizacion/', include('localizacion.urls')),
->>>>>>> BackEnd-Fabian
->>>>>>> b8a58059b4557b4c2cb8384f64f584a6a594b99c
 
     # Importamos las vistas del login y logout
     path('login',usuario_views.login_user, name="login"),

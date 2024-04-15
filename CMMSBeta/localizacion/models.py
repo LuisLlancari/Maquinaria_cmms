@@ -10,13 +10,6 @@ class Sede(models.Model):
     class Meta:
         verbose_name = "Sede"
         verbose_name_plural = "Sedes"
-<<<<<<< HEAD
-        
-    # def __str__(self):
-    #     return str(self.idsede)
-=======
-
->>>>>>> BackEnd-Fabian
     def __str__(self):
         return self.sede
 
@@ -29,11 +22,6 @@ class Base(models.Model):
     class Meta:
         verbose_name = "Base"
         verbose_name_plural = "Bases"
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> BackEnd-Fabian
     def __str__(self):
         return self.base
 
@@ -43,14 +31,6 @@ class Area(models.Model):
     idbase = models.ForeignKey(Base, on_delete=models.PROTECT)
     area = models.CharField(max_length=50, verbose_name='Area')
     estado = models.BooleanField(default=True, verbose_name='Estado')
-<<<<<<< HEAD
-    class Meta:
-        verbose_name = "Area"
-        verbose_name_plural = "Areas"
-        
-    def __str__(self):
-        return self.area
-=======
 
     class Meta:
         verbose_name = "Area"
@@ -58,4 +38,3 @@ class Area(models.Model):
 
     def __str__(self):
         return self.area
->>>>>>> BackEnd-Fabian

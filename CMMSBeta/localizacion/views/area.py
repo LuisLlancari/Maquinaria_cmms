@@ -1,15 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from ..models import Area
+from ..models import Area, Base
 from ..forms import AreaForm
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login', redirect_field_name='')
 def area(request):
     areas = Area.objects.filter(estado = True)
+    bases = Base.objects.filter(estado = True)
     formArea = AreaForm()
     datos = {
         'areas': areas,
         'formArea': formArea,
+        'bases': bases
     }
     return render(request, '../templates/localizacion/area.html', datos)
 
@@ -45,7 +48,10 @@ def editar_area(request):
         if form.is_valid():
             form.save()
             return redirect('area')
+        else:
+            # Obtener los errores del formulario
+            errores = form.errors.as_text()
+            mensaje_error = f"Hubo un error en el formulario: {errores}"
+            return HttpResponse(mensaje_error)
     else:
-        return redirect('area')
-
-    return render(request, 'localizacion/area.html', {'form': form})
+        return HttpResponse("La solicitud no fue válida")
