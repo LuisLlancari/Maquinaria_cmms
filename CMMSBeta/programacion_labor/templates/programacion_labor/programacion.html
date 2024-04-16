@@ -3,5 +3,85 @@
 {% block titulo %}implemento{% endblock%}
 
 {% block contenido %} 
-<h1>Programacion</h1>
+<div class="container">
+    <h1 class="text-start mb-3">Creacion de Labor</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevo">Nueva Labor
+            </button>
+        </div>
+    </div>
+    <div class="table-responsive mt-4">
+        <table class="table table-striped table-sm table-bordered"  id="tabla-labor">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Tipo de Labor</th>
+                    <th scope="col">Lote</th>
+                    <th scope="col">Solicitante</th>
+                    <th scope="col">Cod Tractor</th>
+                    <th scope="col">Cod Tractor</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Turno</th>
+                    <th scope="col">Operaciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for data in datos %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ data.idtipolabor }}</td>
+                    <td>{{ data.idlote }}</td>
+                    <td>{{ data.idsolicitante }}</td>
+                    <td>{{ data.idtractor }}</td>
+                    <td>{{ data.idtractorista }}</td>
+                    <td>{{ data.fechahora}}</td>
+                    <td>{{ data.turno}}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="tipolabor" data-toggle="modal"
+                            data-target="#modalEditar" data-idtipolabor="{{ data.idtipolabor }}"
+                            data-nombretipolabor="{{ data.tipolabor }}" type="button"><i
+                                class="lni lni-pencil"></i></button>
+                        <!-- <form action="#" class="d-inline-block"
+                            method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i
+                                    class="lni lni-trash-can"></i></button>
+                        </form> -->
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h1 id="h1-remplazar" class="text-center"></h1>
+    </div>
+
+    <!-- Modal Registrar Ceco -->
+    <div class="modal fade" id="modalNuevo" tabindex="-1" role="dialog" aria-labelledby="modalNuevoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalNuevoCecoLabel">Nueva Programacion</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'registrar_programacion' %}" autocomplete="off" id="form-ceco">
+                        {% csrf_token %}
+                        {{form_programacion}}
+                        <label for="">Implemento</label>
+                        {{form_detalle.idimplemento}}
+                        <!-- <label for="idimplemento">Implemento</label>
+                        <input type="text" name="idimplemento" id="idimplemento" class="form-control"> -->
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

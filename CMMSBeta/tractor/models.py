@@ -1,6 +1,7 @@
 from django.db import models
 from usuario.models import Usuario
 from django.contrib.auth.models import User
+#from programacion_labor.models import Programacion
 
 
 from django.db import models
@@ -32,6 +33,7 @@ class Tractor(models.Model):
     
 class ReporteTractor(models.Model):
     idreportetractor = models.AutoField(primary_key=True)
+    #idprogramacion = models.ForeignKey(Programacion, on_delete=models.PROTECT, verbose_name='Programacion', null=True)
     idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.PROTECT, verbose_name='Usuario', null=True)
     horometroinicial = models.IntegerField(verbose_name='Horómetro Inicial')
     horometrofinal = models.IntegerField(verbose_name='Horómetro Final')

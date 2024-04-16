@@ -43,7 +43,7 @@ class Programacion(models.Model):
         verbose_name_plural = 'Programaciones'
 
     def __str__(self):
-        return self.idprogramacion
+        return str(self.idprogramacion)
     
 class DetalleLabor(models.Model):
     iddetlabor = models.AutoField(primary_key=True)
@@ -57,6 +57,6 @@ class DetalleLabor(models.Model):
         verbose_name_plural = 'Detalles de labor'
 
     def __str__(self):
-        return self.iddetlabor
+        return str(self.iddetlabor)
     
 

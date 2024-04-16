@@ -1,17 +1,17 @@
 from django.contrib import admin
-from .models import TipoTractor, Tractor, ReporteTractor
+from .models import *
 
 # Register your models here.
-'''
-@admin.register(admin.Tipotractor)
-class TipotractorAdmin(admin.ModelAdmin):
+@admin.register(TipoTractor)
+class TipoTractorAdmin(admin.ModelAdmin):
+    readonly_fields = ['estado']
     pass
 
-@admin.register(admin.Tractor)
+@admin.register(Tractor)
 class TractorAdmin(admin.ModelAdmin):
+    readonly_fields = ['estado']
     pass
 
-@admin.register(admin.Reportetractor)
+@admin.register(ReporteTractor)
 class ReportetractorAdmin(admin.ModelAdmin):
-     pass
-'''
+    readonly_fields = ['estado']
