@@ -64,16 +64,46 @@
 </table>
 
 <div class="modal fade" id="modal-pieza" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header bg-primary justify-content-center" >
                 <h1 class="modal-title fs-5 text-light" id="titulo-modal"></h1>
             </div>
                 <form autocomplete="off" id="form-modal">
                     <div class="modal-body">
-                        
-                            {% csrf_token %}
-                            {{form}}
+                        {% csrf_token %}
+
+                        <div class="row mt-2">
+                            <div class="col col-md-6">
+                            <label for="txtPieza" class="form-label">Pieza:</label>
+                                {{form.pieza}}
+                            </div>
+                            <div class="col col-md-6">
+                            <label for="txtCodPieza" class="form-label">Codigo Pieza:</label>
+                                {{form.codpieza}}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col col-md-6">
+                            <label for="txtTiempoInslacion" class="form-label">Tiempo instalacion:</label>
+                                {{form.tiempoinstalacion}}
+                            </div>
+                            <div class="col col-md-6">
+                            <label for="txtTiempoVida" class="form-label">Tiempo de Vida:</label>
+
+                                {{form.tiempovida}}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col col-md-6">
+                            <label for="txtFrecuenciaMP" class="form-label">Frecuencia MP:</label>
+                                {{form.frecuenciaMP}}
+                            </div>
+                            <div class="col col-md-6">
+                            <label for="txtComponente" class="form-label">Componente:</label>
+                                {{form.idcomponente}}
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id="agregar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
@@ -107,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
         txtTiempoInslacion.value = datos.pieza[0].tiempoinstalacion;           
         txtTiempoVida.value = datos.pieza[0].tiempovida;           
         txtFrecuenciaMP.value = datos.pieza[0].frecuenciaMP;           
-        txtComponente.value = datos.pieza[0].idcomponente;           
+        txtComponente.value = datos.pieza[0].idcomponente_id;           
     })
     .catch((error) => {
         console.log(error);

@@ -62,7 +62,7 @@
     </tbody>
 </table>
 <div class="modal fade" id="modal-implemento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary justify-content-center" >
                 <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Implemento</h1>
@@ -70,7 +70,41 @@
                 <form autocomplete="off" id="form-modal" >
                     <div class="modal-body">
                             {% csrf_token %}
-                            {{form.as_p}}
+                            <div class="row mt-2">
+                                <div class="col col-md-6">
+                                    <label for="txtImplemento" class="form-label">Implemento:</label>
+                                    {{form.implemento}}
+                                </div>
+
+                                <div class="col col-md-6">
+                                    <label for="txtTiempoVida" class="form-label">Tiempo de Vida:</label>
+                                    {{form.tiempovida}}
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col col-md-6">
+                                    <label for="txtNroImplemento" class="form-label">Nro° Implemento:</label>
+                                    {{form.nroimplemento}}
+                                </div>
+                                
+                                <div class="col col-md-6">
+                                    <label for="txtCodImplemento" class="form-label">Codigo Implemento:</label>
+                                    {{form.codimplemento}}
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col col-md-6">
+                                    <label for="txtIdTipoimplemento" class="form-label">Tipo Implemento:</label>
+                                    {{form.idtipoimplemento}}
+                                </div>
+
+                                <div class="col col-md-6">
+                                    <label for="txtIdArea" class="form-label">Area:</label>
+                                    {{form.idarea}}
+                                </div>
+                            </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
@@ -103,8 +137,8 @@
                 txtTiempoVida.value = datos.implemento[0].tiempovida;           
                 txtNroImplemento.value = datos.implemento[0].nroimplemento;           
                 txtCodImplemento.value = datos.implemento[0].codimplemento;           
-                txtIdTipoimplemento.value = datos.implemento[0].idtipoimplemento;           
-                txtIdArea.value = datos.implemento[0].idarea;           
+                txtIdTipoimplemento.value = datos.implemento[0].idtipoimplemento_id;           
+                txtIdArea.value = datos.implemento[0].idarea_id;           
         })
         .catch((error) => {
             console.log(error);

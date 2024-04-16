@@ -21,6 +21,9 @@ class TractoristaForms(forms.ModelForm):
         }
         
 class SolicitanteForms(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SolicitanteForms, self).__init__(*args, **kwargs)
+        self.fields['idtiposolicitante'].queryset = TipoSolicitante.objects.filter(estado = True)
     class Meta:
         model = Solicitante
         fields = ['idtiposolicitante', 'apellidos', 'nombres', 'codigo']

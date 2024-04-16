@@ -8,9 +8,15 @@ def componente(request):
   return render(request, 'componente_pieza/componente.html',{'datos_componente':datos_componente, 'form':ComponenteForms})
 
 def registrarComponente(request):
-  form = ComponenteForms(request.POST)
-  form.save()
-  return redirect('componente')
+  if request.method == 'POST':
+      form = ComponenteForms(request.POST)
+      if form.is_valid():  # Verifica si los datos son válidos
+          form.save()
+          return redirect('componente')
+  else:
+      form = ComponenteForms()
+  
+  return render(request, 'componente_pieza/componente.html', {'form': form})
 
 def eliminarComponente(request, id_componente):
   registro = get_object_or_404(Componente, pk= id_componente)
@@ -28,6 +34,7 @@ def editarComponente(request, id_componente):
 
 def obtenerDatos(request, id_componente):
   componentes = list(Componente.objects.filter(pk=id_componente).values())
+  print(componentes)
   if(len(componentes) > 0):
     data = {'mensaje': "Success", 'componentes': componentes}
   else:

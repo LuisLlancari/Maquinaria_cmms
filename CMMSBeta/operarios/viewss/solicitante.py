@@ -8,9 +8,16 @@ def solicitante(request):
   return render(request, 'operarios/solicitante.html', {'datos_solicitantes': datos_solicitantes, 'form':SolicitanteForms})
 
 def registrarSolicitante(request):
-  form = SolicitanteForms(request.POST)
-  form.save()
-  return redirect('solicitante')
+  datos_solicitantes = Solicitante.objects.filter(estado=True)
+
+  if request.method == 'POST':
+    form = SolicitanteForms(request.POST)
+    if form.is_valid():  # Verifica si los datos son válidos
+      form.save()
+      return redirect('solicitante')
+  else:
+     return render(request, 'operarios/solicitante.html', {'datos_solicitantes': datos_solicitantes})
+
 
 def eliminarSolicitante(request, id_componente):
   registro = get_object_or_404(Solicitante, pk= id_componente)

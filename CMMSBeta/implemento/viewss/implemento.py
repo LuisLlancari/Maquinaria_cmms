@@ -11,9 +11,13 @@ def implemento(request):
   return render(request, 'implemento/implemento.html', {'datos': datos_implemento, 'form':ImplementoForms})
 
 def registrarImplemento(request):
-  form = ImplementoForms(request.POST)
-  form.save()
-  return redirect('implemento')
+  if request.method == 'POST':
+    form = ImplementoForms(request.POST)
+    if form.is_valid():
+      form.save()
+      return redirect('implemento')
+  else:
+    return render(request, 'implemento/implemento.html', {})
 
 def eliminarimplemento(request, id_implemento):
   registro = get_object_or_404(Implemento, pk= id_implemento)

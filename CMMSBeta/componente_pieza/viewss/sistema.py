@@ -9,9 +9,15 @@ def sistema(request):
   return render(request, 'componente_pieza/sistema.html',{'datos_sistema':datos_sistema, 'form':SistemaForms})
 
 def registrarSistema(request):
-  form = SistemaForms(request.POST)
-  form.save()
-  return redirect('sistema')
+  if request.method == 'POST':
+    form = SistemaForms(request.POST)
+    if form.is_valid():
+      form.save()
+      return redirect('sistema')
+  else:
+      form = SistemaForms()
+      return render(request, 'componente_pieza/sistema.html',{'form':form})
+
 
 def eliminarSistema(request, id_sistema):
   registro = get_object_or_404(Sistema, pk= id_sistema)

@@ -8,9 +8,13 @@ def detalleImplemento (request):
   return render(request, 'implemento/detalleimplemento.html', {'datos_detalle':datos_detalle, 'form': DetImplementoForms})
 
 def registrarDetalle(request):
-  form = DetImplementoForms(request.POST)
-  form.save()
-  return redirect('detalleimplemento')
+  if request.method == 'POST':
+    form = DetImplementoForms(request.POST)
+    if form.is_valid(): 
+      form.save()
+      return redirect('detalleimplemento')
+  else:
+    return render(request, 'implemento/detalleimplemento.html', {})
 
 def eliminarDetalle(request, id_detalle):
   registro = get_object_or_404(DetImplementos, pk= id_detalle)

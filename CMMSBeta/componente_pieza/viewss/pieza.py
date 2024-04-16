@@ -9,9 +9,16 @@ def pieza(request):
   return render(request, 'componente_pieza/pieza.html',{'datos_pieza':datos_pieza, 'form':PiezaForms})
 
 def registrarPieza(request):
-  form = PiezaForms(request.POST)
-  form.save()
-  return redirect('pieza')
+  if request.method == 'POST':
+    form = PiezaForms(request.POST)
+    if form.is_valid():
+      form.save()
+      return redirect('pieza')
+  else:
+    form = PiezaForms()
+    return render(request, 'componente_pieza/pieza.html',{'form':form})
+
+
 
 def eliminarPieza(request, id_pieza):
   registro = get_object_or_404(Pieza, pk= id_pieza)

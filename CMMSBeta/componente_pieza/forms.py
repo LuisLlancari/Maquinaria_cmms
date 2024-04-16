@@ -12,6 +12,9 @@ class SistemaForms(forms.ModelForm):
         }
 
 class ComponenteForms(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ComponenteForms, self).__init__(*args, **kwargs)
+        self.fields['idsistema'].queryset = Sistema.objects.filter(estado = True)
     class Meta:
         model = Componente
         fields = ['componente', 'codcomponente', 'horainstalacion', 'tiempovida', 'idsistema']
@@ -23,6 +26,9 @@ class ComponenteForms(forms.ModelForm):
             'idsistema': forms.Select(attrs={'class':'form-select', 'id': 'txtSistema'}),
         }
 class PiezaForms(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PiezaForms, self).__init__(*args, **kwargs)
+        self.fields['idcomponente'].queryset = Componente.objects.filter(estado = True)
     class Meta:
         model = Pieza
         fields = ['pieza', 'codpieza', 'tiempoinstalacion', 'tiempovida', 'frecuenciaMP', 'idcomponente']

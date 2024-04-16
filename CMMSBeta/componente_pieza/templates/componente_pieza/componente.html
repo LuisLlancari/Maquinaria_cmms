@@ -61,15 +61,50 @@
 </table>
 
 <div class="modal fade" id="modal-componente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header bg-primary justify-content-center" >
                 <h1 class="modal-title fs-5 text-light" id="titulo-modal"></h1>
             </div>
                 <form autocomplete="off" id="form-modal">
                     <div class="modal-body">
-                            {% csrf_token %}
-                            {{form}}
+                        {% csrf_token %}    
+
+                        <div class="row mt-2">
+                            <div class="col col-md-6">
+                                <label for="txtComponente" class="form-label">Componente:</label>
+                                {{form.componente}}
+                            </div>
+                            <div class="col col-md-6">
+                                <label for="txtCodigoComp" class="form-label">Codigo componente:</label>
+                                {{form.codcomponente}}
+
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col col-md-6">
+                                <label for="txthoraInstalacion" class="form-label">Hora instalacion:</label>
+                                {{form.horainstalacion}}
+
+                            </div>
+                            <div class="col col-md-6">
+                                <label for="txtTiempovida" class="form-label">Tiempo de vida:</label>
+                                {{form.tiempovida}}
+                                
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+
+                            <div class="col col-md-2"></div>
+                            <div class="col col-md-8">
+                                <label for="txtSistema" class="form-label">Sistema:</label>
+                                {{form.idsistema}}
+                            </div>
+                            <div class="col col-md-2"></div>
+                        </div>
+
+                    
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
@@ -94,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(`./obtener/${id}`)
         .then(res => res.json())
         .then(datos => {
-            console.log(datos)
+            // console.log(datos.componentes[0].idsistema.idsistema)
             titulo_modal.textContent = "Editar Componente" ;
             formModal.setAttribute("action", `./modificar/${id}`);
             formModal.setAttribute("method", "POST");
@@ -102,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
             txtCodigoComp.value = datos.componentes[0].codcomponente;           
             txthoraInstalacion.value = datos.componentes[0].horainstalacion;           
             txtTiempovida.value = datos.componentes[0].tiempovida;           
-            txtSistema.value = datos.componentes[0].idsistema;           
+            txtSistema.value = datos.componentes[0].idsistema_id;           
         })
         .catch((error) => {
             console.log(error);

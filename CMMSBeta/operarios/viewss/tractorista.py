@@ -8,9 +8,14 @@ def tractoristas(request):
   return render(request, 'operarios/tractoristas.html', {'datos_tractoristas':datos_tractoristas, 'form':TractoristaForms})
 
 def registrarTractorista(request):
-  form = TractoristaForms(request.POST)
-  form.save()
-  return redirect('tractorista')
+  datos_tractoristas = Tractorista.objects.filter(estado = True)
+  if request.method == 'POST':
+    form = TractoristaForms(request.POST)
+    if form.is_valid():
+      form.save()
+      return redirect('tractorista')
+  else:
+     return render(request, 'operarios/tractoristas.html', {'datos_tractoristas': datos_tractoristas})
 
 def eliminarTractorista(request, id_tractorista):
   registro = get_object_or_404(Tractorista, pk= id_tractorista)

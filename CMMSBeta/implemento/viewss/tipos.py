@@ -10,9 +10,13 @@ def tipoImplemento (request):
 
 
 def registrarTipoImplemento(request):
-  form = TipoImplementoForms(request.POST)
-  form.save()
-  return redirect('tipoimplemento')
+    if request.method == 'POST':
+      form = TipoImplementoForms(request.POST)
+      if form.is_valid(): 
+        form.save()
+        return redirect('tipoimplemento')
+    else:
+      return render(request, 'implemento/tipoimplemento.html', {})
 
 def eliminarImplemento(request, id):
   registro = get_object_or_404(TipoImplemento, pk= id)

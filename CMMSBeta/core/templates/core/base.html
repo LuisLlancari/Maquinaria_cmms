@@ -28,7 +28,7 @@
                 <li class="sidebar-item">
                     <a href="{% url 'home' %}" class="sidebar-link" data-path="inicio">
                         <i class="lni lni-user"></i>
-                        <span class="text-uppercase">{{user.email}}</span>
+                        <span class="text-uppercase">{{user.first_name}} {{user.last_name}}</span>
                     </a>
                 </li>
 
@@ -40,13 +40,13 @@
                 </a>
                 <ul id="implemento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
-                        <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
+                        <a href="{% url 'implemento' %}" class="sidebar-link">implemento</a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link" data-path="login">Tipo implemento</a>
+                        <a href="{% url 'tipoimplemento'%}" class="sidebar-link">Tipo implemento</a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="{% url 'test' %}" class="sidebar-link" data-path="s">Detalle implemento</a>
+                        <a href="{% url 'detalleimplemento' %}" class="sidebar-link">Detalle implemento</a>
                     </li>
                 </ul>
             </li>

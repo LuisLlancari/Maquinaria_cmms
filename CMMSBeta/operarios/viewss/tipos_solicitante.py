@@ -8,9 +8,14 @@ def tipoSolicitante(request):
   return render(request, 'operarios/tiposolicitante.html', {'datos_tipos':datos_tipos, 'form':TiposolicitanteForms})
 
 def registrartipoSolicitante(request):
-  form = TiposolicitanteForms(request.POST)
-  form.save()
-  return redirect('tiposolicitante')
+  datos_tipos = TipoSolicitante.objects.filter(estado = True)
+  if request.method == 'POST':
+    form = TiposolicitanteForms(request.POST)
+    if form.is_valid():
+      form.save()
+      return redirect('tiposolicitante')
+  else:
+    return render(request, 'operarios/tiposolicitante.html', {'datos_tipos':datos_tipos})
 
 def eliminarTiposolicitante(request, id_tipo):
   registro = get_object_or_404(TipoSolicitante, pk= id_tipo)

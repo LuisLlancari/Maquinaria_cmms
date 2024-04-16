@@ -57,7 +57,7 @@
     </tbody>
 </table>
 <div class="modal fade" id="modal-detalle" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header bg-primary justify-content-center" >
                 <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Detalle</h1>
@@ -65,7 +65,27 @@
                 <form autocomplete="off" id="form-modal">
                     <div class="modal-body">
                             {% csrf_token %}
-                            {{form.as_p}}
+                            <div class="row mt-2">
+                                <div class="col col-md-6">
+                                <label for="txtIdResponsable" class="form-label">Responsable:</label>
+                                    {{form.idresponsable}}
+                                </div>
+                                <div class="col col-md-6">
+                                <label for="txtIdpieza" class="form-label">Pieza:</label>
+                                    {{form.idpieza}}
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col col-md-6">
+                                <label for="txtIdCeco" class="form-label">CECO:</label>
+                                    {{form.idceco}}
+                                </div>
+                                <div class="col col-md-6">
+                                <label for="txtIdImplemento" class="form-label">Implemento:</label>
+                                    {{form.idimplemento}}
+                                </div>
+                            </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
@@ -87,18 +107,18 @@
         const btnModificar = document.querySelectorAll(".editar")
     
         
-        function obtener_pieza(id){
-        fetch(`./obtener/${id}`)
+        function obtener_detalle(id){
+        fetch(`./detalle/obtener/${id}`)
         .then(res => res.json())
         .then(datos => {
-            // console.log(datos)
+            // console.log(datos.det_implemento[0])
             titulo_modal.textContent = "Editar Detalle" ;
             formModal.setAttribute("action", `./detalle/modificar/${id}`);
             formModal.setAttribute("method", "POST");
-            txtIdResponsable.value = datos.det_implemento[0].idresponsable;           
-            txtIdpieza.value = datos.det_implemento[0].idpieza;           
-            txtIdCeco.value = datos.det_implemento[0].idceco;           
-            txtIdImplemento.value = datos.det_implemento[0].idimplemento;                
+            txtIdResponsable.value = datos.det_implemento[0].idresponsable_id;           
+            txtIdpieza.value = datos.det_implemento[0].idpieza_id;           
+            txtIdCeco.value = datos.det_implemento[0].idceco_id;           
+            txtIdImplemento.value = datos.det_implemento[0].idimplemento_id;                
         })
         .catch((error) => {
             console.log(error);
@@ -116,7 +136,7 @@
         boton.addEventListener("click", function(event) {
             let id_detalle = event.target.dataset.id;
             // console.log(id_pieza);
-            obtener_pieza(id_detalle);
+            obtener_detalle(id_detalle);
             });
         });
     
