@@ -32,6 +32,7 @@ class Tractor(models.Model):
     
 class ReporteTractor(models.Model):
     idreportetractor = models.AutoField(primary_key=True)
+    #idprogramacion = models.ForeignKey(Programacion, on_delete=models.PROTECT, verbose_name='Programacion', null=True)
     idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.PROTECT, verbose_name='Usuario', null=True)
     idprogramacion = models.ForeignKey('programacion_labor.Programacion', on_delete=models.PROTECT, null=False)
     horometroinicial = models.IntegerField(verbose_name='Horómetro Inicial')

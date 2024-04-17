@@ -1,7 +1,6 @@
 from django import forms
 from .models import *
 
-
 class TipoLaborForm(forms.ModelForm):
     class Meta:
         model = TipoLabor
@@ -21,7 +20,7 @@ class ProgramacionForm(forms.ModelForm):
             'idusuario': forms.Select(attrs={'class': 'form-control mb-2 '}),
             'idtractorista': forms.Select(attrs={'class': 'form-control mb-2 '}),
             'idsolicitante': forms.Select(attrs={'class': 'form-control mb-2 '}),
-            'fechahora': forms.DateInput(attrs={'class': 'form-control mb-2 '}),
+            'fechahora': forms.DateInput(attrs={'class': 'form-control mb-2 ' , 'type': 'date'}),
             'turno': forms.Select(attrs={'class': 'form-control mb-2 '}),
         }
 
