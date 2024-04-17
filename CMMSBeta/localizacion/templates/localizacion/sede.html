@@ -21,7 +21,7 @@
         data-toggle="modal"
         data-target="#modalNuevaSede"
       >
-        Nuevo Ceco
+        Nuevo Sede
       </button>
     </div>
   </div>
@@ -29,20 +29,18 @@
     <table class="table table-striped" id="tabla-area">
       <thead>
         <tr>
-          <th scope="col">N°</th>
-          <th scope="col">Centro de costo</th>
-          <th scope="col">Estado</th>
-          <th scope="col">Operacion</th>
+          <th class="text-center" scope="col">N°</th>
+          <th class="text-center" scope="col">Sedes</th>
+          <th class="text-center" scope="col">Operacion</th>
         </tr>
       </thead>
 
       <tbody>
         {% for data in sedes %}
         <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ data.sede }}</td>
-          <td>{{ data.estado }}</td>
-          <td>
+          <th class="text-center" scope="row">{{ forloop.counter }}</th>
+          <td class="text-center">{{ data.sede }}</td>
+          <td class="text-center">
             <button
               class="btn btn-warning btn-sm editar d-inline-block"
               id="ceco"
@@ -129,17 +127,19 @@
               name="idsede"
               class="form-control"
             />
-
-            <div class="input-group mb-3">
+           
+              <label for="sede">Sede</label>
               <input
                 type="text"
-                class="form-control"
-                aria-label="Recipient's username"
-                name="sede"
+                class="form-control mt-2 mb-2"
                 id="sede"
+                name="sede"
+                placeholder="Ingrese el nombre de la sede"
               />
-            </div>
-
+            
+            
+            
+            
             <button type="submit" class="btn btn-primary">
               Guardar Cambios
             </button>

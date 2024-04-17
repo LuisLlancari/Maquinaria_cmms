@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
-from ..models import TipoTractor
+from ..models import TipoTractor,Tractor
 from ..forms import TipoTractorForm
 
 #VERIFICA SI EL USUARIO ESTA LOGUEADO
@@ -21,6 +21,11 @@ def eliminar_tipotractor(request, idtractor):
     if request.method == 'POST':
         tipotractor.estado = False
         tipotractor.save()
+        
+        tractor_relacionadas = Tractor.objects.filter(idtipotractor=idtractor)
+        for tractor in tractor_relacionadas:
+            tractor.estado = False
+            tractor.save()
         return redirect('tipotractor')
     
     return render(request, '', {'tipotractor': tipotractor})
@@ -47,6 +52,6 @@ def editar_tipo(request):
             form.save()
             return redirect('tipotractor')
     else:
-        return redirect('editar_tipo')
+        return redirect('editartipo')
 
     return render(request, '', {'form': form})

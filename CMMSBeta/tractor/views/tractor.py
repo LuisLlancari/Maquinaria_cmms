@@ -1,16 +1,18 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from ..models import Tractor
+from ..models import Tractor, TipoTractor
 from ..forms import TractorForm
 
 @login_required(login_url='login', redirect_field_name='')
 def tractor(request):
     tractores = Tractor.objects.filter(estado = True)
+    tipotractor = TipoTractor.objects.filter(estado = True)
     form = TractorForm()
     data = {
         'tractores' : tractores,
-        'form' : form
+        'form' : form,
+        'tipotractor' : tipotractor
     }
     
     return render(request, 'tractor/tractor.html', data)

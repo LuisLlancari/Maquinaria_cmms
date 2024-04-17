@@ -8,8 +8,9 @@ class SedeForm(forms.ModelForm):
         fields = ['idsede', 'sede']
         widgets = {
             'idsede': forms.HiddenInput(),
-            'sede': forms.TextInput(attrs={'class': 'form-control'}),
+            'sede': forms.TextInput(attrs={'class': 'form-control mt-3 mb-3'}),
         }
+
 
 class BaseForm(forms.ModelForm):
     class Meta:
@@ -18,11 +19,18 @@ class BaseForm(forms.ModelForm):
         widgets = {
             'idbase': forms.HiddenInput(),
             'base': forms.TextInput(attrs={'class': 'form-control'}),
-            'idsede': forms.Select(attrs={'class': 'form-control mb-2'}),
+
         }
+
 
 class AreaForm(forms.ModelForm):
 
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filtrar las opciones del campo idtipotractor
+        self.fields['idbase'].queryset = Base.objects.filter(
+            estado=True)
     class Meta:
         model = Area
         fields = ['idarea', 'area', 'idbase']
