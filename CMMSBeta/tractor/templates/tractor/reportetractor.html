@@ -9,13 +9,13 @@
             <div class="col-md-4">
                 <div class="card mb-4" style="background-color: rgb(255, 255, 255);">
                     <div class="card-body">
-                        <h6 class="card-title text-center" id="h6">Reporte Tractor {{ dato.idprogramacion}}</h6>
+                        <h4 class="card-title text-center fw-bold" id="h6">Reporte Tractor {{ dato.idprogramacion}}</h4>
                         <div class="report-info">
-                            <p class="mt-2 mb-0"><span class="info-label">Tipo labor: </span> {{ dato.idtipolabor }}</p>
-                            <p class="mt-2 mb-0"><span class="info-label">Lote: </span> 100A- {{ dato.idlote }}</p>
-                            <p class="mt-2 mb-0"><span class="info-label">Tractor:</span> {{ dato.idtractor }}</p>
-                            <p class="mt-2 mb-0"><span class="info-label">Fecha:</span> {{ dato.fechahora }}</p>
-                            <p class="mt-2 mb-0"><span class="info-label">Solicitante:</span> {{ dato.idsolicitante }}</p>
+                            <p class="mt-2 mb-0 fw-bold"><span class="info-label">Tipo labor: </span> {{ dato.idtipolabor }}</p>
+                            <p class="mt-2 mb-0 fw-bold"><span class="info-label">Lote: </span> 100A- {{ dato.idlote }}</p>
+                            <p class="mt-2 mb-0 fw-bold"><span class="info-label">Tractor:</span> {{ dato.idtractor }}</p>
+                            <p class="mt-2 mb-0 fw-bold"><span class="info-label">Fecha:</span> {{ dato.fechahora }}</p>
+                            <p class="mt-2 mb-0 fw-bold"><span class="info-label">Solicitante:</span> {{ dato.idsolicitante }}</p>
                         </div>
                         <button class="btn btn-primary mt-3 finalizar" id="finalizar-reporte" data-bs-toggle="modal" data-bs-target="#moda-programacion" style="width: 100%;" data-id="{{dato.idprogramacion}}" >Finalizar Reporte</button>
                     </div>
@@ -33,7 +33,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Finalizar Programación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{% url 'registrar_reporte' %}" id="form-modal" method="POST">

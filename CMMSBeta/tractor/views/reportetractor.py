@@ -35,8 +35,8 @@ def registrarReporte(request):
 
         # Actualizamos campos
         Programacion.objects.filter(idprogramacion = int(programacion_id)).update(estado = False)
-        print(f"esta es la{horauso_detalle}")
-        DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(estado = False)
+        # print(f"esta es la{horauso_detalle}")
+        # DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(estado = False)
         DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(horadeuso = horauso_detalle)
         Tractor.objects.filter(idtractor = int(tractor_id)).update(horauso = horauso_detalle )
 
