@@ -1,5 +1,6 @@
 from django import forms
 from .models import TipoTractor, Tractor
+from .models import ReporteTractor
 
 class TipoTractorForm(forms.ModelForm):
     class Meta:
@@ -30,25 +31,17 @@ class TractorForm(forms.ModelForm):
         }
 
 
-from django import forms
-from .models import ReporteTractor
+
 
 class ReporteTractorForm(forms.ModelForm):
     class Meta:
         model = ReporteTractor
-        fields = ['idusuario', 'horometroinicial', 'horometrofinal', 'correlativo', 'estado']
-        labels = {
-            'idusuario': 'Usuario',
-            'horometroinicial': 'Horómetro Inicial',
-            'horometrofinal': 'Horómetro Final',
-            'correlativo': 'Correlativo',
-            'estado': 'Estado',
-        }
+        fields = ['idusuario', 'idprogramacion','horometroinicial', 'horometrofinal', 'correlativo']
         widgets = {
-            'idusuario': forms.Select(attrs={'class': 'form-control'}),
+            'idusuario': forms.TextInput(attrs={'class': 'form-control', 'type':'hidden'}),
+            'idprogramacion': forms.TextInput(attrs={'class': 'form-control','type':'hidden'}),
             'horometroinicial': forms.NumberInput(attrs={'class': 'form-control'}),
             'horometrofinal': forms.NumberInput(attrs={'class': 'form-control'}),
             'correlativo': forms.NumberInput(attrs={'class': 'form-control'}),
-            'estado': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 

@@ -3,74 +3,80 @@
 
 {% block contenido %}
 <div class="container">
+    <h1 class="text-center">Completar Programacion</h1>
     <div class="row">
-        {% for reporte in reportes %}
-        <div class="col-md-4">
-            <div class="card mb-4" style="background-color: rgb(255, 255, 255);">
-                <div class="card-body">
-                    <h6 class="card-title text-center" id="h6">Reporte Tractor {{ forloop.counter }}</h6>
-                    <div class="report-info">
-                        <p class="mt-2 mb-0"><span class="info-label">Usuario: </span> {{ user.username }}</p>
-                        <p class="mt-2 mb-0"><span class="info-label">Programacion: </span> 100A-{{ reporte.idprogramacion }}</p>
-                        <p class="mt-2 mb-0"><span class="info-label">Horometro Inicial:</span> {{ reporte.horometroinicial }}</p>
-                        <p class="mt-2 mb-0"><span class="info-label">Horometro Final:</span> {{ reporte.horometrofinal }}</p>
-                        <p class="mt-2 mb-0"><span class="info-label">Correlativo:</span> {{ reporte.correlativo }}</p>
+        {% for dato in datos %}
+            <div class="col-md-4">
+                <div class="card mb-4" style="background-color: rgb(255, 255, 255);">
+                    <div class="card-body">
+                        <h6 class="card-title text-center" id="h6">Reporte Tractor {{ dato.idprogramacion}}</h6>
+                        <div class="report-info">
+                            <p class="mt-2 mb-0"><span class="info-label">Tipo labor: </span> {{ dato.idtipolabor }}</p>
+                            <p class="mt-2 mb-0"><span class="info-label">Lote: </span> 100A- {{ dato.idlote }}</p>
+                            <p class="mt-2 mb-0"><span class="info-label">Tractor:</span> {{ dato.idtractor }}</p>
+                            <p class="mt-2 mb-0"><span class="info-label">Fecha:</span> {{ dato.fechahora }}</p>
+                            <p class="mt-2 mb-0"><span class="info-label">Solicitante:</span> {{ dato.idsolicitante }}</p>
+                        </div>
+                        <button class="btn btn-primary mt-3 finalizar" id="finalizar-reporte" data-bs-toggle="modal" data-bs-target="#moda-programacion" style="width: 100%;" data-id="{{dato.idprogramacion}}" >Finalizar Reporte</button>
                     </div>
-                    <button class="btn btn-primary mt-3 btnmodal" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%;">Finalizar Reporte</button>
                 </div>
             </div>
-        </div>
-        {% if forloop.counter|divisibleby:3 and not forloop.last %}
-        </div>
-        <div class="row">
-        {% endif %}
+            {% if forloop.counter|divisibleby:3 and not forloop.last %}
+            </div>
+            <div class="row">
+            {% endif %}
         {% endfor %}
     </div>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="moda-programacion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="Programacion">Programacion:</label>
-                    <input type="text" class="form-control" id="Programacion" placeholder="Programacion">
+            <form action="{% url 'registrar_reporte' %}" id="form-modal" method="POST">
+                <div class="modal-body">
+                    {% csrf_token %}
+
+                    <label for="id_horometroinicial" class="form-control">Horometro Inicial:</label>
+                    <input type="number" name="horometroinicial" class="form-control" id="id_horometroinicial" required>
+                    <label for="id_horometrofinal" class="form-control">Horometro Final:</label>
+                    <input type="number" name="horometrofinal" class="form-control" id="id_horometrofinal" required>
+                    <label for="id_correlativo" class="form-control">Correlativo:</label>
+                    <input type="number" name="correlativo" class="form-control" id="id_correlativo" required>
+
+                    <input type="hidden" name="idusuario" class="form-control" id="id_idusuario" required value="{{user.id}}">
+                    <input type="hidden" name="idprogramacion" class="form-control" id="txtProgramacion" required>
+
+                    
+                    
                 </div>
-                <div class="form-group">
-                    <label for="horometroinicial">Horometro Inicial:</label>
-                    <input type="text" class="form-control" id="horometroinicial" placeholder="Horometro Inicial">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" style="width: 100%;" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Confirmar Reporte</button>
                 </div>
-                <div class="form-group">
-                    <label for="horometrofinal">Horometro Final:</label>
-                    <input type="text" class="form-control" id="horometrofinal" placeholder="Horometro Final">
-                </div>
-                <div class="form-group">
-                    <label for="correlativo">Correlativo:</label>
-                    <input type="text" class="form-control" id="correlativo" placeholder="Correlativo">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" style="width: 100%;" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" style="width: 100%;">Confirmar Reporte</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        var editButtons = document.querySelectorAll(".btnmodal");
-        editButtons.forEach(function (button) {
-            button.addEventListener("click", function () {
-                var reportenum = this.parentNode.querySelector("h6").textContent;
-                document.getElementById("exampleModalLabel").textContent = reportenum;
-                document.getElementById("modalContent").textContent = reportenum;
-            });
+
+        const btnFinalizar = document.querySelectorAll(".finalizar");
+
+        btnFinalizar.forEach(function(boton){
+        boton.addEventListener("click", function(event) {
+            let id_programacion = event.target.dataset.id;
+            txtProgramacion.value = id_programacion
+
+        });          
         });
+
+
+    
     });
 </script>
 {% endblock %}
