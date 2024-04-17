@@ -49,7 +49,7 @@ class DetalleLabor(models.Model):
     iddetlabor = models.AutoField(primary_key=True)
     idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_NULL, null=True, verbose_name="Implemento")
     idprogramacion = models.ForeignKey(Programacion, on_delete=models.SET_NULL, null=True, verbose_name="Programacion")
-    horadeuso = models.TimeField(auto_now=False, auto_now_add=False, verbose_name='Hora de uso Implemento')
+    horadeuso = models.IntegerField(verbose_name='Hora de uso Implemento')
     estado = models.BooleanField(default=True, verbose_name='Estado')
 
     class Meta:

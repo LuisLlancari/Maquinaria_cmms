@@ -3,8 +3,9 @@ from ..models import *
 from ..forms import *
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from django.db.models import Max
+from django.db.models import Max , Count, Subquery, OuterRef
 from implemento.models import *
+from django.http import JsonResponse
 
 from django.contrib.auth.decorators import login_required
 
@@ -13,15 +14,19 @@ from django.contrib.auth.decorators import login_required
 def programacion(request):
     programacion = Programacion.objects.filter(estado=True)
 
-    # Diccionario de mapeo de letras a palabras
-    turno_map = {'M': 'Manaña', 'T': 'Tarde', 'N': 'Noche'}
+    # Obtener subconsulta para los detalles únicos por idprogramacion
+    subquery = DetalleLabor.objects.filter(
+        estado=True,
+        idprogramacion=OuterRef('idprogramacion')
+    ).order_by('idprogramacion', 'pk')[:1]
+    detalles_unicos = DetalleLabor.objects.filter(
+        pk=Subquery(subquery.values('pk'))
+    )
 
-    # Mapeo de los turnos
-    for prog in programacion:
-        prog.turno = turno_map.get(prog.turno, 'Desconocido')
+    #Obtenemos el idusuario
+    usuario_id = request.user.id
 
-    return render(request, 'programacion_labor/programacion.html', {'datos': programacion, 'form_programacion': ProgramacionForm , 'form_detalle': DetalleLaborForm})
-
+    return render(request, 'programacion_labor/programacion.html', {'detalle': detalles_unicos, 'idusuario': usuario_id, 'form_programacion': ProgramacionForm, 'form_detalle': DetalleLaborForm})
 
 def registrar_programacion(request):
     if request.method == 'POST':
@@ -38,10 +43,30 @@ def registrar_programacion(request):
             # Crear un detalle de labor para cada implemento seleccionado
             for implemento_id in implementos_seleccionados:
                 implemento = Implemento.objects.get(pk=implemento_id)
-                DetalleLabor.objects.create(idprogramacion=programacion, idimplemento=implemento, horadeuso='08:00:00')
+                DetalleLabor.objects.create(idprogramacion=programacion, idimplemento=implemento, horadeuso=0)
 
             return redirect('programacion')
     else:
         form = ProgramacionForm()
     
     return render(request, 'tu_template.html', {'form': form})
+
+def eliminar_programacion(request, id):
+    programacion = get_object_or_404(Programacion, pk=id)
+    if request.method == 'POST':
+        programacion.delete()
+        return redirect('programacion')
+
+def obtener_data(request, id_programacion):
+    detalles_labor = DetalleLabor.objects.filter(idprogramacion=id_programacion)
+    
+    nombres_implementos = []
+    for detalle_labor in detalles_labor:
+        nombres_implementos.append(detalle_labor.idimplemento.implemento)  # Nombre del implemento
+
+    if nombres_implementos:
+        data = {'mensaje': "Success", 'nombres_implementos': nombres_implementos}
+    else:
+        data = {'mensaje': "Not found"}
+
+    return JsonResponse(data)
