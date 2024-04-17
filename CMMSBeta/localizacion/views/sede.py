@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from ..models import Sede
+from ..models import Sede, Base, Area
 from ..forms import SedeForm
 from django.contrib.auth.decorators import login_required
 
@@ -13,12 +13,18 @@ def sede(request):
 @login_required(login_url='login', redirect_field_name='')
 def eliminar_sede(request, idsede):
     sede = get_object_or_404(Sede, pk=idsede)
-    if request.method == 'POST':
-        sede.estado = False
-        sede.save()
-        return redirect('sede')
-
-    return render(request, '', {'sede': sede})
+    
+    # Cambiar el estado de la sede a False
+    sede.estado = False
+    sede.save()
+    
+    # Cambiar el estado de las bases relacionadas a False
+    sede_relacionadas = Base.objects.filter(idsede=idsede)
+    for base in sede_relacionadas:
+        base.estado = False
+        base.save()
+    
+    return redirect('sede')
 
 @login_required(login_url='login', redirect_field_name='')
 def registrar_sede(request):

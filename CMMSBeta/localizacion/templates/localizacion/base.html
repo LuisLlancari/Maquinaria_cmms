@@ -16,6 +16,7 @@
       <button
         type="button"
         class="btn btn-success"
+        id="brnbase"
         data-toggle="modal"
         data-target="#modalNuevaBase"
       >
@@ -27,20 +28,20 @@
     <table class="table table-striped" id="tabla-area">
       <thead>
         <tr>
-          <th scope="col">N°</th>
-          <th scope="col">Base</th>
-          <th scope="col">Sede</th>
-          <th scope="col">Operacion</th>
+          <th class="text-center" scope="col">N°</th>
+          <th class="text-center" scope="col">Base</th>
+          <th class="text-center" scope="col">Sede</th>
+          <th class="text-center" scope="col">Operacion</th>
         </tr>
       </thead>
 
       <tbody>
         {% for data in bases %}
         <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ data.base }}</td>
-          <td>{{ data.idsede }}</td>
-          <td>
+          <th class="text-center" scope="row">{{ forloop.counter }}</th>
+          <td class="text-center">{{ data.base }}</td>
+          <td class="text-center">{{ data.idsede }}</td>
+          <td class="text-center">
             <button
               class="btn btn-warning btn-sm editar d-inline-block"
               id="ceco"
@@ -48,6 +49,7 @@
               data-target="#modalEditarBase"
               data-idbase="{{ data.idbase }}"
               data-nombrebase="{{ data.base }}"
+              data-idsede = "{{ data.idsede.idsede }}"
               type="button"
             >
               <i class="lni lni-pencil"></i>
@@ -88,10 +90,17 @@
             method="post"
             action="{% url 'registrar_base' %}"
             autocomplete="off"
-            id="form-base"
+            id="form-ceco"
           >
             {% csrf_token %} 
-            {{formBase}}
+            <label for="base">Base</label>
+            {{formBase.base}}
+            <label for="idsede">Sedes</label>
+            <select name="idsede" id="idsede" class="form-control mt-2 mb-2" required>
+              {% for sede in sedes %}
+                <option value="{{sede.idsede}}">{{sede.sede}}</option>
+              {% endfor %}
+            </select>
             <button type="submit" class="btn btn-primary">Guardar</button>
           </form>
         </div>
@@ -122,7 +131,16 @@
           >
             {% csrf_token %}
             <input type="hidden" id="idbase" name="idbase" />
-            {{ formBase }}
+            <label for="base">Base</label>
+            <input type="text" id="base" name="base" class="form-control mb-2">
+            <label for="idsede">Sedes</label>
+            <select name="idsede" id="idsede" class="form-control mt-2 mb-2">
+              {% for sede in sedes %}
+                <option value="{{sede.idsede}}">{{sede.sede}}</option>
+              {% endfor %}
+            </select>
+
+
             <button type="submit" class="btn btn-primary">
               Guardar Cambios
             </button>
@@ -139,10 +157,14 @@
         button.addEventListener("click", function () {
           var idBase = this.dataset.idbase;
           var nombreBase = this.dataset.nombrebase;
+          var idsede = this.dataset.idsede;
           document.getElementById("idbase").value = idBase;
-          document.getElementById("nombre_base").value = nombreBase;
+          document.getElementById("base").value = nombreBase;
+          document.getElementById("idsede").value = idsede;
         });
       });
+
+      document.getElementById("idsede").value = "";
     });
   </script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

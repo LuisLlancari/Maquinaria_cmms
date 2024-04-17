@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from ..models import Base
-from ..forms import BaseForm
+from ..models import Base, Sede
 from django.contrib.auth.decorators import login_required
+from ..forms import BaseForm
 
 @login_required(login_url='login', redirect_field_name='')
 def base(request):
     bases = Base.objects.filter(estado = True)
+    sedes = Sede.objects.filter(estado = True)
     formBase = BaseForm()
     datos = {
         'bases': bases,
         'formBase': formBase,
+        'sedes':sedes,
     }
     return render(request, '../templates/localizacion/base.html', datos)
 
@@ -19,6 +21,8 @@ def eliminar_base(request, idbase):
     if request.method == 'POST':
         base.estado = False
         base.save()
+        
+        
         return redirect('base')
     
     return render(request, '', {'sede': base})
@@ -29,7 +33,7 @@ def registrar_base(request):
         form = BaseForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('base')  
+            return redirect('base')  # Redirige a la vista correcta para mostrar las bases registradas
     else:
         form = BaseForm()
         

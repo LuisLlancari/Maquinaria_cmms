@@ -28,18 +28,18 @@
     <table class="table table-striped" id="tabla-area">
       <thead>
         <tr>
-          <th scope="col">N°</th>
-          <th scope="col">Rol</th>
-          <th scope="col">Operacion</th>
+          <th class="text-center" scope="col">N°</th>
+          <th class="text-center" scope="col">Rol</th>
+          <th class="text-center" scope="col">Operacion</th>
         </tr>
       </thead>
 
       <tbody>
         {% for data in roles %}
         <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ data.rol }}</td>
-          <td>
+          <th class="text-center" scope="row">{{ forloop.counter }}</th>
+          <td class="text-center">{{ data.rol }}</td>
+          <td class="text-center">
             <button
               class="btn btn-warning btn-sm editar d-inline-block"
               id="rol"
@@ -121,6 +121,7 @@
           >
             {% csrf_token %}
             <input type="hidden" id="idrol" name="idrol" />
+            <label for="rol" >Rol</label>
             <input type="text" id="rol" name="rol" class="form-control mb-3" />
 
             <button type="submit" class="btn btn-primary mt-3">

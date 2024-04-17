@@ -7,4 +7,5 @@ class RolForm(forms.ModelForm):
         fields = ['idrol', 'rol']
         widgets = {
             'idrol': forms.HiddenInput(),
+            'rol': forms.TextInput(attrs={'class': 'form-control mb-3'}),
         }

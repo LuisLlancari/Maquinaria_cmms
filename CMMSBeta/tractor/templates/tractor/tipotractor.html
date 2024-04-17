@@ -28,41 +28,32 @@
     <table class="table table-striped" id="tabla-area">
       <thead>
         <tr>
-          <th scope="col">N°</th>
-          <th scope="col">Tipo Tractor</th>
-          <th scope="col">Operación</th>
+          <th class="text-center" scope="col">N°</th>
+          <th class="text-center" scope="col">Tipo Tractor</th>
+          <th class="text-center" scope="col">Operación</th>
         </tr>
       </thead>
       <tbody>
         {% for data in tipotractor %}
         <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ data.TipoTractor }}</td>
-          <td>
-            <button
-              class="btn btn-warning btn-sm editar d-inline-block"
-              id="tipo"
-              data-toggle="modal"
-              data-target="#modalEditarTipo"
-              data-idtipo="{{ data.idtipotractor }}"
-              data-nombretipotractor="{{ data.TipoTractor }}"
-              type="button"
-            >
-              <i class="lni lni-pencil"></i>
-            </button>
-
-            <form
-              action="{% url 'eliminar_tipotractor' data.idtipotractor %}"
-              class="d-inline-block"
-              method="POST"
-            >
-              {% csrf_token %}
-              <button type="submit" class="btn btn-danger btn-sm">
-                <i class="lni lni-trash-can"></i>
+          <th scope="row" class="text-center">{{ forloop.counter }}</th>
+          <td class="text-center">{{ data.TipoTractor }}</td>
+          <td class="text-center">
+              <button class="btn btn-warning btn-sm editar d-inline-block" id="tipo" data-toggle="modal"
+                  data-target="#modalEditarTipo" data-idtipo="{{ data.idtipotractor }}"
+                  data-nombretipotractor="{{ data.TipoTractor }}" type="button">
+                  <i class="lni lni-pencil"></i>
               </button>
-            </form>
+      
+              <form action="{% url 'eliminar_tipotractor' data.idtipotractor %}" class="d-inline-block" method="POST">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger btn-sm">
+                      <i class="lni lni-trash-can"></i>
+                  </button>
+              </form>
           </td>
-        </tr>
+      </tr>
+      
         {% endfor %}
       </tbody>
     </table>
@@ -94,8 +85,9 @@
             id="form-ceco"
           >
             {% csrf_token %} 
+            
             {{form}}
-            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="submit" class="btn btn-primary mt-3">Guardar</button>
           </form>
         </div>
       </div>

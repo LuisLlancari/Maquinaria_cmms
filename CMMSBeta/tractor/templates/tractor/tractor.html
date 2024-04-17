@@ -28,50 +28,39 @@
     <table class="table table-striped" id="tabla-area">
       <thead>
         <tr>
-          <th scope="col">N°</th>
-          <th scope="col">Tipo Tractor</th>
-          <th scope="col">Usuario</th>
-          <th scope="col">Nro Tractor</th>
-          <th scope="col">Hora Inicial</th>
-          <th scope="col">Hora de Uso</th>
-          <th scope="col">Accion</th>
+            <th scope="col" class="text-center">N°</th>
+            <th scope="col" class="text-center">Tipo Tractor</th>
+            <th scope="col" class="text-center">Usuario</th>
+            <th scope="col" class="text-center">Nro Tractor</th>
+            <th scope="col" class="text-center">Hora Inicial</th>
+            <th scope="col" class="text-center">Hora de Uso</th>
+            <th scope="col" class="text-center">Acción</th>
         </tr>
-      </thead>
-
-      <tbody>
+    </thead>
+    
+    <tbody>
         {% for data in tractores %}
         <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ data.idtipotractor }}</td>
-          <td>{{ data.idusuario }}</td>
-          <td>{{ data.nrotractor }}</td>
-          <td>{{ data.horainicial }}</td>
-          <td>{{ data.horauso }}</td>
-          <td>
-            <button
-              class="btn btn-warning btn-sm editar d-inline-block"
-              id="tractor"
-              data-toggle="modal"
-              data-target="#modalEditarTractor"
-              data-idtractor="{{ data.idtractor }}"
-              data-nrotractor="{{data.nrotractor}}"
-              data-horauso="{{data.horauso}}"
-              data-horaini="{{data.horainicial}}"
-              type="button"
-            >
-              <i class="lni lni-pencil"></i>
-            </button>
-            <form
-              action="{% url 'eliminartractor' data.idtractor %}"
-              class="d-inline-block"
-              method="POST"
-            >
-              {% csrf_token %}
-              <button type="submit" class="btn btn-danger btn-sm">
-                <i class="lni lni-trash-can"></i>
-              </button>
-            </form>
-          </td>
+            <th scope="row" class="text-center">{{ forloop.counter }}</th>
+            <td class="text-center">{{ data.idtipotractor }}</td>
+            <td class="text-center">{{ data.idusuario }}</td>
+            <td class="text-center">{{ data.nrotractor }}</td>
+            <td class="text-center">{{ data.horainicial }}</td>
+            <td class="text-center">{{ data.horauso }}</td>
+            <td class="text-center">
+                <button class="btn btn-warning btn-sm editar d-inline-block" id="tractor" data-toggle="modal"
+                    data-target="#modalEditarTractor" data-idtractor="{{ data.idtractor }}"
+                    data-nrotractor="{{data.nrotractor}}" data-horauso="{{data.horauso}}"
+                    data-horaini="{{data.horainicial}}" data-idtipotractor="{{data.idtipotractor}}" type="button">
+                    <i class="lni lni-pencil"></i>
+                </button>
+                <form action="{% url 'eliminartractor' data.idtractor %}" class="d-inline-block" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="lni lni-trash-can"></i>
+                    </button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -101,7 +90,7 @@
           >
             {% csrf_token %} 
             {{form}}
-            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="submit" class="btn btn-primary mt-3">Guardar</button>
           </form>
         </div>
       </div>
@@ -136,7 +125,11 @@
 
             <!-- Campo idtipotractor con Bootstrap -->
             <div class="form-group">
-              {{ form.idtipotractor.label_tag }} {{ form.idtipotractor }}
+              <select name="idtipotractor" id="idtipotractor" class="form-control mt-2 mb-2">
+                {% for tipo in tipotractor %}
+                  <option value="{{tipo.idtipotractor}}">{{tipo.TipoTractor}}</option>
+                {% endfor %}
+              </select>
             </div>
 
             <!-- Campo idusuario con Bootstrap -->
@@ -178,7 +171,7 @@
             </div>
 
             <!-- Botón de submit con Bootstrap -->
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary mt-3">
               Guardar Cambios
             </button>
           </form>

@@ -28,20 +28,20 @@
     <table class="table table-striped" id="tabla-area">
       <thead>
         <tr>
-          <th scope="col">N°</th>
-          <th scope="col">Area</th>
-          <th scope="col">Base</th>
-          <th scope="col">Operacion</th>
+          <th class="text-center" scope="col">N°</th>
+          <th class="text-center" scope="col">Area</th>
+          <th class="text-center" scope="col">Base</th>
+          <th class="text-center" scope="col">Operacion</th>
         </tr>
       </thead>
 
       <tbody>
         {% for data in areas %}
         <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{data.area}}</td>
-          <td>{{data.idbase}}</td>
-          <td>
+          <th class="text-center" scope="row">{{ forloop.counter }}</th>
+          <td class="text-center">{{data.area}}</td>
+          <td class="text-center">{{data.idbase}}</td>
+          <td class="text-center">
             <button
               class="btn btn-warning btn-sm editar d-inline-block"
               id="area"
@@ -133,7 +133,7 @@
               name="area"
             />
             <label for="idbase" class="form-label mt-2">Nombre de base</label>
-            <select name="idbase" id="nombreBase" class="form-control">
+            <select name="idbase" id="nombreBase" class="form-control" required>
               {% for base in bases %}
                 <option value="{{ base.idbase }}">{{ base.base }}</option>
               {% endfor %}
