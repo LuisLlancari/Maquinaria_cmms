@@ -24,7 +24,9 @@
                     <th scope="col">N°</th>
                     <th scope="col">Fundo</th>
                     <th scope="col">Sede</th>
+                    {% if user.idrol.rol != "Gerencia" %}
                     <th scope="col">Operaciones</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>

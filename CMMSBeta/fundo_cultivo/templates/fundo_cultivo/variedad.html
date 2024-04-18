@@ -22,7 +22,9 @@
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Variedad</th>
+                    {% if user.idrol.rol != "Gerencia" %}
                     <th scope="col">Operacion</th>
+                    {% endif %}
                 </tr>
             </thead>
 
