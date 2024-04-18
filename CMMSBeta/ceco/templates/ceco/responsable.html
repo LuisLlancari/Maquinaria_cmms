@@ -12,7 +12,9 @@
         </div>
         <div class="col-md-6"></div>
         <div class="col-md-2">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoCeco">Nuevo Ceco</button>
+            {% if user.idrol.rol != "Gerencia" %}
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoCeco">Nuevo Ceco</button>
+            {% endif %}
         </div>
     </div>
     <div class="table-responsive">
@@ -22,7 +24,9 @@
                     <th scope="col">N°</th>
                     <th scope="col">Nombre responsable</th>
                     <th scope="col">Estado</th>
+                    {% if user.idrol.rol != "Gerencia" %}
                     <th scope="col">Operacion</th>
+                    {% endif %}
                 </tr>
             </thead>
 
@@ -32,13 +36,15 @@
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ data.responsable }}</td>
                     <td>{{ data.estado }}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm editar d-inline-block" id="responsable" data-toggle="modal" data-target="#modalEditarResponsable" data-idresponsable="{{ data.idresponsable }}" data-responsable="{{ data.responsable }}" type="button">Editar</button>
-                        <form action="{% url 'eliminar_responsable' data.idresponsable %}" class="d-inline-block" method="POST">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
-                        </form>
-                    </td>  
+                    {% if user.idrol.rol != "Gerencia" %}
+                        <td>
+                            <button class="btn btn-warning btn-sm editar d-inline-block" id="responsable" data-toggle="modal" data-target="#modalEditarResponsable" data-idresponsable="{{ data.idresponsable }}" data-responsable="{{ data.responsable }}" type="button">Editar</button>
+                            <form action="{% url 'eliminar_responsable' data.idresponsable %}" class="d-inline-block" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                            </form>
+                        </td>  
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>

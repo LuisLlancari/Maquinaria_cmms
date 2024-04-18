@@ -13,14 +13,16 @@
     </div>
     <div class="col-md-6"></div>
     <div class="col-md-2">
+      {% if user.idrol.rol != "Gerencia" %}
       <button
-        type="button"
-        class="btn btn-success"
-        id="brnbase"
-        data-toggle="modal"
-        data-target="#modalNuevaBase"
+      type="button"
+      class="btn btn-success"
+      id="brnbase"
+      data-toggle="modal"
+      data-target="#modalNuevaBase"
       >
-        Nueva Base
+      Nueva Base
+      {% endif %}
       </button>
     </div>
   </div>
@@ -31,7 +33,9 @@
           <th class="text-center" scope="col">N°</th>
           <th class="text-center" scope="col">Base</th>
           <th class="text-center" scope="col">Sede</th>
+          {% if user.idrol.rol != "Gerencia" %}
           <th class="text-center" scope="col">Operacion</th>
+          {% endif %}
         </tr>
       </thead>
 
@@ -41,30 +45,32 @@
           <th class="text-center" scope="row">{{ forloop.counter }}</th>
           <td class="text-center">{{ data.base }}</td>
           <td class="text-center">{{ data.idsede }}</td>
+          {% if user.idrol.rol != "Gerencia" %}
           <td class="text-center">
             <button
-              class="btn btn-warning btn-sm editar d-inline-block"
-              id="ceco"
-              data-toggle="modal"
-              data-target="#modalEditarBase"
-              data-idbase="{{ data.idbase }}"
-              data-nombrebase="{{ data.base }}"
-              data-idsede = "{{ data.idsede.idsede }}"
-              type="button"
+            class="btn btn-warning btn-sm editar d-inline-block"
+            id="ceco"
+            data-toggle="modal"
+            data-target="#modalEditarBase"
+            data-idbase="{{ data.idbase }}"
+            data-nombrebase="{{ data.base }}"
+            data-idsede = "{{ data.idsede.idsede }}"
+            type="button"
             >
-              <i class="lni lni-pencil"></i>
-            </button>
-            <form
-              action="{% url 'eliminar_base' data.idbase %}"
-              class="d-inline-block"
-              method="POST"
-            >
-              {% csrf_token %}
-              <button type="submit" class="btn btn-danger btn-sm">
-                <i class="lni lni-trash-can"></i>
-              </button>
-            </form>
-          </td>
+            <i class="lni lni-pencil"></i>
+          </button>
+          <form
+          action="{% url 'eliminar_base' data.idbase %}"
+          class="d-inline-block"
+          method="POST"
+          >
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm">
+            <i class="lni lni-trash-can"></i>
+          </button>
+        </form>
+      </td>
+      {% endif %}
         </tr>
         {% endfor %}
       </tbody>

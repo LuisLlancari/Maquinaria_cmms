@@ -17,7 +17,9 @@
                             <p class="mt-2 mb-0 fw-bold"><span class="info-label">Fecha:</span> {{ dato.fechahora }}</p>
                             <p class="mt-2 mb-0 fw-bold"><span class="info-label">Solicitante:</span> {{ dato.idsolicitante }}</p>
                         </div>
-                        <button class="btn btn-primary mt-3 finalizar" id="finalizar-reporte" data-bs-toggle="modal" data-bs-target="#moda-programacion" style="width: 100%;" data-id="{{dato.idprogramacion}}" >Finalizar Reporte</button>
+                        {% if user.idrol.rol != "Gerencia" %}
+                        <button class="btn btn-primary mt-3 finalizar" data-bs-toggle="modal" data-bs-target="#moda-programacion" data-programacion="{{dato.idprogramacion}}" data-tractor="{{dato.idtractor_id}}" >Finalizar Reporte</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -40,11 +42,13 @@
                 <div class="modal-body">
                     {% csrf_token %}
 
-                    <label for="id_horometroinicial" class="form-control">Horometro Inicial:</label>
-                    <input type="number" name="horometroinicial" class="form-control" id="id_horometroinicial" required>
-                    <label for="id_horometrofinal" class="form-control">Horometro Final:</label>
+                    <label for="txtHorometroinicial" class="form-label mt-1">Horometro Inicial:</label>
+                    <input type="number" name="horometroini" class="form-control" id="txtHorometroinicial" required readonly>
+                    
+                    <label for="id_horometrofinal" class="form-label mt-1">Horometro Final:</label>
                     <input type="number" name="horometrofinal" class="form-control" id="id_horometrofinal" required>
-                    <label for="id_correlativo" class="form-control">Correlativo:</label>
+                    
+                    <label for="id_correlativo" class="form-label mt-1">Correlativo:</label>
                     <input type="number" name="correlativo" class="form-control" id="id_correlativo" required>
 
                     <input type="hidden" name="idusuario" class="form-control" id="id_idusuario" required value="{{user.id}}">
@@ -67,10 +71,24 @@
 
         const btnFinalizar = document.querySelectorAll(".finalizar");
 
+        function obtener_horainicial(id){
+        fetch(`./reportetractor/obtenerhinicial/${id}`)
+        .then(res => res.json())
+        .then(datos => {
+            txtHorometroinicial.value = datos.tractor[0].horainicial
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+        }
+
+
         btnFinalizar.forEach(function(boton){
         boton.addEventListener("click", function(event) {
-            let id_programacion = event.target.dataset.id;
+            let id_programacion = event.target.dataset.programacion;
+            let id_tractor = event.target.dataset.tractor;
             txtProgramacion.value = id_programacion
+            obtener_horainicial(id_tractor);
 
         });          
         });

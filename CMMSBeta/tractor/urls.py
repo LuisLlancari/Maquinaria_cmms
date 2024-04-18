@@ -8,6 +8,7 @@ urlpatterns = [
 
     # funciones reporte
     path('reportetractor/registrar', reportetractor.registrarReporte, name='registrar_reporte' ),
+    path('reportetractor/obtenerhinicial/<int:id_tractor>', reportetractor.obtenerHorainicial, name='obtener_horaini' ),
     
     #funciones tipotractor
     path('eliminar_tipotractor/<int:idtractor>', tipotractor.eliminar_tipotractor, name='eliminar_tipotractor'), 

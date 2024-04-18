@@ -11,8 +11,10 @@
         </div>
         <div class="col-md-6"></div>
         <div class="col-md-2">
+            {% if user.idrol.rol != "Gerencia" %}
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevo">Nueva Labor
             </button>
+            {% endif %}
         </div>
     </div>
     <div class="table-responsive mt-4">
@@ -29,7 +31,9 @@
                     <th scope="col">Turno</th>
                     <th scope="col">Horas de Uso</th>
                     <th scope="col">Implementos</th>
+                    {% if user.idrol.rol != "Gerencia" %}
                     <th scope="col">Operaciones</th>
+                    {% endif %}
                 </tr>
             </thead>
 
@@ -48,18 +52,20 @@
                     <td class="text-center">
                         <button class="btn btn-primary btn-sm btn-ver" data-toggle="modal" data-idprogramacion='{{ det.idprogramacion }}' data-target="#modalListImplemento"><i class="lni lni-eye"></i></button>
                     </td>
+                    {% if user.idrol.rol != "Gerencia" %}
                     <td>
                         <!-- <button class="btn btn-warning btn-sm editar d-inline-block" id="tipolabor" data-toggle="modal"
                             data-target="#modalEditar" data-idtipolabor="{{ data.idtipolabor }}"
                             data-nombretipolabor="{{ data.tipolabor }}" type="button"><i
-                                class="lni lni-pencil"></i></button> -->
-                        <form action="#" class="d-inline-block" 
+                            class="lni lni-pencil"></i></button> -->
+                            <form action="#" class="d-inline-block" 
                             method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm mx-5"><i
-                                    class="lni lni-trash-can"></i></button>
-                        </form>
-                    </td>
+                                class="lni lni-trash-can"></i></button>
+                            </form>
+                        </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>

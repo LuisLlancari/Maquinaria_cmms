@@ -17,7 +17,9 @@
 
     </div>
     <div class="col-md-3 mb-3">
+        {% if user.idrol.rol != "Gerencia" %}
         <button type="button" class="btn btn-primary" id="registrar-tiposolicitante" data-bs-toggle="modal" data-bs-target="#modal-tipo">Agregar Tipo solcitante</button>
+        {% endif %}
     </div>
 </div>
 
@@ -28,7 +30,9 @@
         <tr>
             <th scope="col">N°</th>
             <th scope="col">Tipo Solicitante</th>
+            {% if user.idrol.rol != "Gerencia" %}
             <th scope="col">Operaciones</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -36,6 +40,7 @@
      <tr>
         <td>{{forloop.counter}}</td>
         <td>{{dato.tiposolicitante}}</td>
+        {% if user.idrol.rol != "Gerencia" %}
         <td>
             <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="{{dato.idtiposolicitante}}" data-bs-toggle="modal" data-bs-target="#modal-tipo"><i class="lni lni-pencil editar"></i></button>
             <form action="{% url 'tiposolicitante_eliminar' dato.idtiposolicitante %}" class="d-inline-block" method="POST">
@@ -43,6 +48,7 @@
                 <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
             </form>
         </td>
+        {% endif %}
      </tr>
     {% endfor %}
     </tbody>

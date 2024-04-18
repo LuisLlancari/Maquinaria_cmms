@@ -12,7 +12,9 @@
         <div class="col-md-6"></div>
         <div class="col-md-2">
             <!-- Colocamos data-bs-toggle="modal" data-bs-target="#modalNuevaArea" : para abrir el modal sin usar JS -->
+            {% if user.idrol.rol != "Gerencia" %}
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalRegistrar">Nuevo Lote</button>
+            {% endif %}
         </div>
     </div>
     <div class="table-responsive">
@@ -35,6 +37,7 @@
                     <td>{{ data.idcultivo }}</td>
                     <td>{{ data.idcultivo.idfundo.fundo }}</td>
                     <td>{{ data.idvariedad }}</td>
+                    {% if user.idrol.rol != "Gerencia" %}
                     <td>
                         <button class="btn btn-warning btn-sm editar d-inline-block" id="lote" data-toggle="modal" data-target="#modalActualizar" data-idlote='{{ data.idlote }}' data-nombrelote="{{ data.lote }}" data-idcultivo="{{ data.idcultivo.idcultivo }}" data-idvariedad="{{ data.idvariedad.idvariedad }}" type="button"><i class="lni lni-pencil"></i></button>
                         <form action="{% url 'eliminar_lote' data.idlote %}" class="d-inline-block" method="POST">
@@ -42,6 +45,7 @@
                             <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
                         </form>      
                     </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 <!--Render-->

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 def home(request):
   usuario = request.user
   print("Usuario logueado:", usuario)
-  return render(request, 'core/home.html', {'user': usuario})
+  return render(request, 'core/home.html', {'user': usuario,})
 
 @login_required(login_url='login', redirect_field_name='home')
 def test(request):
