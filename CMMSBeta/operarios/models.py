@@ -36,7 +36,7 @@ class Tractorista(models.Model):
     idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.SET_DEFAULT, default=None, verbose_name="Usuario")
     apellidos = models.CharField(max_length=45, verbose_name="Apellidos")
     nombres = models.CharField(max_length=45, verbose_name="Nombres")
-    codigo =  models.CharField(max_length=12, verbose_name="Codigo")
+    codigo =  models.CharField(max_length=12, verbose_name="Codigo", unique=True)
     dni =  models.CharField(max_length=8, verbose_name="DNI")
     estado = models.BooleanField(default=True, verbose_name="Estado")
     estado_actividad = models.BooleanField(default=True, verbose_name="Estado Actividad")

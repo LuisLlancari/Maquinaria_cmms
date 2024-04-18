@@ -12,7 +12,7 @@ class TiposolicitanteForms(forms.ModelForm):
 class TractoristaForms(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TractoristaForms, self).__init__(*args, **kwargs)
-        self.fields['idtractorista'].queryset = Tractorista.objects.filter(estado = True)
+        self.fields['idtractorista'].queryset = Tractorista.objects.filter(estado_actividad = True)
     class Meta:
         model = Tractorista
         fields = ['idtractorista','apellidos', 'nombres', 'codigo', 'dni']
@@ -28,7 +28,6 @@ class SolicitanteForms(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SolicitanteForms, self).__init__(*args, **kwargs)
         self.fields['idtiposolicitante'].queryset = TipoSolicitante.objects.filter(estado = True)
-        self.fields['idsolicitante'].queryset = Solicitante.objects.filter(estado_actividad=True)
         
     class Meta:
         model = Solicitante

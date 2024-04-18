@@ -32,6 +32,9 @@ def registrar_programacion(request):
     if request.method == 'POST':
         form = ProgramacionForm(request.POST)
         if form.is_valid():
+            idtractor = form.cleaned_data['idtractor']
+            idtractorista = form.cleaned_data['idtractorista']
+
             programacion = form.save()
 
             # Obtener el ID de la última programación guardada
@@ -43,7 +46,11 @@ def registrar_programacion(request):
             # Crear un detalle de labor para cada implemento seleccionado
             for implemento_id in implementos_seleccionados:
                 implemento = Implemento.objects.get(pk=implemento_id)
+                Implemento.objects.filter(pk = implemento_id).update(estado_actividad = False)
                 DetalleLabor.objects.create(idprogramacion=programacion, idimplemento=implemento, horadeuso=0)
+
+            Tractor.objects.filter(nrotractor = idtractor).update(estado_actividad = False)
+            Tractorista.objects.filter(codigo = idtractorista).update(estado_actividad = False)
 
             return redirect('programacion')
     else:
