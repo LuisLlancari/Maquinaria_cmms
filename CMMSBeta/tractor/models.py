@@ -18,10 +18,11 @@ class Tractor(models.Model):
     idtipotractor = models.ForeignKey(TipoTractor, on_delete=models.PROTECT, verbose_name='Tipo Tractor')
     idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.PROTECT, verbose_name='Usuario', null=True)
     idcultivo = models.ForeignKey(Cultivo, on_delete=models.PROTECT, verbose_name='Cultivo', null=True)
-    nrotractor = models.IntegerField(verbose_name='Número Tractor')
+    nrotractor = models.CharField(max_length=100 , verbose_name='Nombre Tractor', unique=True)
     horainicial = models.IntegerField(verbose_name='Hora Inicial')
     horauso = models.IntegerField(verbose_name='Hora Uso')
     estado = models.BooleanField(default=True, verbose_name='Estado')
+    estado_actividad = models.BooleanField(default=True, verbose_name="Estado Actividad")
     
     class Meta:
         verbose_name = "Tractor"

@@ -39,9 +39,15 @@
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ det.idprogramacion.idtipolabor }}</td>
                     <td>{{ det.idprogramacion.idlote }}</td>
-                    <td>{{ det.idprogramacion.idsolicitante }}</td>
+                    <td>
+                        {{ det.idprogramacion.idsolicitante.nombres }}
+                        {{ det.idprogramacion.idsolicitante.apellidos }}
+                    </td>
                     <td>{{ det.idprogramacion.idtractor }}</td>
-                    <td>{{ det.idprogramacion.idtractorista }}</td>
+                    <td>
+                        {{ det.idprogramacion.idtractorista.nombres }}
+                        {{ det.idprogramacion.idtractorista.apellidos }}
+                    </td>
                     <td>{{ det.idprogramacion.fechahora}}</td>
                     <td>{{ det.idprogramacion.turno}}</td>
                     <td>{{ det.horadeuso}}</td>
@@ -89,7 +95,7 @@
                                 {{form_programacion.idlote}}
                             </div>
                             <div class="col-md-4">
-                                <label for="idtractor">Codigo del Tractor:</label>
+                                <label for="idtractor">Nombre del Tractor:</label>
                                 {{form_programacion.idtractor}}
                             </div>
                         </div>
