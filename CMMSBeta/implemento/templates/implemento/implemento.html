@@ -3,7 +3,7 @@
 {% block titulo %}Implemento{% endblock%}
 
 {% block contenido %} 
-<h1 class="text-center mb-2">Implemento {{user.idrol.rol}}</h1>
+<h1 class="text-center mb-2">Implementos</h1>
 <div class="row mt-4">
     <div class="col md-3 mb-3">
         <form>
@@ -78,33 +78,39 @@
                             {% csrf_token %}
                             <div class="row mt-2">
                                 <div class="col col-md-6">
+                                    <label for="txtIdTipoimplemento" class="form-label">Tipo Implemento:</label>
+                                    {{form.idtipoimplemento}}
+                                </div>
+                                <div class="col col-md-6">
                                     <label for="txtImplemento" class="form-label">Implemento:</label>
                                     {{form.implemento}}
                                 </div>
 
-                                <div class="col col-md-6">
-                                    <label for="txtTiempoVida" class="form-label">Tiempo de Vida:</label>
-                                    {{form.tiempovida}}
-                                </div>
+                                
                             </div>
 
                             <div class="row mt-2">
-                                <div class="col col-md-6">
+                                <div class="col col-md-4">
                                     <label for="txtNroImplemento" class="form-label">Nro° Implemento:</label>
                                     {{form.nroimplemento}}
                                 </div>
                                 
-                                <div class="col col-md-6">
+                                <div class="col col-md-4">
                                     <label for="txtCodImplemento" class="form-label">Codigo Implemento:</label>
                                     {{form.codimplemento}}
+                                </div>
+                                <div class="col col-md-4">
+                                    <label for="txtIdResponsable" class="form-label">Responsable:</label>
+                                    {{form.idusuario}}
                                 </div>
                             </div>
 
                             <div class="row mt-2">
                                 <div class="col col-md-6">
-                                    <label for="txtIdTipoimplemento" class="form-label">Tipo Implemento:</label>
-                                    {{form.idtipoimplemento}}
+                                    <label for="txtTiempoVida" class="form-label">Tiempo de Vida:</label>
+                                    {{form.tiempovida}}
                                 </div>
+                                
 
                                 <div class="col col-md-6">
                                     <label for="txtIdArea" class="form-label">Area:</label>
@@ -152,7 +158,7 @@
         }
     
         btnAgregar.addEventListener("click", function() {
-            titulo_modal.textContent = "Agregar Pieza" ;
+            titulo_modal.textContent = "Agregar Implemento" ;
             formModal.reset();
             formModal.setAttribute("action", "{% url 'registrar_implemento' %}");
             formModal.setAttribute("method", "POST");

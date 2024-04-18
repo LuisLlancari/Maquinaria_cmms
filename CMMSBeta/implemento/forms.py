@@ -8,10 +8,11 @@ class ImplementoForms(forms.ModelForm):
         self.fields['idtipoimplemento'].queryset = TipoImplemento.objects.filter(estado = True)
   class Meta:
     model = Implemento
-    fields = ['idimplemento','implemento','tiempovida', 'nroimplemento', 'codimplemento', 'idtipoimplemento', 'idarea']
+    fields = ['idimplemento','idusuario','implemento','tiempovida', 'nroimplemento', 'codimplemento', 'idtipoimplemento', 'idarea']
     widgets = {
       'idimplemento': forms.HiddenInput(),
       'implemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtImplemento'}),
+      'idusuario': forms.Select(attrs={'class':'form-select', 'id':'txtIdUsuario'}),
       'tiempovida': forms.TextInput(attrs={'class':'form-control', 'id':'txtTiempoVida'}),
       'nroimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtNroImplemento'}),
       'codimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtCodImplemento'}),

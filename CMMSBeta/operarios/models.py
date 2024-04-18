@@ -33,7 +33,7 @@ class Solicitante(models.Model):
     
 class Tractorista(models.Model):
     idtractorista = models.AutoField(primary_key=True)
-    idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.SET_DEFAULT, default=None, verbose_name="Usuario")
+    idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.SET_DEFAULT, default=None, verbose_name="Encargado")
     apellidos = models.CharField(max_length=45, verbose_name="Apellidos")
     nombres = models.CharField(max_length=45, verbose_name="Nombres")
     codigo =  models.CharField(max_length=12, verbose_name="Codigo", unique=True)

@@ -10,14 +10,12 @@ class TiposolicitanteForms(forms.ModelForm):
         }
 
 class TractoristaForms(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(TractoristaForms, self).__init__(*args, **kwargs)
-        self.fields['idtractorista'].queryset = Tractorista.objects.filter(estado_actividad = True)
     class Meta:
         model = Tractorista
-        fields = ['idtractorista','apellidos', 'nombres', 'codigo', 'dni']
+        fields = ['idtractorista','idusuario','apellidos', 'nombres', 'codigo', 'dni']
         widgets = {
             'idtractorista': forms.HiddenInput(),
+            'idusuario': forms.Select(attrs={'class': 'form-select', 'id':'txtTractorista'}),
             'apellidos': forms.TextInput(attrs={'class': 'form-control', 'id':'txtApellidos'}),
             'nombres': forms.TextInput(attrs={'class': 'form-control', 'id':'txtNombres'}),
             'codigo': forms.TextInput(attrs={'class': 'form-control', 'id':'txtCodigo'}),

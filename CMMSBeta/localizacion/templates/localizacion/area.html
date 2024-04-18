@@ -100,8 +100,11 @@
           >
             {% csrf_token %}
             {% comment %} <input type="text" id="nombreArea" name="area" /> {% endcomment %}
-            {{formArea}}
-            <button type="submit" class="btn btn-primary">Guardar</button>
+            <label for="area" class="form-label">Base:</label>
+            {{formArea.idbase}}
+            <label for="area" class="form-label mt-3">Area:</label>
+            {{formArea.area}}
+            <button type="submit" class="btn btn-primary mt-3">Guardar</button>
           </form>
         </div>
       </div>
