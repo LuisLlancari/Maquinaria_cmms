@@ -7,6 +7,10 @@ from programacion_labor.models import DetalleLabor, Programacion, TipoLabor
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
+#IMPORTACIONES EXTERNAS
+import string
+import random
+
 @login_required(login_url='login', redirect_field_name='home')
 def home(request):
   usuario = request.user
@@ -20,9 +24,12 @@ def test(request):
 @login_required(login_url='login', redirect_field_name='home')
 def exportar(request, fecha_inicio=None, fecha_fin=None):
     try:
-      
+
+        sufijo = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+        nombre_archivo = f"reporte-{sufijo}.xlsx"
+        
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename="DetallesLabor.xlsx"'
+        response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
 
         nuevoLibro = Workbook()
         hojaActiva = nuevoLibro.active

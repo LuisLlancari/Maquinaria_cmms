@@ -34,7 +34,8 @@
       <form action="{% url 'exportar' %}" method="GET">
         {% csrf_token %}
         <div class="modal-body">
-            <h5>Filtrar Por Fecha</h5>
+          <h1>Reporte de Actividades</h1>
+            {% comment %} <h5>Filtrar Por Fecha</h5>
             <div class="container mt-2">
                 <div class="row">
                     <div class="col-md-6">
@@ -46,14 +47,14 @@
                         <input type="date" id="fecha2" class="form-control" name="fecha2">
                     </div>
                 </div>
-            </div>
+            </div> {% endcomment %}
         </div>
         <div class="modal-footer">
             <button type="submit" class="btn btn-primary">
                 Exportar Formato Excel
             </button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                Close
+                Cerrar
             </button>
         </div>
     </form>
