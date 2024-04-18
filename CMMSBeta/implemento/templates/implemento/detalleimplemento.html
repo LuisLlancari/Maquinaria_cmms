@@ -17,7 +17,9 @@
 
     </div>
     <div class="col-md-3 mb-3">
-        <button type="button" class="btn btn-primary" id="registrar-detalle" data-bs-toggle="modal" data-bs-target="#modal-detalle">Agregar Detalle</button>
+        {% if user.idrol.rol != "Gerencia" %}
+            <button type="button" class="btn btn-primary" id="registrar-detalle" data-bs-toggle="modal" data-bs-target="#modal-detalle">Agregar Detalle</button>
+        {% endif %}
     </div>
 </div>
 
@@ -34,7 +36,9 @@
             <th scope="col">Responsable</th>
             <th scope="col">Pieza</th>
             <th scope="col">Centro Costos</th>
+            {% if user.idrol.rol != "Gerencia" %}
             <th scope="col">Operaciones</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -44,13 +48,15 @@
         <td>{{dato.idpieza}}</td>
         <td>{{dato.idceco}}</td>
         <td>{{dato.idimplemento}}</td>
-        <td>
-            <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-detalle" data-id="{{dato.iddetalleimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-detalle"><i class="lni lni-pencil editar"></i></button>
-            <form action="{% url 'eliminar_detalle' dato.iddetalleimplemento %}" class="d-inline-block" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
-            </form>
-        </td>
+        {% if user.idrol.rol != "Gerencia" %}
+            <td>
+                <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-detalle" data-id="{{dato.iddetalleimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-detalle"><i class="lni lni-pencil editar"></i></button>
+                <form action="{% url 'eliminar_detalle' dato.iddetalleimplemento %}" class="d-inline-block" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+                </form>
+            </td>
+        {% endif %}
 
      </tr>
     {% endfor %}

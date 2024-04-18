@@ -17,7 +17,9 @@
 
     </div>
     <div class="col-md-3 mb-3">
-        <button type="button" class="btn btn-primary" id="registrar-implemento" data-bs-toggle="modal" data-bs-target="#modal-tipoimplemento">Agregar Tipo</button>
+        {% if user.idrol.rol != "Gerencia" %}
+            <button type="button" class="btn btn-primary" id="registrar-implemento" data-bs-toggle="modal" data-bs-target="#modal-tipoimplemento">Agregar Tipo</button>
+        {% endif %}
     </div>
 </div>
 
@@ -31,7 +33,9 @@
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Tipo implemento</th>
+            {% if user.idrol.rol != "Gerencia" %}
             <th scope="col">Operaciones</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -39,13 +43,15 @@
      <tr>
         <td>{{forloop.counter}}</td>
         <td>{{dato.tipoimplemento}}</td>
-        <td>
-            <button class="btn btn-warning editar d-inline-block" data-id="{{dato.idtipoimplemento}}" data-reg="{{dato}}" data-bs-toggle="modal" data-bs-target="#modal-tipoimplemento"><i class="lni lni-pencil editar"></i></button>
-            <form action="{% url 'eliminar_tipo' dato.idtipoimplemento %}" class="d-inline-block" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
-            </form>
-        </td>
+        {% if user.idrol.rol != "Gerencia" %}
+            <td>
+                <button class="btn btn-warning editar d-inline-block" data-id="{{dato.idtipoimplemento}}" data-reg="{{dato}}" data-bs-toggle="modal" data-bs-target="#modal-tipoimplemento"><i class="lni lni-pencil editar"></i></button>
+                <form action="{% url 'eliminar_tipo' dato.idtipoimplemento %}" class="d-inline-block" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+                </form>
+            </td>
+        {% endif %}
      </tr>
     {% endfor %}
     </tbody>

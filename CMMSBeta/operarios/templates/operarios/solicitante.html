@@ -17,7 +17,9 @@
 
     </div>
     <div class="col-md-3 mb-3">
+        {% if user.idrol.rol != "Gerencia" %}
         <button type="button" class="btn btn-primary" id="registrar-solicitante" data-bs-toggle="modal" data-bs-target="#modal-solicitante">Agregar Solicitante</button>
+        {% endif %}
     </div>
 </div>
 
@@ -34,7 +36,9 @@
             <th scope="col">Apellidos</th>
             <th scope="col">Nombres</th>
             <th scope="col">Codigo</th>
+            {% if user.idrol.rol != "Gerencia" %}
             <th scope="col">Operaciones</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -44,6 +48,7 @@
         <td>{{dato.apellidos}}</td>
         <td>{{dato.nombres}}</td>
         <td>{{dato.codigo}}</td>
+        {% if user.idrol.rol != "Gerencia" %}
         <td>
             <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="{{dato.idsolicitante}}" data-bs-toggle="modal" data-bs-target="#modal-solicitante"><i class="lni lni-pencil editar"></i></button>
             <form action="{% url 'tiposolicitante_eliminar' dato.idsolicitante %}" class="d-inline-block" method="POST">
@@ -51,6 +56,7 @@
                 <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
             </form>
         </td>
+        {% endif %}
      </tr>
     {% endfor %}
     </tbody>

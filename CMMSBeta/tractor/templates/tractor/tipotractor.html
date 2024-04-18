@@ -14,14 +14,16 @@
     </div>
     <div class="col-md-6"></div>
     <div class="col-md-2">
+      {% if user.idrol.rol != "Gerencia" %}
       <button
-        type="button"
-        class="btn btn-success"
-        data-toggle="modal"
-        data-target="#modalNuevoTipo"
+      type="button"
+      class="btn btn-success"
+      data-toggle="modal"
+      data-target="#modalNuevoTipo"
       >
-        Nuevo Tractor
-      </button>
+      Nuevo Tractor
+    </button>
+    {% endif %}
     </div>
   </div>
   <div class="table-responsive">
@@ -30,7 +32,9 @@
         <tr>
           <th class="text-center" scope="col">N°</th>
           <th class="text-center" scope="col">Tipo Tractor</th>
+          {% if user.idrol.rol != "Gerencia" %}
           <th class="text-center" scope="col">Operación</th>
+          {% endif %}
         </tr>
       </thead>
       <tbody>
@@ -38,20 +42,22 @@
         <tr>
           <th scope="row" class="text-center">{{ forloop.counter }}</th>
           <td class="text-center">{{ data.TipoTractor }}</td>
+          {% if user.idrol.rol != "Gerencia" %}
           <td class="text-center">
-              <button class="btn btn-warning btn-sm editar d-inline-block" id="tipo" data-toggle="modal"
-                  data-target="#modalEditarTipo" data-idtipo="{{ data.idtipotractor }}"
-                  data-nombretipotractor="{{ data.TipoTractor }}" type="button">
-                  <i class="lni lni-pencil"></i>
-              </button>
-      
-              <form action="{% url 'eliminar_tipotractor' data.idtipotractor %}" class="d-inline-block" method="POST">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-danger btn-sm">
-                      <i class="lni lni-trash-can"></i>
-                  </button>
-              </form>
-          </td>
+            <button class="btn btn-warning btn-sm editar d-inline-block" id="tipo" data-toggle="modal"
+            data-target="#modalEditarTipo" data-idtipo="{{ data.idtipotractor }}"
+            data-nombretipotractor="{{ data.TipoTractor }}" type="button">
+            <i class="lni lni-pencil"></i>
+          </button>
+          
+          <form action="{% url 'eliminar_tipotractor' data.idtipotractor %}" class="d-inline-block" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">
+              <i class="lni lni-trash-can"></i>
+            </button>
+          </form>
+        </td>
+        {% endif %}
       </tr>
       
         {% endfor %}

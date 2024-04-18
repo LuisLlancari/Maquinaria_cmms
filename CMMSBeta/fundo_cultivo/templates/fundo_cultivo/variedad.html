@@ -11,7 +11,9 @@
         </div>
         <div class="col-md-6"></div>
         <div class="col-md-2">
+            {% if user.idrol.rol != "Gerencia" %}
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalEditar">Nuevo Ceco</button>
+            {% endif %}
         </div>
     </div>
     <div class="table-responsive">
@@ -20,7 +22,9 @@
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Variedad</th>
+                    {% if user.idrol.rol != "Gerencia" %}
                     <th scope="col">Operacion</th>
+                    {% endif %}
                 </tr>
             </thead>
 
@@ -29,6 +33,7 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ data.variedad }}</td>
+                    {% if user.idrol.rol != "Gerencia" %}
                     <td>
                         <button class="btn btn-warning btn-sm editar d-inline-block" id="variedad" data-toggle="modal" data-target="#modalActualizar" data-idvariedad="{{ data.idvariedad }}" data-nombrevariedad="{{ data.variedad }}" type="button"><i class="lni lni-pencil"></i></button>
                         <form action="{% url 'eliminar_variedad' data.idvariedad %}" class="d-inline-block" method="POST">
@@ -36,6 +41,7 @@
                             <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
                         </form>                       
                     </td>  
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>

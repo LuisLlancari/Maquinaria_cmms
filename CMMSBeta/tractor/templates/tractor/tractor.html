@@ -14,14 +14,16 @@
     </div>
     <div class="col-md-6"></div>
     <div class="col-md-2">
+      {% if user.idrol.rol != "Gerencia" %}
       <button
-        type="button"
-        class="btn btn-success"
-        data-toggle="modal"
-        data-target="#modalNuevoTractor"
+      type="button"
+      class="btn btn-success"
+      data-toggle="modal"
+      data-target="#modalNuevoTractor"
       >
-        Nuevo Tractor
-      </button>
+      Nuevo Tractor
+    </button>
+    {% endif %}
     </div>
   </div>
   <div class="table-responsive">
@@ -34,7 +36,9 @@
             <th scope="col" class="text-center">Nro Tractor</th>
             <th scope="col" class="text-center">Hora Inicial</th>
             <th scope="col" class="text-center">Hora de Uso</th>
+            {% if user.idrol.rol != "Gerencia" %}
             <th scope="col" class="text-center">Acción</th>
+            {% endif %}
         </tr>
     </thead>
     
@@ -47,20 +51,22 @@
             <td class="text-center">{{ data.nrotractor }}</td>
             <td class="text-center">{{ data.horainicial }}</td>
             <td class="text-center">{{ data.horauso }}</td>
+            {% if user.idrol.rol != "Gerencia" %}
             <td class="text-center">
-                <button class="btn btn-warning btn-sm editar d-inline-block" id="tractor" data-toggle="modal"
-                    data-target="#modalEditarTractor" data-idtractor="{{ data.idtractor }}"
-                    data-nrotractor="{{data.nrotractor}}" data-horauso="{{data.horauso}}"
-                    data-horaini="{{data.horainicial}}" data-idtipotractor="{{data.idtipotractor}}" type="button">
-                    <i class="lni lni-pencil"></i>
-                </button>
-                <form action="{% url 'eliminartractor' data.idtractor %}" class="d-inline-block" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm">
-                        <i class="lni lni-trash-can"></i>
-                    </button>
-                </form>
-            </td>
+              <button class="btn btn-warning btn-sm editar d-inline-block" id="tractor" data-toggle="modal"
+              data-target="#modalEditarTractor" data-idtractor="{{ data.idtractor }}"
+              data-nrotractor="{{data.nrotractor}}" data-horauso="{{data.horauso}}"
+              data-horaini="{{data.horainicial}}" data-idtipotractor="{{data.idtipotractor}}" type="button">
+              <i class="lni lni-pencil"></i>
+            </button>
+            <form action="{% url 'eliminartractor' data.idtractor %}" class="d-inline-block" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">
+                <i class="lni lni-trash-can"></i>
+              </button>
+            </form>
+          </td>
+          {% endif %}
         </tr>
         {% endfor %}
       </tbody>

@@ -17,7 +17,9 @@
 
     </div>
     <div class="col-md-3 mb-3">
+        {% if user.idrol.rol != "Gerencia" %}
         <button type="button" class="btn btn-primary" id="registrar-sistema" data-bs-toggle="modal" data-bs-target="#modal-sistema">Agregar Sistema</button>
+        {% endif %}
     </div>
 </div>
 
@@ -31,7 +33,9 @@
         <tr>
             <th scope="col">N°</th>
             <th scope="col">Sistema</th>
+            {% if user.idrol.rol != "Gerencia" %}
             <th scope="col">Operaciones</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -39,13 +43,15 @@
      <tr>
         <td>{{forloop.counter}}</td>
         <td>{{dato.sistema}}</td>
-        <td>
-            <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-sistema" data-id="{{dato.idsistema}}" data-bs-toggle="modal" data-bs-target="#modal-sistema "><i class="lni lni-pencil editar"></i></button>
-            <form action="{% url 'eliminar_sistema' dato.idsistema %}" class="d-inline-block" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
-            </form>
-        </td>
+        {% if user.idrol.rol != "Gerencia" %}
+            <td>
+                <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-sistema" data-id="{{dato.idsistema}}" data-bs-toggle="modal" data-bs-target="#modal-sistema "><i class="lni lni-pencil editar"></i></button>
+                <form action="{% url 'eliminar_sistema' dato.idsistema %}" class="d-inline-block" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+                </form>
+            </td>
+        {% endif %}
      </tr>
     {% endfor %}
     </tbody>

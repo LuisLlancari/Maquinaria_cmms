@@ -11,8 +11,10 @@
         </div>
         <div class="col-md-6"></div>
         <div class="col-md-2">
+            {% if user.idrol.rol != "Gerencia" %}
             <!-- Colocamos data-bs-toggle="modal" data-bs-target="#modalNuevaArea" : para abrir el modal sin usar JS -->
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalRegistrar">Nuevo Fundo</button>
+            {% endif %}
         </div>
     </div>
     <div class="table-responsive">
@@ -22,7 +24,9 @@
                     <th scope="col">N°</th>
                     <th scope="col">Fundo</th>
                     <th scope="col">Sede</th>
+                    {% if user.idrol.rol != "Gerencia" %}
                     <th scope="col">Operaciones</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -31,6 +35,7 @@
                     <th scope="row">{{ forloop.counter}}</th>
                     <td>{{ data.fundo}}</td>
                     <td>{{ data.idsede }}</td>
+                    {% if user.idrol.rol != "Gerencia" %}
                     <td>
                         <button class="btn btn-warning btn-sm editar d-inline-block" id="fundo" data-toggle="modal" data-target="#modalActualizar" data-idfundo='{{ data.idfundo }}' data-nombrefundo="{{ data.fundo }}" data-idsede="{{ data.idsede.idsede }}" type="button"><i class="lni lni-pencil"></i></button>
                         <form action="{% url 'eliminar_fundo' data.idfundo %}" class="d-inline-block" method="POST">
@@ -38,6 +43,7 @@
                             <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
                         </form>      
                     </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 <!--Render-->
