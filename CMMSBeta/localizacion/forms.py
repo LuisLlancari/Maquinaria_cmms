@@ -28,7 +28,6 @@ class AreaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Filtrar las opciones del campo idtipotractor
         self.fields['idbase'].queryset = Base.objects.filter(
             estado=True)
     class Meta:

@@ -20,7 +20,7 @@ class TipoLabor(models.Model):
         return self.tipolabor
     
 class Programacion(models.Model):
-
+    
     TURNO_CHOICES = (
         ('M', 'Mañana'),
         ('T', 'Tarde'),

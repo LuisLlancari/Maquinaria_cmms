@@ -52,4 +52,4 @@ class DetImplementos(models.Model):
     class Meta:
         verbose_name = "Detalle Implemento"
         verbose_name_plural = "Detalle Implementos"
-        ordering = ['idpieza', 'idresponsable', 'creado_en']
+        ordering = ['idpieza', 'idresponsable', 'creado_en']    
