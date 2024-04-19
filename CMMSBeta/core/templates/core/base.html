@@ -79,11 +79,10 @@
                         <span>Tractor</span>
                     </a>
                     <ul id="tractor" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        {% if user.idrol.rol == "Asistente" or user.idrol.rol == "Gerencia" %}
+
                         <li class="sidebar-item">
                             <a href="{% url 'reportetractor' %}" class="sidebar-link" data-path="login">Reporte Tractor</a>
                         </li>
-                        {% endif %}
 
                         {% if user.idrol.rol == "Gerencia" or user.idrol.rol == "Supervisor" %}
 
