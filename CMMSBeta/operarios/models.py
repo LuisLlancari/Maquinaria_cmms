@@ -1,5 +1,5 @@
 from django.db import models
-from usuario.models import Usuario
+from usuario.models import Usuario, Persona
 
 class TipoSolicitante(models.Model):
     idtiposolicitante = models.AutoField(primary_key=True)
@@ -17,11 +17,11 @@ class TipoSolicitante(models.Model):
 class Solicitante(models.Model):
     idsolicitante = models.AutoField(primary_key=True)
     idtiposolicitante = models.ForeignKey(TipoSolicitante, on_delete=models.SET_DEFAULT, default=None,verbose_name="Tipo Solicitante")
-    apellidos = models.CharField(max_length=45, verbose_name="Apellidos")
-    nombres = models.CharField(max_length=45, verbose_name="Nombres")
-    codigo =  models.CharField(max_length=12, verbose_name="Codigo")
+    idpersona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
     estado = models.BooleanField(default=True, verbose_name="Estado")
     estado_actividad = models.BooleanField(default=True, verbose_name="Estado Actividad")
+    creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")
 
     class Meta:
         verbose_name = "Solicitante"
@@ -29,17 +29,17 @@ class Solicitante(models.Model):
         ordering = ['idsolicitante', 'idtiposolicitante']
     
     def __str__(self):
-        return self.codigo
+        return f"Solicitante: {self.idpersona.nombres} {self.idpersona.apellidos}"
     
+
 class Tractorista(models.Model):
     idtractorista = models.AutoField(primary_key=True)
     idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.SET_DEFAULT, default=None, verbose_name="Usuario")
-    apellidos = models.CharField(max_length=45, verbose_name="Apellidos")
-    nombres = models.CharField(max_length=45, verbose_name="Nombres")
-    codigo =  models.CharField(max_length=12, verbose_name="Codigo", unique=True)
-    dni =  models.CharField(max_length=8, verbose_name="DNI")
+    idpersona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
     estado = models.BooleanField(default=True, verbose_name="Estado")
     estado_actividad = models.BooleanField(default=True, verbose_name="Estado Actividad")
+    creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")
 
     class Meta:
         verbose_name = "Tractorista"
@@ -47,4 +47,4 @@ class Tractorista(models.Model):
         ordering = ['idtractorista', 'apellidos']
 
     def __str__(self):
-        return self.codigo
+        return f"Tractorista: {self.idpersona.nombres} {self.idpersona.apellidos}"
