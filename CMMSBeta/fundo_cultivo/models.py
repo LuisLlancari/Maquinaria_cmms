@@ -31,7 +31,7 @@ class Cultivo(models.Model):
     
 class Variedad(models.Model):
     idvariedad = models.AutoField(primary_key=True)
-    variedad = models.CharField(max_length=30, unique=True, verbose_name='Variedad')
+    variedad = models.CharField(max_length=30,verbose_name='Variedad')
     idcultivo = models.ForeignKey(Cultivo, on_delete=models.SET_NULL, null=True, verbose_name="Cultivo")
     estado = models.BooleanField(default=True, verbose_name='Estado')
 
