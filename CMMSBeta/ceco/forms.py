@@ -8,11 +8,3 @@ class CecoForm(forms.ModelForm):
         widgets = {
             'ceco': forms.TextInput(attrs={'class': 'form-control mb-2'}),
         }
-
-class ResponsableForm(forms.ModelForm):
-    class Meta:
-        model = Responsable
-        fields = ['responsable']
-        widgets = {
-            'responsable': forms.TextInput(attrs={'class': 'form-control mb-2 '}),
-        }

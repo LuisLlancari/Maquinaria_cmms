@@ -13,7 +13,7 @@
         <div class="col-md-2">
             <!-- Colocamos data-bs-toggle="modal" data-bs-target="#modalNuevaArea" : para abrir el modal sin usar JS -->
             {% if user.idrol.rol != "Gerencia" %}
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalRegistrar">Nuevo Fundo</button>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalRegistrar">Nuevo Cultivo</button>
             {% endif %}
         </div>
     </div>
@@ -23,7 +23,6 @@
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Cultivo</th>
-                    <th scope="col">Fundo</th>
                     {% if user.idrol.rol != "Gerencia" %}
                     <th scope="col">Operaciones</th>
                     {% endif %}
@@ -34,7 +33,6 @@
                 <tr>
                     <th scope="row">{{ forloop.counter}}</th>
                     <td>{{ data.cultivo }}</td>
-                    <td>{{ data.idfundo }}</td>
                     {% if user.idrol.rol != "Gerencia" %}
                     <td>
                         <button class="btn btn-warning btn-sm editar d-inline-block" id="cultivo" data-toggle="modal" data-target="#modalActualizar" data-idcultivo='{{ data.idcultivo }}' data-nombrecultivo="{{ data.cultivo }}" data-idfundo="{{ data.idfundo.idfundo }}" type="button"><i class="lni lni-pencil"></i></button>
@@ -83,14 +81,6 @@
                             <label for="nombrecultivo">Cultivo</label>
                             <input type="text" class="form-control" name="cultivo" id="nombrecultivo">
                         </div>
-
-                        <label for="idfundo" class="form-label mt-3">Sede</label>
-                        <select name="idfundo" id="nombrefundo" class="form-control">
-                            {% for fundo in fundos %}
-                                <option value="{{ fundo.idfundo }}">{{ fundo.fundo }}</option>
-                            {% endfor %}
-                        </select>
-                        
                         
                         <button type="submit" class="btn btn-primary mt-2">Guardar Cambios</button>
                     </form>

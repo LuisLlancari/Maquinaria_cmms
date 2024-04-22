@@ -32,6 +32,7 @@
             <col width="25%">
         </colgroup> -->
         <tr>
+            <th scope="col">Usuario</th>
             <th scope="col">Apellidos</th>
             <th scope="col">Nombres</th>
             <th scope="col">Codigo</th>
@@ -44,10 +45,11 @@
     <tbody>
     {% for dato in datos_tractoristas %}
      <tr>
-        <td>{{dato.apellidos}}</td>
-        <td>{{dato.nombres}}</td>
-        <td>{{dato.codigo}}</td>
-        <td>{{dato.dni}}</td>
+        <td>{{dato.idusuario}}</td>
+        <td>{{dato.idpersona.apellidos}}</td>
+        <td>{{dato.idpersona.nombres}}</td>
+        <td>{{dato.idpersona.codigo}}</td>
+        <td>{{dato.idpersona.dni}}</td>
         {% if user.idrol.rol != "Gerencia" %}
         <td>
             <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="{{dato.idtractorista}}" data-bs-toggle="modal" data-bs-target="#modal-tractorista"><i class="lni lni-pencil editar"></i></button>
@@ -70,6 +72,14 @@
                 <form autocomplete="off" id="form-modal">
                     <div class="modal-body">
                             {% csrf_token %}
+                            <label for="txtUsuario" class="form-label">Usuario a cargo:</label>
+                            <select class="form-select mb-3" name="usuario" id="txtUsuario">
+                                <option selected>Seleccione: </option>
+                                {% for usuario in datos_usuarios %}
+                                <option value="{{usuario.id}}">{{usuario.username}}</option>
+                                {% endfor %}
+                            </select>
+
                             {{form.as_p}}
                     </div>
                     <div class="modal-footer">
@@ -91,18 +101,19 @@ const titulo_modal = document.getElementById("titulo-modal");
 const btnModificar = document.querySelectorAll(".editar")
 
 
-    function obtener_pieza(id){
+    function obtener_tractorista(id){
     fetch(`./tractorista/obtener/${id}`)
     .then(res => res.json())
     .then(datos => {
-        // console.log(datos)
+        console.log(datos)
         titulo_modal.textContent = "Editar Tractorista" ;
         formModal.setAttribute("action", `./tractorista/modificar/${id}`);
         formModal.setAttribute("method", "POST");
-        txtApellidos.value = datos.tractorista[0].apellidos;           
-        txtNombres.value = datos.tractorista[0].nombres;           
-        txtCodigo.value = datos.tractorista[0].codigo;           
-        txtDni.value = datos.tractorista[0].estado;           
+        txtApellidos.value = datos.persona[0].apellidos;           
+        txtNombres.value = datos.persona[0].nombres;           
+        txtCodigo.value = datos.persona[0].codigo;           
+        txtDni.value = datos.persona[0].dni;           
+        txtUsuario.value = datos.tractorista[0].idusuario_id
     })
     .catch((error) => {
         console.log(error);
@@ -118,9 +129,9 @@ const btnModificar = document.querySelectorAll(".editar")
 
     btnModificar.forEach(function(boton) {
     boton.addEventListener("click", function(event) {
-        let id_pieza = event.target.dataset.id;
-        // console.log(id_pieza);
-        obtener_pieza(id_pieza);
+        let id_tractorista = event.target.dataset.id;
+        console.log(id_tractorista);
+        obtener_tractorista(id_tractorista);
         });
     });
 

@@ -33,8 +33,11 @@ def registrar_programacion(request):
         form = ProgramacionForm(request.POST)
         if form.is_valid():
             idtractor = form.cleaned_data['idtractor']
-            idtractorista = form.cleaned_data['idtractorista']
+            # idtractorista = form.cleaned_data['idtractorista']
+            idtractorista = request.POST.get('idtractorista')
 
+            print(idtractor)
+            print(idtractorista)
             programacion = form.save()
 
             # Obtener el ID de la última programación guardada
@@ -50,13 +53,13 @@ def registrar_programacion(request):
                 DetalleLabor.objects.create(idprogramacion=programacion, idimplemento=implemento, horadeuso=0)
 
             Tractor.objects.filter(nrotractor = idtractor).update(estado_actividad = False)
-            Tractorista.objects.filter(codigo = idtractorista).update(estado_actividad = False)
+            Tractorista.objects.filter(pk = idtractorista).update(estado_actividad = False)
 
             return redirect('programacion')
     else:
         form = ProgramacionForm()
-    
-    return render(request, 'tu_template.html', {'form': form})
+
+        return redirect('programacion', {'form': form})
 
 def eliminar_programacion(request, id):
     programacion = get_object_or_404(Programacion, pk=id)

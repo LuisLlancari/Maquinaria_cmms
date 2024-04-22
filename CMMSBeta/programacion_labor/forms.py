@@ -31,14 +31,14 @@ class ProgramacionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['idsolicitante'].label_from_instance = self.label_from_instance
-        self.fields['idtractorista'].label_from_instance = self.label_from_instance
+        # self.fields['idsolicitante'].label_from_instance = self.label_from_instance
+        # self.fields['idtractorista'].label_from_instance = self.label_from_instance
         self.fields['idtractor'].queryset = Tractor.objects.filter(estado=True, estado_actividad=True)
         self.fields['idtractorista'].queryset = Tractorista.objects.filter(estado=True, estado_actividad=True)
         
 
-    def label_from_instance(self, obj):
-        return f"{obj.nombres} {obj.apellidos}"
+    # def label_from_instance(self, obj):
+    #     return f"{obj.nombres} {obj.apellidos}"
 
 class DetalleLaborForm(forms.ModelForm):
 
