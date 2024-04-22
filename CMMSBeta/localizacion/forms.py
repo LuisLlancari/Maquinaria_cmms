@@ -15,9 +15,10 @@ class SedeForm(forms.ModelForm):
 class BaseForm(forms.ModelForm):
     class Meta:
         model = Base
-        fields = ['idbase', 'base', 'idsede']
+        fields = ['idbase', 'idsede', 'base']
         widgets = {
             'idbase': forms.HiddenInput(),
+            'idsede':forms.Select(attrs={'class': 'form-select'}),
             'base': forms.TextInput(attrs={'class': 'form-control'}),
 
         }

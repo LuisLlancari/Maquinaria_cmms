@@ -15,13 +15,11 @@ class TractoristaForms(forms.ModelForm):
         self.fields['idtractorista'].queryset = Tractorista.objects.filter(estado_actividad = True)
     class Meta:
         model = Tractorista
-        fields = ['idtractorista','apellidos', 'nombres', 'codigo', 'dni']
+        fields = ['idusuario','idpersona']
         widgets = {
-            'idtractorista': forms.HiddenInput(),
-            'apellidos': forms.TextInput(attrs={'class': 'form-control', 'id':'txtApellidos'}),
-            'nombres': forms.TextInput(attrs={'class': 'form-control', 'id':'txtNombres'}),
-            'codigo': forms.TextInput(attrs={'class': 'form-control', 'id':'txtCodigo'}),
-            'dni': forms.TextInput(attrs={'class': 'form-control', 'id':'txtDni'}),
+            # 'idtractorista': forms.HiddenInput(),
+            'idusuario': forms.TextInput(attrs={'class': 'form-control', 'id':'txtApellidos'}),
+            'idpersona': forms.TextInput(attrs={'class': 'form-control', 'id':'txtApellidos'}),
         }
         
 class SolicitanteForms(forms.ModelForm):
@@ -31,11 +29,8 @@ class SolicitanteForms(forms.ModelForm):
         
     class Meta:
         model = Solicitante
-        fields = ['idsolicitante','idtiposolicitante', 'apellidos', 'nombres', 'codigo']
+        fields = ['idtiposolicitante', 'idpersona']
         widgets = {
-            'idsolicitante': forms.HiddenInput(),
             'idtiposolicitante': forms.Select(attrs={'class': 'form-select', 'id': 'txtSolicitante'}),
-            'apellidos': forms.TextInput(attrs={'class': 'form-control', 'id': 'txtApellidos'}),
-            'nombres': forms.TextInput(attrs={'class': 'form-control', 'id': 'txtNombres'}),
-            'codigo': forms.TextInput(attrs={'class': 'form-control', 'id': 'txtCodigo'}),
+            'idpersona': forms.TextInput(attrs={'class': 'form-control', 'id': 'txtApellidos'}),
         }

@@ -102,7 +102,7 @@
             <label for="base">Base</label>
             {{formBase.base}}
             <label for="idsede">Sedes</label>
-            <select name="idsede" id="idsede" class="form-control mt-2 mb-2" required>
+            <select name="idsede" id="idsede" class="form-select mt-2 mb-2" required>
               {% for sede in sedes %}
                 <option value="{{sede.idsede}}">{{sede.sede}}</option>
               {% endfor %}

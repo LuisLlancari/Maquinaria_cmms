@@ -8,7 +8,8 @@ class solicitanteAdmin(admin.ModelAdmin):
 
 @admin.register(TipoSolicitante)
 class TipoSolicitanteAdmin(admin.ModelAdmin):
-  readonly_fields= ['estado']
+  pass
+  # readonly_fields= ['estado']
 
 
 @admin.register(Tractorista)

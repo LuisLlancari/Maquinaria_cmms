@@ -44,7 +44,7 @@ class Tractorista(models.Model):
     class Meta:
         verbose_name = "Tractorista"
         verbose_name_plural = "Tractoristas"
-        ordering = ['idtractorista', 'apellidos']
+        ordering = ['idtractorista']
 
     def __str__(self):
         return f"Tractorista: {self.idpersona.nombres} {self.idpersona.apellidos}"

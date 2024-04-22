@@ -13,7 +13,7 @@ urlpatterns = [
 
 
   path('solicitante/registrar', solicitante.registrarSolicitante, name="solicitante_registro"),
-  path('solicitante/eliminar/<int:id_tipo>', solicitante.eliminarSolicitante, name="solicitante_eliminar"),
+  path('solicitante/eliminar/<int:id_solicitante>', solicitante.eliminarSolicitante, name="solicitante_eliminar"),
   path('solicitante/obtener/<int:id_solicitante>', solicitante.obtenerDatos, name="obtener_solicitante"),
   path('solicitante/modificar/<int:id_solicitante>', solicitante.editarSolicitante, name="modificar_solicitante"),
 

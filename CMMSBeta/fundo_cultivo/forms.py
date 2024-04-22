@@ -17,16 +17,15 @@ class CultivoForm(forms.ModelForm):
 
     class Meta:
         model = Cultivo
-        fields = ['cultivo', 'idfundo']
+        fields = ['cultivo', ]
         widgets = {
             'cultivo': forms.TextInput(attrs={'class': 'form-control mb-2'}),
-            'idfundo': forms.Select(attrs={'class': 'form-control mb-2'}),
         }
 
 class VariedadForm(forms.ModelForm):
     class Meta:
         model = Variedad
-        fields = ['variedad']
+        fields = ['variedad', 'idcultivo']
         widgets = {
             'variedad': forms.TextInput(attrs={'class': 'form-control mb-2'}),
             'idcultivo': forms.Select(attrs={'class': 'form-control mb-2'}),
@@ -35,9 +34,9 @@ class VariedadForm(forms.ModelForm):
 class LoteForm(forms.ModelForm):
     class Meta:
         model = Lote
-        fields = ['lote', 'idvariedad', 'idcultivo']
+        fields = ['lote', 'idvariedad', 'idfundo']
         widgets = {
             'lote': forms.TextInput(attrs={'class': 'form-control mb-2'}),
             'idvariedad': forms.Select(attrs={'class': 'form-control mb-2'}),
-            'idcultivo': forms.Select(attrs={'class': 'form-control mb-2'}),
+            'idfundo': forms.Select(attrs={'class': 'form-control mb-2'}),
         }

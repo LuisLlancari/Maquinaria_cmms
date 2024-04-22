@@ -45,13 +45,13 @@
     {% for dato in datos_solicitantes %}
      <tr>
         <td>{{dato.idtiposolicitante}}</td>
-        <td>{{dato.apellidos}}</td>
-        <td>{{dato.nombres}}</td>
-        <td>{{dato.codigo}}</td>
+        <td>{{dato.idpersona.apellidos}}</td>
+        <td>{{dato.idpersona.nombres}}</td>
+        <td>{{dato.idpersona.codigo}}</td>
         {% if user.idrol.rol != "Gerencia" %}
         <td>
             <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="{{dato.idsolicitante}}" data-bs-toggle="modal" data-bs-target="#modal-solicitante"><i class="lni lni-pencil editar"></i></button>
-            <form action="{% url 'tiposolicitante_eliminar' dato.idsolicitante %}" class="d-inline-block" method="POST">
+            <form action="{% url 'solicitante_eliminar' dato.idsolicitante %}" class="d-inline-block" method="POST">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
             </form>
@@ -65,12 +65,29 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header bg-primary justify-content-center" >
-                <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Implemento</h1>
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Solicitante</h1>
             </div>
                 <form autocomplete="off" id="form-modal">
                     <div class="modal-body">
                             {% csrf_token %}
-                            {{form.as_p}}
+
+                            <label for="txtTipoSolicitante" class="form-label">Tipo solicitante:</label>
+                            <select class="form-select" name="tiposolicitante" id="txtTipoSolicitante">
+                                <option selected>Seleccione: </option>
+                                {% for tipo in datos_tiposolicitante %}
+                                <option value="{{tipo.idtiposolicitante}}">{{tipo.tiposolicitante}}</option>
+                                {% endfor %}
+                            </select>
+                              {{form}}
+                            <!-- <label for="nombres" class="form-label mt-2">Nombres:</label>
+                            <input type="text" class="form-control" name="nombres" id="nombres">
+
+                            <label for="apellidos" class="form-label">Apellidos:</label>
+                            <input type="text" class="form-control" name="apellidos" id="apellidos">
+
+                            <label for="codigo" class="form-label">Codigo:</label>
+                            <input type="text" class="form-control" name="codigo" id="codigo">
+                             -->
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
@@ -91,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnModificar = document.querySelectorAll(".editar")
 
     
-    function obtener_pieza(id){
+    function obtener_solicitante(id){
     fetch(`./solicitante/obtener/${id}`)
     .then(res => res.json())
     .then(datos => {
@@ -99,10 +116,10 @@ document.addEventListener("DOMContentLoaded", () => {
         titulo_modal.textContent = "Editar Solicitante" ;
         formModal.setAttribute("action", `./solicitante/modificar/${id}`);
         formModal.setAttribute("method", "POST");
-        txtSolicitante.value = datos.solicitante[0].idtiposolicitante;           
-        txtApellidos.value = datos.solicitante[0].apellidos;           
-        txtNombres.value = datos.solicitante[0].nombres;           
-        txtCodigo.value = datos.solicitante[0].codigo;           
+        txtTipoSolicitante.value = datos.solicitante[0].idtiposolicitante_id;           
+        txtApellidos.value = datos.persona[0].apellidos;           
+        txtNombres.value = datos.persona[0].nombres;           
+        txtCodigo.value = datos.persona[0].codigo;           
  
     })
     .catch((error) => {
@@ -120,8 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
     btnModificar.forEach(function(boton) {
     boton.addEventListener("click", function(event) {
         let id_solicitante = event.target.dataset.id;
-        // console.log(id_pieza);
-        obtener_pieza(id_solicitante);
+        console.log(id_solicitante);
+        obtener_solicitante(id_solicitante);
         });
     });
 
