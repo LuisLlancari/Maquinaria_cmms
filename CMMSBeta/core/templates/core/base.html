@@ -30,6 +30,7 @@
                         <i class="lni lni-user"></i>
                         <span class="text-uppercase">{{user.first_name}} {{user.last_name}} {{user.idrol}}</span>
                     </a>
+                    <span>Hola</span>
                 </li>
                 {% if user.idrol.rol == "Gerencia" or user.idrol.rol == "Supervisor" %}
                 <li class="sidebar-item">
@@ -170,9 +171,6 @@
                         <li class="sidebar-item">
                             <a href="{% url 'ceco' %}" class="sidebar-link" data-path="login">Centro de Costo</a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'responsable' %}" class="sidebar-link" data-path="login">Personal Responsable</a>
-                        </li>
                     </ul>
                 </li>
 
@@ -190,9 +188,9 @@
                         <li class="sidebar-item">
                             <a href=" {% url 'programacion' %} " class="sidebar-link" data-path="login">Crear Programacion</a>
                         </li>
-                        <li class="sidebar-item">
+                        <!-- <li class="sidebar-item">
                             <a href=" {% url 'detallelabor' %}" class="sidebar-link" data-path="login">Detalles Programacion</a>
-                        </li>
+                        </li> -->
                         
                     </ul>
                 </li>

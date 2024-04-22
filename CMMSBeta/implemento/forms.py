@@ -8,14 +8,16 @@ class ImplementoForms(forms.ModelForm):
         self.fields['idtipoimplemento'].queryset = TipoImplemento.objects.filter(estado = True)
   class Meta:
     model = Implemento
-    fields = ['idimplemento','implemento','tiempovida', 'codimplemento', 'idtipoimplemento', 'idarea']
+    fields = ['idimplemento','idusuario','implemento','tiempovida','horasdeuso', 'codimplemento', 'idtipoimplemento', 'idceco','idarea']
     widgets = {
       'idimplemento': forms.HiddenInput(),
       'implemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtImplemento'}),
+      'idusuario': forms.Select(attrs={'class':'form-select', 'id':'txtIdUsuario'}),
       'tiempovida': forms.TextInput(attrs={'class':'form-control', 'id':'txtTiempoVida'}),
-      # 'nroimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtNroImplemento'}),
+      'horasdeuso': forms.TextInput(attrs={'class':'form-control', 'id':'txtHorasUso'}),
       'codimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtCodImplemento'}),
       'idtipoimplemento': forms.Select(attrs={'class':'form-control', 'id':'txtIdTipoimplemento'}),
+      'idceco': forms.Select(attrs={'class':'form-control', 'id':'txtIdCeco'}),
       'idarea': forms.Select(attrs={'class':'form-control', 'id':'txtIdArea'}) 
     }
 
@@ -26,11 +28,10 @@ class DetImplementoForms(forms.ModelForm):
         self.fields['idimplemento'].queryset = Implemento.objects.filter(estado = True)
   class Meta:
     model = DetImplementos
-    fields = ['idresponsable','idpieza', 'idceco', 'idimplemento']
+    fields = ['idpersona','idpieza', 'idimplemento']
     widgets = {
-      'idresponsable': forms.Select(attrs={'class':'form-select', 'id':'txtIdResponsable'}),
+      'idpersona': forms.Select(attrs={'class':'form-select', 'id':'txtIdPersona'}),
       'idpieza': forms.Select(attrs={'class':'form-select', 'id':'txtIdpieza'}),
-      'idceco': forms.Select(attrs={'class':'form-select', 'id':'txtIdCeco'}),
       'idimplemento': forms.Select(attrs={'class':'form-select', 'id':'txtIdImplemento'}),
     }
 

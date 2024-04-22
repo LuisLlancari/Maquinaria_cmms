@@ -7,9 +7,8 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login', redirect_field_name='')
 def cultivo(request):
-  cultivos = Cultivo.objects.filter(estado=True, idfundo__estado=True)
-  fundos = Fundo.objects.filter(estado=True)
-  return render(request, 'fundo_cultivo/cultivo.html',{'datos': cultivos,'fundos': fundos, 'form_cultivo': CultivoForm})
+  cultivos = Cultivo.objects.filter(estado=True)
+  return render(request, 'fundo_cultivo/cultivo.html',{'datos': cultivos, 'form_cultivo': CultivoForm})
 
 def registrar_cultivo(request):
   form = CultivoForm(request.POST)

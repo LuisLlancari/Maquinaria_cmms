@@ -1,6 +1,6 @@
 from django.db import models
 from localizacion.models import Area
-from ceco.models import Ceco, Responsable
+from ceco.models import Ceco
 from componente_pieza.models import Pieza
 from usuario.models import Usuario, Persona
 from ceco.models import Ceco
@@ -55,4 +55,4 @@ class DetImplementos(models.Model):
     class Meta:
         verbose_name = "Detalle Implemento"
         verbose_name_plural = "Detalle Implementos"
-        ordering = ['idpieza', 'idresponsable', 'creado_en']    
+        ordering = ['idpieza', 'creado_en']    

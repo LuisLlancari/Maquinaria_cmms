@@ -12,7 +12,7 @@
         <div class="col-md-6"></div>
         <div class="col-md-2">
             {% if user.idrol.rol != "Gerencia" %}
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalEditar">Nuevo Ceco</button>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalEditar">Nuevo Variedad</button>
             {% endif %}
         </div>
     </div>
@@ -22,6 +22,7 @@
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Variedad</th>
+                    <th scope="col">Cultivo</th>
                     {% if user.idrol.rol != "Gerencia" %}
                     <th scope="col">Operacion</th>
                     {% endif %}
@@ -33,6 +34,7 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ data.variedad }}</td>
+                    <td>{{ data.idcultivo }}</td>
                     {% if user.idrol.rol != "Gerencia" %}
                     <td>
                         <button class="btn btn-warning btn-sm editar d-inline-block" id="variedad" data-toggle="modal" data-target="#modalActualizar" data-idvariedad="{{ data.idvariedad }}" data-nombrevariedad="{{ data.variedad }}" type="button"><i class="lni lni-pencil"></i></button>

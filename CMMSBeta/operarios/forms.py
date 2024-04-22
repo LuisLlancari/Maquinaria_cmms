@@ -10,9 +10,6 @@ class TiposolicitanteForms(forms.ModelForm):
         }
 
 class TractoristaForms(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(TractoristaForms, self).__init__(*args, **kwargs)
-        self.fields['idtractorista'].queryset = Tractorista.objects.filter(estado_actividad = True)
     class Meta:
         model = Tractorista
         fields = ['idusuario','idpersona']

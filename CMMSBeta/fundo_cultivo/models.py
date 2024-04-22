@@ -15,7 +15,6 @@ class Fundo(models.Model):
     def __str__(self):
         return self.fundo
 
-
 class Cultivo(models.Model):
     idcultivo = models.AutoField(primary_key=True)
     cultivo = models.CharField(max_length=30, unique=True, verbose_name='Cultivo')
@@ -28,7 +27,6 @@ class Cultivo(models.Model):
     #DEVUELVE EL NOMBRE
     def __str__(self):
         return self.cultivo
-    
 
     
 class Variedad(models.Model):

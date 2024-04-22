@@ -41,4 +41,7 @@ class Usuario(AbstractUser):
         verbose_name = "Usuario"
         verbose_name_plural = "Usuarios"
 
+    def __str__(self):
+        return self.username
+
     

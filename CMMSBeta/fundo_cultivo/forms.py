@@ -1,6 +1,10 @@
 from django import forms
 from .models import Fundo, Cultivo, Variedad, Lote
 
+class VariedadChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return f"{obj.variedad} - {obj.idcultivo.cultivo}"
+
 class FundoForm(forms.ModelForm):
     class Meta:
         model = Fundo
@@ -11,13 +15,9 @@ class FundoForm(forms.ModelForm):
         }
 
 class CultivoForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(CultivoForm, self).__init__(*args, **kwargs)
-        self.fields['idfundo'].queryset = Fundo.objects.filter(estado=True)
-
     class Meta:
         model = Cultivo
-        fields = ['cultivo', ]
+        fields = ['cultivo']
         widgets = {
             'cultivo': forms.TextInput(attrs={'class': 'form-control mb-2'}),
         }
@@ -32,11 +32,13 @@ class VariedadForm(forms.ModelForm):
         }
 
 class LoteForm(forms.ModelForm):
+    idvariedad = VariedadChoiceField(queryset=Variedad.objects.all(), label="Variedad - Cultivo")
+
     class Meta:
         model = Lote
-        fields = ['lote', 'idvariedad', 'idfundo']
+        fields = ['lote', 'idvariedad','idfundo']
         widgets = {
             'lote': forms.TextInput(attrs={'class': 'form-control mb-2'}),
-            'idvariedad': forms.Select(attrs={'class': 'form-control mb-2'}),
             'idfundo': forms.Select(attrs={'class': 'form-control mb-2'}),
+            'idvariedad': forms.Select(attrs={'class': 'form-control mb-2 mt-2'}),
         }
