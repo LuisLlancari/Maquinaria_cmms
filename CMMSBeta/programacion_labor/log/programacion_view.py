@@ -61,10 +61,11 @@ def registrar_programacion(request):
 
         return redirect('programacion', {'form': form})
 
-def eliminar_programacion(request, id):
-    programacion = get_object_or_404(Programacion, pk=id)
+def eliminar_programacion(request, id_programacion):
+    programacion = get_object_or_404(DetalleLabor, pk=id_programacion)
     if request.method == 'POST':
-        programacion.delete()
+        programacion.estado = False
+        programacion.save()
         return redirect('programacion')
 
 def obtener_data(request, id_programacion):

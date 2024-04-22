@@ -88,8 +88,8 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                 id_programacion = detalle_labor[1]
                 programacion = Programacion.objects.get(idprogramacion=id_programacion)
                 tipolabor = TipoLabor.objects.get(idtipolabor=programacion.idtipolabor_id)  
-                solicitante_nombre = f"{programacion.idsolicitante.nombres} {programacion.idsolicitante.apellidos}" if programacion.idsolicitante else ''  
-                tractorista_nombre = f"{programacion.idtractorista.nombres} {programacion.idtractorista.apellidos}" if programacion.idtractorista else ''  
+                solicitante_nombre = f"{programacion.idsolicitante.idpersona.nombres} {programacion.idsolicitante.idpersona.apellidos}" if programacion.idsolicitante else ''  
+                tractorista_nombre = f"{programacion.idtractorista.idpersona.nombres} { programacion.idtractorista.idpersona.apellidos }" if programacion.idtractorista else ''  
 
                 fecha_formateada = str(programacion.fechahora)
                 estado = 'Activo' if detalle_labor[-1] else 'Inactivo'
