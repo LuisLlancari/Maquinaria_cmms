@@ -44,7 +44,7 @@ class Implemento(models.Model):
 class DetImplementos(models.Model):
     iddetalleimplemento = models.AutoField(primary_key=True)
     idpersona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
-    idresponsable = models.ForeignKey(Responsable, on_delete=models.SET_DEFAULT, default=None, verbose_name="Responsable")
+    # idresponsable = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
     idpieza = models.ForeignKey(Pieza, on_delete=models.SET_DEFAULT, default=None, verbose_name="Pieza")
     idceco = models.ForeignKey(Ceco, on_delete=models.SET_DEFAULT, default=None, verbose_name="CECO")
     idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
