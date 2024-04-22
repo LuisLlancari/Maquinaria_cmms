@@ -38,8 +38,9 @@
             <th scope="col">Tipo Implemento</th>
             <th scope="col">Implemento</th>
             <th scope="col">Tiempo Vida</th>
-            <th scope="col">Numero Implemento</th>
+            <th scope="col">Horas de uso</th>
             <th scope="col">Codigo implemento</th>
+            <th scope="col">Centro de Costo</th>
             {% if user.idrol.rol != "Gerencia" %}
             <th scope="col">Operaciones</th>
             {% endif %}
@@ -52,8 +53,9 @@
         <td>{{dato.idtipoimplemento}}</td>
         <td>{{dato.implemento}}</td>
         <td>{{dato.tiempovida}}</td>
-        <td>{{dato.nroimplemento}}</td>
+        <td>{{dato.horasdeuso}}</td>
         <td>{{dato.codimplemento}}</td>
+        <td>{{dato.idceco}}</td>
         {% if user.idrol.rol != "Gerencia" %}
         <td>
             <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento"><i class="lni lni-pencil editar"></i></button>
@@ -91,28 +93,31 @@
 
                             <div class="row mt-2">
                                 <div class="col col-md-4">
-                                    <label for="txtNroImplemento" class="form-label">Nro° Implemento:</label>
-                                    {{form.nroimplemento}}
-                                </div>
-                                
-                                <div class="col col-md-4">
                                     <label for="txtCodImplemento" class="form-label">Codigo Implemento:</label>
                                     {{form.codimplemento}}
                                 </div>
                                 <div class="col col-md-4">
-                                    <label for="txtIdResponsable" class="form-label">Responsable:</label>
+                                    <label for="txtIdUsuario" class="form-label">Usuario a cargo:</label>
                                     {{form.idusuario}}
+                                </div>
+                                <div class="col col-md-4">
+                                    <label for="txtHorasUso" class="form-label">Horas de Uso:</label>
+                                    {{form.horasdeuso}}
                                 </div>
                             </div>
 
                             <div class="row mt-2">
-                                <div class="col col-md-6">
+                                <div class="col col-md-4">
                                     <label for="txtTiempoVida" class="form-label">Tiempo de Vida:</label>
                                     {{form.tiempovida}}
                                 </div>
+                                <div class="col col-md-4">
+                                    <label for="txtIdCeco" class="form-label">Ceco:</label>
+                                    {{form.idceco}}
+                                </div>
                                 
 
-                                <div class="col col-md-6">
+                                <div class="col col-md-4">
                                     <label for="txtIdArea" class="form-label">Area:</label>
                                     {{form.idarea}}
                                 </div>
@@ -146,11 +151,13 @@
             formModal.setAttribute("action", `./modificar/${id}`);
             formModal.setAttribute("method", "POST");
                 txtImplemento.value = datos.implemento[0].implemento;           
-                txtTiempoVida.value = datos.implemento[0].tiempovida;           
-                txtNroImplemento.value = datos.implemento[0].nroimplemento;           
+                txtTiempoVida.value = datos.implemento[0].tiempovida;
+                txtHorasUso.value = datos.implemento[0].horasdeuso;     
+                txtIdUsuario.value = datos.implemento[0].idusuario_id;          
                 txtCodImplemento.value = datos.implemento[0].codimplemento;           
                 txtIdTipoimplemento.value = datos.implemento[0].idtipoimplemento_id;           
-                txtIdArea.value = datos.implemento[0].idarea_id;           
+                txtIdArea.value = datos.implemento[0].idarea_id;
+                txtIdCeco.value = datos.implemento[0].idceco_id;           
         })
         .catch((error) => {
             console.log(error);

@@ -20,8 +20,8 @@ class Solicitante(models.Model):
     idpersona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
     estado = models.BooleanField(default=True, verbose_name="Estado")
     estado_actividad = models.BooleanField(default=True, verbose_name="Estado Actividad")
-    creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")
+    creado_en = models.DateTimeField(auto_now_add=True, null=True, verbose_name="Fecha de creación")
+    actualizado_en = models.DateField(auto_now=True, null=True, verbose_name="Fecha de edición")
 
     class Meta:
         verbose_name = "Solicitante"
@@ -38,13 +38,13 @@ class Tractorista(models.Model):
     idpersona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
     estado = models.BooleanField(default=True, verbose_name="Estado")
     estado_actividad = models.BooleanField(default=True, verbose_name="Estado Actividad")
-    creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    creado_en = models.DateTimeField(auto_now_add=True, null=True, verbose_name="Fecha de creación")
     actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")
 
     class Meta:
         verbose_name = "Tractorista"
         verbose_name_plural = "Tractoristas"
-        ordering = ['idtractorista', 'apellidos']
+        ordering = ['idtractorista']
 
     def __str__(self):
         return f"Tractorista: {self.idpersona.nombres} {self.idpersona.apellidos}"

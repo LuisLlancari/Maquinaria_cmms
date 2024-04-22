@@ -12,14 +12,11 @@ class TiposolicitanteForms(forms.ModelForm):
 class TractoristaForms(forms.ModelForm):
     class Meta:
         model = Tractorista
-        fields = ['idtractorista','idusuario','apellidos', 'nombres', 'codigo', 'dni']
+        fields = ['idtractorista','idusuario','idpersona']
         widgets = {
             'idtractorista': forms.HiddenInput(),
             'idusuario': forms.Select(attrs={'class': 'form-select', 'id':'txtTractorista'}),
-            'apellidos': forms.TextInput(attrs={'class': 'form-control', 'id':'txtApellidos'}),
-            'nombres': forms.TextInput(attrs={'class': 'form-control', 'id':'txtNombres'}),
-            'codigo': forms.TextInput(attrs={'class': 'form-control', 'id':'txtCodigo'}),
-            'dni': forms.TextInput(attrs={'class': 'form-control', 'id':'txtDni'}),
+            'apellidos': forms.TextInput(attrs={'class': 'form-control', 'id':'txtPersona'}),
         }
         
 class SolicitanteForms(forms.ModelForm):
@@ -29,11 +26,9 @@ class SolicitanteForms(forms.ModelForm):
         
     class Meta:
         model = Solicitante
-        fields = ['idsolicitante','idtiposolicitante', 'apellidos', 'nombres', 'codigo']
+        fields = ['idsolicitante','idtiposolicitante','idpersona']
         widgets = {
             'idsolicitante': forms.HiddenInput(),
             'idtiposolicitante': forms.Select(attrs={'class': 'form-select', 'id': 'txtSolicitante'}),
-            'apellidos': forms.TextInput(attrs={'class': 'form-control', 'id': 'txtApellidos'}),
-            'nombres': forms.TextInput(attrs={'class': 'form-control', 'id': 'txtNombres'}),
-            'codigo': forms.TextInput(attrs={'class': 'form-control', 'id': 'txtCodigo'}),
+            'idpersona' : forms.Select(attrs={'class': 'form-select', 'id': 'txtPersona'}),
         }

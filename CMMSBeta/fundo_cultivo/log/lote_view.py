@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login', redirect_field_name='')
 def lote(request):
-  lotes = Lote.objects.filter(estado=True, idvariedad__estado=True, idcultivo__estado=True)
+  lotes = Lote.objects.filter(estado=True, idvariedad__estado=True)
   variedades = Variedad.objects.filter(estado=True)
   Cultivos = Cultivo.objects.filter(estado=True)
   return render(request, 'fundo_cultivo/lote.html',{'datos': lotes, 'variedades': variedades, 'cultivos': Cultivos, 'form_lote': LoteForm})

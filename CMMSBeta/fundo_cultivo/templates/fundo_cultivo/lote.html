@@ -23,9 +23,9 @@
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Lote</th>
-                    <th scope="col">Cultivo</th>
-                    <th scope="col">Sede</th>
                     <th scope="col">Variedad</th>
+                    <th scope="col">Cultivo</th>
+                    <th scope="col">Fundo</th>
                     {% if user.idrol.rol != "Gerencia" %}
                     <th scope="col">Operaciones</th>
                     {% endif %}
@@ -36,12 +36,12 @@
                 <tr>
                     <th scope="row">{{ forloop.counter}}</th>
                     <td>{{ data.lote}}</td>
-                    <td>{{ data.idcultivo }}</td>
-                    <td>{{ data.idcultivo.idfundo.fundo }}</td>
                     <td>{{ data.idvariedad }}</td>
+                    <td>{{ data.idvariedad.idcultivo }}</td>
+                    <td>{{ data.idfundo }}</td>
                     {% if user.idrol.rol != "Gerencia" %}
                     <td>
-                        <button class="btn btn-warning btn-sm editar d-inline-block" id="lote" data-toggle="modal" data-target="#modalActualizar" data-idlote='{{ data.idlote }}' data-nombrelote="{{ data.lote }}" data-idcultivo="{{ data.idcultivo.idcultivo }}" data-idvariedad="{{ data.idvariedad.idvariedad }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="lote" data-toggle="modal" data-target="#modalActualizar" data-idlote='{{ data.idlote }}' data-nombrelote="{{ data.lote }}" data-idcultivo="{{ data.idvariedad.idcultivo }}" data-idvariedad="{{ data.idvariedad.idvariedad }}" type="button"><i class="lni lni-pencil"></i></button>
                         <form action="{% url 'eliminar_lote' data.idlote %}" class="d-inline-block" method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
@@ -60,12 +60,18 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="">Nuevo Cultivo</h5>
+                    <h5 class="modal-title" id="">Nuevo Lote</h5>
                 </div>
                 <div class="modal-body">
                     <form method="post" action="{% url 'registrar_lote' %}" autocomplete="off" id="form-lote">
                         {% csrf_token %}
-                        {{ form_lote }}
+                        <label class="form-label">Fundo:</label>
+                        {{ form_lote.idfundo }}
+                        <label class="form-label">Variedad - Cultivo</label>
+                        {{ form_lote.idvariedad }}
+                        <br>
+                        <label class="form-label mt-3">Lote:</label>
+                        {{ form_lote.lote }}
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
