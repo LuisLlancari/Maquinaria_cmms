@@ -6,17 +6,16 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from ..models import Variedad
+from ..forms import VariedadForm
 
 @login_required(login_url='login', redirect_field_name='')
 def variedad(request):
   variedad = Variedad.objects.filter(estado=True)
   return render(request, 'fundo_cultivo/variedad.html',{'datos': variedad, 'form_variedad': VariedadForm})
 
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from ..models import Variedad
-from ..forms import VariedadForm
-from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login', redirect_field_name='')
 def registrar_variedad(request):
