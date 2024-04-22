@@ -1,102 +1,141 @@
 {% extends 'core/base.html' %} 
-{% block titulo%}Inicio{% endblock %} 
+{% block titulo %}Inicio{% endblock %} 
 {% block contenido %}
 <div class="btn-group" role="group" aria-label="Basic example">
-  <button
-    type="button"
-    class="btn btn-primary"
-    data-bs-toggle="modal"
-    data-bs-target="#exampleModal"
-  >
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Reportes En Excel
   </button>
-</div>
-<div class="btn-group" role="group" aria-label="Basic example">
-  <button
-    type="button"
-    class="btn btn-primary"
-    data-bs-toggle="modal"
-    data-bs-target="#exampleModalPDF"
-  >
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalPDF">
     Reportes En PDF
+  </button>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalGrafico">
+    Reportes Graficos
   </button>
 </div>
 
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="exampleModal"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Exportar Reportes</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="{% url 'exportar' %}" method="POST">
         {% csrf_token %}
         <div class="modal-body">
           <h1>Reporte de Actividades</h1>
-            
+          <div class="mb-3">
+            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
+            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
+          </div>
+          <div class="mb-3">
+            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
+            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+          </div>
+          <div class="mb-3">
+            <label for="usuario" class="form-label">Usuario:</label>
+            <select id="selectuser" class="form-control" id="usuario" name="usuario">
+              <option selected disabled>Seleccione un Usuario</option>
+              {% for data in usuarios %}
+                <option value="{{ data.idusuario }}">{{ data.idusuario__username }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="labor" class="form-label">Labor:</label>
+            <select class="form-control" id="labor" name="labor">
+              <option selected disabled>Seleccione Una Labor</option>
+              {% for data in tipolabor %}
+                <option value="{{ data.idtipolabor }}">{{ data.idtipolabor__tipolabor }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="horas_tractor" class="form-label">Horas de uso de tractor:</label>
+            <input type="number" class="form-control" id="horas_tractor" name="horas_tractor">
+          </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">
-                Exportar Formato Excel
-            </button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                Cerrar
-            </button>
+          <button type="submit" class="btn btn-primary">Exportar Formato Excel</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         </div>
-    </form>
-    
+      </form>
     </div>
   </div>
 </div>
 
-
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="exampleModalPDF"
-  tabindex="-1"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="exampleModalPDF" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Exportar Reportes</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="{% url 'exportpdf' %}" method="POST">
         {% csrf_token %}
         <div class="modal-body">
           <h1>Reporte de Actividades</h1>
-            
+          <div class="mb-3">
+            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
+            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
+          </div>
+          <div class="mb-3">
+            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
+            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+          </div>
+          <div class="mb-3">
+            <label for="usuario" class="form-label">Usuario:</label>
+            <select id="selectuser" class="form-control" id="usuario" name="usuario">
+              <option selected disabled>Seleccione un Usuario</option>
+              {% for data in usuarios %}
+                <option value="{{ data.idusuario }}">{{ data.idusuario__username }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="labor" class="form-label">Labor:</label>
+            <select class="form-control" id="labor" name="labor">
+              <option selected disabled>Seleccione Una Labor</option>
+              {% for data in tipolabor %}
+                <option value="{{ data.idtipolabor }}">{{ data.idtipolabor__tipolabor }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="horas_tractor" class="form-label">Horas de uso de tractor:</label>
+            <input type="number" class="form-control" id="horas_tractor" name="horas_tractor">
+          </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">
-                Exportar Formato PDF
-            </button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                Cerrar
-            </button>
+          <button type="submit" id="exportarpdf" class="btn btn-primary">Exportar Formato PDF</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         </div>
-    </form>
-    
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModalGrafico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Exportar Reportes Graficos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{% url 'reporteGrafico' %}" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <h1>Reporte de Actividades</h1>
+          <select name="reporteForma" id="reporteForma">
+            <option value="circulo">Circulo</option>
+            <option value="barra">Barra</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Mostrar Reportes Graficos</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
