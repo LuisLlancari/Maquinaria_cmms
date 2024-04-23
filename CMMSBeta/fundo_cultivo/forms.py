@@ -40,5 +40,5 @@ class LoteForm(forms.ModelForm):
         widgets = {
             'lote': forms.TextInput(attrs={'class': 'form-control mb-2'}),
             'idfundo': forms.Select(attrs={'class': 'form-control mb-2'}),
-            'idvariedad': forms.Select(attrs={'class': 'form-control mb-2 mt-2'}),
+            'idvariedad': forms.Select(attrs={'class': 'form-select mb-2 mt-2'}),
         }

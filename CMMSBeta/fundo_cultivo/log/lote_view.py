@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from ..models import *  
 from ..forms import *
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from django.contrib.auth.decorators import login_required
 
@@ -24,6 +24,14 @@ def eliminar_lote(request, id_lote):
     registro.save()
     return redirect('lote')
   
+def obtener_lote(request):
+  variedad = list(Variedad.objects.all().values())
+  if(len(variedad) > 0):
+    data = {'mensaje': "Success", 'variedad': variedad}
+  else:
+    data = {'mensaje':"Not found"}
+  return JsonResponse(data)
+
 def editar_lote(request):
   if request.method == 'POST':
     lote_id = request.POST.get('lote_id')
