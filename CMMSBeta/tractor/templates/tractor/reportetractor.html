@@ -43,10 +43,10 @@
                     {% csrf_token %}
 
                     <label for="txtHorometroinicial" class="form-label mt-1">Horometro Inicial:</label>
-                    <input type="number" name="horometroini" class="form-control" id="txtHorometroinicial" required readonly>
+                    <input type="text" name="horometroini" class="form-control" id="txtHorometroinicial" required readonly>
                     
                     <label for="id_horometrofinal" class="form-label mt-1">Horometro Final:</label>
-                    <input type="number" name="horometrofinal" class="form-control" id="id_horometrofinal" required>
+                    <input type="number" name="horometrofinal" class="form-control" id="id_horometrofinal" max=0 min=0 required>
                     
                     <label for="id_correlativo" class="form-label mt-1">Correlativo:</label>
                     <input type="number" name="correlativo" class="form-control" id="id_correlativo" required>
@@ -71,26 +71,32 @@
 
         const btnFinalizar = document.querySelectorAll(".finalizar");
 
+        
+        
+        
+        
         function obtener_horainicial(id){
-        fetch(`./reportetractor/obtenerhinicial/${id}`)
-        .then(res => res.json())
-        .then(datos => {
-            txtHorometroinicial.value = datos.tractor[0].horainicial
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+            fetch(`./reportetractor/obtenerhinicial/${id}`)
+            .then(res => res.json())
+            .then(datos => {
+                txtHorometroinicial.value = datos.tractor[0].horainicial
+                horometrofinal = parseInt(txtHorometroinicial.value) + 15
+                id_horometrofinal.setAttribute("max", horometrofinal)
+                id_horometrofinal.setAttribute("min", txtHorometroinicial.value)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         }
-
-
+        
+        
         btnFinalizar.forEach(function(boton){
-        boton.addEventListener("click", function(event) {
-            let id_programacion = event.target.dataset.programacion;
-            let id_tractor = event.target.dataset.tractor;
-            txtProgramacion.value = id_programacion
-            obtener_horainicial(id_tractor);
-
-        });          
+            boton.addEventListener("click", function(event) {
+                let id_programacion = event.target.dataset.programacion;
+                let id_tractor = event.target.dataset.tractor;
+                txtProgramacion.value = id_programacion
+                obtener_horainicial(id_tractor);
+            });          
         });
 
 
