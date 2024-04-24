@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from ..models import TipoTractor,Tractor
 from ..forms import TipoTractorForm
+from django.contrib import messages
 
 #VERIFICA SI EL USUARIO ESTA LOGUEADO
 
@@ -36,10 +37,15 @@ def registrar_tipotractor(request):
         form = TipoTractorForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "El tipo tractor ha sido agregada correctamente", extra_tags='success')
+            return redirect('tipotractor')
+        
+        else:
+            messages.success(request, "El tipo de tractor ya existe", extra_tags='warning')
             return redirect('tipotractor')
     else:
-        form = TipoTractorForm()
-        return render(request, '', {'form': form})
+            return redirect('tipotractor')
+        
     
 @login_required(login_url='login', redirect_field_name='')
 def editar_tipo(request):
@@ -50,8 +56,13 @@ def editar_tipo(request):
 
         if form.is_valid():
             form.save()
+            messages.success(request, "El tipo tractor ha sido modificado correctamente", extra_tags='primary')
             return redirect('tipotractor')
-    else:
-        return redirect('editartipo')
+        else:
+            messages.success(request, "El tipo de tractor ya existe", extra_tags='primary')
+            return redirect('tipotractor')
 
-    return render(request, '', {'form': form})
+    else:
+        return redirect('tipotractor')
+
+    

@@ -20,16 +20,23 @@ def variedad(request):
 @login_required(login_url='login', redirect_field_name='')
 def registrar_variedad(request):
     if request.method == 'POST':
+        # Instanciamos el formulario
         form = VariedadForm(request.POST)
+
+        # Validamos formulario
         if form.is_valid():
+            
+            # Obtenemos el valores de los inputs enviados por el request
             variedad_nombre = form.cleaned_data['variedad']
             id_cultivo = request.POST.get('idcultivo')
 
+            # Validamos si el dato existe
             if Variedad.objects.filter(variedad=variedad_nombre, idcultivo=id_cultivo).exists():
                 messages.success(request, ("Datos ya existentes."))
             else:
                 form.save()
-
+                
+            # Retornamos la vista
             return redirect('variedad')
         else:
             errores = form.errors.as_text()
@@ -54,6 +61,7 @@ def editar_variedad(request):
       return HttpResponse(mensaje_error)
   else:
     return HttpResponse("La solicitud no fue válida")
+  
   
 def eliminar_variedad(request, id_variedad):
   registro = get_object_or_404(Variedad, pk=id_variedad)

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from ..models import Base, Sede
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from ..forms import BaseForm
 
@@ -32,12 +33,22 @@ def registrar_base(request):
     if request.method == 'POST':
         form = BaseForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('base')  # Redirige a la vista correcta para mostrar las bases registradas
+            # Obtenemos datos del formulario
+            base_nombre = form.cleaned_data['base']
+            id_sede = request.POST.get('idsede')
+
+            if Base.objects.filter(idsede = id_sede ,base = base_nombre).exists():
+                messages.success(request, "La Base ya existe", extra_tags='warning')
+            else:
+                form.save()
+                messages.success(request, "La base ha sido agregada correctamente", extra_tags='success')
+            return redirect('base')  
+        else:
+            messages.success(request, "Ingrese información válida", extra_tags='danger')
+            return redirect('base')
     else:
-        form = BaseForm()
-        
-    return render(request, '../templates/localizacion/base.html', {'form': form})
+        form = BaseForm()     
+        return render(request, '../templates/localizacion/base.html', {'form': form})
 
 @login_required(login_url='login', redirect_field_name='')
 def editar_base(request):
@@ -47,10 +58,22 @@ def editar_base(request):
         form = BaseForm(request.POST, instance=base)
 
         if form.is_valid():
-            form.save()
-            return redirect('base')
+            base_nombre = form.cleaned_data['base']
+            id_sede = request.POST.get('idsede')
+
+            if Base.objects.filter(idsede = id_sede ,base = base_nombre).exists():
+                messages.success(request, "La Base ya existe", extra_tags='warning')
+                return redirect('base')
+            else:
+                form.save()
+                messages.success(request, "El registro ha sido modificado correctamente", extra_tags='primary')
+                return redirect('base')
+        
+        else:
+            messages.success(request, "Ingrese información válida", extra_tags='danger')
+            return redirect('base')    
     else:
         return redirect('base')
 
-    return render(request, '../templates/localizacion/base.html', {'form': form})
+   
 

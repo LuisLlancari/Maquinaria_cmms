@@ -5,7 +5,7 @@ class Persona(models.Model):
     idpersona = models.AutoField(primary_key = True)
     nombres = models.CharField(max_length=45, verbose_name="Nombres")
     apellidos = models.CharField(max_length=45, verbose_name="Apellidos")
-    dni= models.CharField(max_length=8, null = True, verbose_name= "DNI")
+    dni= models.CharField(max_length=8, null = True, blank=True, verbose_name= "DNI")
     codigo = models.CharField(max_length=12, null=True, verbose_name="Codigo")
     estado = models.BooleanField(default=True, verbose_name="Estado")
     creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")

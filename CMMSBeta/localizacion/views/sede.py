@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from ..models import Sede, Base, Area
 from ..forms import SedeForm
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login', redirect_field_name='')
@@ -32,10 +33,13 @@ def registrar_sede(request):
         form = SedeForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "La sede se ha registrado correctamente", extra_tags='success')
+            return redirect('sede')
+        else:   
+            messages.success(request, "La Sede ya existe", extra_tags='warning')
             return redirect('sede')
     else:
-        form = SedeForm()
-        return render(request, '../templates/localizacion/sede.html', {'form': form})
+        return redirect('sede')
 
 @login_required(login_url='login', redirect_field_name='')
 def editar_sede(request):
@@ -47,9 +51,11 @@ def editar_sede(request):
 
         if form.is_valid():
             form.save()
+            messages.success(request, "La sede se ha modificado correctamente", extra_tags='primary')
+            return redirect('sede')
+        else:
+            messages.success(request, "La sede ya existe", extra_tags='danger')
             return redirect('sede')
 
     else:
         return redirect('sede')
-
-    return render(request, '', {'form': form})

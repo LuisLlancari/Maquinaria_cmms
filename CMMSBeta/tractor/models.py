@@ -6,7 +6,7 @@ from fundo_cultivo.models import Cultivo
 
 class TipoTractor(models.Model):
     idtipotractor = models.AutoField(primary_key=True)
-    TipoTractor = models.CharField(max_length=100)
+    TipoTractor = models.CharField(max_length=100, unique=True, verbose_name="Tipo de tractor")
     estado = models.BooleanField(default=True)
 
     def __str__(self):

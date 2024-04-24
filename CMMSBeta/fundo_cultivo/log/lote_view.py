@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from ..models import *  
 from ..forms import *
+from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 
 from django.contrib.auth.decorators import login_required
@@ -13,9 +14,26 @@ def lote(request):
   return render(request, 'fundo_cultivo/lote.html',{'datos': lotes, 'variedades': variedades, 'cultivos': Cultivos, 'form_lote': LoteForm})
 
 def registrar_lote(request):
-  form = LoteForm(request.POST)
-  form.save()
-  return redirect('lote')
+  if request.method == 'POST':
+    form = LoteForm(request.POST)
+    if form.is_valid():
+      lote = form.cleaned_data['lote']
+      fundo = request.POST.get('idfundo')
+      variedad = request.POST.get('idvariedad')
+      print("antes de llegar al if")
+
+      if Lote.objects.filter(lote = lote, idvariedad = variedad, idfundo= fundo).exists():
+        messages.success(request, ("Los datos ya existen."))
+        print("datos repetidos")
+        return redirect('lote')
+      else:
+        form.save()
+        return redirect('lote')
+    else:
+      messages.success(request, ("El lote ya existe"))
+      return redirect('lote')
+  else:
+    return redirect('lote')
 
 def eliminar_lote(request, id_lote):
   registro = get_object_or_404(Lote, pk=id_lote)

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from ..models import TipoSolicitante
 from ..forms import TiposolicitanteForms
 from django.http import JsonResponse
+from django.contrib import messages
 
 def tipoSolicitante(request):
   datos_tipos = TipoSolicitante.objects.filter(estado = True)
@@ -13,9 +14,14 @@ def registrartipoSolicitante(request):
     form = TiposolicitanteForms(request.POST)
     if form.is_valid():
       form.save()
+      messages.success(request, "El tipo solicitante se ha agreado correctamente", extra_tags='success')
+      return redirect('tiposolicitante')
+    else:
+      messages.success(request, "El tipo solicitante ya existe", extra_tags='warning')
       return redirect('tiposolicitante')
   else:
-    return render(request, 'operarios/tiposolicitante.html', {'datos_tipos':datos_tipos})
+    return redirect('tiposolicitante')
+
 
 def eliminarTiposolicitante(request, id_tipo):
   registro = get_object_or_404(TipoSolicitante, pk= id_tipo)
@@ -25,10 +31,20 @@ def eliminarTiposolicitante(request, id_tipo):
     return redirect('tiposolicitante')
 
 def editarTiposolicitante(request, id_tipo):
-  tipoSolicitante = get_object_or_404(TipoSolicitante, pk=id_tipo)
-  form = TiposolicitanteForms(request.POST, instance=tipoSolicitante)
-  form.save()
-  return redirect('tiposolicitante')
+  if request.method == 'POST':
+    tipoSolicitante = get_object_or_404(TipoSolicitante, pk=id_tipo)
+    form = TiposolicitanteForms(request.POST, instance=tipoSolicitante)
+    if form.is_valid():
+      form.save()
+      messages.success(request, "El tipo solicitante se ha modificado correctamente", extra_tags='primary')
+      return redirect('tiposolicitante')
+    else:
+      messages.success(request, "El tipo solicitante ya existe", extra_tags='warning')
+      return redirect('tiposolicitante')
+    
+  else:
+      return redirect('tiposolicitante')
+
 
 def obtenerDatos(request, id_tipo):
   tipo_solicitante = list(TipoSolicitante.objects.filter(pk=id_tipo).values())
