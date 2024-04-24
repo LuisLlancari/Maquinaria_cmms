@@ -60,10 +60,11 @@ def registrar_programacion(request):
         messages.success(request, "Ingrese datos válidos", extra_tags='danger')
         return redirect('programacion')
 
-def eliminar_programacion(request, id):
-    programacion = get_object_or_404(Programacion, pk=id)
+def eliminar_programacion(request, id_programacion):
+    programacion = get_object_or_404(DetalleLabor, pk=id_programacion)
     if request.method == 'POST':
-        programacion.delete()
+        programacion.estado = False
+        programacion.save()
         return redirect('programacion')
 
 def obtener_data(request, id_programacion):

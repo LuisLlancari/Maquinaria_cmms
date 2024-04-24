@@ -75,7 +75,7 @@
                             data-target="#modalEditar" data-idtipolabor="{{ data.idtipolabor }}"
                             data-nombretipolabor="{{ data.tipolabor }}" type="button"><i
                             class="lni lni-pencil"></i></button> -->
-                            <form action="#" class="d-inline-block" 
+                            <form action="{% url 'eliminar_programacion' det.iddetlabor %}" class="d-inline-block" 
                             method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm mx-5"><i
