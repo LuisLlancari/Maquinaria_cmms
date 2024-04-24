@@ -33,6 +33,7 @@
             <th scope="col" class="text-center">N°</th>
             <th scope="col" class="text-center">Tipo Tractor</th>
             <th scope="col" class="text-center">Usuario</th>
+            <th scope="col" class="text-center">Fundo</th>
             <th scope="col" class="text-center">Nro Tractor</th>
             <th scope="col" class="text-center">Hora Inicial</th>
             <th scope="col" class="text-center">Hora de Uso</th>
@@ -48,13 +49,15 @@
             <th scope="row" class="text-center">{{ forloop.counter }}</th>
             <td class="text-center">{{ data.idtipotractor }}</td>
             <td class="text-center">{{ data.idusuario }}</td>
+            <td class="text-center">{{ data.idfundo }}</td>
             <td class="text-center">{{ data.nrotractor }}</td>
             <td class="text-center">{{ data.horainicial }}</td>
             <td class="text-center">{{ data.horauso }}</td>
             {% if user.idrol.rol != "Gerencia" %}
             <td class="text-center">
               <button class="btn btn-warning btn-sm editar d-inline-block" id="tractor" data-toggle="modal"
-              data-target="#modalEditarTractor" data-idtractor="{{ data.idtractor }}"
+              data-target="#modalEditarTractor" data-idtractor="{{ data.idtractor }}" data-idfundo="{{ data.idfundo.idfundo }}"
+              data-idusuario="{{ data.idusuario }}" data-usuario="{{ data.idusuario.id }}"
               data-nrotractor="{{data.nrotractor}}" data-horauso="{{data.horauso}}"
               data-horaini="{{data.horainicial}}" data-idtipotractor="{{data.idtipotractor}}" type="button">
               <i class="lni lni-pencil"></i>
@@ -129,8 +132,10 @@
             {% csrf_token %}
             <input type="hidden" id="idtractor" name="idtractor" />
 
+
             <!-- Campo idtipotractor con Bootstrap -->
             <div class="form-group">
+              <label for="idtipotractor">Tipo Tractor:</label>
               <select name="idtipotractor" id="idtipotractor" class="form-control mt-2 mb-2">
                 {% for tipo in tipotractor %}
                   <option value="{{tipo.idtipotractor}}">{{tipo.TipoTractor}}</option>
@@ -140,7 +145,22 @@
 
             <!-- Campo idusuario con Bootstrap -->
             <div class="form-group">
-              {{ form.idusuario.label_tag }} {{ form.idusuario }}
+              <label for="idusuario">Usuario</label>
+              <select name="idusuario" id="idusuario" class="form-control mt-2 mb-2">
+                {% for usuario in usuario %}
+                  <option value="{{usuario.id}}">{{usuario.username}}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Campo idfundo con Bootstrap -->
+            <div class="form-group">
+              <label for="idfundo">Fundo</label>
+              <select name="idfundo" id="idfundo" class="form-control mt-2 mb-2">
+                {% for fundo in fundo %}
+                  <option value="{{fundo.idfundo}}">{{fundo.fundo}}</option>
+                {% endfor %}
+              </select>
             </div>
 
             <!-- Campo nrotractor con Bootstrap -->
@@ -193,12 +213,17 @@
         button.addEventListener("click", function () {
           var idTractor = this.dataset.idtractor;
           var nroTractor = this.dataset.nrotractor;
+          var usuario = this.dataset.usuario;
+          var fundo = this.dataset.idfundo;
           var horaini = this.dataset.horaini;
           var horauso = this.dataset.horauso;
+
           document.getElementById("idtractor").value = idTractor;
           document.getElementById("nrotractor").value = nroTractor;
           document.getElementById("horainicial").value = horaini;
           document.getElementById("horauso").value = horauso;
+          document.getElementById("idusuario").value = usuario;
+          document.getElementById("idfundo").value = fundo;
         });
       });
     });

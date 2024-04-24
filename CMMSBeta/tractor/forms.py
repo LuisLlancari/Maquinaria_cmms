@@ -20,11 +20,12 @@ class TractorForm(forms.ModelForm):
         self.fields['idtipotractor'].queryset = TipoTractor.objects.filter(estado=True)
     class Meta:
         model = Tractor
-        fields = ['idtractor','idtipotractor', 'idusuario', 'nrotractor', 'horainicial', 'horauso']
+        fields = ['idtractor','idtipotractor', 'idusuario', 'idfundo' ,'nrotractor', 'horainicial', 'horauso']
         widgets = {
             'idtractor': forms.HiddenInput(),  # Campo oculto
             'idtipotractor': forms.Select(attrs={'class': 'form-control'}),
             'idusuario': forms.Select(attrs={'class': 'form-control'}),
+            'idfundo': forms.Select(attrs={'class': 'form-control'}),
             'nrotractor': forms.TextInput(attrs={'class': 'form-control'}),
             'horainicial': forms.NumberInput(attrs={'class': 'form-control'}),
             'horauso': forms.NumberInput(attrs={'class': 'form-control'}),

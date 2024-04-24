@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 
 from django.contrib.auth.decorators import login_required
 
+#Manejo de errores
+from django.contrib import messages
+
 # Ceco
 @login_required(login_url='login', redirect_field_name='')
 def ceco(request):
@@ -20,8 +23,15 @@ def ceco(request):
 
 @login_required(login_url='login', redirect_field_name='')
 def registrar_ceco(request):
-    form = CecoForm(request.POST)
-    form.save()
+    if request.method == 'POST':
+        form = CecoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Ceco registrado con exito', extra_tags='success')
+            return redirect('ceco')
+        else:
+            messages.error(request, 'El centro de costo ya existe', extra_tags='danger')
+
     return redirect('ceco')
 
 @login_required(login_url='login', redirect_field_name='')

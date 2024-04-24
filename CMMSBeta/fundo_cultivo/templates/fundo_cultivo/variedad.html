@@ -19,8 +19,9 @@
     <div class="table-responsive mt-3">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    {{ message }}
+                <div id="mensaje" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <strong>{{ message }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
@@ -44,7 +45,7 @@
                     <td>{{ data.idcultivo }}</td>
                     {% if user.idrol.rol != "Gerencia" %}
                     <td>
-                        <button class="btn btn-warning btn-sm editar d-inline-block" id="variedad" data-toggle="modal" data-target="#modalActualizar" data-idvariedad="{{ data.idvariedad }}" data-nombrevariedad="{{ data.variedad }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="variedad" data-toggle="modal" data-target="#modalActualizar" data-idvariedad="{{ data.idvariedad }}" data-nombrevariedad="{{ data.variedad }}" data-idcultivo="{{data.idcultivo.idcultivo}}" type="button"><i class="lni lni-pencil"></i></button>
                         <form action="{% url 'eliminar_variedad' data.idvariedad %}" class="d-inline-block" method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
@@ -92,6 +93,15 @@
                             <!-- el forms toma el name-->
                             <input type="text" class="form-control mb-2" id="nombre_variedad" name="variedad" required>
                         </div>
+
+                        <div class="form-group mb-3">
+                            <label for="id_cultivo">Cultivo:</label>
+                            <select class="form-control" id="id_cultivo" name="idcultivo" required>
+                                {% for cultivo in cultivos %}
+                                    <option value="{{ cultivo.idcultivo }}">{{ cultivo.cultivo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     </form>                    
                 </div>
@@ -128,13 +138,22 @@
         //Eventos
         buscador.addEventListener('input', filtrarTabla);
 
+        setTimeout(function() {
+            var mensaje = document.getElementById('mensaje');
+            if (mensaje) {
+                mensaje.style.display = 'none';
+            }
+        }, 3000);
+
         var editButtons = document.querySelectorAll('.editar');
         editButtons.forEach(function(button) {
             button.addEventListener('click', function() {
                 var idvariedad = this.dataset.idvariedad;
                 var nombre_variedad = this.dataset.nombrevariedad;
+                var idCultivo = this.dataset.idcultivo;
                 document.getElementById("variedad_id").value = idvariedad;
                 document.getElementById("nombre_variedad").value = nombre_variedad;
+                document.getElementById("id_cultivo").value = idCultivo;
             });
         });
     });

@@ -29,7 +29,7 @@ class Solicitante(models.Model):
         ordering = ['idsolicitante', 'idtiposolicitante']
     
     def __str__(self):
-        return f"Solicitante: {self.idpersona.nombres} {self.idpersona.apellidos}"
+        return f"{self.idpersona.nombres} {self.idpersona.apellidos}"
     
 
 class Tractorista(models.Model):
@@ -47,4 +47,4 @@ class Tractorista(models.Model):
         ordering = ['idtractorista']
 
     def __str__(self):
-        return f"Tractorista: {self.idpersona.nombres} {self.idpersona.apellidos}"
+        return f"{self.idpersona.nombres} {self.idpersona.apellidos}"

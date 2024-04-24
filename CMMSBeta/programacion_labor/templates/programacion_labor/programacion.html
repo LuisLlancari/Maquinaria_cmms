@@ -166,37 +166,47 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll('.btn-ver').forEach(button => {
-        button.addEventListener('click', function() {
-            let idProgramacion = this.getAttribute('data-idprogramacion');
-            console.log(idProgramacion);
-            fetch(`http://127.0.0.1:8000/programacion/obtener_data/${idProgramacion}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.mensaje === "Success") {
-                        var modalBody = document.querySelector('#modalListImplemento .modal-body');
-                        modalBody.innerHTML = '';
-                        var ul = document.createElement('ul');
-                        data.nombres_implementos.forEach(nombre => {
-                            var li = document.createElement('li');
-                            li.textContent = nombre;
-                            ul.appendChild(li);
-                        });
-                        modalBody.appendChild(ul);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+        let maxImplementos = 3;
+
+        document.getElementById('btn-agregar').addEventListener('click', () => {
+            let implementosAgregados = document.querySelectorAll('.implementos-container select').length;
+            if (implementosAgregados < maxImplementos) {
+                var selectClonado = document.getElementById('id_idimplemento').cloneNode(true);        
+                document.querySelector('.implementos-container').appendChild(selectClonado);
+            } else {
+                if (!document.querySelector('.implementos-container .text-danger')) {
+                    var mensaje = document.createElement('span');
+                    mensaje.textContent = '¡Has alcanzado el máximo de implementos permitidos!';
+                    mensaje.classList.add('text-danger', 'ms-2');
+                    document.querySelector('.implementos-container').insertBefore(mensaje, document.querySelector('.implementos-container').firstChild);
+                }
+            }
         });
-    });
 
-
-
-    document.getElementById('btn-agregar').addEventListener('click', () => {
-    var selectClonado = document.getElementById('id_idimplemento').cloneNode(true);        
-    document.querySelector('.implementos-container').appendChild(selectClonado);
-    });
+        document.querySelectorAll('.btn-ver').forEach(button => {
+            button.addEventListener('click', function() {
+                let idProgramacion = this.getAttribute('data-idprogramacion');
+                console.log(idProgramacion);
+                fetch(`http://127.0.0.1:8000/programacion/obtener_data/${idProgramacion}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.mensaje === "Success") {
+                            var modalBody = document.querySelector('#modalListImplemento .modal-body');
+                            modalBody.innerHTML = '';
+                            var ul = document.createElement('ul');
+                            data.nombres_implementos.forEach(nombre => {
+                                var li = document.createElement('li');
+                                li.textContent = nombre;
+                                ul.appendChild(li);
+                            });
+                            modalBody.appendChild(ul);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+        });
     });
 </script>
 

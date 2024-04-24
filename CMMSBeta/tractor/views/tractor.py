@@ -3,16 +3,22 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from ..models import Tractor, TipoTractor
 from ..forms import TractorForm
+from fundo_cultivo.models import Fundo
+from usuario.models import Usuario
 
 @login_required(login_url='login', redirect_field_name='')
 def tractor(request):
     tractores = Tractor.objects.filter(estado = True)
     tipotractor = TipoTractor.objects.filter(estado = True)
+    fundo = Fundo.objects.filter(estado = True)
+    usuario = Usuario.objects.all()
     form = TractorForm()
     data = {
         'tractores' : tractores,
         'form' : form,
-        'tipotractor' : tipotractor
+        'tipotractor' : tipotractor,
+        'fundo' : fundo,
+        'usuario' : usuario
     }
     
     return render(request, 'tractor/tractor.html', data)
