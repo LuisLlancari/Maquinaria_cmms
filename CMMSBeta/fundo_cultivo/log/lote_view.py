@@ -3,6 +3,9 @@ from ..models import *
 from ..forms import *
 from django.http import HttpResponse
 
+#Manejo de errores
+from django.contrib import messages
+
 from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login', redirect_field_name='')
@@ -13,8 +16,14 @@ def lote(request):
   return render(request, 'fundo_cultivo/lote.html',{'datos': lotes, 'variedades': variedades, 'cultivos': Cultivos, 'form_lote': LoteForm})
 
 def registrar_lote(request):
-  form = LoteForm(request.POST)
-  form.save()
+  if request.method == 'POST':
+    form = LoteForm(request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request, 'Lote registrado con exito', extra_tags='success')
+      return redirect('lote')
+    else:
+      messages.error(request, 'El lote ya existe', extra_tags='danger')
   return redirect('lote')
 
 def eliminar_lote(request, id_lote):
@@ -31,11 +40,8 @@ def editar_lote(request):
     form = LoteForm(request.POST, instance=lote_instance)
     if form.is_valid():
       form.save()
+      messages.success(request, 'Lote actualizado con exito', extra_tags='primary')
       return redirect('lote')
     else:
-      # Obtener los errores del formulario
-      errores = form.errors.as_text()
-      mensaje_error = f"Hubo un error en el formulario: {errores}"
-      return HttpResponse(mensaje_error)
-  else:
-    return HttpResponse("La solicitud no fue valida")
+      messages.error(request, 'La actualización fallo', extra_tags='danger')
+  return redirect('lote')

@@ -5,14 +5,23 @@ from django.http import HttpResponse
 
 from django.contrib.auth.decorators import login_required
 
+#Manejo de errores
+from django.contrib import messages
+
 @login_required(login_url='login', redirect_field_name='')
 def cultivo(request):
   cultivos = Cultivo.objects.filter(estado=True)
   return render(request, 'fundo_cultivo/cultivo.html',{'datos': cultivos, 'form_cultivo': CultivoForm})
 
 def registrar_cultivo(request):
-  form = CultivoForm(request.POST)
-  form.save()
+  if request.method == 'POST':
+    form = CultivoForm(request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request, 'Cultivo registrado con exito', extra_tags='success')
+      return redirect('cultivo')
+    else:
+      messages.error(request, 'El cultivo ya existe', extra_tags='danger')
   return redirect('cultivo')
 
 def editar_cultivo(request):
@@ -22,14 +31,11 @@ def editar_cultivo(request):
     form = CultivoForm(request.POST, instance=cultivo_instance)
     if form.is_valid():
       form.save()
+      messages.success(request, 'Cultivo actualizado con exito', extra_tags='primary')
       return redirect('cultivo')
     else:
-      # Obtener los errores del formulario
-      errores = form.errors.as_text()
-      mensaje_error = f"Hubo un error en el formulario: {errores}"
-      return HttpResponse(mensaje_error)
-  else:
-    return HttpResponse("La solicitud no fue valida")
+      messages.error(request, 'Error al actualizar el cultivo', extra_tags='danger')
+  return redirect('cultivo')
   
 def eliminar_cultivo(request, id_cultivo):
   registro = get_object_or_404(Cultivo, pk=id_cultivo)
