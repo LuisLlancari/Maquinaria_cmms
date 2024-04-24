@@ -72,7 +72,7 @@
                             {% csrf_token %}
 
                             <label for="txtTipoSolicitante" class="form-label">Tipo solicitante:</label>
-                            <select class="form-select" name="tiposolicitante" id="txtTipoSolicitante">
+                            <select class="form-select mb-3" name="tiposolicitante" id="txtTipoSolicitante">
                                 <option selected>Seleccione: </option>
                                 {% for tipo in datos_tiposolicitante %}
                                 <option value="{{tipo.idtiposolicitante}}">{{tipo.tiposolicitante}}</option>
