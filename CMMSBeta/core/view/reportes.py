@@ -1,11 +1,12 @@
 from openpyxl.styles import Font, NamedStyle, Alignment, Border, Side, PatternFill
 from programacion_labor.models import DetalleLabor, Programacion, TipoLabor
+from django.http import FileResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from openpyxl.styles.borders import Border, Side
 from django.template.loader import get_template
-from django.http import FileResponse, HttpResponseBadRequest
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.db.models import Count
 import plotly.graph_objs as go
 from datetime import datetime
 from openpyxl import Workbook
@@ -47,7 +48,7 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
             nuevoLibro.add_named_style(estilo_tabla)
 
             # Escribir encabezado
-            encabezado = ['Implemento','Tipo de labor', 'Lote', 'Tractor', 'Usuario', 'Tractorista', 'Solicitante', 'Fecha', 'Turno', 'Horas Uso', 'Estado']
+            encabezado = ['Sede','Implemento' ,'Fundo','Tipo de labor', 'Lote', 'Tractor', 'Usuario', 'Tractorista', 'Solicitante', 'Fecha', 'Turno', 'Horas Uso', 'Estado']
             hojaActiva.append(encabezado)
 
             # Establecer estilo y formato para el encabezado
@@ -86,6 +87,7 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                 detalle_labor = list(detalle)
                 implemento_nombre = detalle_labor[0]
                 id_programacion = detalle_labor[1]
+                
                 programacion = Programacion.objects.get(idprogramacion=id_programacion)
                 tipolabor = TipoLabor.objects.get(idtipolabor=programacion.idtipolabor_id)  
                 solicitante_nombre = f"{programacion.idsolicitante.idpersona.nombres} {programacion.idsolicitante.idpersona.apellidos}" if programacion.idsolicitante else ''  
@@ -96,6 +98,8 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                 detalle_labor[-1] = estado
 
                 datos_programacion = [
+                    programacion.idlote.idfundo.idsede.sede,
+                    programacion.idlote.idfundo.fundo,
                     tipolabor.tipolabor,  
                     programacion.idlote.lote if programacion.idlote else '',
                     programacion.idtractor.nrotractor if programacion.idtractor else '',
@@ -106,7 +110,8 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                     programacion.turno,
                     programacion.idtractor.horauso,
                 ]
-                hojaActiva.append([detalle_labor[0]] +  datos_programacion + detalle_labor[-1:])
+                hojaActiva.append([datos_programacion[0]] + [detalle_labor[0]] +  datos_programacion[1:] + [detalle_labor[-1]])
+
 
             # Ajustar estilo y ancho de columnas
             for row in hojaActiva.iter_rows():
@@ -200,49 +205,60 @@ def reportePDF(request):
 
 
 #Reporte Graficos
-import plotly.graph_objs as go
 
 def reporteGrafico(request):
-    # Obtener la forma del reporte del formulario
     forma = request.POST.get('reporteForma')
+    fecha = request.POST.get('fecha_grafico')
+    
+    if fecha:
+        fecha_solicitud = Programacion.objects.filter(fechahora=fecha)
+        if not fecha_solicitud.exists():
+            return HttpResponse("No hay solicitudes en la fecha solicitada", status=400)
 
-    # Definir las categorías y valores de ejemplo
-    categorias = ['A', 'B', 'C', 'D']
-    valores = [10, 20, 15, 25]
+    nombres_solicitudes = Programacion.objects.filter(fechahora=fecha) \
+        .values('idsolicitante__idpersona__nombres') \
+        .annotate(num_solicitudes=Count('idsolicitante')) \
+        .order_by()
+
+    # Extraer nombres y contar el número de solicitantes
+    nombres = [nombre['idsolicitante__idpersona__nombres'] for nombre in nombres_solicitudes]
+    num_solicitudes = [nombre['num_solicitudes'] for nombre in nombres_solicitudes]
 
     # Generar el gráfico según la forma seleccionada
     if forma == 'barra':
         data = [
             go.Bar(
-                x=categorias,
-                y=valores
+                x=nombres,
+                y=num_solicitudes
             )
         ]
         layout = go.Layout(
-            title='Reporte Gráfico de Barras',
-            xaxis=dict(title='Categorías'),
-            yaxis=dict(title='Valores')
+            xaxis=dict(title='Solicitantes'),
+            yaxis=dict(title='Número de Solicitudes')
         )
     elif forma == 'circulo':
         data = [
             go.Pie(
-                labels=categorias,
-                values=valores
+                labels=nombres,
+                values=num_solicitudes
             )
         ]
-        layout = go.Layout(
-            title='Reporte Gráfico Circular'
-        )
+        layout = go.Layout()
     else:
         return HttpResponseBadRequest("Tipo de gráfico no válido")
 
     # Crear la figura del gráfico
     fig = go.Figure(data=data, layout=layout)
 
+    # Ajustar el tamaño del gráfico
+    fig.update_layout(
+        width=800,  # Anchura del gráfico
+        height=600  # Altura del gráfico
+    )
+
     # Convertir la figura en HTML
     figuraReporte = fig.to_html(full_html=False)
 
     # Renderizar la página con el gráfico
-    return render(request, 'reportes/graficos.html', {'figura': figuraReporte})
-
+    return render(request, 'core/home.html', {'figura': figuraReporte})
 
