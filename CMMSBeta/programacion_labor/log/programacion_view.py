@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db.models import Max , Count, Subquery, OuterRef
 from implemento.models import *
 from django.http import JsonResponse
+from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
@@ -36,8 +37,6 @@ def registrar_programacion(request):
             # idtractorista = form.cleaned_data['idtractorista']
             idtractorista = request.POST.get('idtractorista')
 
-            print(idtractor)
-            print(idtractorista)
             programacion = form.save()
 
             # Obtener el ID de la última programación guardada
@@ -55,11 +54,11 @@ def registrar_programacion(request):
             Tractor.objects.filter(nrotractor = idtractor).update(estado_actividad = False)
             Tractorista.objects.filter(pk = idtractorista).update(estado_actividad = False)
 
+            messages.success(request, "La programacion ha sido agregada correctamente", extra_tags='success')
             return redirect('programacion')
     else:
-        form = ProgramacionForm()
-
-        return redirect('programacion', {'form': form})
+        messages.success(request, "Ingrese datos válidos", extra_tags='danger')
+        return redirect('programacion')
 
 def eliminar_programacion(request, id_programacion):
     programacion = get_object_or_404(DetalleLabor, pk=id_programacion)

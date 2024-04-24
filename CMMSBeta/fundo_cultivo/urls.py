@@ -9,7 +9,7 @@ urlpatterns = [
   path('eliminar_fundo/<int:id_fundo>', fundo_view.eliminar_fundo , name='eliminar_fundo'),
   path('editar_fundo', fundo_view.editar_fundo , name='editar_fundo'),
 
-  #Urls de lote
+  #Urls de cultivo
   path('cultivo', cultivo_view.cultivo , name='cultivo'),
   path('registrar_cultivo', cultivo_view.registrar_cultivo , name='registrar_cultivo'),
   path('editar_cultivo', cultivo_view.editar_cultivo , name='editar_cultivo'),
@@ -25,5 +25,6 @@ urlpatterns = [
   path('lote', lote_view.lote , name='lote'),
   path('registrar_lote', lote_view.registrar_lote , name='registrar_lote'),
   path('editar_lote', lote_view.editar_lote , name='editar_lote'),
+  path('lote/obtenerdatos/', lote_view.obtener_lote, name='obtener_datos_para_lote'),
   path('eliminar_lote/<int:id_lote>', lote_view.eliminar_lote , name='eliminar_lote'),
 ]

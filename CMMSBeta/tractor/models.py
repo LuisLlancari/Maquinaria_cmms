@@ -2,11 +2,11 @@ from django.db import models
 from usuario.models import Usuario
 from django.contrib.auth.models import User
 from django.db import models
-from fundo_cultivo.models import Cultivo
+from fundo_cultivo.models import Cultivo, Fundo
 
 class TipoTractor(models.Model):
     idtipotractor = models.AutoField(primary_key=True)
-    TipoTractor = models.CharField(max_length=100)
+    TipoTractor = models.CharField(max_length=100, unique=True, verbose_name="Tipo de tractor")
     estado = models.BooleanField(default=True)
 
     def __str__(self):
@@ -17,7 +17,7 @@ class Tractor(models.Model):
     idtractor = models.AutoField(primary_key=True)
     idtipotractor = models.ForeignKey(TipoTractor, on_delete=models.PROTECT, verbose_name='Tipo Tractor')
     idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.PROTECT, verbose_name='Usuario', null=True)
-    idcultivo = models.ForeignKey(Cultivo, on_delete=models.PROTECT, verbose_name='Cultivo', null=True)
+    idfundo = models.ForeignKey(Fundo, on_delete=models.PROTECT, verbose_name='Fundo', null=True)
     nrotractor = models.CharField(max_length=100 , verbose_name='Nombre Tractor', unique=True)
     horainicial = models.IntegerField(verbose_name='Hora Inicial')
     horauso = models.IntegerField(verbose_name='Hora Uso')

@@ -6,7 +6,7 @@ class TiposolicitanteForms(forms.ModelForm):
         model = TipoSolicitante
         fields = ['tiposolicitante']
         widgets = {
-            'tiposolicitante': forms.TextInput(attrs={'class': 'form-control', 'id':'txtTipoSolicitante'}),
+            'tiposolicitante': forms.TextInput(attrs={'class': 'form-control mt-3', 'id':'txtTipoSolicitante'}),
         }
 
 class TractoristaForms(forms.ModelForm):

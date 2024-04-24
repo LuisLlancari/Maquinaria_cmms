@@ -4,7 +4,7 @@
 
 {% block contenido %} 
 <div class="container">
-    <h1 class="text-start mb-3">Gestion de Lotes</h1>
+    <h1 class="text-center mt-3 mb-3">Gestion de Lotes</h1>
     <div class="row">
         <div class="col-md-4">
             <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
@@ -18,27 +18,35 @@
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table table-striped" id="tabla-lote">
-            <thead>
+        {% if messages %}
+            {% for message in messages %}
+                <div id="mensaje" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <strong>{{ message }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <table class="table table-striped table-bordered" id="tabla-lote">
+            <thead class="text-center">
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Lote</th>
-                    <th scope="col">Variedad</th>
-                    <th scope="col">Cultivo</th>
                     <th scope="col">Fundo</th>
+                    <th scope="col">Cultivo</th>
+                    <th scope="col">Variedad</th>
                     {% if user.idrol.rol != "Gerencia" %}
-                    <th scope="col">Operaciones</th>
+                    <th scope="col">Operaciones</th>    
                     {% endif %}
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
                 {% for data in datos %}
-                <tr>
+                <tr class="text-center">
                     <th scope="row">{{ forloop.counter}}</th>
                     <td>{{ data.lote}}</td>
-                    <td>{{ data.idvariedad }}</td>
-                    <td>{{ data.idvariedad.idcultivo }}</td>
                     <td>{{ data.idfundo }}</td>
+                    <td>{{ data.idvariedad.idcultivo }}</td>
+                    <td>{{ data.idvariedad }}</td>
                     {% if user.idrol.rol != "Gerencia" %}
                     <td>
                         <button class="btn btn-warning btn-sm editar d-inline-block" id="lote" data-toggle="modal" data-target="#modalActualizar" data-idlote='{{ data.idlote }}' data-nombrelote="{{ data.lote }}" data-idcultivo="{{ data.idvariedad.idcultivo }}" data-idvariedad="{{ data.idvariedad.idvariedad }}" type="button"><i class="lni lni-pencil"></i></button>
@@ -65,19 +73,48 @@
                 <div class="modal-body">
                     <form method="post" action="{% url 'registrar_lote' %}" autocomplete="off" id="form-lote">
                         {% csrf_token %}
-                        <label class="form-label">Fundo:</label>
-                        {{ form_lote.idfundo }}
-                        <label class="form-label">Variedad - Cultivo</label>
-                        {{ form_lote.idvariedad }}
-                        <br>
-                        <label class="form-label mt-3">Lote:</label>
-                        {{ form_lote.lote }}
+
+
+                        <div class="row">
+                            <div class="col col-md-6">
+                                <label class="form-label mt-3">Lote:</label>
+                                {{ form_lote.lote }}
+                            </div>
+                            <div class="col col-md-6">
+                                <label class="form-label mt-3">Fundo:</label>
+                                {{ form_lote.idfundo }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col col-md-6 mb-3" >
+                                <label class="form-label">Cultivo:</label>
+                                <select name="cultivo" id="txtCultivo" class="form-select">
+                                    <option value="">---------</option>
+                                    {% for cultivo in cultivos %}
+                                    <option value="{{ cultivo.idcultivo }}">{{ cultivo.cultivo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col col-md-6 mb-3">
+                                <label class="form-label">Variedad</label>
+                                <select name="idvariedad" id="id_idvariedad" class="form-select">
+                                    <option value="">---------</option>
+                                    
+                                </select>
+                                
+                            </div>
+                        </div>
+
+                        
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+
     <!--MODAL PARA ACTUALIZAR-->
     <div class="modal fade" id="modalActualizar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -120,6 +157,7 @@
 </div>
 
 <script>
+    
     document.addEventListener("DOMContentLoaded", () => {
         const h1 = document.querySelector('#h1-remplazar');
         const buscador = document.querySelector('#buscador');
@@ -146,6 +184,13 @@
         //Eventos
         buscador.addEventListener('input', filtrarTabla);
 
+        setTimeout(function() {
+            var mensaje = document.getElementById('mensaje');
+            if (mensaje) {
+                mensaje.style.display = 'none';
+            }
+        }, 3000);
+
 
         var editButtons = document.querySelectorAll('.editar');
         editButtons.forEach(function(button) {
@@ -164,6 +209,42 @@
 
             });
         });
+
+
+        function obtener_datos(idcultivo){
+        fetch(`./lote/obtenerdatos/`)
+        .then(res => res.json())
+        .then(datos => {
+
+            let datos_filtrados = datos.variedad.filter(variedad => variedad.idcultivo_id == idcultivo);
+            renderizarOpciones(datos_filtrados);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+        }
+
+
+        function renderizarOpciones(variedades) {
+            const select = document.getElementById('id_idvariedad'); 
+            select.innerHTML = ''; 
+
+            variedades.forEach(variedad => {
+                const option = document.createElement('option');
+                option.value = variedad.idvariedad;
+                option.text = variedad.variedad;
+                select.appendChild(option);
+            });
+        }
+
+
+        txtCultivo.addEventListener('change', function(){
+            let valorseleccionado = txtCultivo.value;       
+            console.log(valorseleccionado)
+            obtener_datos(valorseleccionado)
+        });
+
+
     });
 </script>
 

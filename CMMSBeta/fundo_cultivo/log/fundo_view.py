@@ -6,6 +6,9 @@ from django.http import HttpResponse
 
 from localizacion.models import Sede
 
+#Manejo de errores
+from django.contrib import messages
+
 
 @login_required(login_url='login', redirect_field_name='')
 def fundo(request):
@@ -17,8 +20,15 @@ def fundo(request):
   return render(request, 'fundo_cultivo/fundo.html', {'datos': fundos,'sedes': sedes ,'form_fundo': FundoForm})
 
 def registrar_fundo(request):
-  form = FundoForm(request.POST)
-  form.save()
+  if request.method == 'POST':
+    form = FundoForm(request.POST)
+    if form.is_valid():
+      form.save()
+      messages.success(request, 'Fundo registrado con exito', extra_tags='success')
+      return redirect('fundo')
+    else:
+      messages.error(request, 'El fundo ya existe', extra_tags='danger')
+
   return redirect('fundo')
 
 def eliminar_fundo(request, id_fundo):
@@ -35,11 +45,8 @@ def editar_fundo(request):
     form = FundoForm(request.POST, instance=fundo_instance)
     if form.is_valid():
       form.save()
+      messages.success(request, 'Fundo actualizado con exito', extra_tags='primary')
       return redirect('fundo')
     else:
-      # Obtener los errores del formulario
-      errores = form.errors.as_text()
-      mensaje_error = f"Hubo un error en el formulario: {errores}"
-      return HttpResponse(mensaje_error)
-  else:
-    return HttpResponse("La solicitud no fue valida")
+      messages.error(request, 'Error al actualizar el fundo', extra_tags='danger')
+  return redirect('fundo')

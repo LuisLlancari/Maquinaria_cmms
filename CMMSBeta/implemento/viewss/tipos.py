@@ -4,6 +4,10 @@ from ..models import TipoImplemento
 from ..forms import TipoImplementoForms
 from django.http import JsonResponse
 
+
+#Manejo de errores
+from django.contrib import messages
+
 def tipoImplemento (request):
   datos_tipoimplemento = TipoImplemento.objects.filter(estado=True)
   return render(request, 'implemento/tipoimplemento.html', {'datos': datos_tipoimplemento, 'form': TipoImplementoForms})
@@ -14,9 +18,11 @@ def registrarTipoImplemento(request):
       form = TipoImplementoForms(request.POST)
       if form.is_valid(): 
         form.save()
+        messages.success(request, 'Tipo de implemento registrado con exito', extra_tags='success')
         return redirect('tipoimplemento')
-    else:
-      return render(request, 'implemento/tipoimplemento.html', {})
+      else:
+        messages.error(request, 'El tipo de implemento ya existe', extra_tags='danger')
+    return redirect('tipoimplemento')
 
 def eliminarImplemento(request, id):
   registro = get_object_or_404(TipoImplemento, pk= id)
@@ -26,9 +32,15 @@ def eliminarImplemento(request, id):
     return redirect('tipoimplemento')
   
 def editarTipoImplemento(request, id_tipo):
-  tipo_implmento = get_object_or_404(TipoImplemento, pk=id_tipo)
-  form = TipoImplementoForms(request.POST, instance=tipo_implmento)
-  form.save()
+  if request.method == 'POST':
+    tipo_implmento = get_object_or_404(TipoImplemento, pk=id_tipo)
+    form = TipoImplementoForms(request.POST, instance=tipo_implmento)
+    if form.is_valid():
+      form.save()
+      messages.success(request, 'Tipo de implemento editado con exito', extra_tags='primary')
+      return redirect('tipoimplemento')
+    else:
+      messages.error(request, 'Error al editar', extra_tags='danger')
   return redirect('tipoimplemento')
 
 

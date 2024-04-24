@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from ..models import *  
 from ..forms import *
-from django.http import HttpResponse
+from django.contrib import messages
+from django.http import HttpResponse, JsonResponse
+
+#Manejo de errores
+from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
@@ -13,9 +17,26 @@ def lote(request):
   return render(request, 'fundo_cultivo/lote.html',{'datos': lotes, 'variedades': variedades, 'cultivos': Cultivos, 'form_lote': LoteForm})
 
 def registrar_lote(request):
-  form = LoteForm(request.POST)
-  form.save()
-  return redirect('lote')
+  if request.method == 'POST':
+    form = LoteForm(request.POST)
+    if form.is_valid():
+      lote = form.cleaned_data['lote']
+      fundo = request.POST.get('idfundo')
+      variedad = request.POST.get('idvariedad')
+      print("antes de llegar al if")
+
+      if Lote.objects.filter(lote = lote, idvariedad = variedad, idfundo= fundo).exists():
+        messages.success(request, ("Los datos ya existen."))
+        print("datos repetidos")
+        return redirect('lote')
+      else:
+        form.save()
+        return redirect('lote')
+    else:
+      messages.success(request, ("El lote ya existe"))
+      return redirect('lote')
+  else:
+    return redirect('lote')
 
 def eliminar_lote(request, id_lote):
   registro = get_object_or_404(Lote, pk=id_lote)
@@ -24,6 +45,14 @@ def eliminar_lote(request, id_lote):
     registro.save()
     return redirect('lote')
   
+def obtener_lote(request):
+  variedad = list(Variedad.objects.all().values())
+  if(len(variedad) > 0):
+    data = {'mensaje': "Success", 'variedad': variedad}
+  else:
+    data = {'mensaje':"Not found"}
+  return JsonResponse(data)
+
 def editar_lote(request):
   if request.method == 'POST':
     lote_id = request.POST.get('lote_id')
@@ -31,11 +60,8 @@ def editar_lote(request):
     form = LoteForm(request.POST, instance=lote_instance)
     if form.is_valid():
       form.save()
+      messages.success(request, 'Lote actualizado con exito', extra_tags='primary')
       return redirect('lote')
     else:
-      # Obtener los errores del formulario
-      errores = form.errors.as_text()
-      mensaje_error = f"Hubo un error en el formulario: {errores}"
-      return HttpResponse(mensaje_error)
-  else:
-    return HttpResponse("La solicitud no fue valida")
+      messages.error(request, 'La actualización fallo', extra_tags='danger')
+  return redirect('lote')

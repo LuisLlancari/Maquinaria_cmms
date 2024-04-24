@@ -5,6 +5,10 @@ from ..forms import ImplementoForms
 from django.http import JsonResponse
 
 
+#Manejo de errores
+from django.contrib import messages
+
+
 @login_required(login_url='login', redirect_field_name='implemento')
 def implemento(request):
   datos_implemento = Implemento.objects.filter(estado = True) 
@@ -15,9 +19,11 @@ def registrarImplemento(request):
     form = ImplementoForms(request.POST)
     if form.is_valid():
       form.save()
+      messages.success(request, 'Implemento registrado con exito', extra_tags='success')
       return redirect('implemento')
-  else:
-    return render(request, 'implemento/implemento.html', {})
+    else:
+      messages.error(request, 'El implemento ya existe', extra_tags='danger')
+  return redirect('implemento')
 
 def eliminarimplemento(request, id_implemento):
   registro = get_object_or_404(Implemento, pk= id_implemento)
@@ -27,9 +33,16 @@ def eliminarimplemento(request, id_implemento):
     return redirect('implemento')
   
 def editarImplemento(request, id_implemento):
-  implemento = get_object_or_404(Implemento, pk=id_implemento)
-  form = ImplementoForms(request.POST, instance=implemento)
-  form.save()
+  if request.method == 'POST':
+    implemento = get_object_or_404(Implemento, pk=id_implemento)
+    form = ImplementoForms(request.POST, instance=implemento)
+    if form.is_valid():
+      form.save()
+      messages.success(request, 'Implemento editado con exito', extra_tags='primary')
+      return redirect('implemento')
+    else:
+      messages.error(request, 'El implemento ya existe', extra_tags='danger')
+      return redirect('implemento')
   return redirect('implemento')
 
 
