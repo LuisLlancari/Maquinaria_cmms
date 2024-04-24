@@ -2,8 +2,10 @@ from openpyxl.styles import Font, NamedStyle, Alignment, Border, Side, PatternFi
 from programacion_labor.models import DetalleLabor, Programacion, TipoLabor
 from django.http import FileResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from openpyxl.styles.borders import Border, Side
 from django.template.loader import get_template
+from tractor.models import ReporteTractor
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.db.models import Count
@@ -48,7 +50,7 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
             nuevoLibro.add_named_style(estilo_tabla)
 
             # Escribir encabezado
-            encabezado = ['Sede','Implemento' ,'Fundo','Tipo de labor', 'Lote', 'Tractor', 'Usuario', 'Tractorista', 'Solicitante', 'Fecha', 'Turno', 'Horas Uso', 'Estado']
+            encabezado = ['Sede','Implemento', 'Horometro inicial' , 'Horometro final' ,'Fundo','Tipo de labor', 'Lote', 'Tractor', 'Usuario', 'Tractorista', 'Solicitante', 'Fecha', 'Turno']
             hojaActiva.append(encabezado)
 
             # Establecer estilo y formato para el encabezado
@@ -76,7 +78,7 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
             if horas_uso:
                 detalles_labor_query = detalles_labor_query.filter(idprogramacion__idtractor__horauso__gte=horas_uso)
 
-            detalles_labor = detalles_labor_query.values_list('idimplemento__implemento', 'idprogramacion', 'estado').order_by('-idprogramacion')
+            detalles_labor = detalles_labor_query.values_list('idimplemento__implemento', 'idprogramacion').order_by('-idprogramacion')
 
             # Verificar si se encontraron datos después de aplicar los filtros
             if not detalles_labor.exists():
@@ -88,29 +90,42 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                 implemento_nombre = detalle_labor[0]
                 id_programacion = detalle_labor[1]
                 
-                programacion = Programacion.objects.get(idprogramacion=id_programacion)
-                tipolabor = TipoLabor.objects.get(idtipolabor=programacion.idtipolabor_id)  
-                solicitante_nombre = f"{programacion.idsolicitante.idpersona.nombres} {programacion.idsolicitante.idpersona.apellidos}" if programacion.idsolicitante else ''  
-                tractorista_nombre = f"{programacion.idtractorista.idpersona.nombres} { programacion.idtractorista.idpersona.apellidos }" if programacion.idtractorista else ''  
-
-                fecha_formateada = str(programacion.fechahora)
-                estado = 'Activo' if detalle_labor[-1] else 'Inactivo'
-                detalle_labor[-1] = estado
-
-                datos_programacion = [
-                    programacion.idlote.idfundo.idsede.sede,
-                    programacion.idlote.idfundo.fundo,
-                    tipolabor.tipolabor,  
-                    programacion.idlote.lote if programacion.idlote else '',
-                    programacion.idtractor.nrotractor if programacion.idtractor else '',
-                    programacion.idusuario.username if programacion.idusuario else '',
-                    tractorista_nombre,  
-                    solicitante_nombre,  
-                    fecha_formateada,  
-                    programacion.turno,
-                    programacion.idtractor.horauso,
-                ]
-                hojaActiva.append([datos_programacion[0]] + [detalle_labor[0]] +  datos_programacion[1:] + [detalle_labor[-1]])
+                try:
+                    detTractor = ReporteTractor.objects.get(idprogramacion=id_programacion)
+                except ObjectDoesNotExist:
+                 # Manejar el caso en el que no se encuentre un objeto de ReporteTractor
+                    detTractor = None
+                    
+                try:
+                    programacion = Programacion.objects.get(idprogramacion=id_programacion)
+                    tipolabor = TipoLabor.objects.get(idtipolabor=programacion.idtipolabor_id)  
+                    solicitante_nombre = f"{programacion.idsolicitante.idpersona.nombres} {programacion.idsolicitante.idpersona.apellidos}" if programacion.idsolicitante else ''  
+                    tractorista_nombre = f"{programacion.idtractorista.idpersona.nombres} { programacion.idtractorista.idpersona.apellidos }" if programacion.idtractorista else ''
+                    
+                    fecha_formateada = str(programacion.fechahora)
+                    estado = 'Activo' if detalle_labor[-1] else 'Inactivo'
+                    detalle_labor[-1] = estado  
+                    
+                    datos_programacion = [
+                        programacion.idlote.idfundo.idsede.sede,
+                        detTractor.horometroinicial if detTractor else 'Aun no se inicio labor',
+                        detTractor.horometrofinal if detTractor else 'Aun no se inicio labor',
+                        programacion.idlote.idfundo.fundo,
+                        tipolabor.tipolabor,  
+                        programacion.idlote.lote if programacion.idlote else '',
+                        programacion.idtractor.nrotractor if programacion.idtractor else '',
+                        programacion.idusuario.username if programacion.idusuario else '',
+                        tractorista_nombre,  
+                        solicitante_nombre,  
+                        fecha_formateada,  
+                        programacion.turno,
+                    ]
+                    hojaActiva.append([datos_programacion[0]] + [detalle_labor[0]] + datos_programacion[1:])
+                except ObjectDoesNotExist:
+        # Manejar el caso en el que no se encuentre un objeto de Programacion
+                        pass
+                
+                
 
 
             # Ajustar estilo y ancho de columnas
@@ -260,5 +275,5 @@ def reporteGrafico(request):
     figuraReporte = fig.to_html(full_html=False)
 
     # Renderizar la página con el gráfico
-    return render(request, 'core/home.html', {'figura': figuraReporte})
+    return render(request, 'core/home.html', {'figura': figuraReporte})     
 
