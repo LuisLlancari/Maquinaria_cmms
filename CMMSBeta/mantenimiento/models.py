@@ -16,7 +16,7 @@ class MantenimientoPreventivo(models.Model):
           verbose_name_plural = "Mantenimientos Preventivos"
 
     def __str__(self):
-      return self.idmanpreventivo
+      return str(self.idmanpreventivo)
     
 class Mantenimiento(models.Model):
     idmantenimiento = models.AutoField(primary_key=True)
@@ -31,4 +31,4 @@ class Mantenimiento(models.Model):
           verbose_name_plural = "Mantenimientos"
 
     def __str__(self):
-      return self.idmantenimiento
+      return str(self.idmantenimiento)

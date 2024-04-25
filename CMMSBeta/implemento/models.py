@@ -43,14 +43,10 @@ class Implemento(models.Model):
 
 class DetImplementos(models.Model):
     iddetalleimplemento = models.AutoField(primary_key=True)
-    idpersona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
     sistema = models.ForeignKey(Sistema, on_delete=models.SET_DEFAULT,default=None, verbose_name="Sistema")
-    # idresponsable = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
-    idceco = models.ForeignKey(Ceco, on_delete=models.SET_DEFAULT, default=None, verbose_name="CECO")
     idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
     estado = models.BooleanField(default=True, verbose_name="Estado")
-    creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")
+
 
     class Meta:
         verbose_name = "Detalle Implemento"
