@@ -1,7 +1,7 @@
 from django.db import models
 from localizacion.models import Area
 from ceco.models import Ceco
-from componente_pieza.models import Pieza
+from componente_pieza.models import Pieza, Sistema
 from usuario.models import Usuario, Persona
 from ceco.models import Ceco
 
@@ -44,6 +44,7 @@ class Implemento(models.Model):
 class DetImplementos(models.Model):
     iddetalleimplemento = models.AutoField(primary_key=True)
     idpersona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
+    sistema = models.ForeignKey(Sistema, on_delete=models.SET_DEFAULT,default=None, verbose_name="Sistema")
     # idresponsable = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
     idpieza = models.ForeignKey(Pieza, on_delete=models.SET_DEFAULT, default=None, verbose_name="Pieza")
     idceco = models.ForeignKey(Ceco, on_delete=models.SET_DEFAULT, default=None, verbose_name="CECO")
