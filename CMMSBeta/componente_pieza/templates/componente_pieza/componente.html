@@ -140,10 +140,8 @@ document.addEventListener("DOMContentLoaded", () => {
             formModal.setAttribute("action", `./modificar/${id}`);
             formModal.setAttribute("method", "POST");
             txtComponente.value = datos.componentes[0].componente;           
-            txtCodigoComp.value = datos.componentes[0].codcomponente;           
-            txthoraInstalacion.value = datos.componentes[0].horainstalacion;           
-            txtTiempovida.value = datos.componentes[0].tiempovida;           
-            txtSistema.value = datos.componentes[0].idsistema_id;           
+            txtCodigoComp.value = datos.componentes[0].codcomponente;                     
+            txtTiempovida.value = datos.componentes[0].tiempovida;                  
         })
         .catch((error) => {
             console.log(error);
