@@ -21,6 +21,8 @@ def registrarImplemento(request):
       form.save()
       messages.success(request, 'Implemento registrado con exito', extra_tags='success')
       return redirect('implemento')
+    
+      
     else:
       messages.error(request, 'El implemento ya existe', extra_tags='danger')
   return redirect('implemento')
