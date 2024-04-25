@@ -50,7 +50,7 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
             nuevoLibro.add_named_style(estilo_tabla)
 
             # Escribir encabezado
-            encabezado = ['Sede','Implemento', 'Horometro inicial' , 'Horometro final' ,'Fundo','Tipo de labor', 'Lote', 'Tractor', 'Usuario', 'Tractorista', 'Solicitante', 'Fecha', 'Turno']
+            encabezado = ['Sede','Implemento','Horometro Inicial','Horometro Final','Fundo','Tipo de labor', 'Lote', 'Tractor', 'Usuario', 'Tractorista', 'Solicitante', 'Fecha', 'Turno']
             hojaActiva.append(encabezado)
 
             # Establecer estilo y formato para el encabezado
@@ -84,48 +84,60 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
             if not detalles_labor.exists():
                 return HttpResponse("No se encontraron datos para los filtros aplicados.", status=404)
 
-            # Agregar datos a la hoja
             for detalle in detalles_labor:
                 detalle_labor = list(detalle)
                 implemento_nombre = detalle_labor[0]
                 id_programacion = detalle_labor[1]
-                
-                try:
-                    detTractor = ReporteTractor.objects.get(idprogramacion=id_programacion)
-                except ObjectDoesNotExist:
-                 # Manejar el caso en el que no se encuentre un objeto de ReporteTractor
-                    detTractor = None
-                    
+
                 try:
                     programacion = Programacion.objects.get(idprogramacion=id_programacion)
                     tipolabor = TipoLabor.objects.get(idtipolabor=programacion.idtipolabor_id)  
-                    solicitante_nombre = f"{programacion.idsolicitante.idpersona.nombres} {programacion.idsolicitante.idpersona.apellidos}" if programacion.idsolicitante else ''  
-                    tractorista_nombre = f"{programacion.idtractorista.idpersona.nombres} { programacion.idtractorista.idpersona.apellidos }" if programacion.idtractorista else ''
-                    
-                    fecha_formateada = str(programacion.fechahora)
-                    estado = 'Activo' if detalle_labor[-1] else 'Inactivo'
-                    detalle_labor[-1] = estado  
-                    
-                    datos_programacion = [
-                        programacion.idlote.idfundo.idsede.sede,
-                        detTractor.horometroinicial if detTractor else 'Aun no se inicio labor',
-                        detTractor.horometrofinal if detTractor else 'Aun no se inicio labor',
-                        programacion.idlote.idfundo.fundo,
-                        tipolabor.tipolabor,  
-                        programacion.idlote.lote if programacion.idlote else '',
-                        programacion.idtractor.nrotractor if programacion.idtractor else '',
-                        programacion.idusuario.username if programacion.idusuario else '',
-                        tractorista_nombre,  
-                        solicitante_nombre,  
-                        fecha_formateada,  
-                        programacion.turno,
-                    ]
-                    hojaActiva.append([datos_programacion[0]] + [detalle_labor[0]] + datos_programacion[1:])
-                except ObjectDoesNotExist:
-        # Manejar el caso en el que no se encuentre un objeto de Programacion
-                        pass
-                
-                
+
+                    solicitante_nombre = ""
+                    if programacion.idsolicitante:
+                        solicitante_nombre = f"{programacion.idsolicitante.idpersona.nombres} {programacion.idsolicitante.idpersona.apellidos}"
+
+                    tractorista_nombre = ""
+                    if programacion.idtractorista:
+                        tractorista_nombre = f"{programacion.idtractorista.idpersona.nombres} {programacion.idtractorista.idpersona.apellidos}"
+
+                    reporteTractores = ReporteTractor.objects.filter(idprogramacion=id_programacion)
+
+                    for reporteTractor in reporteTractores:
+                        fecha_formateada = str(programacion.fechahora)
+                        estado = 'Activo' if detalle_labor[-1] else 'Inactivo'
+                        detalle_labor[-1] = estado
+
+                        horometro_inicial = ""
+                        horometro_final = ""
+                        if reporteTractor.horometroinicial:
+                            horometro_inicial = reporteTractor.horometroinicial
+                        if reporteTractor.horometrofinal:
+                            horometro_final = reporteTractor.horometrofinal
+
+                        datos_programacion = [
+                            programacion.idlote.idfundo.idsede.sede,
+                            horometro_inicial,
+                            horometro_final,
+                            programacion.idlote.idfundo.fundo,
+                            tipolabor.tipolabor,  
+                            programacion.idlote.lote if programacion.idlote else '',
+                            programacion.idtractor.nrotractor if programacion.idtractor else '',
+                            programacion.idusuario.username if programacion.idusuario else '',
+                            tractorista_nombre,  
+                            solicitante_nombre,  
+                            fecha_formateada,  
+                            programacion.turno,
+                        ]
+                        hojaActiva.append([datos_programacion[0]] + [detalle_labor[0]] + datos_programacion[1:])
+
+                except Programacion.DoesNotExist:
+                    print("No se encontró la programación con el ID proporcionado.")
+                except TipoLabor.DoesNotExist:
+                    print("No se encontró el tipo de labor con el ID proporcionado.")
+                except ReporteTractor.DoesNotExist:
+                    print("No se encontró el reporte del tractor asociado.")
+
 
 
             # Ajustar estilo y ancho de columnas
@@ -217,7 +229,7 @@ def reportePDF(request):
     # Devolver el PDF como respuesta
     return FileResponse(buffer, as_attachment=True, filename="reporte.pdf")
 
-
+    
 
 #Reporte Graficos
 
@@ -267,8 +279,8 @@ def reporteGrafico(request):
 
     # Ajustar el tamaño del gráfico
     fig.update_layout(
-        width=800,  # Anchura del gráfico
-        height=600  # Altura del gráfico
+        width=300,  # Anchura del gráfico
+        height=300  # Altura del gráfico
     )
 
     # Convertir la figura en HTML
