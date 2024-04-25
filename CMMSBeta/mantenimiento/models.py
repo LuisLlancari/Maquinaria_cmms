@@ -6,9 +6,9 @@ from implemento.models import DetImplementos
 
 # Create your models here.
 class MantenimientoPreventivo(models.Model):
-    idmantenimientopreventivo = models.AutoField(primary_key=True)
-    detimplemento = models.ForeignKey(DetImplementos, on_delete=models.SET_DEFAULT, default=None, verbose_name="Detimplement")
-    fechaprogramacion = models.DateTimeField(auto_now_add=True,verbose_name="Fecha Programacion")
+    idmanpreventivo = models.AutoField(primary_key=True)
+    detimplemento = models.ForeignKey(DetImplementos, on_delete=models.SET_DEFAULT, default=None, verbose_name="Detimplemento")
+    fechaprogramacion = models.DateField(verbose_name="Fecha Programacion")
     estado = models.BooleanField(default=True, verbose_name="Estado")
     
     class Meta:
@@ -16,7 +16,7 @@ class MantenimientoPreventivo(models.Model):
           verbose_name_plural = "Mantenimientos Preventivos"
 
     def __str__(self):
-      return self.idmantenimientopreventivo
+      return self.idmanpreventivo
     
 class Mantenimiento(models.Model):
     idmantenimiento = models.AutoField(primary_key=True)

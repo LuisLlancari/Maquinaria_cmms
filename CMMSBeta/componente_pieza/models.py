@@ -19,6 +19,7 @@ class Componente(models.Model):
     componente = models.CharField(max_length=45, verbose_name="Componente")
     codcomponente = models.CharField(max_length=12, verbose_name=("Código componente"))
     tiempovida = models.IntegerField(verbose_name="Tiempo de vida")
+    frecuencia_man = models.IntegerField(verbose_name="Frecuencia de mantenimiento", null=True, blank=True) 
     estado = models.BooleanField(default=True, verbose_name="Estado")
     creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")

@@ -57,4 +57,4 @@ class DetImplementos(models.Model):
         verbose_name_plural = "Detalle Implementos"
 
     def __str__(self):
-        return self.iddetalleimplemento 
+        return str(self.iddetalleimplemento) 
