@@ -28,10 +28,9 @@ class DetImplementoForms(forms.ModelForm):
         self.fields['idimplemento'].queryset = Implemento.objects.filter(estado = True)
   class Meta:
     model = DetImplementos
-    fields = ['idpersona','idpieza', 'idimplemento']
+    fields = ['idpersona', 'idimplemento']
     widgets = {
       'idpersona': forms.Select(attrs={'class':'form-select', 'id':'txtIdPersona'}),
-      'idpieza': forms.Select(attrs={'class':'form-select', 'id':'txtIdpieza'}),
       'idimplemento': forms.Select(attrs={'class':'form-select', 'id':'txtIdImplemento'}),
     }
 

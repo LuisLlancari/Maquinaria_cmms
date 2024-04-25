@@ -1,7 +1,7 @@
 from django.db import models
 from localizacion.models import Area
 from ceco.models import Ceco
-from componente_pieza.models import Pieza, Sistema
+from componente_pieza.models import Sistema
 from usuario.models import Usuario, Persona
 from ceco.models import Ceco
 
@@ -46,7 +46,6 @@ class DetImplementos(models.Model):
     idpersona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
     sistema = models.ForeignKey(Sistema, on_delete=models.SET_DEFAULT,default=None, verbose_name="Sistema")
     # idresponsable = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
-    idpieza = models.ForeignKey(Pieza, on_delete=models.SET_DEFAULT, default=None, verbose_name="Pieza")
     idceco = models.ForeignKey(Ceco, on_delete=models.SET_DEFAULT, default=None, verbose_name="CECO")
     idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
     estado = models.BooleanField(default=True, verbose_name="Estado")
@@ -56,4 +55,6 @@ class DetImplementos(models.Model):
     class Meta:
         verbose_name = "Detalle Implemento"
         verbose_name_plural = "Detalle Implementos"
-        ordering = ['idpieza', 'creado_en']    
+
+    def __str__(self):
+        return self.iddetalleimplemento 
