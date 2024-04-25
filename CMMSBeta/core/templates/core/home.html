@@ -83,10 +83,6 @@
         <label for="fecha_grafico" class="form-label">Fecha Filtro:</label>
         <input type="date" class="form-control" id="fecha_grafico" name="fecha_grafico" required>
       </div>
-      <select name="reporteForma" id="reporteForma" class="form-select">
-        <option value="circulo">Circulo</option>
-        <option value="barra">Barra</option>
-      </select>
       <div class="mt-3">
         <button type="submit" class="btn btn-primary">Mostrar Reportes Graficos</button>
       </div>
@@ -153,10 +149,21 @@
 </div>
 
 <div>
-  <div id="reporteGrafico"></div>
+  {% if grafico %}
+    <img src="data:image/png;base64,{{ grafico }}" alt="Gráfico de pastel">
+  {% else %}
+    <p>No hay datos para mostrar el gráfico</p>
+  {% endif %}
 </div>
 
+
 <script>
+  // Inicializa Highcharts con los datos proporcionados por Django
+
+
+
+
+
   function mostrarDivExportarExcel() {
     var divExportarExcel = document.getElementById('divExportarExcel');
     var divExportarPDF = document.getElementById('divExportarPDF');
@@ -229,8 +236,9 @@
     document.getElementById(formId).reset();
   }
 
-  document.getElementById("reporteGrafico").innerHTML = "{{ figura|safe }}"
+
 
 </script>
 
+<script src="https://code.highcharts.com/highcharts.js"></script>
 {% endblock %}
