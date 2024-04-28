@@ -30,5 +30,24 @@ class Componente(models.Model):
         ordering = ['componente']
     def __str__(self):
         return self.componente
+    
+class Pieza(models.Model):
+    idpieza = models.AutoField(primary_key=True)
+    pieza = models.CharField(max_length=45, verbose_name="Pieza")
+    codpieza = models.CharField(max_length=12, verbose_name="Codigo de pieza")
+    tiempoinstalacion = models.IntegerField(verbose_name="Tiempo de instalacion")
+    tiempovida = models.IntegerField(verbose_name="Tiempo de vida")
+    frecuenciaMP = models.IntegerField(verbose_name="Frecuencia de mantenimiento de pieza")
+    idcomponente = models.ForeignKey(Componente, on_delete=models.SET_DEFAULT, default=None, verbose_name="Componenete")
+    estado = models.BooleanField(default=True, verbose_name="Estado")
+    creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+    actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")
+
+    class Meta:
+        verbose_name = "Pieza"
+        verbose_name_plural = "Piezas"
+        ordering = ['pieza', 'idcomponente']
+    def __str__(self):
+        return self.pieza
 
 

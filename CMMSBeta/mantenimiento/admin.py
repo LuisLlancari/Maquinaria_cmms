@@ -6,6 +6,6 @@ admin.site.register(Mantenimiento)
 class MantenimientoAdmin(admin.ModelAdmin):
     readonly_fields = ['estado']
 
-admin.site.register(MantenimientoPreventivo)
-class MantenimientoPreventivoAdmin(admin.ModelAdmin):
+admin.site.register(ProgramacionMatenimiento)
+class ProgramacionMatenimientoAdmin(admin.ModelAdmin):
     readonly_fields = ['estado']

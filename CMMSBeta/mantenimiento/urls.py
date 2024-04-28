@@ -8,5 +8,8 @@ urlpatterns = [
 
     #Urls de mantenimiento
     path('mantenimiento', mantenimiento.mantenimiento, name='mantenimiento'),
+    path('mantenimiento/regisrar', mantenimiento.mantenimiento, name='mantenimiento'),
+    path('mantenimiento/obtener', mantenimiento.mantenimiento, name='mantenimiento'),
+    path('mantenimiento/modificar/<int:id_mantenimimiento>', mantenimiento.mantenimiento, name='mantenimiento'),
 
 ]
