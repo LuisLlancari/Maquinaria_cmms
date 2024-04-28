@@ -9,6 +9,7 @@ mysqlclient = "*"
 openpyxl = "*"
 xhtml2pdf = "*"
 plotly = "*"
+matplotlib = "*"
 
 [dev-packages]
 
