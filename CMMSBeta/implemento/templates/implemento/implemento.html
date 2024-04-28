@@ -17,7 +17,7 @@
 
     </div>
     <div class="col-md-3 mb-3">
-        {% if user.idrol.rol != "Gerencia" %}
+        {% if user.idrol.rol == "Administrador" %}
             <button type="button" class="btn btn-primary" id="registrar-implemento" data-bs-toggle="modal" data-bs-target="#modal-implemento">Agregar Implemento</button>
         {% endif %}
     </div>
@@ -57,6 +57,8 @@
         </thead>
         <tbody>
         {% for dato in datos %}
+            {% if dato.idusuario == user.id %}
+
          <tr>
             <td>{{dato.idarea}}</td>
             <td>{{dato.idtipoimplemento}}</td>
@@ -74,6 +76,7 @@
                     <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
                 </form>
             </td>
+            {% endif %}
             {% endif %}
          </tr>
         {% endfor %}

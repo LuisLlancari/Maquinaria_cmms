@@ -1,7 +1,7 @@
 from django import forms
 from .models import TipoTractor, Tractor
 from .models import ReporteTractor
-
+from usuario.models import Usuario
 class TipoTractorForm(forms.ModelForm):
     class Meta:
         model = TipoTractor
@@ -18,6 +18,7 @@ class TractorForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Filtrar las opciones del campo idtipotractor
         self.fields['idtipotractor'].queryset = TipoTractor.objects.filter(estado=True)
+        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol=1)
     class Meta:
         model = Tractor
         fields = ['idtractor','idtipotractor', 'idusuario', 'idfundo' ,'nrotractor', 'horainicial', 'horauso']
