@@ -116,9 +116,13 @@
                                 {{form_programacion.idtractor}}
                             </div>
                         </div>
+
+                        <!--ESTE INPUT OCULTA EL USUARIO QUE ESTA LOGUEADO-->
                         <div>
                             <input type="hidden" name="idusuario" id="idprogramacion" value="{{idusuario}}">
                         </div>
+                        <!--FIN-->
+
                         <div class="row mt-3">
                             <div class="col-md-3">
                                 <label for="idtractorista">Tractorista:</label>
@@ -138,9 +142,23 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="row mb-4">
+
+                        <strong class="text-center">Supervisor:</strong>
+
+                        <div class="row mt-2">
+                            <div class="col-md-3">
+                                <select name="usuario_id" class="form-select" id="usuario_id">
+                                    {% for supervisor in lista_usuarios %}
+                                    <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+
+                        <div class="row mb-2 mt-2">
                             <div class="col-md-6">
-                                <strong for="idcimplemnto" >Selecione los Implementos:</strong>
+                                <strong for="idimplemento" >Lista de implmentos a usar:</strong>
                             </div>
                             <div class="col-md-6">
                                 <button type="button" class="btn btn-success float-end" id="btn-agregar">
@@ -150,7 +168,12 @@
                         </div>
 
                         <div class="implementos-container">
-                            {{form_detalle.idimplemento}}
+                            <select name="idimplemento" class="form-select mb-2" id="id_idimplemento" required>
+                                <option value="">---------</option>
+                                {% for implemento in implementos %}
+                                <option data-idusuario="{{ implemento.idusuario_id }}" value="{{ implemento.idimplemento }}">{{ implemento.implemento }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Guardar</button>
@@ -178,16 +201,31 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
 
-        setTimeout(function() {
-            var errorMessage = document.getElementById('message');
-            if (errorMessage) {
-                errorMessage.style.display = 'none';
-            }
-        }, 3000);
+        let selectUsuario = document.getElementById('usuario_id');
+        let selectedUserId = document.getElementById('usuario_id').value;
+        
+        //CAMBIA EL VALOR POR QUE SE ENCUENTRA LOGUEADO
+        usuario_id.value = "{{idusuario}}";
+        console.log(usuario_id.value);   
+
+        function filtrarImplementosPorUsuario(userId) {
+            let implementoOptions = document.querySelectorAll('#id_idimplemento option');
+            implementoOptions.forEach(option => {
+                if (option.dataset.idusuario !== userId && option.value !== '') {
+                    option.style.display = 'none';
+                } else {
+                    option.style.display = 'block';
+                }
+            });
+        }
 
 
+        selectUsuario.addEventListener('change', function() {
+            let selectedUserId = this.value;
+            filtrarImplementosPorUsuario(selectedUserId);
+        });
+        
         let maxImplementos = 3;
-
         document.getElementById('btn-agregar').addEventListener('click', () => {
             let implementosAgregados = document.querySelectorAll('.implementos-container select').length;
             if (implementosAgregados < maxImplementos) {
@@ -202,31 +240,43 @@
                 }
             }
         });
-
+        
         document.querySelectorAll('.btn-ver').forEach(button => {
             button.addEventListener('click', function() {
                 let idProgramacion = this.getAttribute('data-idprogramacion');
                 console.log(idProgramacion);
                 fetch(`http://127.0.0.1:8000/programacion/obtener_data/${idProgramacion}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.mensaje === "Success") {
-                            var modalBody = document.querySelector('#modalListImplemento .modal-body');
-                            modalBody.innerHTML = '';
-                            var ul = document.createElement('ul');
-                            data.nombres_implementos.forEach(nombre => {
-                                var li = document.createElement('li');
-                                li.textContent = nombre;
-                                ul.appendChild(li);
-                            });
-                            modalBody.appendChild(ul);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.mensaje === "Success") {
+                        var modalBody = document.querySelector('#modalListImplemento .modal-body');
+                        modalBody.innerHTML = '';
+                        var ul = document.createElement('ul');
+                        data.nombres_implementos.forEach(nombre => {
+                            var li = document.createElement('li');
+                            li.textContent = nombre;
+                            ul.appendChild(li);
+                        });
+                        modalBody.appendChild(ul);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             });
         });
+        
+        //Llamado de funciones
+        filtrarImplementosPorUsuario(selectedUserId);
+        
+        //Funcion para que el mensaje tenga un tiempo de espera de 3 segundos
+        setTimeout(function() {
+            var errorMessage = document.getElementById('message');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+        },3000);
+
     });
 </script>
 

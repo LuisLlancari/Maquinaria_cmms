@@ -8,6 +8,10 @@ from implemento.models import *
 from django.http import JsonResponse
 from django.contrib import messages
 
+from implemento.models import *
+
+from usuario.models import *
+
 from django.contrib.auth.decorators import login_required
 
 #Programacion 
@@ -27,7 +31,12 @@ def programacion(request):
     #Obtenemos el idusuario
     usuario_id = request.user.id
 
-    return render(request, 'programacion_labor/programacion.html', {'detalle': detalles_unicos, 'idusuario': usuario_id, 'form_programacion': ProgramacionForm, 'form_detalle': DetalleLaborForm})
+    #LISTA DE USUARIO PARA EL SELECT 
+    usuario = Usuario.objects.all()
+
+    implementos = Implemento.objects.filter(estado_actividad = True, estado = True)
+
+    return render(request, 'programacion_labor/programacion.html', {'detalle': detalles_unicos, 'idusuario': usuario_id, 'lista_usuarios': usuario ,'form_programacion': ProgramacionForm, 'implementos': implementos})
 
 def registrar_programacion(request):
     if request.method == 'POST':

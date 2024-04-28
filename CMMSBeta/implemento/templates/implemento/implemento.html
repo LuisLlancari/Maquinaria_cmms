@@ -49,6 +49,7 @@
                 <th scope="col">Horas de uso</th>
                 <th scope="col">Codigo implemento</th>
                 <th scope="col">Centro de Costo</th>
+                <th scope="col">Supervisor</th>
                 {% if user.idrol.rol != "Gerencia" %}
                 <th scope="col">Operaciones</th>
                 {% endif %}
@@ -64,6 +65,7 @@
             <td>{{dato.horasdeuso}}</td>
             <td>{{dato.codimplemento}}</td>
             <td>{{dato.idceco}}</td>
+            <td>{{dato.idusuario.first_name}}</td>
             {% if user.idrol.rol != "Gerencia" %}
             <td>
                 <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento"><i class="lni lni-pencil editar"></i></button>

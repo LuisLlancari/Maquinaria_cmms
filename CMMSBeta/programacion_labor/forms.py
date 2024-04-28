@@ -12,7 +12,6 @@ class TipoLaborForm(forms.ModelForm):
         }
 
 class ProgramacionForm(forms.ModelForm):
-    idsolicitante = forms.ModelChoiceField(queryset=Solicitante.objects.filter(estado=True, estado_actividad=True), widget=forms.Select(attrs={'class': 'form-control mb-2'}), to_field_name='idsolicitante', label="Solicitante")
     idtractorista = forms.ModelChoiceField(queryset=Tractorista.objects.filter(estado=True, estado_actividad=True), widget=forms.Select(attrs={'class': 'form-control mb-2'}), to_field_name='idtractorista', label="Tractorista")
 
     class Meta:

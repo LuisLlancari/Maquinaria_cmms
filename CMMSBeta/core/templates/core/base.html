@@ -46,9 +46,9 @@
                         <li class="sidebar-item">
                             <a href="{% url 'tipoimplemento' %}" class="sidebar-link" data-path="login">Tipo implemento</a>
                         </li>
-                        <li class="sidebar-item">
+                        {% comment %} <li class="sidebar-item">
                             <a href="{% url 'detalleimplemento' %}" class="sidebar-link" data-path="s">Detalle implemento</a>
-                        </li>
+                        </li> {% endcomment %}
                     </ul>
                 </li>
 
@@ -195,7 +195,7 @@
                     </ul>
                 </li>
 
-                <li class="sidebar-item">
+                {% comment %} <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#componente" aria-expanded="false" aria-controls="componente">
                         <i class="lni lni-cogs"></i>
@@ -209,23 +209,8 @@
                             <a href="{% url 'sistema' %}" class="sidebar-link">Sistema</a>
                         </li>
                     </ul>
-                </li>
+                </li> {% endcomment %}
 
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#mantenimiento" aria-expanded="false" aria-controls="mantenimiento">
-                        <i class="lni lni-trowel"></i>
-                        <span>Mantenimiento</span>
-                    </a>
-                    <ul id="mantenimiento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="{% url 'mantenimiento_preventivo' %}" class="sidebar-link">Mantenimiento Previento</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'mantenimiento'%}" class="sidebar-link">Mantenimiento</a>
-                        </li>
-                    </ul>
-                </li>
 
                 {% endif %}
 
