@@ -1,12 +1,191 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>BRENDA PURRILA NO AVANZA NADA , OJALA VEAS ESTO</h1>
+{% extends 'core/base.html' %}
+
+{% block titulo %}Inspeccionar Mantenimienos{% endblock%}
+
+{% block contenido %} 
+<h1 class="text-center mb-2">Inspeccionar Mantenimienos</h1>
+<div class="row mt-4">
+    <div class="col md-3 mb-3">
+        <form>
+            <div class="input-group">
+                <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
+                <button class="btn btn-md btn-outline-secondary">Buscar</i></button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-3 mb-3">
+
+    </div>
+    <div class="col-md-3 mb-3">
+        <!-- {% if user.idrol.rol != "Gerencia" %}
+            <button type="button" class="btn btn-primary" id="registrar-implemento" data-bs-toggle="modal" data-bs-target="#modal-implemento">Agregar Implemento</button>
+        {% endif %} -->
+    </div>
+</div>
+
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for dato in datos %} 
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-center">Programacion {{dato.idmantenimiento}}</h5>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p class="card-text">Imlemento:</p>
+                    </div>
+                    <div class="col col-md-6">{{dato.idprogramacionmantenimiento.detimplemento.idimplemento.implemento}}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p class="card-text">Cod Imlemento:</p>
+                    </div>
+                    <div class="col col-md-6">{{dato.idprogramacionmantenimiento.detimplemento.idimplemento.codimplemento}}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p class="card-text">Sistema:</p>
+                    </div>
+                    <div class="col col-md-6">{{dato.idprogramacionmantenimiento.detimplemento.idcomponente.idsistema.sistema}}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p class="card-text">Componente:</p>
+                    </div>
+                    <div class="col col-md-6">{{dato.idprogramacionmantenimiento.detimplemento.idcomponente.componente}}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p class="card-text">Usuario:</p>
+                    </div>
+                    <div class="col col-md-6">{{dato.idprogramacionmantenimiento.detimplemento.idimplemento.idusuario}}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p class="card-text">F. programada:</p>
+                    </div>
+                    <div class="col col-md-6">{{dato.idprogramacionmantenimiento.fechaprogramacion}}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p class="card-text">F. Ingreso:</p>
+                    </div>
+                    <div class="col col-md-6">{{dato.fechaingreso}}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p class="card-text">F. Salida:</p>
+                    </div>
+                    <div class="col col-md-6">{{dato.fechasalida}}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p class="card-text">Descripcion</p>
+                    </div>
+                    <div class="col col-md-6">{{dato.descripcion}}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p class="card-text">Encargado:</p>
+                    </div>
+                    <div class="col col-md-6">{{dato.idpersona}}</div>
+                </div>
+                <div class="row mt-2">
+                    <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#modal-finalizar"> Finalizar Programacion</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-diagnostico"> Crear Diagnostico</button>
+                </div> 
+
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+<div class="modal fade" id="modal-finalizar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar diagnostico</h1>
+            </div>
+                <form autocomplete="off" id="form-modal" >
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <label for="" class="form-label">Fecha de ingreso:</label>
+                        <input type="text" class="form-control" id="">
+                        <label for="" class="form-label">Fecha de Salida:</label>
+                        <input type="text" class="form-control" id="">
+                        <label for="" class="form-label">Descripcion:</label>
+                        <input type="text" class="form-control" id="">
+                        <label for="" class="form-label">Encargado:</label>
+                        <input type="text" class="form-control" id="">
+                                
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
     
-</body>
-</html>
+
+<div class="modal fade" id="modal-diagnostico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar diagnostico</h1>
+            </div>
+                <form autocomplete="off" id="form-modal" >
+                    <div class="modal-body">
+                        
+                        <label for="" class="form-label mt-2">Diagnostico:</label>
+                        <input type="text" class="form-control" id="">
+                        <label for="" class="form-label mt-2">Motivo:</label>
+                        <input type="text" class="form-control" id="">
+
+                        <div class="border border-secondary-subtle rounded mt-3">
+                            <h6 class="p-3">lista de piezas:</h6>
+
+
+                            <div class="row border border-secondary-subtle rounded m-3">
+                                <div class="col col-md-6S mt-2 mb-2">
+                                    <label for="">pieza:</label>
+                                    <select class="form-select" name="" id="">
+                                        <option value="">opcion 1</option>
+                                        <option value="2">opcion 1</option>
+                                        <option value="2">opcion 1</option>
+                                        <option value="2">opcion 1</option>
+                                    </select>
+                                </div>
+
+                                <div class="col col-md-6S mt-2 mb-2">
+                                    <label for="">sugerencia:</label>
+                                    <select class="form-select" name="" id="">
+                                        <option value="">opcion 1</option>
+                                        <option value="1">opcion 1</option>
+                                        <option value="1">opcion 1</option>
+                                        <option value="1">opcion 1</option>
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                                
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

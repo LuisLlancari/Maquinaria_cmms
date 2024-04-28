@@ -1,13 +1,29 @@
 from django.shortcuts import render, redirect, get_object_or_404
-#from ..models import *  
-#from ..forms import *
-from django.http import HttpResponse
-from django.contrib.auth.models import User
-from django.db.models import Max , Count, Subquery, OuterRef
-from implemento.models import *
 from django.http import JsonResponse
 from django.contrib import messages
+from ..models import Mantenimiento, ProgramacionMatenimiento
 
 from django.contrib.auth.decorators import login_required
 def mantenimiento(request):
-    return render(request, 'mantenimiento/mantenimiento.html')
+    datos = Mantenimiento.objects.filter(estado = True)
+    return render(request, 'mantenimiento/mantenimiento.html', {'datos': datos})
+
+def registrar_mantenimiento(request):
+    if request.method == 'POST':
+        pass
+    else:
+        return redirect('mantenimiento')
+    
+def modificar_mantenimiento(request, id_mantenimiento):
+    if request.method == 'POST':
+        pass
+    else:
+        return redirect('mantenimiento')
+    
+def crear_diagnostico(request):
+    mantenimiento = list(Mantenimiento.objects.filter(estado=True).values())
+    if(len(mantenimiento) > 0):
+        data = {'mensaje': "Success", 'mantenimiento': mantenimiento}
+    else:
+        data = {'mensaje':"Not found"}
+    return JsonResponse(data)

@@ -23,7 +23,6 @@ def registrar_lote(request):
       lote = form.cleaned_data['lote']
       fundo = request.POST.get('idfundo')
       variedad = request.POST.get('idvariedad')
-      print("antes de llegar al if")
 
       if Lote.objects.filter(lote = lote, idvariedad = variedad, idfundo= fundo).exists():
         messages.success(request, ("Los datos ya existen."))
@@ -33,7 +32,7 @@ def registrar_lote(request):
         form.save()
         return redirect('lote')
     else:
-      messages.success(request, ("El lote ya existe"))
+      messages.success(request, ("Ingrese datos validos"))
       return redirect('lote')
   else:
     return redirect('lote')

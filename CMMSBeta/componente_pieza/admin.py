@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import Componente, Sistema, Pieza
+from . models import Componente, Sistema
 
 @admin.register(Componente)
 class componeneteAdmin(admin.ModelAdmin):
@@ -10,7 +10,3 @@ class componeneteAdmin(admin.ModelAdmin):
 class sistemaAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
 
-
-@admin.register(Pieza)
-class piezaAdmin(admin.ModelAdmin):
-  readonly_fields= ['estado']
