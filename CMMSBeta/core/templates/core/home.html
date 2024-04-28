@@ -2,239 +2,169 @@
 
 {% block titulo %}Inicio{% endblock %} 
 {% block contenido %}
-<div class="btn-group" role="group" aria-label="Basic example">
-  <button type="button" class="btn btn-primary m-2" id="btnExportarExcel" onclick="mostrarDivExportarExcel()">
-    Reportes En Excel
-  </button>
-  <button type="button" class="btn btn-primary m-2" onclick="mostrarDivExportarPDF()">
-    Reportes En PDF
-  </button>
-  <button type="button" class="btn btn-primary m-2" onclick="mostrarFormulario()">
-    Reportes Graficos
-  </button>
-</div>
 
-<div>
-  <div id="divExportarPDF" style="display: none;">
-    <form action="{% url 'exportpdf' %}" id="formExportarPDF" method="POST">
-      {% csrf_token %}
-      <div class="row m-4">
-        <h1 class="col">Reporte PDF</h1>
-      </div>
-      <div class="row m-4">
-        <div class="col">
-          <div class="form-group">
-            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
-            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
-            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
-          </div>
-        </div>
-      </div>
-      <div class="row m-4">
-        <div class="col">
-          <div class="form-group">
-            <label for="usuario" class="form-label">Usuario:</label>
-            <select id="selectuser" class="form-control" id="usuario" name="usuario">
-              <option selected disabled>Seleccione un Usuario</option>
-              {% for data in usuarios %}
-                <option value="{{ data.idusuario }}">{{ data.idusuario__username }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="labor" class="form-label">Labor:</label>
-            <select class="form-control" id="labor" name="labor">
-              <option selected disabled>Seleccione Una Labor</option>
-              {% for data in tipolabor %}
-                <option value="{{ data.idtipolabor }}">{{ data.idtipolabor__tipolabor }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="horas_tractor" class="form-label">Horas de uso de tractor:</label>
-            <input type="number" class="form-control" id="horas_tractor" name="horas_tractor">
-          </div>
-        </div>
-      </div>
-      <div class="row m-4">
-        <div class="col">
-          <button type="submit" class="btn btn-primary">Exportar Formato PDF</button>
-        </div>
-      </div>
-    </form>
-  </div>
-  
-  <div id="formularioGrafico" class="m-4" style="display: none;">
-  
-    <div id="reporteGrafico"></div>
+<style>
+  .container {
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+  }
+
+  #chartdiv {
+    width: 70%;
+    height: 500px;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
+  }
+
+  .other-div {
+    width: 30%;
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn-primary {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+</style>
+
+<div class="container">
+  <div id="chartdiv"></div>
+  <div class="other-div">
+    <h3 class="text-center">Filtros Gráfico</h3>
     <form action="{% url 'reporteGrafico' %}" method="POST">
       {% csrf_token %}
-      <h1>Reporte Graficos</h1>
-      <div class="mb-3">
-        <label for="fecha_grafico" class="form-label">Fecha Filtro:</label>
-        <input type="date" class="form-control" id="fecha_grafico" name="fecha_grafico" required>
-      </div>
-      <div class="mt-3">
-        <button type="submit" class="btn btn-primary">Mostrar Reportes Graficos</button>
-      </div>
+        <div class="form-group">
+            <label for="fecha_grafico" class="mt-5 mb-5">Filtrar por fecha de solicitudes:</label>
+            <input type="date" class="form-control " id="fecha_grafico" name="fecha_grafico">
+        </div>
+        <button type="submit" class="btn btn-primary mt-5">Aplicar</button>
     </form>
-  </div>
-  
-  <div id="divExportarExcel" style="display: none;">
-    <form action="{% url 'exportar' %}" id="formExportarExcel" method="POST">
-      {% csrf_token %}
-      <div class="row m-4">
-        <h1 class="col">Reporte Excel</h1>
-      </div>
-      <div class="row m-4">
-        <div class="col">
-          <div class="form-group">
-            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
-            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
-            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
-          </div>
-        </div>
-      </div>
-      <div class="row m-4">
-        <div class="col">
-          <div class="form-group">
-            <label for="usuario" class="form-label">Usuario:</label>
-            <select id="selectuser" class="form-control" id="usuario" name="usuario">
-              <option selected disabled>Seleccione un Usuario</option>
-              {% for data in usuarios %}
-                <option value="{{ data.idusuario }}">{{ data.idusuario__username }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="labor" class="form-label">Labor:</label>
-            <select class="form-control" id="labor" name="labor">
-              <option selected disabled>Seleccione Una Labor</option>
-              {% for data in tipolabor %}
-                <option value="{{ data.idtipolabor }}">{{ data.idtipolabor__tipolabor }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="horas_tractor" class="form-label">Horas de uso de tractor:</label>
-            <input type="number" class="form-control" id="horas_tractor" name="horas_tractor">
-          </div>
-        </div>
-      </div>
-      <div class="row m-4">
-        <div class="col">
-          <button type="submit" class="btn btn-primary">Exportar Formato Excel</button>
-        </div>
-      </div>
-    </form>
-  </div>
 </div>
 
-<div>
-  {% if grafico %}
-    <img src="data:image/png;base64,{{ grafico }}" alt="Gráfico de pastel">
-  {% else %}
-    <p>No hay datos para mostrar el gráfico</p>
-  {% endif %}
-</div>
 
+
+<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
 <script>
-  // Inicializa Highcharts con los datos proporcionados por Django
-
-
-
-
-
-  function mostrarDivExportarExcel() {
-    var divExportarExcel = document.getElementById('divExportarExcel');
-    var divExportarPDF = document.getElementById('divExportarPDF');
-    
-    if (divExportarExcel.style.display === 'none') {
-      divExportarExcel.style.display = 'block';
-      divExportarPDF.style.display = 'none';
-      resetearFormulario('formExportarPDF');
-    } else {
-      divExportarExcel.style.display = 'none';
-    }
-
-    if (divExportarPDF.style.display === 'block') {
-      divExportarPDF.style.display = 'none';
-    }
-    
-    var formularioGrafico = document.getElementById('formularioGrafico');
-    if (formularioGrafico.style.display === 'block') {
-      formularioGrafico.style.display = 'none';
-    }
+  var datos = JSON.parse("{% autoescape off %}{{ datagrafic | escapejs }}{% endautoescape %}");
+  console.log(datos);
+  if (Object.keys(datos).length !== 0) {
+      am5.ready(function() {
+          var root = am5.Root.new("chartdiv");
+          root.setThemes([
+              am5themes_Animated.new(root)
+          ]);
+          var chart = root.container.children.push(am5percent.PieChart.new(root, {
+              layout: root.verticalLayout,
+              innerRadius: am5.percent(50)
+          }));
+          var series = chart.series.push(am5percent.PieSeries.new(root, {
+              valueField: "num_solicitudes",
+              categoryField: "nombre",
+              alignLabels: false
+          }));
+  
+          series.labels.template.setAll({
+              textType: "circular",
+              centerX: 0,
+              centerY: 0,
+              text: "{category}: {value} solicitudes"
+          });
+  
+          // Actualiza el gráfico con los datos
+          series.data.setAll(datos);
+          var legend = chart.children.push(am5.Legend.new(root, {
+              centerX: am5.percent(50),
+              x: am5.percent(50),
+              marginTop: 15,
+              marginBottom: 15,
+          }));
+          legend.data.setAll(series.dataItems);
+          series.appear(1000, 100);
+      });
+  } else {
+    am5.ready(function() {
+      var root = am5.Root.new("chartdiv");
+      root.setThemes([
+          am5themes_Animated.new(root)
+      ]);
+      var chart = root.container.children.push(am5percent.PieChart.new(root, {
+          layout: root.verticalLayout,
+          innerRadius: am5.percent(50)
+      }));
+  
+      var series = chart.series.push(am5percent.PieSeries.new(root, {
+          valueField: "value",
+          categoryField: "category",
+          alignLabels: false
+      }));
+  
+      series.labels.template.setAll({
+          textType: "circular",
+          centerX: 0,
+          centerY: 0,
+          text: ""
+      });
+  
+      // Datos ficticios
+      var data = [
+          { "value": 10 }
+      ];
+  
+      // Actualiza el gráfico con los datos ficticios
+      series.data.setAll(data);
+  
+      var legend = chart.children.push(am5.Legend.new(root, {
+          centerX: am5.percent(50),
+          x: am5.percent(50),
+          marginTop: 15,
+          marginBottom: 15,
+      }));
+      legend.data.setAll(series.dataItems);
+      series.appear(1000, 100);
+  });
+  
   }
   
-  function mostrarDivExportarPDF() {
-    var divExportarExcel = document.getElementById('divExportarExcel');
-    var divExportarPDF = document.getElementById('divExportarPDF');
-    
-    if (divExportarPDF.style.display === 'none') {
-      divExportarPDF.style.display = 'block';
-      divExportarExcel.style.display = 'none';
-      resetearFormulario('formExportarExcel');
-    } else {
-      divExportarPDF.style.display = 'none';
-    }
+</script>
 
-    if (divExportarExcel.style.display === 'block') {
-      divExportarExcel.style.display = 'none';
-    }
 
-    var formularioGrafico = document.getElementById('formularioGrafico');
-    if (formularioGrafico.style.display === 'block') {
-      formularioGrafico.style.display = 'none';
-    }
-  }
-
-  function mostrarFormulario() {
-    var formulario = document.getElementById('formularioGrafico');
-    
-    if (formulario.style.display === 'block') {
-      formulario.style.display = 'none';
-    }
-    
-    var divExportarExcel = document.getElementById('divExportarExcel');
-    if (divExportarExcel.style.display === 'block') {
-      divExportarExcel.style.display = 'none';
-    }
-    
-    var divExportarPDF = document.getElementById('divExportarPDF');
-    if (divExportarPDF.style.display === 'block') {
-      divExportarPDF.style.display = 'none';
-    }
-    
-    if (formulario.style.display === 'none') {
-      formulario.style.display = 'block';
-    } else {
-      formulario.style.display = 'none';
-    }
-  }
   
-  function resetearFormulario(formId) {
-    document.getElementById(formId).reset();
-  }
+
 
 
 
