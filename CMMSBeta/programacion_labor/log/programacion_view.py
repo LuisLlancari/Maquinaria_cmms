@@ -69,14 +69,11 @@ def eliminar_programacion(request, id_programacion):
 
 def obtener_data(request, id_programacion):
     detalles_labor = DetalleLabor.objects.filter(idprogramacion=id_programacion)
-    
     nombres_implementos = []
     for detalle_labor in detalles_labor:
         nombres_implementos.append(detalle_labor.idimplemento.implemento)  # Nombre del implemento
-
     if nombres_implementos:
         data = {'mensaje': "Success", 'nombres_implementos': nombres_implementos}
     else:
         data = {'mensaje': "Not found"}
-
     return JsonResponse(data)

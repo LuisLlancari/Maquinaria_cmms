@@ -1,7 +1,8 @@
 from django.db import models
 from localizacion.models import Area
 from ceco.models import Ceco
-from componente_pieza.models import Pieza
+
+from componente_pieza.models import Sistema, Componente
 from usuario.models import Usuario, Persona
 from ceco.models import Ceco
 
@@ -43,16 +44,14 @@ class Implemento(models.Model):
 
 class DetImplementos(models.Model):
     iddetalleimplemento = models.AutoField(primary_key=True)
-    idpersona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
-    # idresponsable = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
-    idpieza = models.ForeignKey(Pieza, on_delete=models.SET_DEFAULT, default=None, verbose_name="Pieza")
-    idceco = models.ForeignKey(Ceco, on_delete=models.SET_DEFAULT, default=None, verbose_name="CECO")
     idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
+    idcomponente = models.ForeignKey(Componente, on_delete=models.SET_DEFAULT, default=None, verbose_name="Componente")
     estado = models.BooleanField(default=True, verbose_name="Estado")
-    creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")
+
 
     class Meta:
         verbose_name = "Detalle Implemento"
         verbose_name_plural = "Detalle Implementos"
-        ordering = ['idpieza', 'creado_en']    
+
+    def _str_(self):
+        return str(self.iddetalleimplemento)
