@@ -35,7 +35,6 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
             labor_id = request.POST.get('labor', None)
             horas_uso = request.POST.get('horas_tractor', None)
 
-            # Generar el sufijo para el nombre del archivo
             sufijo = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
             nombre_archivo = f"reporte-{sufijo}.xlsx"
 
@@ -45,7 +44,6 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
             nuevoLibro = Workbook()
             hojaActiva = nuevoLibro.active
 
-            # Establecer estilos y formatos
             bold_font = Font(bold=True)
             estilo_tabla = NamedStyle(name="estilo_tabla")
             estilo_tabla.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
@@ -56,12 +54,10 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
 
             nuevoLibro.add_named_style(estilo_tabla)
 
-            # Escribir encabezado
             encabezado = ['Sede', 'Implemento', 'Horometro Inicial', 'Horometro Final', 'Fundo', 'Tipo de labor',
                           'Lote', 'Tractor', 'Usuario', 'Tractorista', 'Solicitante', 'Fecha', 'Turno']
             hojaActiva.append(encabezado)
 
-            # Establecer estilo y formato para el encabezado
             for celda in hojaActiva[1]:
                 celda.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
                 celda.font = bold_font
@@ -71,10 +67,8 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                                       top=Side(border_style='thin', color='000000'),
                                       bottom=Side(border_style='thin', color='000000'))
 
-            # Obtener datos de la base de datos
             detalles_labor_query = DetalleLabor.objects.all()
 
-            # Filtrar detalles labor según los parámetros recibidos
             if fecha_inicio:
                 detalles_labor_query = detalles_labor_query.filter(idprogramacion__fechahora__gte=fecha_inicio)
             if fecha_fin:
@@ -88,8 +82,6 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
 
             detalles_labor = detalles_labor_query.values_list('idimplemento__implemento',
                                                                'idprogramacion').order_by('-idprogramacion')
-
-            # Verificar si se encontraron datos después de aplicar los filtros
             if not detalles_labor.exists():
                 return HttpResponse("No se encontraron datos para los filtros aplicados.", status=404)
 
@@ -147,7 +139,6 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                 except ReporteTractor.DoesNotExist:
                     print("No se encontró el reporte del tractor asociado.")
 
-            # Ajustar estilo y ancho de columnas
             for row in hojaActiva.iter_rows():
                 for cell in row:
                     cell.alignment = Alignment(wrap_text=True)
@@ -177,16 +168,13 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
             return HttpResponse("Se produjo un error al exportar los datos.")
 
 
-# Reporte en PDF
 def reportePDF(request):
-    # Obtener parámetros del formulario
     fecha_inicio = request.POST.get('fecha_inicio', None)
     fecha_fin = request.POST.get('fecha_fin', None)
     usuario_id = request.POST.get('usuario', None)
     labor_id = request.POST.get('labor', None)
     horas_uso = request.POST.get('horas_tractor', None)
 
-    # Validar y convertir fechas
     fecha_inicial = None
     fecha_final = None
     if fecha_inicio:
@@ -201,7 +189,6 @@ def reportePDF(request):
         except ValueError:
             return HttpResponse("La fecha de fin proporcionada no es válida.", status=400)
 
-    # Filtrar detalles de labor según los parámetros
     detalles_labor = DetalleLabor.objects.all().order_by('-idprogramacion')
 
     if fecha_inicial and fecha_final:
@@ -224,7 +211,6 @@ def reportePDF(request):
         if not detalles_labor.exists():
             return HttpResponse("No hay datos disponibles para las horas de uso seleccionadas.", status=400)
 
-    # Generar el PDF
     template = get_template('reportes/reporte_pdf.html')
     context = {'detalles_labor': detalles_labor}
     html = template.render(context)
@@ -233,16 +219,14 @@ def reportePDF(request):
     pisa.CreatePDF(html, dest=buffer, encoding='utf-8')
     buffer.seek(0)
 
-    # Devolver el PDF como respuesta
     return FileResponse(buffer, as_attachment=True, filename="reporte.pdf")
 
 
-# Reporte Gráfico
 from django.http import JsonResponse
 
 def reporteGrafico(request):
     fecha = request.POST.get('fecha_grafico')
-    if fecha is None:
+    if fecha == "":
         fecha = datetime.date.today()
         print (fecha)
 
@@ -250,7 +234,8 @@ def reporteGrafico(request):
         solicitudes = Programacion.objects.filter(fechahora=fecha)
 
         if not solicitudes.exists():
-            return JsonResponse({"error": "No hay solicitudes en la fecha solicitada"}, status=400)
+            error = [{"mensaje": "No hay solicitudes en la fecha solicitada"}]
+            return redirect('home_with_datagrafic',datagrafic = error)
 
         nombres_solicitudes = solicitudes.values('idsolicitante__idpersona__nombres') \
             .annotate(num_solicitudes=Count('idsolicitante')) \
@@ -258,7 +243,6 @@ def reporteGrafico(request):
 
         data = [{"nombre": nombre['idsolicitante__idpersona__nombres'], "num_solicitudes": nombre['num_solicitudes']} for nombre in nombres_solicitudes]
 
-        # Redirigir a una nueva página con los datos del gráfico
         return redirect('home_with_datagrafic', datagrafic=data)
 
     else:
