@@ -1,11 +1,13 @@
 from django import forms
 from . models import Implemento, DetImplementos, TipoImplemento
+from usuario.models import Usuario
 
 
 class ImplementoForms(forms.ModelForm):
   def __init__(self, *args, **kwargs):
         super(ImplementoForms, self).__init__(*args, **kwargs)
         self.fields['idtipoimplemento'].queryset = TipoImplemento.objects.filter(estado = True)
+        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 2)
   class Meta:
     model = Implemento
     fields = ['idimplemento','idusuario','implemento','tiempovida','horasdeuso', 'codimplemento', 'idtipoimplemento', 'idceco','idarea']

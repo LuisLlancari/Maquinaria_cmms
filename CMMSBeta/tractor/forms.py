@@ -18,7 +18,7 @@ class TractorForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Filtrar las opciones del campo idtipotractor
         self.fields['idtipotractor'].queryset = TipoTractor.objects.filter(estado=True)
-        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol=1)
+        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol=2)
     class Meta:
         model = Tractor
         fields = ['idtractor','idtipotractor', 'idusuario', 'idfundo' ,'nrotractor', 'horainicial', 'horauso']
