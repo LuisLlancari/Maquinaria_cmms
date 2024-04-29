@@ -122,7 +122,7 @@
                             <select id="selectuser" class="form-control" id="usuario" name="usuario">
                                 <option selected disabled>Seleccione un Usuario</option>
                                 {% for data in usuarios %}
-                                <option value="{{ data.idusuario }}">{{ data.idusuario__username }}</option>
+                                <option value="{{ data.id }}">{{ data.first_name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -173,7 +173,7 @@
                             <select id="selectuser" class="form-control" id="usuario" name="usuario">
                                 <option selected disabled>Seleccione un Usuario</option>
                                 {% for data in usuarios %}
-                                <option value="{{ data.idusuario }}">{{ data.idusuario__username }}</option>
+                                <option value="{{ data.id }}">{{ data.first_name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
