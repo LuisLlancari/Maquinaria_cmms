@@ -1,9 +1,10 @@
+import datetime
 import string
 import random
 import io
 import base64
 
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse, FileResponse, HttpResponseBadRequest
 from django.template.loader import get_template
 from django.contrib.auth.decorators import login_required
@@ -237,53 +238,29 @@ def reportePDF(request):
 
 
 # Reporte Gráfico
+from django.http import JsonResponse
+
 def reporteGrafico(request):
     fecha = request.POST.get('fecha_grafico')
+    if fecha is None:
+        fecha = datetime.date.today()
+        print (fecha)
 
     if fecha:
-        # Filtra las solicitudes por fecha
         solicitudes = Programacion.objects.filter(fechahora=fecha)
 
         if not solicitudes.exists():
-            return HttpResponse("No hay solicitudes en la fecha solicitada", status=400)
+            return JsonResponse({"error": "No hay solicitudes en la fecha solicitada"}, status=400)
 
-        # Agrupa las solicitudes por nombres de solicitantes y cuenta el número de solicitudes por cada uno
         nombres_solicitudes = solicitudes.values('idsolicitante__idpersona__nombres') \
             .annotate(num_solicitudes=Count('idsolicitante')) \
             .order_by()
 
-        # Crea una lista de etiquetas para el gráfico de pastel con nombre y número de solicitudes
-        etiquetas = [f"{nombre['idsolicitante__idpersona__nombres']}\n({nombre['num_solicitudes']})" for nombre in
-                     nombres_solicitudes]
-        num_solicitudes = [nombre['num_solicitudes'] for nombre in nombres_solicitudes]
+        data = [{"nombre": nombre['idsolicitante__idpersona__nombres'], "num_solicitudes": nombre['num_solicitudes']} for nombre in nombres_solicitudes]
 
-        # Genera el gráfico de pastel
-        plt.figure(figsize=(8, 6))
-        pie = plt.pie(num_solicitudes, labels=None, autopct='%1.1f%%', startangle=140)  # No se incluyen etiquetas
-        plt.title('Solicitudes por solicitante')
+        # Redirigir a una nueva página con los datos del gráfico
+        return redirect('home_with_datagrafic', datagrafic=data)
 
-        # Añade las etiquetas personalizadas cerca del borde exterior del círculo
-        radius = 1.1  # Ajusta el radio para que las etiquetas estén más cerca del borde exterior
-        for i, (etiqueta, num) in enumerate(zip(etiquetas, num_solicitudes)):
-            angle = sum(num_solicitudes[:i]) / sum(num_solicitudes) * 360  # Calcula el ángulo para colocar el texto
-            x = radius * np.cos(np.radians(angle))  # Calcula la posición x cerca del borde exterior
-            y = radius * np.sin(np.radians(angle))  # Calcula la posición y cerca del borde exterior
-            plt.text(x, y, etiqueta, ha='center', va='center', fontsize=8)  # Coloca el texto en la posición calculada
-
-        # Añadir leyenda
-        plt.legend(pie[0], etiquetas, loc="center left", fontsize=8, bbox_to_anchor=(1, 0.5))
-
-        # Guarda el gráfico en un buffer de bytes
-        buffer = BytesIO()
-        plt.savefig(buffer, format='png', bbox_inches='tight')  # Ajusta el tamaño de la imagen para incluir la leyenda
-        buffer.seek(0)
-
-        # Codifica el gráfico en base64
-        grafico_base64 = base64.b64encode(buffer.getvalue()).decode()
-        buffer.close()
-
-        # Renderiza la plantilla con el gráfico de pastel en formato HTML
-        return render(request, 'core/home.html', {'grafico': grafico_base64})
     else:
-        # Si no se proporciona una fecha, devuelve un mensaje de error
-        return HttpResponse("No se proporcionó una fecha válida", status=400)
+        return JsonResponse({"error": "No se proporcionó una fecha válida"}, status=400)
+
