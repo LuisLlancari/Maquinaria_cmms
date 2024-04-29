@@ -40,12 +40,17 @@
                         <span>implemento</span>
                     </a>
                     <ul id="implemento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'tipoimplemento' %}" class="sidebar-link" data-path="login">Tipo implemento</a>
-                        </li>
+                        {% if user.idrol.rol == "Admin" or user.idrol.rol == "Supervisor"  %}
+                            <li class="sidebar-item">
+                                <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
+                            </li>
+                        {% endif %}
+
+                        {% if user.idrol.rol == "Admin" %}
+                            <li class="sidebar-item">
+                                <a href="{% url 'tipoimplemento' %}" class="sidebar-link" data-path="login">Tipo implemento</a>
+                            </li>
+                        {% endif %}
                         {% comment %} <li class="sidebar-item">
                             <a href="{% url 'detalleimplemento' %}" class="sidebar-link" data-path="s">Detalle implemento</a>
                         </li> {% endcomment %}
@@ -81,7 +86,7 @@
                         </a>
                         <ul id="tractor" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
 
-                            {% if user.idrol.rol == "Admin" or user.idrol.rol == "Asistente" %}
+                            {% if user.idrol.rol == "Asistente" %}
                             <li class="sidebar-item">
                                 <a href="{% url 'reportetractor' %}" class="sidebar-link" data-path="login">Reporte Tractor</a>
                             </li>
@@ -244,7 +249,7 @@
                         </ul>
                     </li>
 
-            
+                    
                 {% endif %}
 
 
