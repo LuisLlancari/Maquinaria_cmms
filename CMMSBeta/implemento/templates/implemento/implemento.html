@@ -17,7 +17,7 @@
 
     </div>
     <div class="col-md-3 mb-3">
-        {% if user.idrol.rol == "Administrador" %}
+        {% if user.idrol.rol == "Admin" %}
             <button type="button" class="btn btn-primary" id="registrar-implemento" data-bs-toggle="modal" data-bs-target="#modal-implemento">Agregar Implemento</button>
         {% endif %}
     </div>
@@ -48,16 +48,15 @@
                 <th scope="col">Tiempo Vida</th>
                 <th scope="col">Horas de uso</th>
                 <th scope="col">Codigo implemento</th>
-                <th scope="col">Centro de Costo</th>
+                <th scope="col">CECO</th>
                 <th scope="col">Supervisor</th>
-                {% if user.idrol.rol != "Gerencia" %}
+                {% if user.idrol.rol == "Admin" %}
                 <th scope="col">Operaciones</th>
                 {% endif %}
             </tr>
         </thead>
         <tbody>
         {% for dato in datos %}
-            {% if dato.idusuario == user.id %}
 
          <tr>
             <td>{{dato.idarea}}</td>
@@ -68,7 +67,7 @@
             <td>{{dato.codimplemento}}</td>
             <td>{{dato.idceco}}</td>
             <td>{{dato.idusuario.first_name}}</td>
-            {% if user.idrol.rol != "Gerencia" %}
+            {% if user.idrol.rol == "Admin" %}
             <td>
                 <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento"><i class="lni lni-pencil editar"></i></button>
                 <form action="{% url 'eliminar_implemento' dato.idimplemento %}" class="d-inline-block" method="POST">
@@ -76,7 +75,6 @@
                     <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
                 </form>
             </td>
-            {% endif %}
             {% endif %}
          </tr>
         {% endfor %}

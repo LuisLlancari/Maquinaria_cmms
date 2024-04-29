@@ -11,8 +11,18 @@ from django.contrib import messages
 
 @login_required(login_url='login', redirect_field_name='implemento')
 def implemento(request):
-  datos_implemento = Implemento.objects.filter(estado = True) 
-  return render(request, 'implemento/implemento.html', {'datos': datos_implemento, 'form':ImplementoForms})
+  # Obtenemos el Rol y ID del usuario 
+  rol_usuario = request.user.idrol.rol
+  id_usuario = request.user.id
+
+  # Comparamos el Rol 
+  if rol_usuario == "Supervisor":
+    datos_implemento = Implemento.objects.filter(estado = True, idusuario = id_usuario)
+    return render(request, 'implemento/implemento.html', {'datos': datos_implemento, 'form':ImplementoForms})
+
+  else:
+    datos_implemento = Implemento.objects.filter(estado = True) 
+    return render(request, 'implemento/implemento.html', {'datos': datos_implemento, 'form':ImplementoForms})
 
 def registrarImplemento(request):
   if request.method == 'POST':
@@ -46,7 +56,6 @@ def editarImplemento(request, id_implemento):
       messages.error(request, 'El implemento ya existe', extra_tags='danger')
       return redirect('implemento')
   return redirect('implemento')
-
 
 def obtenerDatos(request, id_implemento):
   implemento = list(Implemento.objects.filter(pk=id_implemento).values())

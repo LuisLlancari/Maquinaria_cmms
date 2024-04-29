@@ -9,20 +9,41 @@ from usuario.models import Usuario
 
 @login_required(login_url='login', redirect_field_name='')
 def tractor(request):
-    tractores = Tractor.objects.filter(estado = True)
-    tipotractor = TipoTractor.objects.filter(estado = True)
-    fundo = Fundo.objects.filter(estado = True)
-    usuario = Usuario.objects.all()
-    form = TractorForm()
-    data = {
-        'tractores' : tractores,
-        'form' : form,
-        'tipotractor' : tipotractor,
-        'fundo' : fundo,
-        'usuario' : usuario
-    }
+
+    rol_usuario = request.user.idrol.rol
+    id_usuario = request.user.id
+    if rol_usuario == "Supervisor":
+        tractores = Tractor.objects.filter(estado = True , idusuario = id_usuario)
+        tipotractor = TipoTractor.objects.filter(estado = True)
+        fundo = Fundo.objects.filter(estado = True)
+        usuario = Usuario.objects.filter(idrol = 1) 
+        form = TractorForm()
+        data = {
+            'tractores' : tractores,
+            'form' : form,
+            'tipotractor' : tipotractor,
+            'fundo' : fundo,
+            'usuario' : usuario
+        }
+        
+        return render(request, 'tractor/tractor.html', data)
     
-    return render(request, 'tractor/tractor.html', data)
+    else:
+        tractores = Tractor.objects.filter(estado = True)
+        tipotractor = TipoTractor.objects.filter(estado = True)
+        fundo = Fundo.objects.filter(estado = True)
+        usuario = Usuario.objects.filter(idrol = 1) 
+        form = TractorForm()
+        data = {
+            'tractores' : tractores,
+            'form' : form,
+            'tipotractor' : tipotractor,
+            'fundo' : fundo,
+            'usuario' : usuario
+        }
+        
+        return render(request, 'tractor/tractor.html', data)
+
 
 @login_required(login_url='login', redirect_field_name='')
 def eliminar_tractor(request, idtractor):
