@@ -1,7 +1,9 @@
 {% extends 'core/base.html' %} 
 
 {% block titulo %}Inicio{% endblock %} 
+
 {% block contenido %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <style>
   .container {
@@ -25,24 +27,24 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+  }
 
-.text-center {
+  .text-center {
     text-align: center;
-}
+  }
 
-.form-group {
+  .form-group {
     margin-bottom: 20px;
-}
+  }
 
-.form-control {
+  .form-control {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
+  }
 
-.btn-primary {
+  .btn-primary {
     display: block;
     width: 100%;
     padding: 10px;
@@ -52,122 +54,237 @@
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s;
-}
+  }
 
-.btn-primary:hover {
+  .btn-primary:hover {
     background-color: #0056b3;
-}
+  }
 </style>
 
-<div class="container">
-  <div id="chartdiv"></div>
-  <div class="other-div">
-    <h3 class="text-center">Filtros Gráfico</h3>
-    <form action="{% url 'reporteGrafico' %}" method="POST">
-      {% csrf_token %}
-        <div class="form-group">
-            <label for="fecha_grafico" class="mt-5 mb-5">Filtrar por fecha de solicitudes:</label>
-            <input type="date" class="form-control " id="fecha_grafico" name="fecha_grafico">
-        </div>
-        <button type="submit" class="btn btn-primary mt-5">Aplicar</button>
-    </form>
+<h1 class="text-center">Gráfica Solicitudes por Solicitante</h1>
+
+<div class="alert alert-danger alert-dismissible fade show" style="display: none;" id="error-alert" role="alert">
+    <strong id="mensaje-alert"></strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 
+<div class="container">
+    <div id="chartdiv"></div>
+    <div class="other-div">
+        <h3 class="text-center">Filtros Gráfico</h3>
+        <form action="{% url 'reporteGrafico' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="fecha_grafico" class="mt-5 mb-5">Filtrar por fecha de solicitudes:</label>
+                <input type="date" class="form-control" id="fecha_grafico" name="fecha_grafico">
+            </div>
+            <button type="submit" class="btn btn-primary mt-5">Aplicar</button>
+        </form>
+    </div>
+</div>
 
+<h1 class="text-center">Exportar en otro Formato</h1>
+
+<div style="display: flex; flex-direction: row;">
+    <button type="button" class="btn btn-primary m-4" data-bs-toggle="modal" data-bs-target="#modalExportExcel">
+        Exportar Formato Excel
+    </button>
+
+    <button type="button" class="btn btn-primary m-4" data-bs-toggle="modal" data-bs-target="#modalExportPDF">
+        
+        Exportar Formato PDF
+    </button>
+</div>
+
+<div class="modal fade" id="modalExportPDF" tabindex="-1" aria-labelledby="modalExportPDFLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalExportPDFLabel">Exportar PDF</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'exportpdf' %}" id="formExportarPDF" method="POST">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
+                            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
+                        </div>
+                        <div class="col">
+                            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
+                            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="usuario" class="form-label">Usuario:</label>
+                            <select id="selectuser" class="form-control" id="usuario" name="usuario">
+                                <option selected disabled>Seleccione un Usuario</option>
+                                {% for data in usuarios %}
+                                <option value="{{ data.idusuario }}">{{ data.idusuario__username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="labor" class="form-label">Labor:</label>
+                            <select class="form-control" id="labor" name="labor">
+                                <option selected disabled>Seleccione Una Labor</option>
+                                {% for data in tipolabor %}
+                                <option value="{{ data.idtipolabor }}">{{ data.idtipolabor__tipolabor }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>        
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary">Exportar Formato PDF</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalExportExcel" tabindex="-1" aria-labelledby="modalExportExcelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalExportExcelLabel">Exportar Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'exportar' %}" id="formExportarExcel" method="POST">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
+                            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
+                        </div>
+                        <div class="col">
+                            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
+                            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="usuario" class="form-label">Usuario:</label>
+                            <select id="selectuser" class="form-control" id="usuario" name="usuario">
+                                <option selected disabled>Seleccione un Usuario</option>
+                                {% for data in usuarios %}
+                                <option value="{{ data.idusuario }}">{{ data.idusuario__username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="labor" class="form-label">Labor:</label>
+                            <select class="form-control" id="labor" name="labor">
+                                <option selected disabled>Seleccione Una Labor</option>
+                                {% for data in tipolabor %}
+                                <option value="{{ data.idtipolabor }}">{{ data.idtipolabor__tipolabor }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary">Exportar Formato Excel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
 <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
 <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
 <script>
-  var datos = JSON.parse("{% autoescape off %}{{ datagrafic | escapejs }}{% endautoescape %}");
-  console.log(datos);
-  if (Object.keys(datos).length !== 0) {
-      am5.ready(function() {
-          var root = am5.Root.new("chartdiv");
-          root.setThemes([
-              am5themes_Animated.new(root)
-          ]);
-          var chart = root.container.children.push(am5percent.PieChart.new(root, {
-              layout: root.verticalLayout,
-              innerRadius: am5.percent(50)
-          }));
-          var series = chart.series.push(am5percent.PieSeries.new(root, {
-              valueField: "num_solicitudes",
-              categoryField: "nombre",
-              alignLabels: false
-          }));
-  
-          series.labels.template.setAll({
-              textType: "circular",
-              centerX: 0,
-              centerY: 0,
-              text: "{category}: {value} solicitudes"
-          });
-  
-          // Actualiza el gráfico con los datos
-          series.data.setAll(datos);
-          var legend = chart.children.push(am5.Legend.new(root, {
-              centerX: am5.percent(50),
-              x: am5.percent(50),
-              marginTop: 15,
-              marginBottom: 15,
-          }));
-          legend.data.setAll(series.dataItems);
-          series.appear(1000, 100);
-      });
-  } else {
-    am5.ready(function() {
-      var root = am5.Root.new("chartdiv");
-      root.setThemes([
-          am5themes_Animated.new(root)
-      ]);
-      var chart = root.container.children.push(am5percent.PieChart.new(root, {
-          layout: root.verticalLayout,
-          innerRadius: am5.percent(50)
-      }));
-  
-      var series = chart.series.push(am5percent.PieSeries.new(root, {
-          valueField: "value",
-          categoryField: "category",
-          alignLabels: false
-      }));
-  
-      series.labels.template.setAll({
-          textType: "circular",
-          centerX: 0,
-          centerY: 0,
-          text: ""
-      });
-  
-      // Datos ficticios
-      var data = [
-          { "value": 10 }
-      ];
-  
-      // Actualiza el gráfico con los datos ficticios
-      series.data.setAll(data);
-  
-      var legend = chart.children.push(am5.Legend.new(root, {
-          centerX: am5.percent(50),
-          x: am5.percent(50),
-          marginTop: 15,
-          marginBottom: 15,
-      }));
-      legend.data.setAll(series.dataItems);
-      series.appear(1000, 100);
-  });
-  
-  }
-  
-</script>
+    var datos = JSON.parse("{% autoescape off %}{{ datagrafic | escapejs }}{% endautoescape %}");
+    if (datos.length > 0 && datos[0].mensaje !== undefined) {
+        var mensaje = datos[0].mensaje;
+        var divalert = document.getElementById('error-alert');
+        var mensaje_alert = document.getElementById('mensaje-alert');
+        mensaje_alert.textContent = mensaje;
+        divalert.style.display = 'block';
+    }
+    if (Object.keys(datos).length !== 0) {
+        am5.ready(function() {
+            var root = am5.Root.new("chartdiv");
+            root.setThemes([
+                am5themes_Animated.new(root)
+            ]);
+            var chart = root.container.children.push(am5percent.PieChart.new(root, {
+                layout: root.verticalLayout,
+                innerRadius: am5.percent(50)
+            }));
+            var series = chart.series.push(am5percent.PieSeries.new(root, {
+                valueField: "num_solicitudes",
+                categoryField: "nombre",
+                alignLabels: false
+            }));
 
+            series.labels.template.setAll({
+                textType: "circular",
+                centerX: 0,
+                centerY: 0,
+                text: "{category}: {value} solicitudes"
+            });
 
-  
+            // Actualiza el gráfico con los datos
+            series.data.setAll(datos);
+            var legend =  chart.children.push(am5.Legend.new(root, {
+                centerX: am5.percent(50),
+                x: am5.percent(50),
+                marginTop: 15,
+                marginBottom: 15,
+            }));
+            legend.data.setAll(series.dataItems);
+            series.appear(1000, 100);
+        });
+    } else {
+        am5.ready(function() {
+            var root = am5.Root.new("chartdiv");
+            root.setThemes([
+                am5themes_Animated.new(root)
+            ]);
+            var chart = root.container.children.push(am5percent.PieChart.new(root, {
+                layout: root.verticalLayout,
+                innerRadius:  am5.percent(50)
+            }));
 
+            var series = chart.series.push(am5percent.PieSeries.new(root, {
+                valueField: "value",
+                categoryField: "category",
+                alignLabels: false
+            }));
 
+            series.labels.template.setAll({
+                textType: "circular",
+                centerX: 0,
+                centerY: 0,
+                text: ""
+            });
 
+            var data = [
+                { "value": 10 }
+            ];
 
+            series.data.setAll(data);
+
+            var legend = chart.children.push(am5.Legend.new(root, {
+                centerX: am5.percent(50),
+                x: am5.percent(50),
+                marginTop: 15,
+                marginBottom: 15,
+            }));
+            legend.data.setAll(series.dataItems);
+            series.appear(1000, 100);
+        });
+    }
 </script>
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
