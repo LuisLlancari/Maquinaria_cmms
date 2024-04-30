@@ -58,6 +58,7 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                           'Lote', 'Tractor', 'Usuario', 'Tractorista', 'Solicitante', 'Fecha', 'Turno']
             hojaActiva.append(encabezado)
 
+            # Moveremos la lógica de formato de celda aquí fuera del bucle principal
             for celda in hojaActiva[1]:
                 celda.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
                 celda.font = bold_font
@@ -129,6 +130,7 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                             fecha_formateada,
                             programacion.turno,
                         ]
+                        # Asegurarse de que todos los detalles se agreguen a la hoja de cálculo
                         hojaActiva.append([datos_programacion[0]] + [detalle_labor[0]] + datos_programacion[1:])
 
                 except Programacion.DoesNotExist:
@@ -138,6 +140,7 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                 except ReporteTractor.DoesNotExist:
                     print("No se encontró el reporte del tractor asociado.")
 
+            # Moveremos la lógica de formato de celda aquí fuera del bucle principal
             for row in hojaActiva.iter_rows():
                 for cell in row:
                     cell.alignment = Alignment(wrap_text=True)
@@ -166,7 +169,6 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
             print(f"Se produjo un error: {str(e)}")
             return HttpResponse("Se produjo un error al exportar los datos.")
 
-
 def reportePDF(request):
     fecha_inicio = request.POST.get('fecha_inicio', None)
     fecha_fin = request.POST.get('fecha_fin', None)
@@ -178,7 +180,7 @@ def reportePDF(request):
     fecha_final = None
     if fecha_inicio:
         try:
-            fecha_inicial = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+            fecha_inicial = fecha_inicio
         except ValueError:
             error = [{"mensaje": "La fecha de inicio proporcionada no es válida."}]
             return redirect('home_with_datagrafic',datagrafic = error)
