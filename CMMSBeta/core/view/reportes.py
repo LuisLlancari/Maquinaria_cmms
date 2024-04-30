@@ -17,12 +17,13 @@ from openpyxl.styles.borders import Border, Side
 
 from programacion_labor.models import DetalleLabor, Programacion, TipoLabor
 from tractor.models import ReporteTractor
+from django.http import JsonResponse
 
-import plotly.graph_objs as go
 import matplotlib.pyplot as plt
+import plotly.graph_objs as go
+from xhtml2pdf import pisa
 import numpy as np
 
-from xhtml2pdf import pisa
 
 # Reporte En Excel
 @login_required(login_url='login', redirect_field_name='home')
@@ -33,7 +34,6 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
             fecha_fin = request.POST.get('fecha_fin', None)
             usuario_id = request.POST.get('usuario', None)
             labor_id = request.POST.get('labor', None)
-            horas_uso = request.POST.get('horas_tractor', None)
 
             sufijo = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
             nombre_archivo = f"reporte-{sufijo}.xlsx"
@@ -77,13 +77,12 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                 detalles_labor_query = detalles_labor_query.filter(idprogramacion__idusuario=usuario_id)
             if labor_id:
                 detalles_labor_query = detalles_labor_query.filter(idprogramacion__idtipolabor=labor_id)
-            if horas_uso:
-                detalles_labor_query = detalles_labor_query.filter(idprogramacion__idtractor__horauso__gte=horas_uso)
 
             detalles_labor = detalles_labor_query.values_list('idimplemento__implemento',
                                                                'idprogramacion').order_by('-idprogramacion')
             if not detalles_labor.exists():
-                return HttpResponse("No se encontraron datos para los filtros aplicados.", status=404)
+                error = [{"mensaje": "No se encontraron datos para los filtros aplicados."}]
+                return redirect('home_with_datagrafic',datagrafic = error)
 
             for detalle in detalles_labor:
                 detalle_labor = list(detalle)
@@ -124,7 +123,7 @@ def exportar(request, fecha_inicio=None, fecha_fin=None):
                             tipolabor.tipolabor,
                             programacion.idlote.lote if programacion.idlote else '',
                             programacion.idtractor.nrotractor if programacion.idtractor else '',
-                            programacion.idusuario.username if programacion.idusuario else '',
+                            programacion.idusuario.first_name if programacion.idusuario else '',
                             tractorista_nombre,
                             solicitante_nombre,
                             fecha_formateada,
@@ -181,7 +180,9 @@ def reportePDF(request):
         try:
             fecha_inicial = datetime.strptime(fecha_inicio, '%Y-%m-%d')
         except ValueError:
-            return HttpResponse("La fecha de inicio proporcionada no es válida.", status=400)
+            error = [{"mensaje": "La fecha de inicio proporcionada no es válida."}]
+            return redirect('home_with_datagrafic',datagrafic = error)
+
 
     if fecha_fin:
         try:
@@ -222,7 +223,6 @@ def reportePDF(request):
     return FileResponse(buffer, as_attachment=True, filename="reporte.pdf")
 
 
-from django.http import JsonResponse
 
 def reporteGrafico(request):
     fecha = request.POST.get('fecha_grafico')

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from usuario.models import * 
 
 def obtener_usuarios():
-    return Usuario.objects.filter(idrol = 2)
+    return Usuario.objects.filter(idrol = 4)
 
 def obtener_tipos_labor():
     return Programacion.objects.values('idtipolabor', 'idtipolabor__tipolabor').distinct()
