@@ -17,8 +17,8 @@ from django.contrib.auth.decorators import login_required
 #Programacion 
 @login_required(login_url='login', redirect_field_name='')
 def programacion(request):
+    
     programacion = Programacion.objects.filter(estado=True)
-
     # Obtener subconsulta para los detalles únicos por idprogramacion
     subquery = DetalleLabor.objects.filter(
         estado=True,
