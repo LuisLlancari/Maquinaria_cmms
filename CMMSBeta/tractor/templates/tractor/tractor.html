@@ -57,7 +57,6 @@
     <tbody class="text-center">
         {% for data in tractores %}
         
-        {% if data.idusuario_id == user.id %}
         <tr>
             <th scope="row" class="text-center">{{ forloop.counter }}</th>
             <td class="text-center">{{ data.idtipotractor }}</td>
@@ -83,7 +82,6 @@
               </form>
             </td>
             {% endif %}
-          {% endif %}
         </tr>
         {% endfor %}
       </tbody>
