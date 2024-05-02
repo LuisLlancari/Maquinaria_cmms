@@ -11,7 +11,7 @@
         </div>
         <div class="col-md-6"></div>
         <div class="col-md-2">
-            {% if user.idrol.rol == "Admin" %}
+            {% if user.idrol.rol == "Supervisor" %}
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevo">Nueva Programacion
             </button>
             {% endif %}
@@ -113,7 +113,12 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="idtractor">Nombre del Tractor:</label>
-                                {{form_programacion.idtractor}}
+                                <select name="idtractor" class="form-control mb-2" required id="id_idtractor">
+                                    <option value="">---------</option>
+                                    {% for i in tractor %}
+                                    <option value="{{i.idtractor}}">{{i.nrotractor}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                         </div>
 
@@ -126,7 +131,12 @@
                         <div class="row mt-3">
                             <div class="col-md-3">
                                 <label for="idtractorista">Tractorista:</label>
-                                {{form_programacion.idtractorista}}
+                                <select name="idtractorista" class="form-select mb-2" id="id_idtractorista" required>
+                                    <option value="">---------</option>
+                                    {% for i in tractorista %}
+                                    <option value="{{i.idtractorista}}">{{i.idpersona.nombres}} {{i.idpersona.apellidos}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="col-md-3">
                                 <label for="fechahora">Solicitante:</label>

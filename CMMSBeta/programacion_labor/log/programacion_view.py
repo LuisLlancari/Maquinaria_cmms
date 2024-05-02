@@ -12,6 +12,9 @@ from implemento.models import *
 
 from usuario.models import *
 
+from operarios.models import *
+from tractor.models import *
+
 from django.contrib.auth.decorators import login_required
 
 #Programacion 
@@ -19,6 +22,13 @@ from django.contrib.auth.decorators import login_required
 def programacion(request):
     
     programacion = Programacion.objects.filter(estado=True)
+
+    usuario_id = request.user.id
+    tractoristas = Tractorista.objects.filter(estado = True, idusuario = usuario_id)
+    tractor = Tractor.objects.filter(estado = True, estado_actividad = True, idusuario = usuario_id)
+    print(tractor)
+    print(tractoristas)
+
     # Obtener subconsulta para los detalles únicos por idprogramacion
     subquery = DetalleLabor.objects.filter(
         estado=True,
@@ -29,14 +39,13 @@ def programacion(request):
     )
 
     #Obtenemos el idusuario
-    usuario_id = request.user.id
 
     #LISTA DE USUARIO PARA EL SELECT 
-    usuario = Usuario.objects.all()
+    usuario = Usuario.objects.filter(idrol = 2)
 
     implementos = Implemento.objects.filter(estado_actividad = True, estado = True)
 
-    return render(request, 'programacion_labor/programacion.html', {'detalle': detalles_unicos, 'idusuario': usuario_id, 'lista_usuarios': usuario ,'form_programacion': ProgramacionForm, 'implementos': implementos})
+    return render(request, 'programacion_labor/programacion.html', {'detalle': detalles_unicos, 'tractor' : tractor , 'tractorista': tractoristas ,'idusuario': usuario_id, 'lista_usuarios': usuario ,'form_programacion': ProgramacionForm, 'implementos': implementos})
 
 def registrar_programacion(request):
     if request.method == 'POST':

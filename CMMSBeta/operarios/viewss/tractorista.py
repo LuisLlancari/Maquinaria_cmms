@@ -7,7 +7,7 @@ from django.http import JsonResponse
 
 def tractoristas(request):
   datos_tractoristas = Tractorista.objects.filter(estado = True)
-  datos_usuarios = Usuario.objects.all()
+  datos_usuarios = Usuario.objects.filter(idrol = 2)
   return render(request, 'operarios/tractoristas.html', {'datos_tractoristas':datos_tractoristas, 'form':PersonaForm, 'datos_usuarios':datos_usuarios })
 
 def registrarTractorista(request):

@@ -2,9 +2,10 @@ import json
 from django.shortcuts import render
 from programacion_labor.models import Programacion
 from django.contrib.auth.decorators import login_required
+from usuario.models import * 
 
 def obtener_usuarios():
-    return Programacion.objects.values('idusuario', 'idusuario__username').distinct()
+    return Usuario.objects.filter(idrol = 2)
 
 def obtener_tipos_labor():
     return Programacion.objects.values('idtipolabor', 'idtipolabor__tipolabor').distinct()
@@ -26,6 +27,7 @@ def home(request, datagrafic = None):
         'datagrafic' : datagrafic
     }
     print("Usuario logueado:", usuario)
+    print(list(usuarios))
     return render(request, 'core/home.html', data)
 
 @login_required(login_url='login', redirect_field_name='home')

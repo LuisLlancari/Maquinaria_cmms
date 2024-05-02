@@ -1,5 +1,6 @@
 from django import forms
 from . models import TipoSolicitante, Tractorista, Solicitante
+from usuario.models import Usuario
 
 class TiposolicitanteForms(forms.ModelForm):
     class Meta:
@@ -10,6 +11,9 @@ class TiposolicitanteForms(forms.ModelForm):
         }
 
 class TractoristaForms(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TractoristaForms, self).__init__(*args, **kwargs)
+        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 2)
     class Meta:
         model = Tractorista
         fields = ['idusuario','idpersona']
