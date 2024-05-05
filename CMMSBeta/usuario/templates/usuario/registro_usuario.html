@@ -1,0 +1,162 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}Registrar usuario{% endblock%}
+
+{% block contenido %} 
+<h1 class="text-center m-3">Registro de Usuario</h1>
+<div class="container row mb-3 mt-3">
+  <div class="col col-md-4">
+    <div class="input-group">
+      <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
+      <button class="btn btn-md btn-outline-secondary">Buscar</i></button>
+  </div>
+  </div>
+  <div class="col col-md-4"></div>
+  <div class="col col-md-4">
+    <button class="btn btn-success" id="btnAgregarUsuario" data-bs-toggle="modal" data-bs-target="#modal-usuario">Registrar usuario</button>
+  </div>
+</div>
+  {% if messages %}
+    {% for message in messages %}
+        <div id="mensaje" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <strong>{{ message }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>                </div>
+    {% endfor %}
+  {% endif %}
+  {% if form.errors %}
+  <div class="alert alert-danger">
+    <strong>Error!</strong> Por favor corrija los siguientes errores:
+    <ul>
+    {% for field in form %}
+      {% for error in field.errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<div class="container">
+  <table class="table table-striped  table-sm table-bordered text-center" id="tabla-usuario">
+    <thead class="thead-dark">
+      <tr>
+          <th scope="col">N°</th>
+          <th scope="col">Usuario</th>
+          <th scope="col">Nombres</th>
+          <th scope="col">Rol</th>
+          <th scope="col">Operaciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for usuario in usuarios %}
+        <tr>
+          <td>{{forloop.counter}}</td>
+          <td>{{usuario.username}}</td>
+          <td>{{usuario.first_name}} {{usuario.last_name}}</td>
+          <td>{{usuario.idrol.rol}}</td>
+          <td>
+            <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="" data-bs-toggle="modal" data-bs-target="#modal-usuario"><i class="lni lni-pencil editar"></i></button>
+            <form action="" class="d-inline-block" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+            </form>
+        </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    
+  </table>
+
+</div>
+
+<div class="modal fade" id="modal-usuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header bg-primary justify-content-center" >
+              <h1 class="modal-title fs-5 text-light" id="titulo-modal">titulo-modal</h1>
+          </div>
+              <form autocomplete="off" id="form-modal">
+              <div class="modal-body">
+                  {% csrf_token %}
+                  <div class="container row">
+                    <div class="col col-md-6">
+                      <label for="username" class="form-label">Nombre ususario:</label>
+                      {{form.username}}
+                    </div>
+                    <div class="col col-md-6">
+                      <label for="idrol" class="form-label">Seleccionar rol:</label>
+                      {{form.idrol}}
+                    </div>
+                  </div>
+
+                  <div class="container row">
+                    <div class="col col-md-6">
+                      <label for="first_name" class="form-label">Nombre:</label>
+                      {{form.first_name}}
+                    </div>
+
+                    <div class="col col-md-6">
+                      <label for="last_name" class="form-label">Apellido:</label>
+                      {{form.last_name  }}
+                    </div>
+                  </div>
+
+                  <div class="container row">
+                    <div class="col col-md-6">
+                      <label for="password1" class="form-label">Contraseña:</label>
+                      <input type="password" class="form-control" name="password1" id="id_password1" required>
+                    </div>
+                    <div class="col col-md-6">
+                      <label for="password2" class="form-label">Repita Contraseña:</label>
+                      <input type="password" class="form-control" name="password2" id="id_password2" required>
+                    </div>
+                  </div>
+              </div>
+
+              <div class="modal-footer">
+                  <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                  <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+              </div>
+              </form>
+      </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () =>{
+   const btnAgregar = document.getElementById("btnAgregarUsuario");
+   const formModal = document.getElementById("form-modal");
+   const btnModificar = document.querySelectorAll(".editar")
+
+
+   setTimeout(function() {
+            var mensaje = document.getElementById('mensaje');
+            if (mensaje) {
+                mensaje.style.display = 'none';
+            }
+        }, 3000);
+
+   btnAgregar.addEventListener("click", function(){
+    const titulo_modal = document.getElementById("titulo-modal");
+
+    titulo_modal.textContent = "Agregar Usuario" ;
+    formModal.reset();
+    formModal.setAttribute("action", "{% url 'registrar_usuario' %}");
+    formModal.setAttribute("method", "POST");
+   });
+
+   btnModificar.forEach(function(boton){
+    boton.addEventListener("click", function(event) {
+      const titulo_modal = document.getElementById("titulo-modal");
+
+      titulo_modal.textContent = "Editar Usuario" ;
+      formModal.setAttribute("action", ``);
+      formModal.setAttribute("method", "POST");
+
+    });
+   });
+
+
+  });
+</script>
+{% endblock %}

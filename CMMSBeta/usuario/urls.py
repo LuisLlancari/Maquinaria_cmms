@@ -1,10 +1,12 @@
 from django.urls import path, include
-from .view import roles
+from .view import roles, usuarios
 
 
 urlpatterns = [
-   # path('login', views.login_user, name="login"),
-   # path('logout', views.logout_user, name="logout"),
+  
+   path('registro_usuario', usuarios.gestorUsuario, name="registro_usuario"),
+   path('registro_usuario/registrar', usuarios.registrarUsuario, name="registrar_usuario"),
+
    
    #Rol
    path('roles', roles.roles, name="roles"),
