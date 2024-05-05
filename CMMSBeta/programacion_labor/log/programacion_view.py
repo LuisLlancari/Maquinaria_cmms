@@ -8,6 +8,8 @@ from implemento.models import *
 from django.http import JsonResponse
 from django.contrib import messages
 
+from django.utils import timezone
+
 from implemento.models import *
 
 from usuario.models import *
@@ -22,6 +24,13 @@ from django.contrib.auth.decorators import login_required
 @login_required(login_url='login', redirect_field_name='')
 def programacion(request):
     programacion = Programacion.objects.filter(estado=True)
+
+    # Obtener la cantidad de tractores utilizados hoy
+    hoy = timezone.now().date()
+    print(hoy)
+    cantidad_tractores_hoy = Programacion.objects.filter(fechahora=hoy, idusuario = request.user).count()
+    print(cantidad_tractores_hoy)
+
 
     #Obtenemos el idusuario
     usuario_id = request.user.id
@@ -49,7 +58,7 @@ def programacion(request):
 
     implementos = Implemento.objects.filter(estado_actividad = True, estado = True)
 
-    return render(request, 'programacion_labor/programacion.html', {'detalle': detalles_unicos, 'tractor' : tractor , 'tractorista': tractoristas ,'idusuario': usuario_id, 'lista_usuarios': usuario ,'fundo': fundos,'lotes': lotes,'form_programacion': ProgramacionForm, 'implementos': implementos})
+    return render(request, 'programacion_labor/programacion.html', {'cantidad': cantidad_tractores_hoy , 'fecha': hoy, 'detalle': detalles_unicos, 'tractor' : tractor , 'tractorista': tractoristas ,'idusuario': usuario_id, 'lista_usuarios': usuario ,'fundo': fundos,'lotes': lotes,'form_programacion': ProgramacionForm, 'implementos': implementos})
 
 def registrar_programacion(request):
     if request.method == 'POST':

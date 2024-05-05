@@ -29,16 +29,20 @@
             {% endfor %}
         
         {% endif %}
-        <table class="table table-striped table-sm table-bordered"  id="tabla-labor">
+        <div class="">
+            <strong>Fecha: {{fecha}}</strong>
+        </div>
+        <strong class="text-primary">Tractores utilizados: {{ cantidad }}</strong>
+        <table class="table table-striped table-sm table-bordered mt-3"  id="tabla-labor">
             <thead>
-                <tr>
+                <tr class="table-dark">
                     <th scope="col">N°</th>
                     <th scope="col">Tipo de Labor</th>
                     <th scope="col">Lote</th>
                     <th scope="col">Solicitante</th>
                     <th scope="col">Tractor</th>
                     <th scope="col">Tractorista</th>
-                    <th scope="col">Fecha</th>
+                    <th scope="col">Fecha Programada</th>
                     <th scope="col">Turno</th>
                     <th scope="col">Horas de Uso</th>
                     <th scope="col">Implementos</th>
@@ -53,7 +57,11 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ det.idprogramacion.idtipolabor }}</td>
-                    <td>{{ det.idprogramacion.idlote }}</td>
+                    <td>
+                        {{ det.idprogramacion.idlote.idfundo }}
+                        -
+                        {{ det.idprogramacion.idlote }}
+                    </td>
                     <td>
                         {{ det.idprogramacion.idsolicitante.idpersona.nombres }}
                         {{ det.idprogramacion.idsolicitante.idpersona.apellidos }}
@@ -236,7 +244,7 @@
                             <div class="col-md-4 bg-success">                            
                                 <div class="row mt-2">
                                     <div class="col-md-8">
-                                        <select name="usuario_id" class="form-select" id="usuario_id_2">
+                                        <select name="usuario_id" class="form-select" id="usuario_id_2" required>
                                             {% for supervisor in lista_usuarios %}
                                             <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
                                             {% endfor %}
@@ -246,7 +254,7 @@
                                 <div class="row mb-2 mt-2">
                                     <strong for="idimplemento" >Selecione el Tractor:</strong>
                                     <div class="mt-4">
-                                        <select name="idtractor" id="id_idtractor" class="form-select">
+                                        <select name="idtractor" id="id_idtractor" class="form-select" required>
                                             <option value="">---------</option>
                                             {% for data in tractor %}
                                             <option data-idusuario="{{data.idusuario.id}}" value="{{data.idtractor}}">{{data.nrotractor}}</option>
@@ -258,7 +266,7 @@
                             <div class="col-md-4 bg-secondary">                            
                                 <div class="row mt-2">
                                     <div class="col-md-8">
-                                        <select name="usuario_id" class="form-select" id="usuario_id_3">
+                                        <select name="usuario_id" class="form-select" id="usuario_id_3" required>
                                             {% for supervisor in lista_usuarios %}
                                             <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
                                             {% endfor %}
@@ -268,7 +276,7 @@
                                 <div class="row mb-2 mt-2">
                                     <strong for="idimplemento">Selecione al Tractorista:</strong>
                                     <div class="mt-4">
-                                        <select name="idtractorista" id="id_idtractorista" class="form-select">
+                                        <select name="idtractorista" id="id_idtractorista" class="form-select" required>
                                             <option value="">---------</option>
                                             {% for data in tractorista %}
                                             <option data-idusuario="{{data.idusuario.id}}" value="{{data.idtractorista}}">{{data.idpersona}}</option>
