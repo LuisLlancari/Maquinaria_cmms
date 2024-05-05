@@ -88,19 +88,19 @@
                     <form method="post" action="{% url 'editar_variedad' %}" autocomplete="off" id="form-editar-ceco">
                         {% csrf_token %}
                         <input type="hidden" id="variedad_id" name="variedad_id">
-                        <div class="form-group">
-                            <label for="nombre_variedad">Nombre la variedad:</label>
-                            <!-- el forms toma el name-->
-                            <input type="text" class="form-control mb-2" id="nombre_variedad" name="variedad" required>
-                        </div>
-
+                        
                         <div class="form-group mb-3">
                             <label for="id_cultivo">Cultivo:</label>
                             <select class="form-control" id="id_cultivo" name="idcultivo" required>
                                 {% for cultivo in cultivos %}
-                                    <option value="{{ cultivo.idcultivo }}">{{ cultivo.cultivo }}</option>
+                                <option value="{{ cultivo.idcultivo }}">{{ cultivo.cultivo }}</option>
                                 {% endfor %}
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nombre_variedad">Nombre la variedad:</label>
+                            <!-- el forms toma el name-->
+                            <input type="text" class="form-control mb-2" id="nombre_variedad" name="variedad" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     </form>                    

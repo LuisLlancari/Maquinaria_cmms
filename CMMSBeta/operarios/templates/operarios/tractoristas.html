@@ -23,46 +23,59 @@
     </div>
 </div>
 
-<table class="table table-striped  table-sm table-bordered text-center" id="tabla-sistema">
-    <thead class="thead-dark">
-        <!-- <colgroup>
-            <col width="25%">
-            <col width="25%">       
-            <col width="25%">
-            <col width="25%">
-        </colgroup> -->
-        <tr>
-            <th scope="col">Usuario</th>
-            <th scope="col">Apellidos</th>
-            <th scope="col">Nombres</th>
-            <th scope="col">Codigo</th>
-            <th scope="col">DNI</th>
+<div class="table-responsive">
+    {% if messages %}
+        {% for message in messages %}
+        <div id="message" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            
+            {{ message }}
+            
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      
+    {% endif %}
+    <table class="table table-striped  table-sm table-bordered text-center" id="tabla-sistema">
+        <thead class="thead-dark">
+            <!-- <colgroup>
+                <col width="25%">
+                <col width="25%">       
+                <col width="25%">
+                <col width="25%">
+            </colgroup> -->
+            <tr>
+                <th scope="col">Supervisor a Cargo</th>
+                <th scope="col">Nombres</th>
+                <th scope="col">Apellidos</th>
+                <th scope="col">Codigo</th>
+                <th scope="col">DNI</th>
+                {% if user.idrol.rol != "Gerencia" %}
+                <th scope="col">Operaciones</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for dato in datos_tractoristas %}
+         <tr>
+            <td>{{dato.idusuario.first_name}} {{dato.idusuario.last_name}}</td>
+            <td>{{dato.idpersona.nombres}}</td>
+            <td>{{dato.idpersona.apellidos}}</td>
+            <td>{{dato.idpersona.codigo}}</td>
+            <td>{{dato.idpersona.dni}}</td>
             {% if user.idrol.rol != "Gerencia" %}
-            <th scope="col">Operaciones</th>
+            <td>
+                <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="{{dato.idtractorista}}" data-bs-toggle="modal" data-bs-target="#modal-tractorista">Editar</button>
+                <form action="{% url 'tractorista_eliminar' dato.idtractorista %}" class="d-inline-block" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+                </form>
+            </td>
             {% endif %}
-        </tr>
-    </thead>
-    <tbody>
-    {% for dato in datos_tractoristas %}
-     <tr>
-        <td>{{dato.idusuario}}</td>
-        <td>{{dato.idpersona.apellidos}}</td>
-        <td>{{dato.idpersona.nombres}}</td>
-        <td>{{dato.idpersona.codigo}}</td>
-        <td>{{dato.idpersona.dni}}</td>
-        {% if user.idrol.rol != "Gerencia" %}
-        <td>
-            <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="{{dato.idtractorista}}" data-bs-toggle="modal" data-bs-target="#modal-tractorista"><i class="lni lni-pencil editar"></i></button>
-            <form action="{% url 'tractorista_eliminar' dato.idtractorista %}" class="d-inline-block" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
-            </form>
-        </td>
-        {% endif %}
-     </tr>
-    {% endfor %}
-    </tbody>
-</table>
+         </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 <div class="modal fade" id="modal-tractorista" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -72,11 +85,11 @@
                 <form autocomplete="off" id="form-modal">
                     <div class="modal-body">
                             {% csrf_token %}
-                            <label for="txtUsuario" class="form-label">Usuario a cargo:</label>
+                            <label for="txtUsuario" class="form-label">Supervisor a cargo:</label>
                             <select class="form-select mb-3" name="usuario" id="txtUsuario">
                                 <option selected>Seleccione: </option>
                                 {% for usuario in datos_usuarios %}
-                                <option value="{{usuario.id}}">{{usuario.username}}</option>
+                                <option value="{{usuario.id}}">{{usuario.first_name}} {{usuario.last_name}}</option>
                                 {% endfor %}
                             </select>
 
@@ -110,10 +123,10 @@ const btnModificar = document.querySelectorAll(".editar")
         formModal.setAttribute("action", `./tractorista/modificar/${id}`);
         formModal.setAttribute("method", "POST");
         txtApellidos.value = datos.persona[0].apellidos;           
-        txtNombres.value = datos.persona[0].nombres;           
-        txtCodigo.value = datos.persona[0].codigo;           
+        txtNombres.value = datos.persona[0].nombres;                    
         txtDni.value = datos.persona[0].dni;           
         txtUsuario.value = datos.tractorista[0].idusuario_id
+        console.log(txtDni.value)
     })
     .catch((error) => {
         console.log(error);
@@ -134,6 +147,13 @@ const btnModificar = document.querySelectorAll(".editar")
         obtener_tractorista(id_tractorista);
         });
     });
+
+    setTimeout(function() {
+            var errorMessage = document.getElementById('message');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+        }, 3000);
 
 
 });

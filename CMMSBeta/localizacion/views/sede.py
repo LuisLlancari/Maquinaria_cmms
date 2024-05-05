@@ -31,7 +31,11 @@ def eliminar_sede(request, idsede):
 def registrar_sede(request):
     if request.method == 'POST':
         form = SedeForm(request.POST)
-        if form.is_valid():
+        sede = request.POST.get('sede').lstrip()
+        existe_sede = Sede.objects.filter(sede = sede, estado = True).exists()
+        print(sede)
+        print(existe_sede)
+        if form.is_valid() and existe_sede == False:
             form.save()
             messages.success(request, "La sede se ha registrado correctamente", extra_tags='success')
             return redirect('sede')
@@ -45,17 +49,17 @@ def registrar_sede(request):
 def editar_sede(request):
     if request.method == 'POST':
         sede_id = request.POST.get('idsede')
-
         sede = get_object_or_404(Sede, pk=sede_id)
         form = SedeForm(request.POST, instance=sede)
+        sede = request.POST.get('sede').lstrip()
+        existe_sede = Sede.objects.filter(sede = sede, estado = True).exists()
 
-        if form.is_valid():
+        if form.is_valid() and existe_sede == False:
             form.save()
             messages.success(request, "La sede se ha modificado correctamente", extra_tags='primary')
             return redirect('sede')
         else:
             messages.success(request, "La sede ya existe", extra_tags='danger')
             return redirect('sede')
-
     else:
         return redirect('sede')

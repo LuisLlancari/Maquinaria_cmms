@@ -26,8 +26,12 @@ def implemento(request):
 
 def registrarImplemento(request):
   if request.method == 'POST':
+    nom_implemento = request.POST.get('implemento').strip()
+    cod_implemento = request.POST.get('codimplemento').strip()
+    existe_nom = Implemento.objects.filter(implemento = nom_implemento, estado = True).exists()
+    existe_cod = Implemento.objects.filter(codimplemento = cod_implemento, estado = True).exists()
     form = ImplementoForms(request.POST)
-    if form.is_valid():
+    if form.is_valid() and existe_nom == False and existe_cod == False:
       form.save()
       messages.success(request, 'Implemento registrado con exito', extra_tags='success')
       return redirect('implemento')
@@ -48,6 +52,10 @@ def editarImplemento(request, id_implemento):
   if request.method == 'POST':
     implemento = get_object_or_404(Implemento, pk=id_implemento)
     form = ImplementoForms(request.POST, instance=implemento)
+    nom_implemento = request.POST.get('implemento').strip()
+    cod_implemento = request.POST.get('codimplemento').strip()
+    #existe_nom = Implemento.objects.filter(implemento = nom_implemento, estado = True).exists()
+    #existe_cod = Implemento.objects.filter(codimplemento = cod_implemento, estado = True).exists()
     if form.is_valid():
       form.save()
       messages.success(request, 'Implemento editado con exito', extra_tags='primary')

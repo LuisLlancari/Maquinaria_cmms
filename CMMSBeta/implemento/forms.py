@@ -2,12 +2,16 @@ from django import forms
 from . models import Implemento, DetImplementos, TipoImplemento
 from usuario.models import Usuario
 
+from ceco.models import Ceco
+from localizacion.models import Area
 
 class ImplementoForms(forms.ModelForm):
   def __init__(self, *args, **kwargs):
         super(ImplementoForms, self).__init__(*args, **kwargs)
         self.fields['idtipoimplemento'].queryset = TipoImplemento.objects.filter(estado = True)
-        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 2)
+        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 3)
+        self.fields['idceco'].queryset = Ceco.objects.filter(estado = True)
+        self.fields['idarea'].queryset = Area.objects.filter(estado = True)
   class Meta:
     model = Implemento
     fields = ['idimplemento','idusuario','implemento','tiempovida','horasdeuso', 'codimplemento', 'idtipoimplemento', 'idceco','idarea']
@@ -15,8 +19,8 @@ class ImplementoForms(forms.ModelForm):
       'idimplemento': forms.HiddenInput(),
       'implemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtImplemento'}),
       'idusuario': forms.Select(attrs={'class':'form-select', 'id':'txtIdUsuario'}),
-      'tiempovida': forms.TextInput(attrs={'class':'form-control', 'id':'txtTiempoVida'}),
-      'horasdeuso': forms.TextInput(attrs={'class':'form-control', 'id':'txtHorasUso'}),
+      'tiempovida': forms.NumberInput(attrs={'class':'form-control', 'id':'txtTiempoVida', 'type':'number', 'min':'0'}),
+      'horasdeuso': forms.NumberInput(attrs={'class':'form-control', 'id':'txtHorasUso', 'type':'number', 'min':'0'}),
       'codimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtCodImplemento'}),
       'idtipoimplemento': forms.Select(attrs={'class':'form-control', 'id':'txtIdTipoimplemento'}),
       'idceco': forms.Select(attrs={'class':'form-control', 'id':'txtIdCeco'}),

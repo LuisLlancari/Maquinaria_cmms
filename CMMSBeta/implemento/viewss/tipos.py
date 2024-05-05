@@ -15,13 +15,19 @@ def tipoImplemento (request):
 
 def registrarTipoImplemento(request):
     if request.method == 'POST':
-      form = TipoImplementoForms(request.POST)
-      if form.is_valid(): 
-        form.save()
-        messages.success(request, 'Tipo de implemento registrado con exito', extra_tags='success')
-        return redirect('tipoimplemento')
-      else:
-        messages.error(request, 'El tipo de implemento ya existe', extra_tags='danger')
+        form = TipoImplementoForms(request.POST)
+        tipoimplemento = request.POST.get('tipoimplemento')
+        #Verificamos si el tipo de implemento ya existe
+        existe_implemento = TipoImplemento.objects.filter(tipoimplemento=tipoimplemento, estado=True).exists()
+        print(existe_implemento)
+        if form.is_valid():
+            if existe_implemento == False:
+                messages.success(request, 'Tipo de implemento registrado con éxito', extra_tags='success')
+                form.save()
+            else:
+                messages.error(request, 'El tipo de implemento ya existe', extra_tags='danger')
+        else:
+            messages.error(request, 'El formulario es inválido', extra_tags='danger')
     return redirect('tipoimplemento')
 
 def eliminarImplemento(request, id):
@@ -35,12 +41,16 @@ def editarTipoImplemento(request, id_tipo):
   if request.method == 'POST':
     tipo_implmento = get_object_or_404(TipoImplemento, pk=id_tipo)
     form = TipoImplementoForms(request.POST, instance=tipo_implmento)
+    tipoimplemento = request.POST.get('tipoimplemento')
+    #Verificamos si el tipo de implemento ya existe
+    existe_implemento = TipoImplemento.objects.filter(tipoimplemento=tipoimplemento, estado=True).exists()
+    print(existe_implemento)
     if form.is_valid():
-      form.save()
-      messages.success(request, 'Tipo de implemento editado con exito', extra_tags='primary')
-      return redirect('tipoimplemento')
-    else:
-      messages.error(request, 'Error al editar', extra_tags='danger')
+      if existe_implemento == False:
+        messages.success(request, 'Tipo de implemento actualizado con éxito', extra_tags='success')
+        form.save()
+      else:
+        messages.error(request, 'El tipo de implemento ya existe', extra_tags='danger')
   return redirect('tipoimplemento')
 
 

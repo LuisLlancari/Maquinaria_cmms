@@ -31,7 +31,7 @@
         {% for message in messages %}
         <div id="message" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             
-            {{ message }}
+            <strong>{{ message }}</strong>
             
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
@@ -43,7 +43,7 @@
         <tr>
             <th scope="col" class="text-center">N°</th>
             <th scope="col" class="text-center">Tipo Tractor</th>
-            <th scope="col" class="text-center">Usuario</th>
+            <th scope="col" class="text-center">Supervisor a Cargo</th>
             <th scope="col" class="text-center">Fundo</th>
             <th scope="col" class="text-center">Nombre Tractor</th>
             <th scope="col" class="text-center">Hora Inicial</th>
@@ -159,8 +159,9 @@
             <div class="form-group">
               <label for="idusuario">Usuario</label>
               <select name="idusuario" id="idusuario" class="form-control mt-2 mb-2">
+                <option value="">-----------</option>
                 {% for usuario in usuario %}
-                  <option value="{{usuario.id}}">{{usuario.username}}</option>
+                  <option value="{{usuario.id}}">{{usuario.first_name}} {{usuario.last_name}}</option>
                 {% endfor %}
               </select>
             </div>

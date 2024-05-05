@@ -12,7 +12,9 @@ def registrartipoSolicitante(request):
   datos_tipos = TipoSolicitante.objects.filter(estado = True)
   if request.method == 'POST':
     form = TiposolicitanteForms(request.POST)
-    if form.is_valid():
+    tipoSolicitante = request.POST.get('tiposolicitante').strip()
+    tipoSolicitante_existe = TipoSolicitante.objects.filter(tiposolicitante = tipoSolicitante, estado = True).exists()
+    if form.is_valid() and tipoSolicitante_existe == False:
       form.save()
       messages.success(request, "El tipo solicitante se ha agreado correctamente", extra_tags='success')
       return redirect('tiposolicitante')
@@ -34,12 +36,17 @@ def editarTiposolicitante(request, id_tipo):
   if request.method == 'POST':
     tipoSolicitante = get_object_or_404(TipoSolicitante, pk=id_tipo)
     form = TiposolicitanteForms(request.POST, instance=tipoSolicitante)
-    if form.is_valid():
+
+    tipoSolicitante = request.POST.get('tiposolicitante').lstrip()
+    print(tipoSolicitante)
+    tipoSolicitante_existe = TipoSolicitante.objects.filter(tiposolicitante = tipoSolicitante, estado = True).exists()
+    print(tipoSolicitante_existe)
+    if form.is_valid() and tipoSolicitante_existe == False:
       form.save()
       messages.success(request, "El tipo solicitante se ha modificado correctamente", extra_tags='primary')
       return redirect('tiposolicitante')
     else:
-      messages.success(request, "El tipo solicitante ya existe", extra_tags='warning')
+      messages.success(request, "No se pudo modificar el tipo solicitante", extra_tags='warning')
       return redirect('tiposolicitante')
     
   else:

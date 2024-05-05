@@ -25,7 +25,11 @@ def ceco(request):
 def registrar_ceco(request):
     if request.method == 'POST':
         form = CecoForm(request.POST)
-        if form.is_valid():
+        ceco = request.POST.get('ceco').strip()
+        print(ceco)
+        ceco_existe = Ceco.objects.filter(ceco = ceco, estado = True).exists()
+        print(ceco_existe)
+        if form.is_valid() and ceco_existe == False:
             form.save()
             messages.success(request, 'Ceco registrado con exito', extra_tags='success')
             return redirect('ceco')
@@ -40,16 +44,17 @@ def editar_ceco(request):
         ceco_id = request.POST.get('ceco_id')
         ceco_instance = get_object_or_404(Ceco, pk=ceco_id)
         form = CecoForm(request.POST, instance=ceco_instance)
-        if form.is_valid():
+
+        ceco = request.POST.get('ceco').strip()
+        ceco_existe = Ceco.objects.filter(ceco = ceco, estado = True).exists()
+        if form.is_valid() and ceco_existe == False:
             form.save()
+            messages.success(request, 'Ceco actualizado con exito', extra_tags='primary')
             return redirect('ceco')
         else:
-            # Obtener los errores del formulario
-            errores = form.errors.as_text()
-            mensaje_error = f"Hubo un error en el formulario: {errores}"
-            return HttpResponse(mensaje_error)
-    else:
-        return HttpResponse("La solicitud no fue válida")
+            messages.error(request, 'El centro de costo ya existe', extra_tags='danger')
+
+    return redirect('ceco')
 
 @login_required(login_url='login', redirect_field_name='')
 def eliminar_ceco(request, id_ceco):

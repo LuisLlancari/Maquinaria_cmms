@@ -4,7 +4,7 @@ from django.db import models
 # Create your models here.
 class Sede(models.Model):
     idsede = models.AutoField(primary_key=True)
-    sede = models.CharField(max_length=50, unique=True, verbose_name='Sede')
+    sede = models.CharField(max_length=50, verbose_name='Sede')
     estado = models.BooleanField(default=True, verbose_name='Estado')
 
     class Meta:

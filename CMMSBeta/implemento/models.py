@@ -8,7 +8,7 @@ from ceco.models import Ceco
 
 class TipoImplemento(models.Model):
     idtipoimplemento = models.AutoField(primary_key=True)
-    tipoimplemento = models.CharField(unique=True, max_length=45, verbose_name="Tipo Implemento")
+    tipoimplemento = models.CharField(max_length=45, verbose_name="Tipo Implemento")
     estado = models.BooleanField(default=True, verbose_name="Estado")
 
     class Meta:

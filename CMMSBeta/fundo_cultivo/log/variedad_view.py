@@ -23,6 +23,8 @@ def registrar_variedad(request):
     if request.method == 'POST':
         # Instanciamos el formulario
         form = VariedadForm(request.POST)
+        
+
 
         # Validamos formulario
         if form.is_valid():
@@ -32,7 +34,7 @@ def registrar_variedad(request):
             id_cultivo = request.POST.get('idcultivo')
 
             # Validamos si el dato existe
-            if Variedad.objects.filter(variedad=variedad_nombre, idcultivo=id_cultivo).exists():
+            if Variedad.objects.filter(variedad=variedad_nombre, idcultivo=id_cultivo, estado = True).exists():
                 messages.success(request, "Datos ya existentes.", extra_tags='danger')
             else:
                 messages.success(request, 'Variedad registrada con exito', extra_tags='success')
@@ -53,14 +55,13 @@ def editar_variedad(request):
     variedad_id = request.POST.get('variedad_id')
     variedad_instance = get_object_or_404(Variedad, pk=variedad_id)
     form = VariedadForm(request.POST, instance=variedad_instance)
-    if form.is_valid():
+    existe_fila = Variedad.objects.filter(variedad = request.POST.get('variedad').lstrip(), idcultivo = request.POST.get('idcultivo').lstrip(), estado = True).exists()
+    if form.is_valid() and existe_fila == False:
       form.save()
-      messages.success(request, 'Variedad actualizada con exito', extra_tags='primary')
+      messages.success(request, 'Actualizado con exito', extra_tags='primary')
       return redirect('variedad')
     else:
-      errores = form.errors.as_text()
-      mensaje_error = f"Hubo un error en el formulario: {errores}"
-      return HttpResponse(mensaje_error)
+      messages.error(request, 'Error al actualizar', extra_tags='danger')
   return redirect('variedad')
   
   

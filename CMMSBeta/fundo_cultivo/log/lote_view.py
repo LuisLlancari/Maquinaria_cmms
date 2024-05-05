@@ -14,7 +14,8 @@ def lote(request):
   lotes = Lote.objects.filter(estado=True, idvariedad__estado=True)
   variedades = Variedad.objects.filter(estado=True)
   Cultivos = Cultivo.objects.filter(estado=True)
-  return render(request, 'fundo_cultivo/lote.html',{'datos': lotes, 'variedades': variedades, 'cultivos': Cultivos, 'form_lote': LoteForm})
+  Fundos = Fundo.objects.filter(estado=True)
+  return render(request, 'fundo_cultivo/lote.html',{'datos': lotes, 'variedades': variedades, 'cultivos': Cultivos, 'fundos': Fundos,'form_lote': LoteForm})
 
 def registrar_lote(request):
   if request.method == 'POST':
@@ -24,12 +25,12 @@ def registrar_lote(request):
       fundo = request.POST.get('idfundo')
       variedad = request.POST.get('idvariedad')
 
-      if Lote.objects.filter(lote = lote, idvariedad = variedad, idfundo= fundo).exists():
-        messages.success(request, ("Los datos ya existen."))
-        print("datos repetidos")
+      if Lote.objects.filter(lote = lote, estado = True).exists():
+        messages.error(request, ("Los datos ya existen."))
         return redirect('lote')
       else:
         form.save()
+        messages.success(request, ("Lote registrado con exito"))
         return redirect('lote')
     else:
       messages.success(request, ("Ingrese datos validos"))
@@ -45,7 +46,7 @@ def eliminar_lote(request, id_lote):
     return redirect('lote')
   
 def obtener_lote(request):
-  variedad = list(Variedad.objects.all().values())
+  variedad = list(Variedad.objects.filter(estado=True).values())
   if(len(variedad) > 0):
     data = {'mensaje': "Success", 'variedad': variedad}
   else:
@@ -57,7 +58,12 @@ def editar_lote(request):
     lote_id = request.POST.get('lote_id')
     lote_instance = get_object_or_404(Lote, pk=lote_id)
     form = LoteForm(request.POST, instance=lote_instance)
-    if form.is_valid():
+
+    lote = request.POST.get('lote').lstrip()
+    existe_lote = Lote.objects.filter(lote = lote, estado = True).exists()
+    print(existe_lote)
+
+    if form.is_valid() and existe_lote == False:
       form.save()
       messages.success(request, 'Lote actualizado con exito', extra_tags='primary')
       return redirect('lote')

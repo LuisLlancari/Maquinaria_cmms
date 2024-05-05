@@ -5,7 +5,7 @@ from localizacion.models import Sede
 class Fundo(models.Model):
     idfundo = models.AutoField(primary_key=True)
     idsede = models.ForeignKey(Sede, on_delete=models.SET_NULL, null=True, verbose_name="Sede")
-    fundo = models.CharField(max_length=30, unique=True, verbose_name='Fundo')
+    fundo = models.CharField(max_length=30, verbose_name='Fundo')
     estado = models.BooleanField(default=True, verbose_name='Estado')
 
     class Meta:
@@ -17,7 +17,7 @@ class Fundo(models.Model):
 
 class Cultivo(models.Model):
     idcultivo = models.AutoField(primary_key=True)
-    cultivo = models.CharField(max_length=30, unique=True, verbose_name='Cultivo')
+    cultivo = models.CharField(max_length=30, verbose_name='Cultivo')
     estado = models.BooleanField(default=True, verbose_name='Estado')
 
     class Meta:
@@ -47,7 +47,7 @@ class Lote(models.Model):
     idlote = models.AutoField(primary_key=True)
     idvariedad = models.ForeignKey(Variedad, on_delete=models.SET_NULL, null=True, verbose_name="Variedad")
     idfundo = models.ForeignKey(Fundo, on_delete=models.SET_NULL, null=True, verbose_name="Fundo")
-    lote = models.CharField(max_length=30, unique=True, verbose_name='Lote')
+    lote = models.CharField(max_length=30, verbose_name='Lote')
     estado = models.BooleanField(default=True, verbose_name='Estado')
 
     class Meta:

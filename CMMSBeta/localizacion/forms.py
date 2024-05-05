@@ -13,6 +13,10 @@ class SedeForm(forms.ModelForm):
 
 
 class BaseForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['idsede'].queryset = Sede.objects.filter(
+            estado=True)
     class Meta:
         model = Base
         fields = ['idbase', 'idsede', 'base']

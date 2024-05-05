@@ -16,7 +16,7 @@ def tractor(request):
         tractores = Tractor.objects.filter(estado = True , idusuario = id_usuario)
         tipotractor = TipoTractor.objects.filter(estado = True)
         fundo = Fundo.objects.filter(estado = True)
-        usuario = Usuario.objects.filter(idrol = 1) 
+        usuario = Usuario.objects.filter(idrol = 3) 
         form = TractorForm()
         data = {
             'tractores' : tractores,
@@ -32,7 +32,7 @@ def tractor(request):
         tractores = Tractor.objects.filter(estado = True)
         tipotractor = TipoTractor.objects.filter(estado = True)
         fundo = Fundo.objects.filter(estado = True)
-        usuario = Usuario.objects.filter(idrol = 1) 
+        usuario = Usuario.objects.filter(idrol = 3) 
         form = TractorForm()
         data = {
             'tractores' : tractores,
@@ -57,7 +57,9 @@ def eliminar_tractor(request, idtractor):
 def registrar_tractor(request):
     if request.method == 'POST':
         form = TractorForm(request.POST)
-        if form.is_valid():
+        nom_tractor = request.POST.get('nrotractor').strip()
+        existe_tractor = Tractor.objects.filter(nrotractor = nom_tractor, estado = True).exists()
+        if form.is_valid() and existe_tractor == False:
             form.save()
             messages.success(request, "El tractor ha sido agregado correctamente", extra_tags='success')
             return redirect('tractor')
@@ -74,7 +76,9 @@ def editar_tractor(request):
         tractor = get_object_or_404(Tractor, pk = idtractor)
         form = TractorForm(request.POST, instance=tractor)
 
-        if form.is_valid():
+        nom_tractor = request.POST.get('nrotractor').strip()
+        existe_tractor = Tractor.objects.filter(nrotractor = nom_tractor, estado = True).exists()
+        if form.is_valid() and existe_tractor == False:
             form.save()
             messages.success(request, "El tractor ha sido modificado correctamente", extra_tags='primary')
             return redirect('tractor')

@@ -15,8 +15,14 @@ def cultivo(request):
 
 def registrar_cultivo(request):
   if request.method == 'POST':
+    #Manejo de caracteres el blanco 
+    #.lstrip(): Elimina los espacios al principio
+    #.rstrip(): Elimina los espacios al final
+    #.strip(): Elimina los espacios al principio y al final
+    cultivo = request.POST.get('cultivo').lstrip()
+    existe_cultivo = Cultivo.objects.filter(cultivo = cultivo, estado = True).exists()
     form = CultivoForm(request.POST)
-    if form.is_valid():
+    if form.is_valid() and existe_cultivo == False:
       form.save()
       messages.success(request, 'Cultivo registrado con exito', extra_tags='success')
       return redirect('cultivo')
@@ -29,7 +35,10 @@ def editar_cultivo(request):
     cultivo_id = request.POST.get('cultivo_id')
     cultivo_instance = get_object_or_404(Cultivo, pk=cultivo_id)
     form = CultivoForm(request.POST, instance=cultivo_instance)
-    if form.is_valid():
+
+    cultivo = request.POST.get('cultivo').lstrip()
+    existe_cultivo = Cultivo.objects.filter(cultivo = cultivo, estado = True).exists()
+    if form.is_valid() and existe_cultivo == False:
       form.save()
       messages.success(request, 'Cultivo actualizado con exito', extra_tags='primary')
       return redirect('cultivo')

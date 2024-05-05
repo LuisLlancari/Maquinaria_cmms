@@ -6,12 +6,11 @@ from django.contrib.auth.forms import UserCreationForm
 class PersonaForm(forms.ModelForm):
     class Meta:
         model = Persona
-        fields  = ['nombres', 'apellidos', 'dni', 'codigo']
+        fields  = ['nombres', 'apellidos', 'dni']
         widgets = {
             'nombres': forms.TextInput(attrs={'class':'form-control mb-3', 'id':'txtNombres'}),
             'apellidos': forms.TextInput(attrs={'class':'form-control mb-3', 'id':'txtApellidos'}),
             'dni': forms.TextInput(attrs={'class':'form-control mb-3', 'id':'txtDni'}),
-            'codigo': forms.TextInput(attrs={'class':'form-control mb-3', 'id':'txtCodigo'}),
         }
 
 class RolForm(forms.ModelForm):

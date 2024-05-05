@@ -49,7 +49,7 @@
                     <td>{{ data.idvariedad }}</td>
                     {% if user.idrol.rol != "Gerencia" %}
                     <td>
-                        <button class="btn btn-warning btn-sm editar d-inline-block" id="lote" data-toggle="modal" data-target="#modalActualizar" data-idlote='{{ data.idlote }}' data-nombrelote="{{ data.lote }}" data-idcultivo="{{ data.idvariedad.idcultivo }}" data-idvariedad="{{ data.idvariedad.idvariedad }}" type="button"><i class="lni lni-pencil"></i></button>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="lote" data-toggle="modal" data-target="#modalActualizar" data-idlote='{{ data.idlote }}' data-nombrelote="{{ data.lote }}" data-idcultivo="{{ data.idvariedad.idcultivo.idcultivo }}" data-idvariedad="{{ data.idvariedad.idvariedad }}" data-idfundo="{{data.idfundo.idfundo}}" type="button"><i class="lni lni-pencil"></i></button>
                         <form action="{% url 'eliminar_lote' data.idlote %}" class="d-inline-block" method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
@@ -126,9 +126,21 @@
                     <form method="post" action="{% url 'editar_lote' %}" autocomplete="" id="form-editar-cultivo">
                         {% csrf_token %}
                         <input type="hidden" name="lote_id" id="lote_id">
-                        <div class="form-group">
-                            <label for="nombrelote">Lote</label>
-                            <input type="text" class="form-control" name="lote" id="nombrelote">
+                        <div class="row">
+                            <div class="col col-md-6">
+                                <div class="form-group">
+                                    <label for="nombrelote">Lote</label>
+                                    <input type="text" class="form-control" name="lote" id="nombrelote">
+                                </div>
+                            </div>
+                            <div class="col col-md-6">
+                                <label for="idfundo">Fundo</label>
+                                <select name="idfundo" id="idfundo" class="form-select">
+                                    {% for fundo in fundos %}
+                                        <option value="{{ fundo.idfundo }}">{{ fundo.fundo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
 
                         <label for="idcultivo" class="form-label mt-3">Cultivo</label>
@@ -199,11 +211,13 @@
                 var nombrelote = this.dataset.nombrelote;
                 var idCultivo = this.dataset.idcultivo;
                 var idVariedad = this.dataset.idvariedad;
+                var idFundo = this.dataset.idfundo;
 
                 document.querySelector('#lote_id').value = idlote;
                 document.querySelector('#nombrelote').value = nombrelote;
                 document.querySelector('#nombrecultivo').value = idCultivo;
                 document.querySelector('#nombrevariedad').value = idVariedad;
+                document.querySelector('#idfundo').value = idFundo;
 
                 console.log(idVariedad)
 
