@@ -35,7 +35,9 @@ def eliminar_tipotractor(request, idtractor):
 def registrar_tipotractor(request):
     if request.method == 'POST':
         form = TipoTractorForm(request.POST)
-        if form.is_valid():
+        tipo_tractor = request.POST.get('TipoTractor').strip()
+        tipo_tractor_existe = TipoTractor.objects.filter(TipoTractor = tipo_tractor, estado = True).exists()
+        if form.is_valid() and tipo_tractor_existe == False:
             form.save()
             messages.success(request, "El tipo tractor ha sido agregada correctamente", extra_tags='success')
             return redirect('tipotractor')
@@ -53,8 +55,10 @@ def editar_tipo(request):
         idtipo = request.POST.get('idtipotractor')
         tipo = get_object_or_404(TipoTractor, pk = idtipo)
         form = TipoTractorForm(request.POST, instance=tipo)
-
-        if form.is_valid():
+        
+        tipo_tractor = request.POST.get('TipoTractor').strip()
+        tipo_tractor_existe = TipoTractor.objects.filter(TipoTractor = tipo_tractor, estado = True).exists()
+        if form.is_valid() and tipo_tractor_existe == False:
             form.save()
             messages.success(request, "El tipo tractor ha sido modificado correctamente", extra_tags='primary')
             return redirect('tipotractor')

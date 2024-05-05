@@ -1,11 +1,16 @@
 from django import forms
 from .models import Fundo, Cultivo, Variedad, Lote
+from localizacion.models import Sede
 
 class VariedadChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return f"{obj.variedad} - {obj.idcultivo.cultivo}"
 
 class FundoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['idsede'].queryset = Sede.objects.filter(
+            estado=True)
     class Meta:
         model = Fundo
         fields = ['fundo', 'idsede']
@@ -23,16 +28,23 @@ class CultivoForm(forms.ModelForm):
         }
 
 class VariedadForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['idcultivo'].queryset = Cultivo.objects.filter(
+            estado=True)
     class Meta:
         model = Variedad
-        fields = ['variedad', 'idcultivo']
+        fields = ['idcultivo','variedad']
         widgets = {
-            'variedad': forms.TextInput(attrs={'class': 'form-control mb-2'}),
             'idcultivo': forms.Select(attrs={'class': 'form-control mb-2'}),
+            'variedad': forms.TextInput(attrs={'class': 'form-control mb-2'}),
         }
 
 class LoteForm(forms.ModelForm):
-    idvariedad = VariedadChoiceField(queryset=Variedad.objects.all(), label="Variedad - Cultivo")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['idfundo'].queryset = Fundo.objects.filter(
+            estado=True)
 
     class Meta:
         model = Lote

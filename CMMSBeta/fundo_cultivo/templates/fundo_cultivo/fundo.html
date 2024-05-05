@@ -92,17 +92,17 @@
                     <form method="post" action="{% url 'editar_fundo' %}" autocomplete="" id="form-editar-fundo">
                         {% csrf_token %}
                         <input type="hidden" name="fundo_id" id="fundo_id">
+                        
+                        <label for="idsede" class="form-label mb-3">Sede</label>
+                        <select name="idsede" id="nombresede" class="form-control">
+                            {% for sede in sedes %}
+                            <option value="{{ sede.idsede }}">{{ sede.sede }}</option>
+                            {% endfor %}
+                        </select>
                         <div class="form-group">
                             <label for="nombrefundo">Fundo</label>
                             <input type="text" class="form-control" name="fundo" id="nombrefundo">
                         </div>
-
-                        <label for="idsede" class="form-label mt-3">Sede</label>
-                        <select name="idsede" id="nombresede" class="form-control">
-                            {% for sede in sedes %}
-                                <option value="{{ sede.idsede }}">{{ sede.sede }}</option>
-                            {% endfor %}
-                        </select>
                         
                         
                         <button type="submit" class="btn btn-primary mt-2">Guardar Cambios</button>

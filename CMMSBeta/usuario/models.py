@@ -2,10 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class Persona(models.Model):
-    idpersona = models.AutoField(primary_key = True)
+    idpersona = models.AutoField(primary_key=True)
     nombres = models.CharField(max_length=45, verbose_name="Nombres")
     apellidos = models.CharField(max_length=45, verbose_name="Apellidos")
-    dni= models.CharField(max_length=8, null = True, blank=True, verbose_name= "DNI")
+    dni = models.CharField(max_length=8, unique=True, null=True, blank=True, verbose_name="DNI")
     codigo = models.CharField(max_length=12, null=True, verbose_name="Codigo")
     estado = models.BooleanField(default=True, verbose_name="Estado")
     creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
@@ -14,9 +14,19 @@ class Persona(models.Model):
     class Meta:
         verbose_name = "Persona"
         verbose_name_plural = "Personas"
-    
+
     def __str__(self):
         return f"{self.nombres} {self.apellidos}"
+
+    def save(self, *args, **kwargs):
+        if not self.codigo:  # Si el código no está establecido
+            last_persona = Persona.objects.order_by('-codigo').first()  # Obtener el último registro
+            if last_persona:  # Si hay registros existentes
+                last_codigo = int(last_persona.codigo)
+                self.codigo = str(last_codigo + 1)  # Incrementar el código en 1
+            else:
+                self.codigo = "1000"  # Si no hay registros, empezar en 1000
+        super().save(*args, **kwargs)
 
 
 

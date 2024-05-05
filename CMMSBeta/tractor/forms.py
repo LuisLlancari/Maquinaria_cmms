@@ -2,6 +2,8 @@ from django import forms
 from .models import TipoTractor, Tractor
 from .models import ReporteTractor
 from usuario.models import Usuario
+
+from fundo_cultivo.models import Fundo
 class TipoTractorForm(forms.ModelForm):
     class Meta:
         model = TipoTractor
@@ -18,7 +20,8 @@ class TractorForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Filtrar las opciones del campo idtipotractor
         self.fields['idtipotractor'].queryset = TipoTractor.objects.filter(estado=True)
-        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol=2)
+        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol=3)
+        self.fields['idfundo'].queryset = Fundo.objects.filter(estado=True)
     class Meta:
         model = Tractor
         fields = ['idtractor','idtipotractor', 'idusuario', 'idfundo' ,'nrotractor', 'horainicial', 'horauso']
@@ -29,7 +32,7 @@ class TractorForm(forms.ModelForm):
             'idfundo': forms.Select(attrs={'class': 'form-control'}),
             'nrotractor': forms.TextInput(attrs={'class': 'form-control'}),
             'horainicial': forms.NumberInput(attrs={'class': 'form-control'}),
-            'horauso': forms.NumberInput(attrs={'class': 'form-control'}),
+            'horauso': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
         }
 
 

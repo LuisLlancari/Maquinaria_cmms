@@ -3,7 +3,7 @@ from usuario.models import Usuario, Persona
 
 class TipoSolicitante(models.Model):
     idtiposolicitante = models.AutoField(primary_key=True)
-    tiposolicitante = models.CharField(unique=True, max_length=45, verbose_name="Tipo Solicitante")
+    tiposolicitante = models.CharField( max_length=45, verbose_name="Tipo Solicitante")
     estado = models.BooleanField(default=True, verbose_name="Estado")
 
     class Meta:

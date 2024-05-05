@@ -58,16 +58,30 @@
                         {{ det.idprogramacion.idsolicitante.idpersona.nombres }}
                         {{ det.idprogramacion.idsolicitante.idpersona.apellidos }}
                     </td>
-                    <td>{{ det.idprogramacion.idtractor }}</td>
-                    <td>
+                    <td {% if det.idprogramacion.idtractor.idusuario.id != user.id %} class="bg-warning" {% endif %}>{{ det.idprogramacion.idtractor }}</td>
+                    <td {% if det.idprogramacion.idtractorista.idusuario.id != user.id %} class="bg-warning" {% endif %} >
                         {{ det.idprogramacion.idtractorista.idpersona.nombres }}
                         {{ det.idprogramacion.idtractorista.idpersona.apellidos }}
                     </td>
                     <td>{{ det.idprogramacion.fechahora}}</td>
                     <td>{{ det.idprogramacion.turno}}</td>
-                    <td>{{ det.horadeuso}}</td>
+
+                    <!-- Para manejar la confirmacion-->
+                    {% if det.horadeuso == 0 %}
+                        <td class="text-danger">
+                            <strong> Por Confirmar </strong>
+                        </td>
+                    {% else %}
+                    <td class="text-primary text-end">
+                        <strong>{{det.horadeuso}}</strong>
+                    </td>
+                    {% endif %}
+                    <!--FIN DE LA CONFIRMACION-->
+
                     <td class="text-center">
-                        <button class="btn btn-primary btn-sm btn-ver" data-toggle="modal" data-idprogramacion='{{ det.idprogramacion }}' data-target="#modalListImplemento"><i class="lni lni-eye"></i></button>
+                        <button class="btn {% if det.idimplemento.idusuario.id != user.id %}btn-warning{% else %}btn-primary{% endif %} btn-sm btn-ver"  data-toggle="modal" data-implementos="{{ det.idimplemento }}" data-idprogramacion='{{ det.idprogramacion }}' data-target="#modalListImplemento">
+                            <i class="lni lni-eye"></i>
+                        </button>
                     </td>
                     {% if user.idrol.rol == "Admin" %}
                     <td>
@@ -93,7 +107,7 @@
     <!-- Modal Registrar Ceco -->
     <div class="modal fade" id="modalNuevo" tabindex="-1" role="dialog" aria-labelledby="modalNuevoLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-success">
                     <h1 class="modal-title text-white" id="modalProgramacion">Nueva Programacion</h1>
@@ -103,15 +117,76 @@
                         {% csrf_token %}
                         <strong for="idcimplemnto" >Datos Generales:</strong>
                         <div class="row mt-3">
+                            <div class="col-md-0">
+                                <!-- <label for="idtractorista">Tractorista:</label>
+                                <select name="idtractorista" class="form-select mb-2" id="id_idtractorista" required>
+                                    <option value="">---------</option>
+                                    {% for i in tractorista %}
+                                    <option value="{{i.idtractorista}}">{{i.idpersona.nombres}} {{i.idpersona.apellidos}}</option>
+                                    {% endfor %}
+                                </select> -->
+                            </div>
                             <div class="col-md-4">
-                                <label for="idlote" >Tipo de labor:</label>
+                                <label for="turn4o">Fecha de labor:</label>
+                                <select name="fechahora" class="form-select mb-2" id="id_fechahora">
+                                    <option id="1" value="hoy">Hoy</option>
+                                    <option id="2" value="mañana">Mañana</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="turno">Turno:</label>
+                                {{form_programacion.turno}}
+                            </div>
+                            <div class="col-md-5">
+                                <label for="fechahora">Solicitante:</label>
+                                {{form_programacion.idsolicitante}}
+                            </div>
+                            
+                            
+                        </div>
+                        
+
+                        <!--ESTE INPUT OCULTA EL USUARIO QUE ESTA LOGUEADO-->
+                        <div>
+                            <input type="hidden" name="idusuario" id="idprogramacion" value="{{idusuario}}">
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <label for="idfundo">Selecione el Fundo:</label>
+                                <select name="idfundo" id="idfundo" class="form-select">
+                                    <option value="">---------</option>
+                                    {% for i in fundo %}
+                                    <option value="{{i.idfundo}}">{{i.fundo}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="idlote" >Lote:</label>
+                                <select name="idlote" class="form-control mb-2" id="id_idlote">
+                                    <option value="">---------</option>
+                                    {% for i in lotes %}
+                                    <option data-idfundo="{{i.idfundo.idfundo}}" value="{{i.idlote}}">{{i.lote}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="idtractor">Tipo de Labor:</label>
                                 {{form_programacion.idtipolabor}}
                             </div>
-                            <div class="col-md-4">
+                        </div>
+
+                        <!--FIN-->
+                        <div class="row mt-3">
+                            <!-- <div class="col-md-4">
+                                <label for="idlote" >Tipo de labor:</label>
+                                {{form_programacion.idtipolabor}}
+                            </div> -->
+                            <!-- <div class="col-md-4">
                                 <label for="idsolicitante">Lote:</label>
                                 {{form_programacion.idlote}}
-                            </div>
-                            <div class="col-md-4">
+                            </div> -->
+                            <!-- <div class="col-md-4">
                                 <label for="idtractor">Nombre del Tractor:</label>
                                 <select name="idtractor" class="form-control mb-2" required id="id_idtractor">
                                     <option value="">---------</option>
@@ -119,72 +194,94 @@
                                     <option value="{{i.idtractor}}">{{i.nrotractor}}</option>
                                     {% endfor %}
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
-
-                        <!--ESTE INPUT OCULTA EL USUARIO QUE ESTA LOGUEADO-->
-                        <div>
-                            <input type="hidden" name="idusuario" id="idprogramacion" value="{{idusuario}}">
-                        </div>
-                        <!--FIN-->
-
-                        <div class="row mt-3">
-                            <div class="col-md-3">
-                                <label for="idtractorista">Tractorista:</label>
-                                <select name="idtractorista" class="form-select mb-2" id="id_idtractorista" required>
-                                    <option value="">---------</option>
-                                    {% for i in tractorista %}
-                                    <option value="{{i.idtractorista}}">{{i.idpersona.nombres}} {{i.idpersona.apellidos}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="fechahora">Solicitante:</label>
-                                {{form_programacion.idsolicitante}}
-                            </div>
-                            <div class="col-md-3">
-                                <label for="turno">Feche de labor:</label>
-                                {{form_programacion.fechahora}}
-                            </div>
-                            <div class="col-md-3">
-                                <label for="turno">Turno:</label>
-                                {{form_programacion.turno}}
-                            </div>
-                        </div>
+                        
                         <hr>
 
                         <strong class="text-center">Supervisor:</strong>
 
                         <div class="row mt-2">
-                            <div class="col-md-3">
-                                <select name="usuario_id" class="form-select" id="usuario_id">
-                                    {% for supervisor in lista_usuarios %}
-                                    <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
-                                    {% endfor %}
-                                </select>
+                            
+                            <div class="col-md-4 bg-primary">
+                                <div class="row mt-2">
+                                    <div class="col-md-8">
+                                        <select name="usuario_id" class="form-select" id="usuario_id">
+                                            {% for supervisor in lista_usuarios %}
+                                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-2 mt-2">
+                                    <div class="col-md-8">
+                                        <strong for="idimplemento" >Lista de implmentos a usar:</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-success float-end" id="btn-agregar">
+                                            Agregar
+                                        </button>
+                                    </div>
+                                    <div class="implementos-container mt-2">
+                                        <select name="idimplemento" class="form-select mb-2" id="id_idimplemento" required>
+                                            <option value="">---------</option>
+                                            {% for implemento in implementos %}
+                                            <option data-idusuario="{{ implemento.idusuario_id }}" value="{{ implemento.idimplemento }}">{{ implemento.implemento }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        
 
-                        <div class="row mb-2 mt-2">
-                            <div class="col-md-6">
-                                <strong for="idimplemento" >Lista de implmentos a usar:</strong>
+                            <div class="col-md-4 bg-success">                            
+                                <div class="row mt-2">
+                                    <div class="col-md-8">
+                                        <select name="usuario_id" class="form-select" id="usuario_id_2">
+                                            {% for supervisor in lista_usuarios %}
+                                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-2 mt-2">
+                                    <strong for="idimplemento" >Selecione el Tractor:</strong>
+                                    <div class="mt-4">
+                                        <select name="idtractor" id="id_idtractor" class="form-select">
+                                            <option value="">---------</option>
+                                            {% for data in tractor %}
+                                            <option data-idusuario="{{data.idusuario.id}}" value="{{data.idtractor}}">{{data.nrotractor}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <button type="button" class="btn btn-success float-end" id="btn-agregar">
-                                    Agregar
-                                </button>
+                            <div class="col-md-4 bg-secondary">                            
+                                <div class="row mt-2">
+                                    <div class="col-md-8">
+                                        <select name="usuario_id" class="form-select" id="usuario_id_3">
+                                            {% for supervisor in lista_usuarios %}
+                                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-2 mt-2">
+                                    <strong for="idimplemento">Selecione al Tractorista:</strong>
+                                    <div class="mt-4">
+                                        <select name="idtractorista" id="id_idtractorista" class="form-select">
+                                            <option value="">---------</option>
+                                            {% for data in tractorista %}
+                                            <option data-idusuario="{{data.idusuario.id}}" value="{{data.idtractorista}}">{{data.idpersona}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
+                            
+
                         </div>
 
-                        <div class="implementos-container">
-                            <select name="idimplemento" class="form-select mb-2" id="id_idimplemento" required>
-                                <option value="">---------</option>
-                                {% for implemento in implementos %}
-                                <option data-idusuario="{{ implemento.idusuario_id }}" value="{{ implemento.idimplemento }}">{{ implemento.implemento }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Guardar</button>
                         </div>
@@ -211,13 +308,83 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
 
-        let selectUsuario = document.getElementById('usuario_id');
-        let selectedUserId = document.getElementById('usuario_id').value;
+        const h1 = document.querySelector('#h1-remplazar');
+        const buscador = document.querySelector('#buscador');
+        const filasTabla = document.querySelectorAll('#tabla-labor tbody tr');
+
+        function filtrarTabla() {
+            const valorBusqueda = buscador.value.trim().toLowerCase();
+            let noHayResultados = true;
+            filasTabla.forEach(fila => {
+                const lote = fila.querySelector('td:nth-child(3)').textContent.trim().toLowerCase();
+                const Tractorista = fila.querySelector('td:nth-child(6)').textContent.trim().toLowerCase();
+
+                const coincide = lote.includes(valorBusqueda);
+                const coincide2 = Tractorista.includes(valorBusqueda);
+
+                if (coincide || coincide2) {
+                    fila.style.display = 'table-row';
+                    noHayResultados = false;
+                } else {
+                    fila.style.display = 'none';
+                }
+            });
+            h1.textContent = noHayResultados ? 'Datos no encontrados' : '';
+        }
+
+        //Eventos
+        buscador.addEventListener('input', filtrarTabla);
+
+        //MANEJO DE FECHAS
+        let selectFecha = document.getElementById('id_fechahora');
+        let option_1 = document.getElementById('1');
+        let option_2 = document.getElementById('2'); 
+    
+        let fechaActual = new Date();
+        let fechaMañana = new Date();
+        fechaMañana.setDate(fechaMañana.getDate() + 1);
         
+        let hoy = fechaActual.toISOString().split('T')[0];
+        let mañana = fechaMañana.toISOString().split('T')[0];
+
+        option_1.value = hoy;
+        option_2.value = mañana;
+        
+        selectFecha.addEventListener('change', () => {
+            let seleccion = selectFecha.value;
+            console.log(seleccion);
+        });
+        //FIN DE MANEJO DE FECHAS
+
         //CAMBIA EL VALOR POR QUE SE ENCUENTRA LOGUEADO
         usuario_id.value = "{{idusuario}}";
-        console.log(usuario_id.value);   
+        usuario_id_2.value = "{{idusuario}}";
+        usuario_id_3.value = "{{idusuario}}";
+        console.log(usuario_id.value);  
 
+        let selectUsuario = document.getElementById('usuario_id');
+        let selectedUserId = document.getElementById('usuario_id').value;
+
+        let selectUsuario2 = document.getElementById('usuario_id_2');
+        let selectTractor = document.getElementById('id_idtractor');
+
+        let selectUsuario3 = document.getElementById('usuario_id_3');
+        let selectTractorista = document.getElementById('id_idtractorista');
+
+        let fundo = document.getElementById('idfundo');
+        let lote = document.getElementById('id_idlote').value;
+
+        function filtrarTractoresPorUsuario(userId) {
+            let tractorOptions = document.querySelectorAll('#id_idtractor option');
+            tractorOptions.forEach(option => {
+                if (option.dataset.idusuario !== userId && option.value !== '') {
+                    option.style.display = 'none';
+                } else {
+                    option.style.display = 'block';
+                }
+            });
+        }     
+        
         function filtrarImplementosPorUsuario(userId) {
             let implementoOptions = document.querySelectorAll('#id_idimplemento option');
             implementoOptions.forEach(option => {
@@ -229,10 +396,46 @@
             });
         }
 
+        function filtrarTractoristasPorUsuario(userId) {
+            let tractoristaOptions = document.querySelectorAll('#id_idtractorista option');
+            tractoristaOptions.forEach(option => {
+                if (option.dataset.idusuario !== userId && option.value !== '') {
+                    option.style.display = 'none';
+                } else {
+                    option.style.display = 'block';
+                }
+            });
+        }
+
+        function filtrarLotesPorFundo(fundoId) {
+            let loteOptions = document.querySelectorAll('#id_idlote option');
+            loteOptions.forEach(option => {
+                if (option.dataset.idfundo !== fundoId && option.value !== '') {
+                    option.style.display = 'none';
+                } else {
+                    option.style.display = 'block';
+                }
+            });
+        }
 
         selectUsuario.addEventListener('change', function() {
             let selectedUserId = this.value;
             filtrarImplementosPorUsuario(selectedUserId);
+        });
+
+        selectUsuario2.addEventListener('change', function() {
+            let selectedUserId = this.value;
+            filtrarTractoresPorUsuario(selectedUserId);
+        });
+
+        selectUsuario3.addEventListener('change', function() {
+            let selectedUserId = this.value;
+            filtrarTractoristasPorUsuario(selectedUserId);
+        });
+
+        fundo.addEventListener('change', function() {
+            let selectedTractorId = this.value;
+            filtrarLotesPorFundo(selectedTractorId);
         });
         
         let maxImplementos = 3;
@@ -277,7 +480,17 @@
         });
         
         //Llamado de funciones
+        
         filtrarImplementosPorUsuario(selectedUserId);
+        filtrarTractoresPorUsuario(selectTractor);
+        filtrarTractoristasPorUsuario(selectTractorista);
+        filtrarLotesPorFundo(lote);
+
+        //Funcion que se disparan automatico
+        selectFecha.dispatchEvent(new Event('change'));
+        selectUsuario.dispatchEvent(new Event('change'));
+        selectUsuario2.dispatchEvent(new Event('change'));
+        selectUsuario3.dispatchEvent(new Event('change'));
         
         //Funcion para que el mensaje tenga un tiempo de espera de 3 segundos
         setTimeout(function() {
@@ -287,7 +500,7 @@
             }
         },3000);
 
-    });
+        });
 </script>
 
 {% endblock %}

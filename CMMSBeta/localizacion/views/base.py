@@ -21,9 +21,7 @@ def eliminar_base(request, idbase):
     base = get_object_or_404(Base, pk = idbase)
     if request.method == 'POST':
         base.estado = False
-        base.save()
-        
-        
+        base.save()     
         return redirect('base')
     
     return render(request, '', {'sede': base})
@@ -37,7 +35,7 @@ def registrar_base(request):
             base_nombre = form.cleaned_data['base']
             id_sede = request.POST.get('idsede')
 
-            if Base.objects.filter(idsede = id_sede ,base = base_nombre).exists():
+            if Base.objects.filter(idsede = id_sede ,base = base_nombre , estado = True).exists():
                 messages.success(request, "La Base ya existe", extra_tags='warning')
             else:
                 form.save()
@@ -61,7 +59,7 @@ def editar_base(request):
             base_nombre = form.cleaned_data['base']
             id_sede = request.POST.get('idsede')
 
-            if Base.objects.filter(idsede = id_sede ,base = base_nombre).exists():
+            if Base.objects.filter(idsede = id_sede ,base = base_nombre, estado = True).exists():
                 messages.success(request, "La Base ya existe", extra_tags='warning')
                 return redirect('base')
             else:

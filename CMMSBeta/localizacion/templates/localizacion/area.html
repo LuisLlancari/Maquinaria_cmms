@@ -145,6 +145,12 @@
           >
             {% csrf_token %}
             <input type="hidden" id="idarea" name="idarea" />
+            <label for="idbase" class="form-label mt-2">Nombre de base</label>
+            <select name="idbase" id="nombreBase" class="form-control" required>
+              {% for base in bases %}
+              <option value="{{ base.idbase }}">{{ base.base }}</option>
+              {% endfor %}
+            </select>
             <label for="nombreArea" class="form-label mt-2">Nombre Area</label>
             <input
               type="text"
@@ -152,12 +158,6 @@
               id="nombreArea"
               name="area"
             />
-            <label for="idbase" class="form-label mt-2">Nombre de base</label>
-            <select name="idbase" id="nombreBase" class="form-control" required>
-              {% for base in bases %}
-                <option value="{{ base.idbase }}">{{ base.base }}</option>
-              {% endfor %}
-            </select>
             <button type="submit" class="btn btn-primary mt-3">
               Guardar Cambios
             </button>

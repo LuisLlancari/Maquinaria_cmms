@@ -5,6 +5,9 @@ from usuario.models import Persona
 from ..forms import SolicitanteForms
 from django.http import JsonResponse
 
+#Manejo de errores
+from django.contrib import messages
+
 def solicitante(request):
   datos_solicitantes = Solicitante.objects.filter(estado=True)
   datos_tiposolicitante = TipoSolicitante.objects.filter(estado=True)
@@ -14,7 +17,9 @@ def registrarSolicitante(request):
   if request.method == 'POST':
       tipo_solicitante = request.POST.get('tiposolicitante')
       persona_form = PersonaForm(request.POST)
-      if persona_form.is_valid():
+      dni = request.POST.get('dni').strip()
+      persona_existe = Persona.objects.filter(dni = dni, estado = True).exists()
+      if persona_form.is_valid() and persona_existe == False:
         persona_form.save()
 
         ultimo_registro = Persona.objects.latest('idpersona')
@@ -25,7 +30,12 @@ def registrarSolicitante(request):
 
 
         Solicitante.objects.create(idtiposolicitante = tipo_solicitante , idpersona = persona)
-      return redirect('solicitante')
+
+        messages.success(request, 'Solicitante registrado con exito', extra_tags='success')
+        return redirect('solicitante')
+      else:
+        messages.error(request, 'El solicitante ya existe', extra_tags='danger')
+        return redirect('solicitante')
   else:
       return redirect('solicitante')
 
@@ -55,6 +65,10 @@ def editarSolicitante(request, id_solicitante):
       form_persona.save()
       Solicitante.objects.filter(pk = id_solicitante).update(idtiposolicitante = id_tiposolicitante)
 
+      messages.success(request, 'Solicitante actualizado con exito', extra_tags='primary')
+      return redirect('solicitante')
+    else:
+      messages.error(request, 'Dni ya existente', extra_tags='danger')
       return redirect('solicitante')
   else: 
     return redirect('solicitante')

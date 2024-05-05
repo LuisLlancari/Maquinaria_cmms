@@ -5,18 +5,26 @@ from usuario.models import Persona, Usuario
 from usuario.forms import PersonaForm
 from django.http import JsonResponse
 
+#Manejo de errores
+from django.contrib import messages
+
 def tractoristas(request):
   datos_tractoristas = Tractorista.objects.filter(estado = True)
-  datos_usuarios = Usuario.objects.filter(idrol = 2)
+  datos_usuarios = Usuario.objects.filter(idrol = 3)
   return render(request, 'operarios/tractoristas.html', {'datos_tractoristas':datos_tractoristas, 'form':PersonaForm, 'datos_usuarios':datos_usuarios })
 
 def registrarTractorista(request):
   datos_tractoristas = Tractorista.objects.filter(estado = True)
+
+
+
   if request.method == 'POST':
     id_usuario = request.POST.get('usuario')
 
     persona_form = PersonaForm(request.POST)
-    if persona_form.is_valid():
+    dni = request.POST.get('dni').strip()
+    persona_existe = Persona.objects.filter(dni = dni, estado = True).exists()
+    if persona_form.is_valid() and persona_existe == False:
       persona_form.save()
 
       ultimo_registro = Persona.objects.latest('idpersona')
@@ -27,8 +35,10 @@ def registrarTractorista(request):
 
       Tractorista.objects.create(idusuario = usuario , idpersona = persona)
 
+      messages.success(request, 'Tractorista registrado con exito', extra_tags='success')
       return redirect('tractorista')
   else:
+     messages.error(request, 'El tractorista ya existe', extra_tags='danger')
      return render(request, 'operarios/tractoristas.html', {'datos_tractoristas': datos_tractoristas})
 
 def eliminarTractorista(request, id_tractorista):
@@ -55,6 +65,10 @@ def editarTractoristas(request, id_tractorista):
     if form_persona.is_valid():
       form_persona.save()
       Tractorista.objects.filter(pk = id_tractorista).update(idusuario = id_usuario)
+      messages.success(request, 'Tractorista actualizado con exito', extra_tags='success')
+      return redirect('tractorista')
+    else:
+      messages.error(request, 'El tractorista ya existe', extra_tags='danger')
       return redirect('tractorista')
     
   else:

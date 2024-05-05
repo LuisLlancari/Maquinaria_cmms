@@ -34,7 +34,7 @@ def registrar_area(request):
         if form.is_valid():
             nombre_area = form.cleaned_data['area']
             id_base = request.POST.get('idbase')
-            if Area.objects.filter(idbase = id_base, area= nombre_area).exists():
+            if Area.objects.filter(idbase = id_base, area= nombre_area, estado = True).exists():
                 messages.success(request, "El area ya existe", extra_tags='warning')
                 return redirect('area') 
             else:    
@@ -60,7 +60,7 @@ def editar_area(request):
             nombre_area = form.cleaned_data['area']
             id_base = request.POST.get('idbase')
             
-            if Area.objects.filter(idbase = id_base, area= nombre_area).exists():
+            if Area.objects.filter(idbase = id_base, area= nombre_area, estado = True).exists():
                 messages.success(request, "El area ya existe", extra_tags='warning')
                 return redirect('area') 
             else:
