@@ -22,7 +22,8 @@ def registrarUsuario(request):
         messages.error(request, 'Usuario registrado correctamente',extra_tags='success')
         return redirect('registro_usuario')
     else:
-      return render(request, 'usuario/registro_usuario.html', {'form': form, 'usuarios':datos_usuarios, 'form2': RestablecerContraseña})
+      messages.error(request, 'El usuario ya esta existe',extra_tags='success')
+      return redirect('registro_usuario')
   else:
       return redirect('registro_usuario')
 
@@ -45,7 +46,7 @@ def editarUsuario(request, id_usuario):
             # Si el nombre de usuario ya existe, mostrar un mensaje de error
             messages.error(request, 'El nombre de usuario ya está en uso',extra_tags='warning')
             return redirect('registro_usuario')
-
+        
     # Actualizar los datos del usuario
     usuario_actual.username = user_name
     usuario_actual.idrol = idrol
@@ -81,9 +82,12 @@ def restablecerContraseña(request, id_usuario):
           form.save()
           messages.error(request, 'Contraseña restablecida correctamente',extra_tags='success')
           return redirect('registro_usuario')
+      else:
+        messages.error(request, 'La contraseñas son diferentes',extra_tags='warning')
+        return redirect('registro_usuario')
   else:
       form = RestablecerContraseña(usuario)
-  return render(request, 'usuario/registro_usuario.html', {'form': form})
+      return render(request, 'usuario/registro_usuario.html', {'form': form})
 
 
 def obtenerUsuario(request, id_usuario):
