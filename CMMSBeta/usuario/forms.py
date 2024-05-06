@@ -1,6 +1,6 @@
 from django import forms
 from .models import Rol, Persona, Usuario
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm ,SetPasswordForm
 
 
 class PersonaForm(forms.ModelForm):
@@ -23,11 +23,6 @@ class RolForm(forms.ModelForm):
         }
 
 class UsuarioForm(UserCreationForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['password1'].required = False
-        self.fields['password2'].required = False
-        
     class Meta:
         model = Usuario
         fields = {'username', 'first_name', 'last_name', 'password1', 'password2', 'idrol'}
@@ -40,4 +35,6 @@ class UsuarioForm(UserCreationForm):
             'password2': forms.PasswordInput(attrs={'class':'form-control bm-3'}),
         }
 
-  
+class RestablecerContraseña(SetPasswordForm):
+     def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)

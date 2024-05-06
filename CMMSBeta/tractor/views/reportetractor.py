@@ -41,13 +41,15 @@ def registrarReporte(request):
         programa = Programacion.objects.filter(pk = programacion_id).values('idtractorista').first()
         tractorista_id = programa['idtractorista']
 
-        horauso_implemento = (hora_final - hora_inicial)
+        # Calculando Horas de Uso
+        horauso_implemento = ((hora_final - hora_inicial) *0.9)
         horauso_tractor = horausoinicial + (hora_final - hora_inicial)
 
         implementos = list(DetalleLabor.objects.filter(idprogramacion = programacion_id).values('idimplemento'))
         print("eston son los implementos")
         for imple in implementos:
             Implemento.objects.filter(idimplemento = int(imple['idimplemento'])).update(estado_actividad = True)
+            Implemento.objects.filter(idimplemento = int(imple['idimplemento'])).update(horasdeuso = horauso_implemento)
 
         # Actualizamos campos
         Programacion.objects.filter(idprogramacion = int(programacion_id)).update(estado = False)

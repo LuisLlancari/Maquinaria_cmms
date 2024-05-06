@@ -6,7 +6,7 @@
 <h1 class="text-center m-3">Registro de Usuario</h1>
 <div class="container row mb-3 mt-3">
   <div class="col col-md-4">
-    <div class="input-group">
+    <div class="input-group d-none" >
       <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
       <button class="btn btn-md btn-outline-secondary">Buscar</i></button>
   </div>
@@ -23,13 +23,14 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>                </div>
     {% endfor %}
   {% endif %}
+  
   {% if form.errors %}
-  <div class="alert alert-danger">
-    <strong>Error!</strong> Por favor corrija los siguientes errores:
+  <div class="alert alert-danger" id="mensaje2">
+    <strong>Error</strong>
     <ul>
     {% for field in form %}
       {% for error in field.errors %}
-        <li>{{ error }}</li>
+        <li>- {{ error }}</li>
       {% endfor %}
     {% endfor %}
     </ul>
@@ -55,8 +56,9 @@
           <td>{{usuario.first_name}} {{usuario.last_name}}</td>
           <td>{{usuario.idrol.rol}}</td>
           <td>
-            <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="" data-bs-toggle="modal" data-bs-target="#modal-usuario"><i class="lni lni-pencil editar"></i></button>
-            <form action="" class="d-inline-block" method="POST">
+            <button class="btn btn-secondary restablecerclave d-inline-block" data-id="{{usuario.id}}" data-bs-toggle="modal" data-bs-target="#cambio-contraseña" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Reestablecer contraseña"><i class="lni lni-lock-alt"></i></i></button>
+            <button class="btn btn-warning editar d-inline-block" data-id="{{usuario.id}}" data-bs-toggle="modal" data-bs-target="#modal-usuario"><i class="lni lni-pencil editar"></i></button>
+            <form action="{% url 'eliminar_usuario' usuario.id %}" class="d-inline-block" method="POST">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
             </form>
@@ -101,7 +103,7 @@
                     </div>
                   </div>
 
-                  <div class="container row">
+                  <div class="container row" id="campo-claves">
                     <div class="col col-md-6">
                       <label for="password1" class="form-label">Contraseña:</label>
                       <input type="password" class="form-control" name="password1" id="id_password1" required>
@@ -114,9 +116,40 @@
               </div>
 
               <div class="modal-footer">
-                  <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
-                  <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                  <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                  <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
               </div>
+              </form>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="cambio-contraseña" tabindex="-1" aria-labelledby="cambio-contraseña" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+      <div class="modal-content">
+          <div class="modal-header bg-primary justify-content-center" >
+              <h1 class="modal-title fs-5 text-light" >Restablecer contraseña</h1>
+          </div>
+              <form autocomplete="off" id="form-cambio-clave">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="row">
+                      <div class="col col-md-12">
+                        <label for="id_new_password1" class="form-label">Nueva contraseña:</label>
+                        <input type="password" name="new_password1" class="form-control" id="id_new_password1">
+                      </div>
+                      <div class="col col-md-12 mt-2">
+                        <label for="id_new_password2" class="form-label">Confirmar contraseña:</label>
+                        <input type="password" name="new_password2" class="form-control" id="id_new_password2">
+                      </div>
+                    </div>
+              
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" id="guardar_contraseña" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                    <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                </div>
               </form>
       </div>
   </div>
@@ -127,7 +160,12 @@
    const btnAgregar = document.getElementById("btnAgregarUsuario");
    const formModal = document.getElementById("form-modal");
    const btnModificar = document.querySelectorAll(".editar")
+   const btnRestablecerContraseña= document.querySelectorAll(".restablecerclave")
+   const campos_password = document.getElementById("campo-claves");
 
+
+   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+   const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
    setTimeout(function() {
             var mensaje = document.getElementById('mensaje');
@@ -136,10 +174,22 @@
             }
         }, 3000);
 
+   setTimeout(function() {
+            var mensaje2 = document.getElementById('mensaje2');
+            if (mensaje2) {
+                mensaje2.style.display = 'none';
+            }
+        }, 5000);
+
    btnAgregar.addEventListener("click", function(){
     const titulo_modal = document.getElementById("titulo-modal");
 
+    // Modificamos clases y atributos 
+    campos_password.classList.remove("d-none")
     titulo_modal.textContent = "Agregar Usuario" ;
+    id_password1.setAttribute("required", "true")
+    id_password2.setAttribute("required", "true")
+
     formModal.reset();
     formModal.setAttribute("action", "{% url 'registrar_usuario' %}");
     formModal.setAttribute("method", "POST");
@@ -147,15 +197,48 @@
 
    btnModificar.forEach(function(boton){
     boton.addEventListener("click", function(event) {
+
+      let id_usuario = event.target.dataset.id;
       const titulo_modal = document.getElementById("titulo-modal");
 
+      // Modificamos clases y Atributos
+      campos_password.classList.add("d-none");
+      id_password1.removeAttribute("required")
+      id_password2.removeAttribute("required")
+
       titulo_modal.textContent = "Editar Usuario" ;
-      formModal.setAttribute("action", ``);
+      formModal.setAttribute("action", `./modificar_usuario/${id_usuario}`);
       formModal.setAttribute("method", "POST");
+
+      obtener_usuario(id_usuario);
+
 
     });
    });
 
+   btnRestablecerContraseña.forEach(function(boton){
+    boton.addEventListener("click", function(event){
+      let id_usuario = event.target.dataset.id;
+      const formClave = document.getElementById("form-cambio-clave")
+      
+      formClave.setAttribute("action", `./restablecer_clave/${id_usuario}`);
+      formClave.setAttribute("method", "POST");
+    });
+   });
+
+  function obtener_usuario(id){
+    fetch(`./obtener_usuario/${id}`)
+    .then(res => res.json())
+    .then(datos => {
+      id_username.value = datos.usuarios[0].username;
+      id_idrol.value =datos.usuarios[0].idrol_id;
+      id_first_name.value = datos.usuarios[0].first_name;
+      id_last_name.value = datos.usuarios[0].last_name;
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+  }
 
   });
 </script>

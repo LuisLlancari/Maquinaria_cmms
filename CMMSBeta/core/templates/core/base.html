@@ -231,8 +231,8 @@
 
 
                 {% endif %}
-                {% if user.idrol.rol == "Admin" %}
 
+                {% if user.idrol.rol == "Admin" %}
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                             data-bs-target="#componente" aria-expanded="false" aria-controls="componente">
@@ -248,8 +248,21 @@
                             </li>
                         </ul>
                     </li>
+                {% endif %}
 
-                    
+                {% if user.idrol.rol == "Admin" %}
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                            data-bs-target="#usuarios" aria-expanded="false" aria-controls="usuarios">
+                            <i class="lni lni-users"></i>
+                            <span>Usuarios</span>
+                        </a>
+                        <ul id="usuarios" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                            <li class="sidebar-item">
+                                <a href="{% url 'registro_usuario' %}" class="sidebar-link">Registar Usuarios</a>
+                            </li>
+                        </ul>
+                    </li>
                 {% endif %}
 
 
