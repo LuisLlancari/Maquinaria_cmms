@@ -148,7 +148,7 @@
             <!-- Campo idtipotractor con Bootstrap -->
             <div class="form-group">
               <label for="idtipotractor">Tipo Tractor:</label>
-              <select name="idtipotractor" id="idtipotractor" class="form-control mt-2 mb-2">
+              <select name="idtipotractor" id="idtipotractor" class="form-control mt-2 mb-2" >
                 {% for tipo in tipotractor %}
                   <option value="{{tipo.idtipotractor}}">{{tipo.TipoTractor}}</option>
                 {% endfor %}
@@ -194,7 +194,8 @@
                 type="number"
                 id="horainicial"
                 name="horainicial"
-                class="form-control"
+                class="form-control bg-secondary"
+                readonly
               />
             </div>
 
@@ -205,7 +206,8 @@
                 type="number"
                 id="horauso"
                 name="horauso"
-                class="form-control"
+                class="form-control bg-secondary"
+                readonly
               />
             </div>
 
