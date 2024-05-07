@@ -64,7 +64,7 @@
             <td>{{dato.idpersona.dni}}</td>
             {% if user.idrol.rol != "Gerencia" %}
             <td>
-                <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="{{dato.idtractorista}}" data-bs-toggle="modal" data-bs-target="#modal-tractorista">Editar</button>
+                <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-pieza" data-id="{{dato.idtractorista}}" data-bs-toggle="modal" data-bs-target="#modal-tractorista"><i class="lni lni-pencil editar"></i></button>
                 <form action="{% url 'tractorista_eliminar' dato.idtractorista %}" class="d-inline-block" method="POST">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
@@ -142,7 +142,7 @@ const btnModificar = document.querySelectorAll(".editar")
 
     btnModificar.forEach(function(boton) {
     boton.addEventListener("click", function(event) {
-        let id_tractorista = event.target.dataset.id;
+        let id_tractorista = event.currentTarget.dataset.id;
         console.log(id_tractorista);
         obtener_tractorista(id_tractorista);
         });

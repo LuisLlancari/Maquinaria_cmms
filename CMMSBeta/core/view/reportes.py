@@ -3,6 +3,7 @@ import string
 import random
 import io
 import base64
+from django.http import JsonResponse
 
 from django.shortcuts import redirect, render
 from django.http import HttpResponse, FileResponse, HttpResponseBadRequest
@@ -221,8 +222,6 @@ def reportePDF(request):
 
     return FileResponse(buffer, as_attachment=True, filename="reporte.pdf")
 
-
-from django.http import JsonResponse
 
 def reporteGrafico(request):
     fecha = request.POST.get('fecha_grafico')

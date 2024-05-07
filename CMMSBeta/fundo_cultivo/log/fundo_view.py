@@ -26,7 +26,7 @@ def registrar_fundo(request):
     fundo = request.POST.get('fundo')
     fundo_existe = Fundo.objects.filter(fundo = fundo, idsede = sede, estado = True).exists()
     fundo_repite = Fundo.objects.filter(fundo = fundo, idsede = sede).exists()
-                            #Si existe un registro      Si existe solo en fundo
+      #                   Si existe un registro      Si existe solo en fundo
     if form.is_valid() and fundo_existe == False  and fundo_repite == False:
       form.save()
       messages.success(request, 'Fundo registrado con exito', extra_tags='success')

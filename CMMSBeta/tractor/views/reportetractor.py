@@ -9,9 +9,9 @@ from django.http import JsonResponse
 
 @login_required(login_url='login', redirect_field_name='')
 def reportetractor(request):
+    datos_usuarios = Usuario.objects.filter(idrol = 3)
     datos_programacion = Programacion.objects.filter(estado=True)
-    print(list(datos_programacion))
-    return render(request, 'tractor/reportetractor.html', {'datos': datos_programacion, 'form': ReporteTractorForm})
+    return render(request, 'tractor/reportetractor.html', {'datos': datos_programacion, 'form': ReporteTractorForm, 'usuarios':datos_usuarios})
 
 def registrarReporte(request):
     if request.method == 'POST':

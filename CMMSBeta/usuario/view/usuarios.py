@@ -83,7 +83,7 @@ def restablecerContraseña(request, id_usuario):
           messages.error(request, 'Contraseña restablecida correctamente',extra_tags='success')
           return redirect('registro_usuario')
       else:
-        messages.error(request, 'La contraseñas son diferentes',extra_tags='warning')
+        messages.error(request, 'La contraseñas son diferentes',extra_tags='warning.')
         return redirect('registro_usuario')
   else:
       form = RestablecerContraseña(usuario)
