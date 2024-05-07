@@ -61,7 +61,7 @@
             <td>{{dato.idusuario.first_name}}</td>
             {% if user.idrol.rol == "Admin" %}
             <td>
-                <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento">Editar</button>
+                <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento"><i class="lni lni-pencil editar"></i></button>
                 <form action="{% url 'eliminar_implemento' dato.idimplemento %}" class="d-inline-block" method="POST">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
@@ -119,8 +119,7 @@
                                     <label for="txtIdCeco" class="form-label">Ceco:</label>
                                     {{form.idceco}}
                                 </div>
-                                
-
+                            
                                 <div class="col col-md-4">
                                     <label for="txtIdArea" class="form-label">Area:</label>
                                     {{form.idarea}}
@@ -184,7 +183,7 @@
     
         btnModificar.forEach(function(boton) {
         boton.addEventListener("click", function(event) {
-            let id_implemento = event.target.dataset.id;
+            let id_implemento = event.currentTarget .dataset.id;
             // console.log(id_pieza);
             obtener_implemento(id_implemento);
             });
