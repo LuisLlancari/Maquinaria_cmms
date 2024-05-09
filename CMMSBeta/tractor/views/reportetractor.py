@@ -22,7 +22,7 @@ def registrarReporte(request):
         programacion_id = request.POST.get('idprogramacion')
         correlativo = request.POST.get('correlativo')
        
-        # Instanciamos  Clases
+        # Instanciamos registros de los modelos
         usuario = Usuario.objects.get(id=usuario_id)
         programacion = Programacion.objects.get(pk = programacion_id)
        
@@ -31,7 +31,7 @@ def registrarReporte(request):
             horometrofinal = hora_final, correlativo = correlativo)
         reporte.save()
 
-        # obtenemos la hora de uso del Implemento y tractor
+        # Obtenemos el id del tractorista, tractor y su hora de uso 
         tractor = Programacion.objects.filter(pk=programacion_id).values('idtractor').first()
         tractor_id = tractor['idtractor']
 
@@ -41,24 +41,26 @@ def registrarReporte(request):
         programa = Programacion.objects.filter(pk = programacion_id).values('idtractorista').first()
         tractorista_id = programa['idtractorista']
 
-        # Calculando Horas de Uso
+        # Calculando Horas de uso del tractor 
         horauso_implemento = float((hora_final - hora_inicial) *0.9)
-        
         horauso_tractor = horausoinicial + (hora_final - hora_inicial)
 
-        horas_trabajadas = hora_final - hora_inicial
 
         implementos = list(DetalleLabor.objects.filter(idprogramacion = programacion_id).values('idimplemento'))
-        print("eston son los implementos")
-        for imple in implementos:
-            Implemento.objects.filter(idimplemento = int(imple['idimplemento'])).update(estado_actividad = True)
-            Implemento.objects.filter(idimplemento = int(imple['idimplemento'])).update(horasdeuso = horauso_implemento)
+        for implemento in implementos:
+            dato = Implemento.objects.filter(idimplemento = int(implemento['idimplemento'])).values('horasdeuso').first()
+            horasuso_implemento = dato['horasdeuso']
+
+            horauso_final_implemento = horasuso_implemento + horauso_implemento
+
+            Implemento.objects.filter(idimplemento = int(implemento['idimplemento'])).update(estado_actividad = True)
+            Implemento.objects.filter(idimplemento = int(implemento['idimplemento'])).update(horasdeuso = horauso_final_implemento)
 
         # Actualizamos campos
         Programacion.objects.filter(idprogramacion = int(programacion_id)).update(estado = False)
 
         # DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(estado = False)
-        DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(horadeuso = horas_trabajadas)
+        DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(horadeuso = horasuso_implemento)
         Tractor.objects.filter(idtractor = int(tractor_id)).update(horainicial = hora_final )
         Tractor.objects.filter(idtractor = int(tractor_id)).update(horauso = horauso_tractor )
         Tractor.objects.filter(idtractor = int(tractor_id)).update(estado_actividad = True )
