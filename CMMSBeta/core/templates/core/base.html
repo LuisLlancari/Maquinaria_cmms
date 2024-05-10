@@ -31,8 +31,15 @@
                         <i class="lni lni-user"></i>
                         <span class="text-uppercase">{{user.first_name}} {{user.last_name}} {{user.idrol}}</span>
                     </a>
-                    <span>Hola</span>
                 </li>
+
+                <li class="sidebar-item">
+                    <a href="{% url 'test' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Lista de Programaciones</span>
+                    </a>
+                </li>
+
+
                 {% if user.idrol.rol == "Admin" or user.idrol.rol == "Supervisor" %}
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -292,8 +299,8 @@
     <script src="{% static 'core/js/base.js' %}"></script>
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 

@@ -1,69 +1,96 @@
 {% extends "core/base.html" %}
 
-{% block titulo %}Tests{% endblock  %}
+{% block titulo %}Programacion{% endblock  %}
 
 {% block contenido %}
 
-<button
-  type="button"
-  class="btn btn-primary btn-lg"
-  data-bs-toggle="modal"
-  data-bs-target="#modalId"
->
-  Launch
-</button>
+<div class="container">
+  <h1 class="text-center">Programaciones</h1>
 
-<!-- Modal Body -->
-<!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
-<div
-  class="modal fade"
-  id="modalId"
-  tabindex="-1"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
-  
-  role="dialog"
-  aria-labelledby="modalTitleId"
-  aria-hidden="true"
->
-  <div
-    class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-    role="document"
-  >
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalTitleId">
-          Modal title
-        </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">Body</div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Close
-        </button>
-        <button type="button" class="btn btn-primary">Save</button>
-      </div>
+  <div class="row mt-3">
+    <div class="col col-md-6">
+      <select name="" id="" class="form-select">
+        <option value="" class="form-select text-center" selected>SELECCIONE UNA SEDE</option>
+        <option value="">Ica</option>
+        <option value="">Chincha</option>
+      </select>
+
+    </div>
+
+    <div class="col col-md-6">
+      <select name="" id="" class="form-select">
+        <option value="" class="form-select text-center" selected>SELECCIONE UN SUPERVISOR</option>
+      </select>
     </div>
   </div>
+
+  <div class="row mt-3 mt-3 bg-secondary">
+    <div class="col col-md-4 d-grid">
+      <button type="button" class="btn btn-danger m-4">PDF</button>
+    </div>
+    <div class="col col-md-4 d-grid">
+      <button type="button" class="btn btn-success m-4">EXCEL</button>
+    </div>
+    <div class="col col-md-4 d-grid">
+      <button type="button" class="btn btn-primary m-4">FILTROS</button>
+    </div>
+  </div>
+
+  <div class="contaniner table">
+
+    <table class="table table-striped table-bordered text-center mt-3 table-hover table-responsive">
+      <thead class="table-dark">
+        <tr>
+          <th class="text-center" scope="col">Tractorista</th>
+          <th class="text-center" scope="col">Tractor</th>
+          <th class="text-center" scope="col">Implementos</th>
+          <th class="text-center" scope="col">Dia</th>
+          <th class="text-center" scope="col">Lote</th>
+          <th class="text-center" scope="col">Labor</th>
+          <th class="text-center" scope="col">Solicitante</th>
+          <th class="text-center" scope="col">Supervisor</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for data in detallelabor %}
+          <tr>
+            <td class="text-center">{{ data.idprogramacion.idtractorista }}</td>
+            <td class="text-center">{{ data.idprogramacion.idtractor }}</td>
+            <td class="text-center">
+              {% for implemento in data.idimplemento_set.all %}
+                  {{ implemento.idimplemento }},
+              {% endfor %}
+            </td>
+          
+          
+          
+            <td class="text-center">
+              {{ data.idprogramacion.fechahora|date:"d-m-Y"}}
+                  {% if data.idprogramacion.turno == 'M' %}
+                      <i class="lni lni-sun text-warning"></i>
+                  {% elif data.idprogramacion.turno == 'T' %}
+                      <i class="lni lni-cloudy-sun text-secondary"></i>
+                  {% elif data.idprogramacion.turno == 'N' %}
+                      <i class="bi bi-moon text-primary"></i>
+                {% endif %}
+
+            </td>
+            <td class="text-center">{{ data.idprogramacion.idlote }}</td>
+            <td class="text-center">{{ data.idprogramacion.idtipolabor }}</td>
+            <td class="text-center">{{ data.idprogramacion.idsolicitante }}</td>
+            <td class="text-center">{{ data.idprogramacion.idusuario }}</td>
+          </tr>
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
 </div>
 
-<!-- Optional: Place to the bottom of scripts -->
-<script>
-  const myModal = new bootstrap.Modal(
-    document.getElementById("modalId"),
-    options,
-  );
-</script>
 {% endblock contenido %}
 
 <!-- Modal trigger button -->

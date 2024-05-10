@@ -3,6 +3,7 @@ from django.shortcuts import render
 from programacion_labor.models import Programacion
 from django.contrib.auth.decorators import login_required
 from usuario.models import * 
+from programacion_labor.models import *
 
 def obtener_usuarios():
     return Usuario.objects.filter(idrol = 2)
@@ -32,7 +33,13 @@ def home(request, datagrafic = None):
 
 @login_required(login_url='login', redirect_field_name='home')
 def test(request):
-    return render(request, 'core/test.html')
+    lista_detalle = DetalleLabor.objects.all().order_by('-idprogramacion__fechahora')
+    lista_implementos = DetalleLabor.objects.filter(idprogramacion = 1)
+    print(lista_implementos)
+    context = {
+        'detallelabor': lista_detalle
+    }
+    return render(request, 'core/test.html' , context)
 
 
 
