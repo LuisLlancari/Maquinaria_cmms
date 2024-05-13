@@ -38,7 +38,7 @@
         {% endfor %}
       
     {% endif %}
-    <table class="table table-striped table-bordered mt-3" id="tabla-area">
+    <table class="table table-striped table-bordered mt-3" id="tabla-tipo-tractor">
       <thead class="text-center">
         <tr>
           <th class="text-center" scope="col">N°</th>
@@ -152,6 +152,24 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    const TipoTractores = document.querySelectorAll("#tabla-tipo-tractor tbody tr");
+    const inputBuscar = document.getElementById("buscador");
+
+    // Agregar un event listener para el evento de entrada en el campo de búsqueda
+    inputBuscar.addEventListener("input", function() {
+        // Obtener el valor del campo de búsqueda y convertirlo a minúsculas para una comparación insensible a mayúsculas y minúsculas
+        var searchTerm = inputBuscar.value.toLowerCase();
+
+        // Iterar sobre los implementos y mostrar u ocultar según el término de búsqueda
+        TipoTractores.forEach(function(tipoTractor) {
+            var tipo_tractor = tipoTractor.querySelector("td:nth-child(2)").textContent.toLowerCase(); // Suponiendo que la tercera columna contiene el nombre del implemento
+            if (tipo_tractor.includes(searchTerm)) {
+                tipoTractor.style.display = ""; // Mostrar el implemento si coincide con el término de búsqueda
+            } else {
+                tipoTractor.style.display = "none"; // Ocultar el implemento si no coincide con el término de búsqueda
+            }
+        });
+    });
 
     setTimeout(function() {
             var errorMessage = document.getElementById('message');

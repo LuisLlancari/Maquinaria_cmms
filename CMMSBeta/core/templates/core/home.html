@@ -216,7 +216,7 @@
 <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
 <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
-<script>
+<script>    
     var datos = JSON.parse("{% autoescape off %}{{ datagrafic | escapejs }}{% endautoescape %}");
     if (datos.length > 0 && datos[0].mensaje !== undefined) {
         var mensaje = datos[0].mensaje;
@@ -225,7 +225,7 @@
         mensaje_alert.textContent = mensaje;
         divalert.style.display = 'block';
     }
-    if (Object.keys(datos).length !== 0) {
+    if (Object.keys(datos).length !== 0) {  
         am5.ready(function() {
             var root = am5.Root.new("chartdiv");
             root.setThemes([
