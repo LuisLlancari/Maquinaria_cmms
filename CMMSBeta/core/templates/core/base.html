@@ -11,10 +11,11 @@
     <link rel="stylesheet" href="{% static 'core/vendor/bootstrap5/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'core/css/base.css' %}">
     <title>{% block titulo %}{% endblock  %}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
  
 </head>
 
-<body>
+<body style="background-color: #E5E8E8;">
     <div class="wrapper">
         <aside id="sidebar">
             <div class="d-flex">
@@ -290,7 +291,7 @@
             {% endif %}
         </aside>
         
-        <div class="main p-3">
+        <div class="main p-3 " style="background-color: #E5E8E8;">
             {% block contenido %} {% endblock %}
         </div>
     </div>

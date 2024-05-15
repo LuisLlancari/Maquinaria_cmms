@@ -4,6 +4,8 @@ from programacion_labor.models import Programacion
 from django.contrib.auth.decorators import login_required
 from usuario.models import * 
 from programacion_labor.models import *
+from implemento.models import *
+from django.core.paginator import Paginator
 
 def obtener_usuarios():
     return Usuario.objects.filter(idrol = 2)
@@ -33,13 +35,24 @@ def home(request, datagrafic = None):
 
 @login_required(login_url='login', redirect_field_name='home')
 def test(request):
+    #
     lista_detalle = DetalleLabor.objects.all().order_by('-idprogramacion__fechahora')
-    lista_implementos = DetalleLabor.objects.filter(idprogramacion = 1)
-    print(lista_implementos)
+    #paginator = Paginator(lista_detalle, 10)  # Muestra 10 elementos por página
+    page_number = request.GET.get('page')
+    #paginador
+    #page_obj = paginator.get_page(page_number)
+
+    lista_implementos = Implemento.objects.all()
+    #
+    lista_supervisor = Usuario.objects.filter(idrol = 3)
+
     context = {
-        'detallelabor': lista_detalle
+        'detlabor': lista_detalle,  # Pasar el objeto de la página a la plantilla
+        'imple': lista_implementos,
+        'list_sup': lista_supervisor
     }
-    return render(request, 'core/test.html' , context)
+    return render(request, 'core/test.html', context)
+
 
 
 
