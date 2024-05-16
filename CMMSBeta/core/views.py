@@ -1,29 +1,24 @@
 from django.shortcuts import render
-from programacion_labor.models import Programacion
+from programacion_labor.models import Programacion, DetalleLabor
 from tractor.models import Tractor
 from operarios.models import Solicitante
 from django.contrib.auth.decorators import login_required
 from usuario.models import * 
 from django.http import JsonResponse
-from django.db.models import Count
+from django.db.models import Count, Subquery
 
 
 @login_required(login_url='login', redirect_field_name='home')
-def home(request, datagrafic = None):
+def home(request,):
 
     usuario = request.user
     usuarios = Usuario.objects.filter(idrol = 1)
     tipos_labor = Programacion.objects.values('idtipolabor', 'idtipolabor__tipolabor').distinct()
     
-    if datagrafic is not None:
-        datagrafic = datagrafic.replace("'", '"')
-    else:
-        datagrafic = '[]'
     data = {
         'user': usuario,
         'usuarios': usuarios,
         'tipolabor': tipos_labor,
-        'datagrafic' : datagrafic
     }
    
     return render(request, 'core/home.html', data)
@@ -51,7 +46,8 @@ def datos_grafico(request, fecha, supervisor, turnos):
     registros_por_solicitante = Programacion.objects.filter(
         fechahora=fecha,
         turno=turnos,
-        idusuario = supervisor 
+        idusuario = supervisor,
+        idtractor__idusuario =supervisor
     ).values('idsolicitante').annotate(num_registros=Count('idsolicitante'))
 
     # Crear una lista para almacenar los resultados de los solicitantes
@@ -87,7 +83,8 @@ def datos_tabla(request, fecha, supervisor, turno):
     tractores_usuario = Tractor.objects.filter(idusuario=supervisor)
 
     # Obtener los fundos de tractores y contar cuántos tractores hay en cada fundo
-    info_fundos = tractores_usuario.values('idfundo__fundo').annotate(total_tractores=Count('idfundo'))
+    info_fundos = tractores_usuario.values('idfundo__fundo', 'idfundo').annotate(total_tractores=Count('idfundo'))
+    print(info_fundos)
 
     # Obtener los tractores programados en la fecha y turno especificados en los fundos relacionados al usuario
     tractores_programados = Programacion.objects.filter(idtractor__idusuario=supervisor, fechahora=fecha, turno=turno).values('idtractor__idfundo__fundo').annotate(total_tractores_programados=Count('idtractor'))
@@ -96,11 +93,13 @@ def datos_tabla(request, fecha, supervisor, turno):
     resultado = []
     for fundo_info in info_fundos:
         fundo_nombre = fundo_info['idfundo__fundo']
+        idfundo = fundo_info['idfundo']
         total_tractores = fundo_info['total_tractores']
         tractores_programados_en_fundo = next((tp['total_tractores_programados'] for tp in tractores_programados if tp['idtractor__idfundo__fundo'] == fundo_nombre), 0)
         tractores_sin_programar_en_fundo = total_tractores - tractores_programados_en_fundo
         resultado.append({
             'Fundo': fundo_nombre,
+            'idfundo': idfundo,
             'tractores_totales': total_tractores,
             'tractores_programados': tractores_programados_en_fundo,
             'tractores_sin_programar': tractores_sin_programar_en_fundo
@@ -108,6 +107,67 @@ def datos_tabla(request, fecha, supervisor, turno):
 
     return JsonResponse({'tabla_tractor': resultado})
     
+def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
+    tractores_sin_programacion = list(Tractor.objects.filter(
+        idusuario=supervisor,
+        idfundo=idfundo
+    ).exclude(
+        idtractor__in=Subquery(Programacion.objects.filter(
+            fechahora=fecha,
+            turno=turno,
+            idtractor__idusuario=supervisor,
+            idtractor__idfundo_id=idfundo
+        ).values('idtractor'))
+    ).values('nrotractor'))
+
+
+    # Obtenemos los implementos utilizados
+    detprogramaciones = DetalleLabor.objects.filter(
+        idprogramacion__fechahora= fecha,
+        idprogramacion__turno= turno,
+        idprogramacion__idtractor__idusuario_id = supervisor,
+        idprogramacion__idtractor__idfundo_id = idfundo
+    ).values(
+        'idimplemento__implemento',
+        'idimplemento__idimplemento'
+    )
+    detprogramacione_list=[]
+
+    for detprogramacion in detprogramaciones:
+        implemento = detprogramacion['idimplemento__implemento']
+        detprogramacione_list.append({
+            'implemento_usado' : implemento     
+        })
+
+    # Obtenemos la informacion de los tractores que tuvieron una programacion
+    programaciones = Programacion.objects.filter(
+        fechahora=fecha,
+        turno=turno,
+        idtractor__idusuario=supervisor,
+        idtractor__idfundo_id=idfundo
+    ).values(
+        'idtractor__idtractor', 
+        'idprogramacion',
+        'idtractor__nrotractor', 
+        'idtipolabor__tipolabor',
+        'idsolicitante__idpersona__nombres',
+        'idsolicitante__idpersona__apellidos')
+
+    programaciones_list = []
+    for programacion in programaciones:
+        nombre_tractor = programacion['idtractor__nrotractor']
+        labor_tractor = programacion['idtipolabor__tipolabor']
+        nombre_solicitante = f"{programacion['idsolicitante__idpersona__nombres']} {programacion['idsolicitante__idpersona__apellidos']}"
+        programaciones_list.append({
+            'tractor': nombre_tractor,
+            'labor': labor_tractor,
+            'solicitante': nombre_solicitante,
+            'implementos':detprogramacione_list
+        })   
+        
+
+    return JsonResponse({'programaciones':programaciones_list, 'tractores_sin_programacion': tractores_sin_programacion})
+
 @login_required(login_url='login', redirect_field_name='home')
 def test(request):
     return render(request, 'core/test.html')

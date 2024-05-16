@@ -5,21 +5,16 @@
 {% block contenido %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<h1 class="text-center">REPORTES</h1>
+<style>
+    #tabla-tractor tbody {
+        cursor: pointer; /* Cambiar el cursor a una mano */
+    }
+</style>
+
+<h1 class="text-center">Dashboard</h1>
 <div class="alert alert-danger alert-dismissible fade show" style="display: none;" id="error-alert" role="alert">
     <strong id="mensaje-alert"></strong>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-<!-- BOTONES EXPORTAR -->
-<div class="d-flex md gap-1 mb-3">
-    <button type="button" class="btn btn-success flex-grow-1" data-bs-toggle="modal" data-bs-target="#modalExportExcel">
-        <i class="bi bi-file-earmark-excel"></i>
-        <h5><strong class="text-uppercase ">Excel</strong></h5>
-    </button>
-    <button type="button" class="btn btn-danger flex-grow-1" data-bs-toggle="modal" data-bs-target="#modalExportPDF">
-        <i class="bi bi-filetype-pdf"></i>
-        <h5><strong>PDF</strong></h5>
-    </button>
 </div>
 
 <!-- FILTROS -->
@@ -66,6 +61,7 @@
                 </tr>
             </thead>
             <tbody class="text-center ">
+                <tr></tr>
                 
             </tbody>
             </table>
@@ -177,18 +173,58 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal_tabla_detalle" tabindex="-1" aria-labelledby="titulo-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo_modal"></h1>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col col-md-6 d-grid">
+                        <button type="button" class="btn btn-success btn-sm btn-block" id="btnProgramado" disabled>Programados</button>
+                    </div>
+                    <div class="col col-md-6 d-grid">
+                        <button type="button" class="btn btn-danger btn-sm btn-block" id="btnNoProgramado">No programados</button>
+                    </div>
+                </div>
+                <div class="row mt-3" id="detalle-cuerpo">
+                
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-secondary flex-fill" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- AGREGAR REFERENCIA A BOOTSTRAP  -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
+
 <script>    
     
-    // Instanciamos elementos de la hoja del gráfico y los filtros
-    const tabla = document.querySelector('#tabla-tractor tbody')
-    const canvas = document.getElementById('grafico-donut')
-    const Fecha = document.getElementById('fecha')
-    const Supervisor = document.getElementById('supervisor')
-    const Turno = document.getElementById('turno')
+    // Instanciamos elementos 
+    const modal_detalle = new bootstrap.Modal(document.getElementById('modal_tabla_detalle'))
+    const tabla = document.querySelector('#tabla-tractor tbody');
+    const canvas = document.getElementById('grafico-donut');
+    const Fecha = document.getElementById('fecha');
+    const Supervisor = document.getElementById('supervisor');
+    const Turno = document.getElementById('turno');
+    const Detalle_cuerpo = document.getElementById('detalle-cuerpo');
 
+    // Botones del modal
+    const btnProgramado = document.getElementById("btnProgramado");
+    const btnNoProgramado = document.getElementById("btnNoProgramado");
+
+    // Variable que almacenará los tractores no programados de la funcion detalleProgramados
+    let TractoresNoProgramados
+    let TractoresConProgramacion
 
     // Asignar la fecha actual al campo de fecha
     let fechaActual = new Date().toISOString().split('T')[0];
@@ -240,8 +276,8 @@
 
     });
 
-    // Traer datos del gráfico y la tabla
-    async function datos_graficos(fecha, supervisor, turno) {
+    // Traer datos del gráfico, tabla y el detalle
+    async function datosGrafico(fecha, supervisor, turno) {
         try {
             const response = await fetch(`./datos_graficos/${fecha}/${supervisor}/${turno}`);
             let datos = await response.json();
@@ -257,17 +293,17 @@
         }
     }
    
-    async function datos_tabla(fecha, supervisor, turno) {
+    async function datosTablaTractores(fecha, supervisor, turno) {
         try {
             const response = await fetch(`./datos_tabla/${fecha}/${supervisor}/${turno}`);
             let datos = await response.json();
-            console.log(datos);
+            // console.log(datos);
 
             tabla.innerHTML = '';
             datos.tabla_tractor.forEach(registro => {
                 nuevafila = 
-                `<tr>
-                    <td>${registro.nombre_fundo}</td>
+                `<tr data-id=${registro.idfundo}>
+                    <td>${registro.Fundo}</td>
                     <td>${registro.tractores_totales}</td>
                     <td>${registro.tractores_programados}</td>
                     <td>${registro.tractores_sin_programar}</td>
@@ -282,14 +318,98 @@
         }
     }
 
+    function obtenerDetalleTractores(fecha, supervisor, turno, fundo){
+        fetch(`./datos_tabla_detalle/${fecha}/${supervisor}/${turno}/${fundo}`)
+        .then(res => res.json())
+        .then(datos => {
+            // console.log(datos.programaciones.length);
+            Detalle_cuerpo.innerHTML = '';
+
+            TractoresConProgramacion = datos.programaciones
+            TractoresNoProgramados = datos.tractores_sin_programacion;
+            
+            if (datos.programaciones.length == 0) {
+                Detalle_cuerpo.innerHTML = '<p class="card-text text-success text-center">No hay tractores programados</p>'
+            }else{
+                datos.programaciones.forEach(registro=>{
+                nuvacard = `
+                <div class="col col-md-6">
+                    <div class="card border-success mb-3">
+                        <div class="card-body text-success">
+                            <h5 class="card-text text-center fw-bold">${registro.tractor}</h5>
+                            <p class="card-text text-success m-0 fs-5" ><strong>Labor:</strong> ${registro.labor}</p>
+                            <p class="card-text text-success m-0 fs-5" ><strong>Solicitante:</strong> ${registro.solicitante}</p>
+                            <p class="card-text text-success fs-5" ><strong>Implementos:</strong></p>
+                            ${registro.implementos.map(implemento => `<p class="card-text text-success m-0 fs-5">- ${implemento.implemento_usado}</p>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                `;
+                Detalle_cuerpo.innerHTML += nuvacard;   
+                });    
+            }
+            
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
+    function DetalleNoProgramados(tractores_sin_programacion){
+            
+        Detalle_cuerpo.innerHTML = '';
+        if (tractores_sin_programacion.length == 0) {
+            Detalle_cuerpo.innerHTML = '<p class="card-text text-danger text-center">Todos los tractores estan programados</p>'
+        }else{
+            tractores_sin_programacion.forEach(registro=>{
+            nuvacard = `
+            <div class="col col-md-6">
+                <div class="card border-danger mb-3">
+                    <div class="card-body text-danger">
+                        <h5 class="card-text text-center fw-bold">${registro.nrotractor}</h5>
+                    </div>
+                </div>
+            </div>
+            `;
+            Detalle_cuerpo.innerHTML += nuvacard;   
+            });    
+        }
+
+    }
+
+    function DetalleProgramados(tractores_con_programacion){
+        
+        Detalle_cuerpo.innerHTML = '';
+        if (tractores_con_programacion.length == 0) {
+                Detalle_cuerpo.innerHTML = '<p class="card-text text-success text-center">No hay tractores programados</p>'
+            }else{
+                tractores_con_programacion.forEach(registro=>{
+                nuvacard = `
+                <div class="col col-md-6">
+                    <div class="card border-success mb-3">
+                        <div class="card-body text-success">
+                            <h5 class="card-text text-center fw-bold">${registro.tractor}</h5>
+                            <p class="card-text text-success m-0 fs-5" ><strong>Labor:</strong> ${registro.labor}</p>
+                            <p class="card-text text-success m-0 fs-5" ><strong>Solicitante:</strong> ${registro.solicitante}</p>
+                            <p class="card-text text-success fs-5" ><strong>Implementos:</strong></p>
+                            ${registro.implementos.map(implemento => `<p class="card-text text-success m-0 fs-5">- ${implemento.implemento_usado}</p>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                `;
+                Detalle_cuerpo.innerHTML += nuvacard;   
+                });    
+            }
+
+    }
     // Filtros
     Fecha.addEventListener("change",function() {
         let fecha = Fecha.value
         let supervisor = Supervisor.value
         let turno = Turno.value
 
-        datos_graficos(fecha,supervisor,turno);
-        datos_tabla(fecha,supervisor,turno);
+        datosGrafico(fecha,supervisor,turno);
+        datosTablaTractores(fecha,supervisor,turno);
 
     });
 
@@ -298,8 +418,8 @@
         let supervisor = Supervisor.value
         let turno = Turno.value
         console.log(fecha, supervisor, turno)
-        datos_graficos(fecha,supervisor,turno);
-        datos_tabla(fecha,supervisor,turno);
+        datosGrafico(fecha,supervisor,turno);
+        datosTablaTractores(fecha,supervisor,turno);
 
 
         
@@ -309,12 +429,62 @@
         let fecha = Fecha.value
         let supervisor = Supervisor.value
         let turno = Turno.value
-        datos_graficos(fecha,supervisor,turno);
-        datos_tabla(fecha,supervisor,turno);
+        datosGrafico(fecha,supervisor,turno);
+        datosTablaTractores(fecha,supervisor,turno);
 
 
     });
 
+    // Iterar sobre cada fila de la tabla
+    tabla.addEventListener('click', function(event) {
+        // Verificar si el clic ocurrió dentro de una fila
+        var fila = event.target.closest('tr');
+        if (fila) {
+            btnProgramado.setAttribute('disabled', true)
+            btnNoProgramado.removeAttribute('disabled')
+
+            let nombreFundo = fila.querySelector('td').textContent;
+            titulo_modal.innerHTML = `${nombreFundo}`
+            let fecha = Fecha.value
+            let supervisor = Supervisor.value
+            let turno = Turno.value
+            let idFundo = fila.getAttribute('data-id');
+            
+            obtenerDetalleTractores(fecha, supervisor, turno, idFundo)
+
+
+            modal_detalle.show()
+
+            console.log("ID del Fundo:", idFundo);
+        } else {
+            return;
+        }
+    });
+   
+    // Ejecuta funciones al cargarse la pagina
+    window.addEventListener('DOMContentLoaded', (event) => {
+        let fecha = Fecha.value;
+        let supervisor = Supervisor.value;
+        let turno = Turno.value;
+        
+        datosGrafico(fecha, supervisor, turno);
+        datosTablaTractores(fecha, supervisor, turno);
+
+    });
+
+    // Botones del modal
+    btnProgramado.addEventListener("click",function(){
+        btnProgramado.setAttribute('disabled', true)
+        btnNoProgramado.removeAttribute('disabled')
+        DetalleProgramados(TractoresConProgramacion);
+        
+    });
+
+    btnNoProgramado.addEventListener("click",function(){
+        btnNoProgramado.setAttribute('disabled',true)
+        btnProgramado.removeAttribute('disabled')
+        DetalleNoProgramados(TractoresNoProgramados)
+        });
 </script>
 
 {% endblock %}
