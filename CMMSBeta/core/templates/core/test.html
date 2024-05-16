@@ -1,69 +1,226 @@
 {% extends "core/base.html" %}
 
-{% block titulo %}Tests{% endblock  %}
+{% block titulo %}Programacion{% endblock  %}
 
 {% block contenido %}
 
-<button
-  type="button"
-  class="btn btn-primary btn-lg"
-  data-bs-toggle="modal"
-  data-bs-target="#modalId"
->
-  Launch
-</button>
+<div class="container">
+  <h1 class="text-center">Programaciones</h1>
 
-<!-- Modal Body -->
-<!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
-<div
-  class="modal fade"
-  id="modalId"
-  tabindex="-1"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
-  
-  role="dialog"
-  aria-labelledby="modalTitleId"
-  aria-hidden="true"
->
-  <div
-    class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-    role="document"
-  >
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalTitleId">
-          Modal title
-        </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">Body</div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Close
-        </button>
-        <button type="button" class="btn btn-primary">Save</button>
-      </div>
+  <div class="row mt-3">
+    <div class="col col-md-4">
+      <select name="" id="supervisorSelect" class="form-select">
+        <option value="#" class="form-select text-center" selected>SELECCIONE UN SUPERVISOR</option>
+        {% for data in list_sup %}
+          <option value="{{ data.id }}" class="text-center">
+              {{ data.first_name }} {{ data.last_name }} 
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col col-md-4">
+    </div>
+    <div class="col col-md-1">
+      <strong for="fechaSelect" class="form-label">Seleccione la fecha:</strong>
+    </div>
+    <div class="col col-md-3">
+      <input type="date" id="fechaSelect" class="form-control">
     </div>
   </div>
+
+  <div class="row mt-3 bg-light shadow p-6 bg-white rounded">
+    <div class="col col-md-6 d-grid">
+      <button id="exportToPDF" type="button" class="btn btn-danger m-4" readonly>PDF</button>
+    </div>
+    <div class="col col-md-6 d-grid">
+      <button id="exportToExcel" type="button" class="btn btn-success m-4">EXCEL</button>
+    </div>
+  </div>
+
+  <div class="contaniner table">
+
+    <table class="table table-striped table-bordered text-center mt-3 table-hover table-responsive">
+      <thead class="table-dark">
+        <tr>
+          <th class="text-center" scope="col">Tractorista</th>
+          <th class="text-center" scope="col">Tractor</th>
+          <th class="text-center" scope="col">Implementos</th>
+          <th class="text-center" scope="col">Dia</th>
+          <th class="text-center" scope="col">Lote</th>
+          <th class="text-center" scope="col">Labor</th>
+          <th class="text-center" scope="col">Solicitante</th>
+          <th class="text-center" scope="col">Supervisor</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for data in detlabor %}
+            {% with programacion_usuario=data.idprogramacion.idusuario %}
+            <tr {% if programacion_usuario != data.idimplemento.idusuario %} class="table-warning" {% endif %} data-idusuario="{{ data.idprogramacion.idusuario.id }}" data-fecha="{{ data.idprogramacion.fechahora|date:"Y-m-d" }}">
+              {# <tr {% if programacion_usuario != data.idimplemento.idusuario and programacion_usuario != tractorista_usuario and programacion_usuario != tractor_usuario %} class="table-warning" {% endif %}> #}
+                <td class="text-center">{{ data.idprogramacion.idtractorista }}</td>
+                <td class="text-center">{{ data.idprogramacion.idtractor }}</td>
+                <td class="text-center">
+                    {% for detalle in data.idprogramacion.detallelabor_set.all %}
+                        {{ detalle.idimplemento.implemento }}
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td class="text-center">
+                    {{ data.idprogramacion.fechahora|date:"d-m-Y"}}
+                    {% if data.idprogramacion.turno == 'M' %}
+                      <i class="bi bi-brightness-high-fill text-warning fs-4"></i>
+                    {% elif data.idprogramacion.turno == 'T' %}
+                      <i class="lni lni-cloudy-sun text-secondary fs-5"></i>
+                    {% elif data.idprogramacion.turno == 'N' %}
+                      <i class="bi bi-moon-stars-fill text-primary fs-5"></i>
+                    {% endif %}
+                </td>
+                <td class="text-center">{{ data.idprogramacion.idlote }}</td>
+                <td class="text-center">{{ data.idprogramacion.idtipolabor }}</td>
+                <td class="text-center">{{ data.idprogramacion.idsolicitante }}</td>
+                <td class="text-center">{{ data.idprogramacion.idusuario }}</td>
+            </tr>
+            {% endwith %}
+        {% endfor %}
+      </tbody>   
+    </table>
+    <h1 id="no_coincidencia" class="text-center"></h1>
+  </div>
+
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
 
-<!-- Optional: Place to the bottom of scripts -->
 <script>
-  const myModal = new bootstrap.Modal(
-    document.getElementById("modalId"),
-    options,
-  );
-</script>
-{% endblock contenido %}
+  document.addEventListener('DOMContentLoaded', function () {
+    var rows = document.querySelectorAll('tbody tr');
+    var supervisorSelect = document.getElementById('supervisorSelect');
+    var fechaSelect = document.getElementById('fechaSelect');
 
-<!-- Modal trigger button -->
+    supervisorSelect.addEventListener('change', function () {
+        fechaSelect.value = '#';
+        var selectedSupervisorId = supervisorSelect.value;
+        no_coincidencia.innerHTML = "";
+
+        rows.forEach(function (row) {
+            var supervisorId = row.dataset.idusuario;
+            
+            if (selectedSupervisorId === '#' || selectedSupervisorId === supervisorId) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    fechaSelect.addEventListener('change', function () {
+        supervisorSelect.value = '#';
+        var visiblesFilas = 0;
+        var selectedDate = fechaSelect.value;
+        
+        rows.forEach(function (row) {
+          var date = row.dataset.fecha;
+          
+          if (selectedDate === '' || selectedDate === date) {
+              row.style.display = '';
+              no_coincidencia.innerHTML = "";
+              visiblesFilas++;
+          }else {
+                row.style.display = 'none';
+                //visiblesFilas++
+                //no_coincidencia.innerHTML = "";
+                //no_coincidencia.innerHTML = "No se encontraron registros";
+          }
+        });
+
+        if (visiblesFilas === 0) {
+          console.log("No hay registros");
+          no_coincidencia.innerHTML = "No se encontraron registros" // Mostrar el mensaje de "No hay registros"
+        }
+    });
+
+    function exportToExcel() {
+        var rows = document.querySelectorAll('tbody tr');
+        var headers = document.querySelectorAll('thead th');
+        var data = [];
+
+        // Obtener las cabeceras con estilos aplicados
+        var headerRow = [];
+        headers.forEach(function (header) {
+            var cellData = {
+                v: header.innerText
+              };
+            headerRow.push(cellData);
+        });
+        data.push(headerRow);
+
+        rows.forEach(function (row) {
+            if (row.style.display !== 'none') {
+                var rowData = [];
+                row.querySelectorAll('td').forEach(function (cell) {
+                    rowData.push(cell.innerText);
+                });
+                data.push(rowData);
+            }
+        });
+
+        var wb = XLSX.utils.book_new();
+        var ws = XLSX.utils.aoa_to_sheet(data);
+
+        XLSX.utils.book_append_sheet(wb, ws, 'Datos');
+
+        num = Math.floor(Math.random() * (99999 - 10000 + 1)) + 100000;
+        XLSX.writeFile(wb, `PROGRAMACIONES-${num}.xlsx`);
+    }
+
+    /* function exportToPDF() {
+        var rows = document.querySelectorAll('tbody tr');
+        var headers = document.querySelectorAll('thead th');
+        var doc = new jsPDF();
+        
+        // Obtener las cabeceras
+        var headerRow = [];
+        headers.forEach(function (header) {
+            headerRow.push(header.innerText);
+        });
+
+        // Obtener datos de las filas visibles
+        var data = [];
+        rows.forEach(function (row) {
+            if (row.style.display !== 'none') {
+                var rowData = [];
+                row.querySelectorAll('td').forEach(function (cell) {
+                    rowData.push(cell.innerText);
+                });
+                data.push(rowData);
+            }
+        });
+
+        // Generar la tabla en el PDF
+        doc.autoTable({
+            head: [headerRow],
+            body: data,
+            theme: 'grid' // Opcional: puedes cambiar el tema de la tabla según lo necesites
+        });
+
+        // Guardar el archivo como PDF
+        doc.save('datos.pdf');
+    }*/
+
+
+
+    document.getElementById('exportToExcel').addEventListener('click', function () {
+      exportToExcel();
+    });
+
+    // document.getElementById('exportToPDF').addEventListener('click', function () {
+    //   exportToPDF();
+    // });
+
+  });
+
+</script>
+
+{% endblock contenido %}

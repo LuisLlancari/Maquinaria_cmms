@@ -466,7 +466,7 @@
             button.addEventListener('click', function() {
                 let idProgramacion = this.getAttribute('data-idprogramacion');
                 console.log(idProgramacion);
-                fetch(`http://127.0.0.1:8000/programacion/obtener_data/${idProgramacion}`)
+                fetch(`./obtener_data/${idProgramacion}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.mensaje === "Success") {

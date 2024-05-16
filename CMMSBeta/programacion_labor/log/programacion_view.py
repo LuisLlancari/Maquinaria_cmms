@@ -28,9 +28,7 @@ def programacion(request):
 
     # Obtener la cantidad de tractores utilizados hoy
     hoy = timezone.now().date()
-    print(hoy)
     cantidad_tractores_hoy = Programacion.objects.filter(fechahora=hoy, idusuario = request.user).count()
-    print(cantidad_tractores_hoy)
 
 
     #Obtenemos el idusuario
@@ -76,6 +74,7 @@ def registrar_programacion(request):
 
             # Obtener los implementos seleccionados del formulario
             implementos_seleccionados = request.POST.getlist('idimplemento')
+            print(implementos_seleccionados)
 
             # Crear un detalle de labor para cada implemento seleccionado
             for implemento_id in implementos_seleccionados:

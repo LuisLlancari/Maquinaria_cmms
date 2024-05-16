@@ -11,10 +11,11 @@
     <link rel="stylesheet" href="{% static 'core/vendor/bootstrap5/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'core/css/base.css' %}">
     <title>{% block titulo %}{% endblock  %}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
  
 </head>
 
-<body>
+<body style="background-color: #E5E8E8;">
     <div class="wrapper">
         <aside id="sidebar">
             <div class="d-flex">
@@ -31,8 +32,15 @@
                         <i class="lni lni-user"></i>
                         <span class="text-uppercase">{{user.first_name}} {{user.last_name}} {{user.idrol}}</span>
                     </a>
-                    <span>Hola</span>
                 </li>
+
+                <li class="sidebar-item">
+                    <a href="{% url 'test' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Lista de Programaciones</span>
+                    </a>
+                </li>
+
+
                 {% if user.idrol.rol == "Admin" or user.idrol.rol == "Supervisor" %}
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -283,7 +291,7 @@
             {% endif %}
         </aside>
         
-        <div class="main p-3">
+        <div class="main p-3 " style="background-color: #E5E8E8;">
             {% block contenido %} {% endblock %}
         </div>
     </div>
@@ -292,8 +300,8 @@
     <script src="{% static 'core/js/base.js' %}"></script>
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
