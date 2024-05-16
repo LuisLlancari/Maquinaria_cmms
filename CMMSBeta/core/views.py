@@ -15,7 +15,7 @@ from django.core.paginator import Paginator
 def home(request,):
 
     usuario = request.user
-    usuarios = Usuario.objects.filter(idrol = 1)
+    usuarios = Usuario.objects.filter(idrol = 3)
     tipos_labor = Programacion.objects.values('idtipolabor', 'idtipolabor__tipolabor').distinct()
     
     data = {
