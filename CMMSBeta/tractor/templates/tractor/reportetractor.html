@@ -35,8 +35,8 @@
     <div class="card-group m-3">
         {% for dato in datos %}
             
-            <div class="card m-3 border rounded" style="background-color: rgb(255, 255, 255);">
-                <div class="card-body">
+            <div class="card m-3 border rounded flex-fill" style="background-color: rgb(255, 255, 255);">
+                <div class="card-body d-flex flex-column">
                     <h4 class="card-title text-center fw-bold" id="h6">Reporte Tractor {{ dato.idprogramacion}}</h4>
                     <div class="report-info">
                         <p class="mt-2 mb-0 fw-bold"><span class="info-label">Tipo labor: </span> {{ dato.idtipolabor }}</p>

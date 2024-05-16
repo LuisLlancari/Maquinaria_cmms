@@ -9,7 +9,6 @@
         <form>
             <div class="input-group">
                 <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
-                <button class="btn btn-md btn-outline-secondary">Buscar</i></button>
             </div>
         </form>
     </div>
@@ -32,13 +31,8 @@
             </div>
         {% endfor %}
     {% endif %}
-    <table class="table table-striped  table-sm table-bordered text-center" id="tabla-sistema">
+    <table class="table table-striped  table-sm table-bordered text-center" id="tabla-tipo-implemento">
         <thead class="thead-dark">
-            <!-- <colgroup>
-                <col width="20%">
-                <col width="45%">
-                <col width="45%">
-            </colgroup> -->
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Tipo implemento</th>
@@ -96,7 +90,26 @@
         const btnAgregar = document.getElementById("registrar-implemento");
         const titulo_modal = document.getElementById("titulo-modal");
         const btnModificar = document.querySelectorAll(".editar")
+        const TipoImplementos = document.querySelectorAll("#tabla-tipo-implemento tbody tr");
+        const Busqueda = document.getElementById("buscar");
+
     
+
+
+        Busqueda.addEventListener("input", function() {
+            
+            var valorBusqueda = Busqueda.value.toLowerCase();
+
+            TipoImplementos.forEach(function(Tipoimplemento) {
+                var tipo_implemento = Tipoimplemento.querySelector("td:nth-child(2)").textContent.toLowerCase(); 
+                
+                if (tipo_implemento.includes(valorBusqueda)) {
+                    Tipoimplemento.style.display = ""; 
+                } else {
+                    Tipoimplemento.style.display = "none";
+                }
+            });
+        });
         
         function obtener_tipo(id){
         fetch(`./tipos/obtener/${id}`)

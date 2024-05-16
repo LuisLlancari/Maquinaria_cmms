@@ -38,7 +38,7 @@
         {% endfor %}
       
     {% endif %}
-    <table class="table table-striped table-bordered mt-3" id="tabla-area">
+    <table class="table table-striped table-bordered mt-3" id="tabla-tractor">
       <thead class="text-center">
         <tr>
             <th scope="col" class="text-center">N°</th>
@@ -223,6 +223,31 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const tractores = document.querySelectorAll("#tabla-tractor tbody tr");
+      const Busqueda = document.getElementById("buscador");
+
+    
+
+
+        // Agregar un event listener para el evento de entrada en el campo de búsqueda
+        Busqueda.addEventListener("input", function() {
+            
+            var valorBusqueda = Busqueda.value.toLowerCase();
+
+            // Iterar sobre los implementos y mostrar u ocultar según el término de búsqueda
+            tractores.forEach(function(tractor) {
+                var tipoTractor = tractor.querySelector("td:nth-child(2)").textContent.toLowerCase(); 
+                var supervisor = tractor.querySelector("td:nth-child(3)").textContent.toLowerCase(); 
+                var nombreTractor = tractor.querySelector("td:nth-child(5)").textContent.toLowerCase();
+                
+                // Verificar si alguno de los campos coincide con el término de búsqueda
+                if (tipoTractor.includes(valorBusqueda) || supervisor.includes(valorBusqueda) || nombreTractor.includes(valorBusqueda)) {
+                    tractor.style.display = ""; 
+                } else {
+                    tractor.style.display = "none";
+                }
+            });
+        });
 
       setTimeout(function() {
             var errorMessage = document.getElementById('message');

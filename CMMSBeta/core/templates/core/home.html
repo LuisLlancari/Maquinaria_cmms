@@ -6,300 +6,485 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <style>
-  .container {
-    display: flex;
-    flex-direction: row;
-    padding: 15px;
-  }
-
-  #chartdiv {
-    width: 70%;
-    height: 500px;
-    background-color: #f2f2f2;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-right: 20px;
-  }
-
-  .other-div {
-    width: 30%;
-    background-color: #f2f2f2;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .text-center {
-    text-align: center;
-  }
-
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  .form-control {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-
-  .btn-success {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  .btn-danger {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+    #tabla-tractor tbody {
+        cursor: pointer; /* Cambiar el cursor a una mano */
+    }
 </style>
 
-<div class="">
-    <h1 class="text-center">REPORTES</h1>
-    <div class="alert alert-danger alert-dismissible fade show" style="display: none;" id="error-alert" role="alert">
-        <strong id="mensaje-alert"></strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<h1 class="text-center">Dashboard</h1>
+<div class="alert alert-danger alert-dismissible fade show" style="display: none;" id="error-alert" role="alert">
+    <strong id="mensaje-alert"></strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<!-- FILTROS -->
+<div class="row">
+    <div class="col col-md-4 mb-1">
+        <label for="" class="form-label"><strong>FECHA:</strong></label>
+        <input type="date" name="" class="form-control" id="fecha">
     </div>
-    <div class="row ">
-        <div class="col-md-5">
-            <button type="button" class="btn btn-success m-4" data-bs-toggle="modal" data-bs-target="#modalExportExcel">
-                <i class="bi bi-file-earmark-excel"></i>
-                <h5><strong class="text-uppercase ">Excel</strong></h5>
-            </button>
+    <div class="col col-md-4 mb-1">
+        <label for="" class="form-label"><strong>SUPERVISOR:</strong></label>
+        <select name="" class="form-select" id="supervisor">
+            {% for data in usuarios %}
+            <option value="{{ data.id }}">{{ data.first_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col col-md-4 mb-1">
+        <label for="" class="form-label"><strong>TURNO:</strong></label>
+        <select name="" class="form-select" id="turno">
+            <option value="M">Mañana</option>
+            <option value="T">Tarde</option>
+            <option value="N">Noche</option>
+        </select>
+    </div>
+</div>
+
+<!-- CONTENERDOR GRAFICO Y TABLA -->
+<div class="container mt-2">
+    <div class="row">
+
+        <div class="col col-md-6">
+            <h1 class="text-center mt-2">Gráfico</h1>
+            <canvas id="grafico-donut"></canvas>
         </div>
-        <div class="col-md-5">
-            <button type="button" class="btn btn-danger m-4" data-bs-toggle="modal" data-bs-target="#modalExportPDF">
-                <i class="bi bi-filetype-pdf"></i>
-                <h5><strong>PDF</strong></h5>
-            </button>
+
+        <div class="col col-md-6">
+            <table class="table table-bordered table-sm table-hover mt-2" id="tabla-tractor">
+            <thead class="text-center table-dark">
+                <tr>
+                    <th>Fundos</th>
+                    <th>Total</th>
+                    <th>Activos</th>
+                    <th>Inactivos</th>
+                </tr>
+            </thead>
+            <tbody class="text-center ">
+                <tr></tr>
+                
+            </tbody>
+            </table>
         </div>
     </div>
-    
-    <div class="" style="background-color: bisque;">
-        <div class="container">
-            <h3 class="text-center">Filtros</h3>
-            <form action="{% url 'reporteGrafico' %}" method="POST">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="fecha_grafico" class="form-label">Filtrar por fecha de solicitudes:</label>
-                    <input type="date" class="form-control" id="fecha_grafico" name="fecha_grafico">
-                </div>
-                <button type="submit" class="btn btn-primary mt-5">Aplicar</button>
-            </form>
-        </div>
-        
-        <div class="container">
-            <div id="chartdiv"></div>
-        </div>
-    </div>
-    
-    <h1 class="text-center">Exportar en otro Formato</h1>
+</div>
+
     
     
-    <div class="modal fade" id="modalExportPDF" tabindex="-1" aria-labelledby="modalExportPDFLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalExportPDFLabel">Exportar PDF</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{% url 'exportpdf' %}" id="formExportarPDF" method="POST">
-                        {% csrf_token %}
-                        <div class="row mb-3">
-                            <div class="col">
-                                <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
-                                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
-                            </div>
-                            <div class="col">
-                                <label for="fecha_fin" class="form-label">Fecha de fin:</label>
-                                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
-                            </div>
+<div class="modal fade" id="modalExportPDF" tabindex="-1" aria-labelledby="modalExportPDFLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalExportPDFLabel">Exportar PDF</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'exportpdf' %}" id="formExportarPDF" method="POST">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
+                            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
                         </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <label for="usuario" class="form-label">Usuario:</label>
-                                <select id="selectuser" class="form-control" id="usuario" name="usuario">
-                                    <option selected disabled>Seleccione un Usuario</option>
-                                    {% for data in usuarios %}
-                                    <option value="{{ data.id }}">{{ data.first_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col">
-                                <label for="labor" class="form-label">Labor:</label>
-                                <select class="form-control" id="labor" name="labor">
-                                    <option selected disabled>Seleccione Una Labor</option>
-                                    {% for data in tipolabor %}
-                                    <option value="{{ data.idtipolabor }}">{{ data.idtipolabor__tipolabor }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>        
+                        <div class="col">
+                            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
+                            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
                         </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary">Exportar Formato PDF</button>
-                            </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="usuario" class="form-label">Usuario:</label>
+                            <select id="selectuser" class="form-control" id="usuario" name="usuario">
+                                <option selected disabled>Seleccione un Usuario</option>
+                                {% for data in usuarios %}
+                                <option value="{{ data.id }}">{{ data.first_name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                    </form>
-                </div>
+                        <div class="col">
+                            <label for="labor" class="form-label">Labor:</label>
+                            <select class="form-control" id="labor" name="labor">
+                                <option selected disabled>Seleccione Una Labor</option>
+                                {% for data in tipolabor %}
+                                <option value="{{ data.idtipolabor }}">{{ data.idtipolabor__tipolabor }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>        
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary">Exportar Formato PDF</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    
-    <div class="modal fade" id="modalExportExcel" tabindex="-1" aria-labelledby="modalExportExcelLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalExportExcelLabel">Exportar Excel</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal fade" id="modalExportExcel" tabindex="-1" aria-labelledby="modalExportExcelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalExportExcelLabel">Exportar Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'exportar' %}" id="formExportarExcel" method="POST">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
+                            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
+                        </div>
+                        <div class="col">
+                            <label for="fecha_fin" class="form-label">Fecha de fin:</label>
+                            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="usuario" class="form-label">Usuario:</label>
+                            <select id="selectuser" class="form-control" id="usuario" name="usuario">
+                                <option selected disabled>Seleccione un Usuario</option>
+                                {% for data in usuarios %}
+                                <option value="{{ data.id }}">{{ data.first_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="labor" class="form-label">Labor:</label>
+                            <select class="form-control" id="labor" name="labor">
+                                <option selected disabled>Seleccione Una Labor</option>
+                                {% for data in tipolabor %}
+                                <option value="{{ data.idtipolabor }}">{{ data.idtipolabor__tipolabor }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary">Exportar Formato Excel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_tabla_detalle" tabindex="-1" aria-labelledby="titulo-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo_modal"></h1>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col col-md-6 d-grid">
+                        <button type="button" class="btn btn-success btn-sm btn-block" id="btnProgramado" disabled>Programados</button>
+                    </div>
+                    <div class="col col-md-6 d-grid">
+                        <button type="button" class="btn btn-danger btn-sm btn-block" id="btnNoProgramado">No programados</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form action="{% url 'exportar' %}" id="formExportarExcel" method="POST">
-                        {% csrf_token %}
-                        <div class="row mb-3">
-                            <div class="col">
-                                <label for="fecha_inicio" class="form-label">Fecha de inicio:</label>
-                                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
-                            </div>
-                            <div class="col">
-                                <label for="fecha_fin" class="form-label">Fecha de fin:</label>
-                                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <label for="usuario" class="form-label">Usuario:</label>
-                                <select id="selectuser" class="form-control" id="usuario" name="usuario">
-                                    <option selected disabled>Seleccione un Usuario</option>
-                                    {% for data in usuarios %}
-                                    <option value="{{ data.id }}">{{ data.first_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col">
-                                <label for="labor" class="form-label">Labor:</label>
-                                <select class="form-control" id="labor" name="labor">
-                                    <option selected disabled>Seleccione Una Labor</option>
-                                    {% for data in tipolabor %}
-                                    <option value="{{ data.idtipolabor }}">{{ data.idtipolabor__tipolabor }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary">Exportar Formato Excel</button>
-                            </div>
-                        </div>
-                    </form>
+                <div class="row mt-3" id="detalle-cuerpo">
+                
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-secondary flex-fill" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
 
-<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
-    var datos = JSON.parse("{% autoescape off %}{{ datagrafic | escapejs }}{% endautoescape %}");
-    if (datos.length > 0 && datos[0].mensaje !== undefined) {
-        var mensaje = datos[0].mensaje;
-        var divalert = document.getElementById('error-alert');
-        var mensaje_alert = document.getElementById('mensaje-alert');
-        mensaje_alert.textContent = mensaje;
-        divalert.style.display = 'block';
+<!-- AGREGAR REFERENCIA A BOOTSTRAP  -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
+
+<script>    
+    
+    // Instanciamos elementos 
+    const modal_detalle = new bootstrap.Modal(document.getElementById('modal_tabla_detalle'))
+    const tabla = document.querySelector('#tabla-tractor tbody');
+    const canvas = document.getElementById('grafico-donut');
+    const Fecha = document.getElementById('fecha');
+    const Supervisor = document.getElementById('supervisor');
+    const Turno = document.getElementById('turno');
+    const Detalle_cuerpo = document.getElementById('detalle-cuerpo');
+
+    // Botones del modal
+    const btnProgramado = document.getElementById("btnProgramado");
+    const btnNoProgramado = document.getElementById("btnNoProgramado");
+
+    // Variable que almacenará los tractores no programados de la funcion detalleProgramados
+    let TractoresNoProgramados
+    let TractoresConProgramacion
+
+    // Asignar la fecha actual al campo de fecha
+    let fechaActual = new Date().toISOString().split('T')[0];
+    Fecha.value = fechaActual;
+
+    // Variable para instanciar gráfico 
+    let graficoDona = null;
+
+    // Colores para el gráfico
+    const backgroundColors = [
+    "rgba(103, 109, 123, 1)",  
+    "rgba(102, 178, 255, 1)",  
+    "rgba(102, 255, 102, 1)",  
+    "rgba(178, 102, 255, 1)",  
+    "rgba(255, 102, 255, 1)",
+    "rgba(102, 255, 178, 1)",
+    "rgba(255, 178, 178, 1)",
+    "rgba(178, 178, 255, 1)",
+    "rgba(178, 255, 178, 1)",
+    "rgba(255, 178, 255, 1)",
+    "rgba(255, 255, 102, 1)",
+    "rgba(255, 153, 0,   1)",  
+    "rgba(255, 51,  102, 1)", 
+    "rgba(51,  153, 255, 1)", 
+    "rgba(51,  204, 51,  1)",  
+    "rgba(153, 51,  255, 1)", 
+    "rgba(255, 51,  255, 1)", 
+    "rgba(51,  255, 153, 1)", 
+    "rgba(255, 102, 102, 1)",
+    "rgba(102, 102, 255, 1)",
+    "rgba(102, 255, 102, 1)",
+    "rgba(255, 102, 255, 1)",
+    "rgba(255, 255, 51,  1)", 
+];
+
+    // Gráfico
+    graficoDona = new Chart(canvas,{
+        type: 'doughnut',
+        data: {
+        labels: [
+        ],
+        datasets: [{
+            label: ['cantidad'],
+            data: [],
+            backgroundColor: backgroundColors
+         }]
+        },
+        
+
+    });
+
+    // Traer datos del gráfico, tabla y el detalle
+    async function datosGrafico(fecha, supervisor, turno) {
+        try {
+            const response = await fetch(`./datos_graficos/${fecha}/${supervisor}/${turno}`);
+            let datos = await response.json();
+            // console.log(datos.resultados_solicitantes);
+
+            graficoDona.data.labels = datos.resultados_solicitantes.map(registro => registro.nombre)
+            graficoDona.data.datasets[0].data = datos.resultados_solicitantes.map(registro => registro.registros)
+
+            graficoDona.update();
+
+        } catch (error) {
+            console.log(error);
+        }
     }
-    if (Object.keys(datos).length !== 0) {
-        am5.ready(function() {
-            var root = am5.Root.new("chartdiv");
-            root.setThemes([
-                am5themes_Animated.new(root)
-            ]);
-            var chart = root.container.children.push(am5percent.PieChart.new(root, {
-                layout: root.verticalLayout,
-                innerRadius: am5.percent(50)
-            }));
-            var series = chart.series.push(am5percent.PieSeries.new(root, {
-                valueField: "num_solicitudes",
-                categoryField: "nombre",
-                alignLabels: false
-            }));
+   
+    async function datosTablaTractores(fecha, supervisor, turno) {
+        try {
+            const response = await fetch(`./datos_tabla/${fecha}/${supervisor}/${turno}`);
+            let datos = await response.json();
+            // console.log(datos);
 
-            series.labels.template.setAll({
-                textType: "circular",
-                centerX: 0,
-                centerY: 0,
-                text: "{category}: {value} solicitudes"
+            tabla.innerHTML = '';
+            datos.tabla_tractor.forEach(registro => {
+                nuevafila = 
+                `<tr data-id=${registro.idfundo}>
+                    <td>${registro.Fundo}</td>
+                    <td>${registro.tractores_totales}</td>
+                    <td>${registro.tractores_programados}</td>
+                    <td>${registro.tractores_sin_programar}</td>
+                   
+                </tr>`;
+                tabla.innerHTML += nuevafila;   
+
             });
 
-            // Actualiza el gráfico con los datos
-            series.data.setAll(datos);
-            var legend =  chart.children.push(am5.Legend.new(root, {
-                centerX: am5.percent(50),
-                x: am5.percent(50),
-                marginTop: 15,
-                marginBottom: 15,
-            }));
-            legend.data.setAll(series.dataItems);
-            series.appear(1000, 100);
-        });
-    } else {
-        am5.ready(function() {
-            var root = am5.Root.new("chartdiv");
-            root.setThemes([
-                am5themes_Animated.new(root)
-            ]);
-            var chart = root.container.children.push(am5percent.PieChart.new(root, {
-                layout: root.verticalLayout,
-                innerRadius:  am5.percent(50)
-            }));
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
-            var series = chart.series.push(am5percent.PieSeries.new(root, {
-                valueField: "value",
-                categoryField: "category",
-                alignLabels: false
-            }));
+    function obtenerDetalleTractores(fecha, supervisor, turno, fundo){
+        fetch(`./datos_tabla_detalle/${fecha}/${supervisor}/${turno}/${fundo}`)
+        .then(res => res.json())
+        .then(datos => {
+            // console.log(datos.programaciones.length);
+            Detalle_cuerpo.innerHTML = '';
 
-            series.labels.template.setAll({
-                textType: "circular",
-                centerX: 0,
-                centerY: 0,
-                text: ""
-            });
-
-            var data = [
-                { "value": 10 }
-            ];
-
-            series.data.setAll(data);
-
-            var legend = chart.children.push(am5.Legend.new(root, {
-                centerX: am5.percent(50),
-                x: am5.percent(50),
-                marginTop: 15,
-                marginBottom: 15,
-            }));
-            legend.data.setAll(series.dataItems);
-            series.appear(1000, 100);
+            TractoresConProgramacion = datos.programaciones
+            TractoresNoProgramados = datos.tractores_sin_programacion;
+            
+            if (datos.programaciones.length == 0) {
+                Detalle_cuerpo.innerHTML = '<p class="card-text text-success text-center">No hay tractores programados</p>'
+            }else{
+                datos.programaciones.forEach(registro=>{
+                nuvacard = `
+                <div class="col col-md-6">
+                    <div class="card border-success mb-3">
+                        <div class="card-body text-success">
+                            <h5 class="card-text text-center fw-bold">${registro.tractor}</h5>
+                            <p class="card-text text-success m-0 fs-5" ><strong>Labor:</strong> ${registro.labor}</p>
+                            <p class="card-text text-success m-0 fs-5" ><strong>Solicitante:</strong> ${registro.solicitante}</p>
+                            <p class="card-text text-success fs-5" ><strong>Implementos:</strong></p>
+                            ${registro.implementos.map(implemento => `<p class="card-text text-success m-0 fs-5">- ${implemento.implemento_usado}</p>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                `;
+                Detalle_cuerpo.innerHTML += nuvacard;   
+                });    
+            }
+            
+        })
+        .catch((error) => {
+            console.log(error);
         });
     }
+
+    function DetalleNoProgramados(tractores_sin_programacion){
+            
+        Detalle_cuerpo.innerHTML = '';
+        if (tractores_sin_programacion.length == 0) {
+            Detalle_cuerpo.innerHTML = '<p class="card-text text-danger text-center">Todos los tractores estan programados</p>'
+        }else{
+            tractores_sin_programacion.forEach(registro=>{
+            nuvacard = `
+            <div class="col col-md-6">
+                <div class="card border-danger mb-3">
+                    <div class="card-body text-danger">
+                        <h5 class="card-text text-center fw-bold">${registro.nrotractor}</h5>
+                    </div>
+                </div>
+            </div>
+            `;
+            Detalle_cuerpo.innerHTML += nuvacard;   
+            });    
+        }
+
+    }
+
+    function DetalleProgramados(tractores_con_programacion){
+        
+        Detalle_cuerpo.innerHTML = '';
+        if (tractores_con_programacion.length == 0) {
+                Detalle_cuerpo.innerHTML = '<p class="card-text text-success text-center">No hay tractores programados</p>'
+            }else{
+                tractores_con_programacion.forEach(registro=>{
+                nuvacard = `
+                <div class="col col-md-6">
+                    <div class="card border-success mb-3">
+                        <div class="card-body text-success">
+                            <h5 class="card-text text-center fw-bold">${registro.tractor}</h5>
+                            <p class="card-text text-success m-0 fs-5" ><strong>Labor:</strong> ${registro.labor}</p>
+                            <p class="card-text text-success m-0 fs-5" ><strong>Solicitante:</strong> ${registro.solicitante}</p>
+                            <p class="card-text text-success fs-5" ><strong>Implementos:</strong></p>
+                            ${registro.implementos.map(implemento => `<p class="card-text text-success m-0 fs-5">- ${implemento.implemento_usado}</p>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                `;
+                Detalle_cuerpo.innerHTML += nuvacard;   
+                });    
+            }
+
+    }
+    // Filtros
+    Fecha.addEventListener("change",function() {
+        let fecha = Fecha.value
+        let supervisor = Supervisor.value
+        let turno = Turno.value
+
+        datosGrafico(fecha,supervisor,turno);
+        datosTablaTractores(fecha,supervisor,turno);
+
+    });
+
+    Supervisor.addEventListener("change",function() {
+        let fecha = Fecha.value
+        let supervisor = Supervisor.value
+        let turno = Turno.value
+        console.log(fecha, supervisor, turno)
+        datosGrafico(fecha,supervisor,turno);
+        datosTablaTractores(fecha,supervisor,turno);
+
+
+        
+    });
+
+    Turno.addEventListener("change",function() {
+        let fecha = Fecha.value
+        let supervisor = Supervisor.value
+        let turno = Turno.value
+        datosGrafico(fecha,supervisor,turno);
+        datosTablaTractores(fecha,supervisor,turno);
+
+
+    });
+
+    // Iterar sobre cada fila de la tabla
+    tabla.addEventListener('click', function(event) {
+        // Verificar si el clic ocurrió dentro de una fila
+        var fila = event.target.closest('tr');
+        if (fila) {
+            btnProgramado.setAttribute('disabled', true)
+            btnNoProgramado.removeAttribute('disabled')
+
+            let nombreFundo = fila.querySelector('td').textContent;
+            titulo_modal.innerHTML = `${nombreFundo}`
+            let fecha = Fecha.value
+            let supervisor = Supervisor.value
+            let turno = Turno.value
+            let idFundo = fila.getAttribute('data-id');
+            
+            obtenerDetalleTractores(fecha, supervisor, turno, idFundo)
+
+
+            modal_detalle.show()
+
+            console.log("ID del Fundo:", idFundo);
+        } else {
+            return;
+        }
+    });
+   
+    // Ejecuta funciones al cargarse la pagina
+    window.addEventListener('DOMContentLoaded', (event) => {
+        let fecha = Fecha.value;
+        let supervisor = Supervisor.value;
+        let turno = Turno.value;
+        
+        datosGrafico(fecha, supervisor, turno);
+        datosTablaTractores(fecha, supervisor, turno);
+
+    });
+
+    // Botones del modal
+    btnProgramado.addEventListener("click",function(){
+        btnProgramado.setAttribute('disabled', true)
+        btnNoProgramado.removeAttribute('disabled')
+        DetalleProgramados(TractoresConProgramacion);
+        
+    });
+
+    btnNoProgramado.addEventListener("click",function(){
+        btnNoProgramado.setAttribute('disabled',true)
+        btnProgramado.removeAttribute('disabled')
+        DetalleNoProgramados(TractoresNoProgramados)
+        });
 </script>
 
-<script src="https://code.highcharts.com/highcharts.js"></script>
 {% endblock %}
