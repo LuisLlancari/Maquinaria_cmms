@@ -58,8 +58,8 @@ class DetalleComponente(models.Model):
         verbose_name = "Detalles Componente"
         verbose_name_plural = "Detalles Componentes"
 
-    def _str_(self):
-        return str(self.iddetallecomponente)
+    def __str__(self):
+        return f"{self.idcomponente} {self.idpieza}"    
     
 class ConfiguracionTipoImplemento(models.Model):
     idconfiguraciontipoimplemento = models.AutoField(primary_key=True)
@@ -70,8 +70,8 @@ class ConfiguracionTipoImplemento(models.Model):
         verbose_name = "Configuracion Tipo Implemento"
         verbose_name_plural = "Configuraciones Tipo Implementos"
 
-    def _str_(self):
-        return str(self.idconfiguraciontipoimplemento)
+    def __str__(self):
+        return self.nombre_configuracion
     
 class DetalleConfiguracion(models.Model):
     iddetalleconfiguracion = models.AutoField(primary_key=True)
@@ -83,7 +83,7 @@ class DetalleConfiguracion(models.Model):
         verbose_name = "Detalle Configuracion"
         verbose_name_plural = "Detalle Configuraciones"
 
-    def _str_(self):
+    def __str__(self):
         return str(self.iddetalleconfiguracion)
     
 

@@ -5,7 +5,6 @@ from . models import Componente, Sistema, Pieza, DetalleComponente, Configuracio
 class componeneteAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
   
-
 @admin.register(Sistema)
 class sistemaAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
