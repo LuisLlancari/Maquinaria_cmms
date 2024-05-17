@@ -222,21 +222,33 @@
                     </ul>
                 </li>
 
-                {% comment %} <li class="sidebar-item">
+                <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#componente" aria-expanded="false" aria-controls="componente">
                         <i class="lni lni-cogs"></i>
-                        <span>Componentes</span>
+                        <span>Configuracion</span>
                     </a>
                     <ul id="componente" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
                             <a href="{% url 'componente' %}" class="sidebar-link">Componentes</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'sistema' %}" class="sidebar-link">Sistema</a>
+                            <a href="{% url 'sistema' %}" class="sidebar-link">Sistemas</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'piezas' %}" class="sidebar-link">Piezas</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'det_conponente' %}" class="sidebar-link">Asignacion Componente</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'detalle_cong' %}" class="sidebar-link">Detalle configuracion</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'configuracion' %}" class="sidebar-link">Configuracion</a>
                         </li>
                     </ul>
-                </li> {% endcomment %}
+                </li>
 
 
                 {% endif %}

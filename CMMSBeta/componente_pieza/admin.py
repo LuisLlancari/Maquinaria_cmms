@@ -1,11 +1,10 @@
 from django.contrib import admin
-from . models import Componente, Sistema, Pieza, DetalleComponente, ConfiguracionTipoImplemento, DetalleConfiguracion
+from . models import Componente, Sistema, Pieza, ConfiguracionTipoImplemento, DettaleConfiguracion
 
 @admin.register(Componente)
 class componeneteAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
   
-
 @admin.register(Sistema)
 class sistemaAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
@@ -14,15 +13,11 @@ class sistemaAdmin(admin.ModelAdmin):
 class piezaAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
 
-@admin.register(DetalleComponente)
-class DetalleComponenteAdmin(admin.ModelAdmin):
-  readonly_fields= ['estado']
-
 @admin.register(ConfiguracionTipoImplemento)
 class ConfiguracionTipoImplementoAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
 
-@admin.register(DetalleConfiguracion)
-class DetalleConfiguracionAdmin(admin.ModelAdmin):
+@admin.register(DettaleConfiguracion)
+class DettaleConfiguracionAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
 

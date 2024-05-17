@@ -2,6 +2,11 @@ from django.urls import path, include
 # Importará las vistas de la app donde te encuentres
 from .viewss import componentes
 from .viewss import sistema
+from .viewss import piezas
+from .viewss import configuracion
+from .viewss import det_conponente
+from .viewss import detalle_cong
+
 urlpatterns = [
   path('', componentes.componente, name="componente"),
   path('sistema/', sistema.sistema, name="sistema"),
@@ -17,6 +22,11 @@ urlpatterns = [
   path('sistema/eliminar/<int:id_sistema>', sistema.eliminarSistema, name="eliminar_sistema"),
   path('sistema/obtener/<int:id_sistema>', sistema.obtenerDatos, name="obtener_sistema"),
   path('sistema/modificar/<int:id_sistema>', sistema.editarSistema, name="modificar_sistema"),
+
+  path('piezas/', piezas.piezas, name="piezas"),
+  path('configuracion/', configuracion.configuracion, name="configuracion"),
+  path('det_conponente/', det_conponente.det_componente, name="det_conponente"),
+  path('detalle_cong/', detalle_cong.detalle_cong, name="detalle_cong"),
 
 
 
