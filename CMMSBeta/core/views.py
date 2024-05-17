@@ -166,7 +166,7 @@ def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
             'labor': labor_tractor,
             'solicitante': nombre_solicitante,
             'implementos':detprogramacione_list
-        })   
+        })    
         
 
     return JsonResponse({'programaciones':programaciones_list, 'tractores_sin_programacion': tractores_sin_programacion})

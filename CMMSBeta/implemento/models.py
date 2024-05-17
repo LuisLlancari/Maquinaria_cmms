@@ -20,7 +20,7 @@ class TipoImplemento(models.Model):
 
     def __str__(self):
         return self.tipoimplemento
-
+    
 class Implemento(models.Model):
     idimplemento = models.AutoField(primary_key=True)
     implemento = models.CharField(max_length=45, verbose_name="Implemento")
