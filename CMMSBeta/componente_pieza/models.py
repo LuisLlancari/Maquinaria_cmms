@@ -33,8 +33,10 @@ class Componente(models.Model):
     
 class Pieza(models.Model):
     idpieza = models.AutoField(primary_key=True)
-    pieza = models.CharField(max_length=45, verbose_name="Pieza", unique=True)
-    codpieza = models.CharField(max_length=12, verbose_name="Codigo de pieza", unique=True)
+    idcomponente = models.ForeignKey(Componente, on_delete=models.CASCADE, verbose_name="Componente")
+    pieza = models.CharField(max_length=45, verbose_name="Pieza")
+    codpieza = models.CharField(max_length=12, verbose_name="Codigo de pieza")
+    cantidad_piezas = models.IntegerField(verbose_name="Cantidad de piezas", default=1)
     frecuencia_man = models.IntegerField(verbose_name="Frecuencia de mantenimiento de pieza")
     tiempovida = models.IntegerField(verbose_name="Tiempo de vida de la pieza")
     estado = models.BooleanField(default=True, verbose_name="Estado")
@@ -47,19 +49,6 @@ class Pieza(models.Model):
     def __str__(self):
         return self.pieza
     
-class DetalleComponente(models.Model):
-    iddetallecomponente = models.AutoField(primary_key=True)
-    idcomponente = models.ForeignKey(Componente, on_delete=models.CASCADE, verbose_name="Componente")
-    idpieza = models.ForeignKey(Pieza, on_delete=models.CASCADE, verbose_name="Pieza")
-    cantidad_piezas = models.IntegerField(verbose_name="Cantidad de piezas", default=1)
-    estado = models.BooleanField(default=True, verbose_name="Estado")
-
-    class Meta:
-        verbose_name = "Detalles Componente"
-        verbose_name_plural = "Detalles Componentes"
-
-    def __str__(self):
-        return f"{self.idcomponente} {self.idpieza}"    
     
 class ConfiguracionTipoImplemento(models.Model):
     idconfiguraciontipoimplemento = models.AutoField(primary_key=True)
@@ -73,18 +62,18 @@ class ConfiguracionTipoImplemento(models.Model):
     def __str__(self):
         return self.nombre_configuracion
     
-class DetalleConfiguracion(models.Model):
-    iddetalleconfiguracion = models.AutoField(primary_key=True)
-    idconfiguraciontipoimplemento = models.ForeignKey(ConfiguracionTipoImplemento, on_delete=models.CASCADE, verbose_name="Configuracion")
-    iddetallecomponente = models.ForeignKey(DetalleComponente, on_delete=models.CASCADE, verbose_name="Componente")
+class DettaleConfiguracion(models.Model):
+    iddetallecomponente = models.AutoField(primary_key=True)
+    idcomponente = models.ForeignKey(Componente, on_delete=models.CASCADE, verbose_name="Componente")
+    idconfiguracion = models.ForeignKey(ConfiguracionTipoImplemento, on_delete=models.CASCADE, verbose_name="Configuracion")
     estado = models.BooleanField(default=True, verbose_name="Estado")
 
     class Meta:
-        verbose_name = "Detalle Configuracion"
-        verbose_name_plural = "Detalle Configuraciones"
+        verbose_name = "Detalles Componente"
+        verbose_name_plural = "Detalles Componentes"
 
     def __str__(self):
-        return str(self.iddetalleconfiguracion)
+        return str(self.iddetallecomponente)    
     
 
 
