@@ -3,7 +3,7 @@ from localizacion.models import Area
 from ceco.models import Ceco
 
 from componente_pieza.models import ConfiguracionTipoImplemento
-from usuario.models import Usuario, Persona
+from usuario.models import Usuario
 
 class TipoImplemento(models.Model):
     idtipoimplemento = models.AutoField(primary_key=True)
@@ -11,7 +11,7 @@ class TipoImplemento(models.Model):
     estado = models.BooleanField(default=True, verbose_name="Estado")
     tiempo_vida = models.IntegerField(verbose_name="Tiempo de vida")
     frecuencia_man = models.IntegerField(verbose_name="Frecuencia de mantenimiento")
-    configuracion_implemento = models.ForeignKey(ConfiguracionTipoImplemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Configuracion")
+    idconfiguracion_implemento = models.ForeignKey(ConfiguracionTipoImplemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Configuracion")
 
     class Meta:
         verbose_name = "Tipo Implemento"
