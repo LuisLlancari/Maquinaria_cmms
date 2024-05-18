@@ -1,7 +1,5 @@
-# importamos django forms
 from django import forms
-# importamos los modelos
-from . models import Sistema, Componente
+from .models import Sistema, Componente, Pieza, ConfiguracionTipoImplemento, DettaleConfiguracion
 
 class SistemaForms(forms.ModelForm):
     class Meta:
@@ -12,12 +10,33 @@ class SistemaForms(forms.ModelForm):
         }
 
 class ComponenteForms(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['idsistema'].queryset = Sistema.objects.filter(estado=True)
+    
     class Meta:
         model = Componente
-        fields = ['componente','idsistema' ,'codcomponente', 'tiempovida']
+        fields = ['componente', 'idsistema', 'codcomponente', 'tiempovida', 'frecuencia_man']
         widgets = {
             'idsistema': forms.Select(attrs={'class':'form-control', 'id': 'txtsistema'}),
             'componente': forms.TextInput(attrs={'class':'form-control', 'id': 'txtComponente'}),
-            'codcomponente': forms.TextInput(attrs={'class':'form-control', 'id': 'txtCodigoComp'}),
-            'tiempovida': forms.TextInput(attrs={'class':'form-control', 'id': 'txtTiempovida'}),
+            'codcomponente': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCodigoComp', 'min': 0}),
+            'tiempovida': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtTiempovida', 'min': 0}),
+            'frecuencia_man': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtFrecuenciaMan', 'min': 0}),
+        }
+
+class PiezaForms(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['idcomponente'].queryset = Componente.objects.filter(estado=True)
+    class Meta:
+        model = Pieza
+        fields = ['pieza', 'idcomponente', 'cantidad_piezas','codpieza', 'frecuencia_man', 'tiempovida']
+        widgets = {
+            'idcomponente': forms.Select(attrs={'class':'form-control', 'id': 'txtComponente'}),
+            'pieza': forms.TextInput(attrs={'class':'form-control', 'id': 'txtPieza'}),
+            'codpieza': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCodPieza', 'min': 0}),
+            'cantidad_piezas': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCantidadPiezas', 'min': 1}),
+            'frecuencia_man': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtFrecuenciaMan', 'min': 0}),
+            'tiempovida': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtTiempovida', 'min': 0}),
         }

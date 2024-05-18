@@ -10,6 +10,7 @@ from .viewss import detalle_cong
 urlpatterns = [
   path('', componentes.componente, name="componente"),
   path('sistema/', sistema.sistema, name="sistema"),
+  path('pieza/', piezas.piezas, name="pieza"),
 
 
   path('registrar', componentes.registrarComponente, name="componente_registro"),
@@ -23,7 +24,11 @@ urlpatterns = [
   path('sistema/obtener/<int:id_sistema>', sistema.obtenerDatos, name="obtener_sistema"),
   path('sistema/modificar/<int:id_sistema>', sistema.editarSistema, name="modificar_sistema"),
 
-  path('piezas/', piezas.piezas, name="piezas"),
+  path('pieza/registrar', piezas.registrarPieza, name="pieza_registro"),
+  path('pieza/eliminar/<int:id_pieza>', piezas.eliminarPieza, name="eliminar_pieza"),
+  path('pieza/obtener/<int:id_pieza>', piezas.obtenerDatos, name="obtener_pieza"),
+  path('pieza/modificar/<int:id_pieza>', piezas.editarPieza, name="modificar_pieza"),
+
   path('configuracion/', configuracion.configuracion, name="configuracion"),
   path('det_conponente/', det_conponente.det_componente, name="det_conponente"),
   path('detalle_cong/', detalle_cong.detalle_cong, name="detalle_cong"),

@@ -3,6 +3,9 @@ from ..models import Componente
 from ..forms import ComponenteForms
 from django.http import JsonResponse
 
+#Manejo de errores
+from django.contrib import messages
+
 def componente(request):
   datos_componente = Componente.objects.filter(estado =True)
   return render(request, 'componente_pieza/componente.html',{'datos_componente':datos_componente, 'form':ComponenteForms})
@@ -12,11 +15,12 @@ def registrarComponente(request):
       form = ComponenteForms(request.POST)
       if form.is_valid():  # Verifica si los datos son válidos
           form.save()
+          messages.success(request, 'Componente registrado con exito', extra_tags='success')
           return redirect('componente')
   else:
-      form = ComponenteForms()
+      messages.error(request, 'El formulario es inválido', extra_tags='danger')
   
-  return render(request, 'componente_pieza/componente.html', {'form': form})
+  return redirect('componente')
 
 def eliminarComponente(request, id_componente):
   registro = get_object_or_404(Componente, pk= id_componente)
