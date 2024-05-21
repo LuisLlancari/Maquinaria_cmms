@@ -49,6 +49,21 @@ class Pieza(models.Model):
     def __str__(self):
         return self.pieza
     
+
+class DetalleComponente(models.Model):
+    iddetallecomponente = models.AutoField(primary_key=True)
+    idcomponente = models.ForeignKey(Componente, on_delete=models.CASCADE, verbose_name="Componente")
+    idpieza = models.ForeignKey(Pieza, on_delete=models.CASCADE, verbose_name="Pieza")
+    cantidad = models.IntegerField(verbose_name="Cantidad de Piezas")
+    estado = models.BooleanField(default=True, verbose_name="Estado")
+
+    class Meta:
+        verbose_name = "Detalles Componente"
+        verbose_name_plural = "Detalles Componentes"
+
+    def __str__(self):
+        return str(self.iddetallecomponente)
+    
     
 class ConfiguracionTipoImplemento(models.Model):
     idconfiguraciontipoimplemento = models.AutoField(primary_key=True)
