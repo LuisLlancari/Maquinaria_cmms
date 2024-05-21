@@ -33,7 +33,6 @@ class Componente(models.Model):
     
 class Pieza(models.Model):
     idpieza = models.AutoField(primary_key=True)
-    idcomponente = models.ForeignKey(Componente, on_delete=models.CASCADE, verbose_name="Componente")
     pieza = models.CharField(max_length=45, verbose_name="Pieza")
     codpieza = models.CharField(max_length=12, verbose_name="Codigo de pieza")
     cantidad_piezas = models.IntegerField(verbose_name="Cantidad de piezas", default=1)

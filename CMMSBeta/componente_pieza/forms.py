@@ -26,14 +26,10 @@ class ComponenteForms(forms.ModelForm):
         }
 
 class PiezaForms(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['idcomponente'].queryset = Componente.objects.filter(estado=True)
     class Meta:
         model = Pieza
-        fields = ['pieza', 'idcomponente', 'cantidad_piezas','codpieza', 'frecuencia_man', 'tiempovida']
+        fields = ['pieza', 'cantidad_piezas','codpieza', 'frecuencia_man', 'tiempovida']
         widgets = {
-            'idcomponente': forms.Select(attrs={'class':'form-control', 'id': 'txtComponente'}),
             'pieza': forms.TextInput(attrs={'class':'form-control', 'id': 'txtPieza'}),
             'codpieza': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCodPieza', 'min': 0}),
             'cantidad_piezas': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCantidadPiezas', 'min': 1}),
