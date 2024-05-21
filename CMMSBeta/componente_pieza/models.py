@@ -10,8 +10,7 @@ class Sistema(models.Model):
         verbose_name_plural = "Sistemas"
         ordering = ['sistema']
     def __str__(self):
-        return self.sistema
-    
+        return self.sistema  
 
 class Componente(models.Model):
     idcomponente = models.AutoField(primary_key=True)
@@ -48,7 +47,6 @@ class Pieza(models.Model):
     def __str__(self):
         return self.pieza
     
-
 class DetalleComponente(models.Model):
     iddetallecomponente = models.AutoField(primary_key=True)
     idcomponente = models.ForeignKey(Componente, on_delete=models.CASCADE, verbose_name="Componente")
@@ -83,8 +81,8 @@ class DettaleConfiguracion(models.Model):
     estado = models.BooleanField(default=True, verbose_name="Estado")
 
     class Meta:
-        verbose_name = "Detalles Componente"
-        verbose_name_plural = "Detalles Componentes"
+        verbose_name = "Detalles de Configuracion"
+        verbose_name_plural = "Detalles de configuraciones"
 
     def __str__(self):
         return str(self.iddetallecomponente)    

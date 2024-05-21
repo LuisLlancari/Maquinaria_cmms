@@ -21,80 +21,13 @@ def calculo_horas(FM, HU):
 
 
 def horasuso(request):
-
-    implementos = Implemento.objects.select_related(
-        'idtipoimplemento__idconfiguracion_implemento'
-    ).prefetch_related(
-        Prefetch(
-            'idtipoimplemento__idconfiguracion_implemento__dettaleconfiguracion_set',
-            queryset=DettaleConfiguracion.objects.select_related('idcomponente')
-        ),
-        Prefetch(
-            'idtipoimplemento__idconfiguracion_implemento__dettaleconfiguracion_set__idcomponente__pieza_set'
-        )
-    )
-
-    data = []
-
-    for implemento in implementos:
-        hora_de_uso = implemento.horasdeuso
-        frecuencia_mantenimiento = implemento.idtipoimplemento.frecuencia_man
-        
-        # Verificar que frecuencia_mantenimiento y hora_de_uso no sean None
-        if frecuencia_mantenimiento is not None and hora_de_uso is not None:
-            proximo_mantenimiento, mantenimiento_realizados = calculo_horas(frecuencia_mantenimiento, hora_de_uso)
-            
-            implemento_data = {
-                'implemento': implemento.implemento,
-                'mantenimiento_realizados': mantenimiento_realizados,
-                'proximo_mantenimiento': proximo_mantenimiento,
-                'configuracion': implemento.idtipoimplemento.idconfiguracion_implemento.nombre_configuracion,
-                'detalles': []
-            }
-            
-            configuracion = implemento.idtipoimplemento.idconfiguracion_implemento
-            detalles = configuracion.dettaleconfiguracion_set.all()
-
-            for detalle in detalles:
-                componente = detalle.idcomponente
-                frecuencia_mantenimiento = componente.frecuencia_man
-
-                # Verificar que frecuencia_mantenimiento y hora_de_uso no sean None
-                if frecuencia_mantenimiento is not None:
-                    proximo_mantenimiento, mantenimiento_realizados = calculo_horas(frecuencia_mantenimiento, hora_de_uso)
-                    
-                    detalle_data = {
-                        'componente': componente.componente,
-                        'frecuencia_mantenimiento': frecuencia_mantenimiento,
-                        'mantenimiento_realizados': mantenimiento_realizados,
-                        'proximo_mantenimiento': proximo_mantenimiento,
-                        'piezas': []
-                    }
-                    
-                    piezas = componente.pieza_set.all()
-                    for pieza in piezas:
-                        frecuencia_mantenimiento = pieza.frecuencia_man
-
-                        # Verificar que frecuencia_mantenimiento y hora_de_uso no sean None
-                        if frecuencia_mantenimiento is not None:
-                            proximo_mantenimiento, mantenimiento_realizados = calculo_horas(frecuencia_mantenimiento, hora_de_uso)
-                            
-                            pieza_data = {
-                                'pieza': pieza.pieza,
-                                'frecuencia_mantenimiento': frecuencia_mantenimiento,
-                                'mantenimiento_realizados': mantenimiento_realizados,
-                                'proximo_mantenimiento': proximo_mantenimiento
-                            }
-                            
-                            detalle_data['piezas'].append(pieza_data)
-                    
-                    implemento_data['detalles'].append(detalle_data)
-            
-            data.append(implemento_data)
     
-    context = {
-        'data': data
-    }
-  
-    return JsonResponse(context)
-    # return render(request, 'mantenimiento/horasdeuso.html' )
+    det_config = (
+        Implemento.objects.annotate(
+            configuracion=F('idtipoimplemento__idconfiguracion_implemento__nombre_configuracion')
+        ).values('configuracion').first()
+    )
+    algo = det_config[0]
+   
+    data = {'hora': algo['configuracion'], 'configuracion' : det_config}
+    return JsonResponse(data)

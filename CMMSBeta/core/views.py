@@ -133,7 +133,7 @@ def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
         idprogramacion__turno= turno,
         idprogramacion__idtractor__idusuario_id = supervisor,
         idprogramacion__idtractor__idfundo_id = idfundo
-    ).values(
+    ).values(       
         'idimplemento__implemento',
         'idimplemento__idimplemento'
     )
