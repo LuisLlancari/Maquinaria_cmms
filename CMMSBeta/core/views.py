@@ -39,7 +39,7 @@ def datos_grafico(request, fecha, supervisor, turnos):
     # Contar el número de tractores no programados
     num_tractores_no_programados = tractores_no_programados.count()
 
-    # Crear un diccionario para almacenar los resultados de los tractores no programados
+    # Crear un diccionario para almacenar los resultados
     resultado_tractores = {
         'nombre': 'Tractores no programados',
         'registros': num_tractores_no_programados
@@ -53,10 +53,10 @@ def datos_grafico(request, fecha, supervisor, turnos):
         idtractor__idusuario =supervisor
     ).values('idsolicitante').annotate(num_registros=Count('idsolicitante'))
 
-    # Crear una lista para almacenar los resultados de los solicitantes
+    # Lista para almacenar datos
     resultados_solicitantes = []
 
-    # Agregar el resultado de los tractores no programados como el primer elemento de la lista
+    # Agregamos el diccionario de tractores a la lista creada
     resultados_solicitantes.append(resultado_tractores)
 
     # Agregar los resultados de los solicitantes a la lista
@@ -71,12 +71,12 @@ def datos_grafico(request, fecha, supervisor, turnos):
         }
         resultados_solicitantes.append(resultado)
 
-    # Obtener todos los solicitantes y agregar aquellos que no tienen registros como 0
+    # Obtener todos los solicitantes 
     todos_solicitantes = Solicitante.objects.all()
     for solicitante in todos_solicitantes:
         nombre_solicitante = f"{solicitante.idpersona.nombres} {solicitante.idpersona.apellidos}"
 
-    # Devolver los resultados como una respuesta JSON
+    # Retornamos en Json
     return JsonResponse({
         'resultados_solicitantes': resultados_solicitantes
     })
@@ -90,7 +90,10 @@ def datos_tabla(request, fecha, supervisor, turno):
     print(info_fundos)
 
     # Obtener los tractores programados en la fecha y turno especificados en los fundos relacionados al usuario
-    tractores_programados = Programacion.objects.filter(idtractor__idusuario=supervisor, fechahora=fecha, turno=turno).values('idtractor__idfundo__fundo').annotate(total_tractores_programados=Count('idtractor'))
+    tractores_programados = Programacion.objects.filter(
+        idtractor__idusuario=supervisor, 
+        fechahora=fecha, turno=turno
+        ).values('idtractor__idfundo__fundo').annotate(total_tractores_programados=Count('idtractor'))
 
     # Colocamos la informacion en la lista
     resultado = []

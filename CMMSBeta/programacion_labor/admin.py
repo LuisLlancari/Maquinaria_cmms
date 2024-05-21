@@ -11,4 +11,5 @@ class TipoLaborAdmin(admin.ModelAdmin):
 
 @admin.register(DetalleLabor)
 class DetalleLaborAdmin(admin.ModelAdmin):
+    list_display=['iddetlabor', 'idimplemento', 'idprogramacion', 'horadeuso']
     pass
