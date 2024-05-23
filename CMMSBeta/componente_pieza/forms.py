@@ -1,5 +1,5 @@
 from django import forms
-from .models import Sistema, Componente, Pieza, ConfiguracionTipoImplemento, DettaleConfiguracion
+from .models import Sistema, Componente, Pieza, ConfiguracionTipoImplemento, DetalleComponente
 
 class SistemaForms(forms.ModelForm):
     class Meta:
@@ -36,3 +36,14 @@ class PiezaForms(forms.ModelForm):
             'frecuencia_man': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtFrecuenciaMan', 'min': 0}),
             'tiempovida': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtTiempovida', 'min': 0}),
         }
+
+class DetalleComponenteForms(forms.ModelForm):
+    class Meta:
+        model = DetalleComponente
+        fields = ['idcomponente', 'idpieza', 'cantidad']
+        widgets = {
+            'idcomponente': forms.Select(attrs={'class': 'form-control', 'id': 'txtComponente'}),
+            'idpieza': forms.Select(attrs={'class': 'form-control', 'id': 'txtPieza'}),
+            'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'id': 'txtPieza', 'min': 1}),
+        }  
+

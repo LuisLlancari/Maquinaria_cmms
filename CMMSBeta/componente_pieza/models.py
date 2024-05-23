@@ -83,8 +83,8 @@ class DettaleConfiguracion(models.Model):
     estado = models.BooleanField(default=True, verbose_name="Estado")
 
     class Meta:
-        verbose_name = "Detalles Componente"
-        verbose_name_plural = "Detalles Componentes"
+        verbose_name = "Detalles Configuracion"
+        verbose_name_plural = "Detalles Configuraciones"
 
     def __str__(self):
         return str(self.iddetallecomponente)    

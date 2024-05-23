@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import Componente, Sistema, Pieza, ConfiguracionTipoImplemento, DettaleConfiguracion
+from . models import Componente, Sistema, Pieza, ConfiguracionTipoImplemento, DettaleConfiguracion, DetalleComponente
 
 @admin.register(Componente)
 class componeneteAdmin(admin.ModelAdmin):
@@ -19,5 +19,9 @@ class ConfiguracionTipoImplementoAdmin(admin.ModelAdmin):
 
 @admin.register(DettaleConfiguracion)
 class DettaleConfiguracionAdmin(admin.ModelAdmin):
+  readonly_fields= ['estado']
+
+@admin.register(DetalleComponente) 
+class DetalleComponenteAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
 
