@@ -3,5 +3,79 @@
 {% block titulo %}Sistema{% endblock%}
 
 {% block contenido %}
-<h1 class="text-center mb-2">Configuraciones</h1>
+<h1 class="text-center mb-2">Creacion del nombre de los componentes</h1>
+<div class="row mt-4">
+    <div class="col md-3 mb-3">
+        <form>
+            <div class="input-group">
+                <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
+                <button class="btn btn-md btn-outline-secondary">Buscar</i></button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-3 mb-3">
+
+    </div>
+    <div class="col-md-3 mb-3">
+        {% if user.idrol.rol != "Gerencia" %}
+        <button type="button" class="btn btn-primary" id="registrar-sistema" data-bs-toggle="modal" data-bs-target="#modal-sistema">Agregar Sistema</button>
+        {% endif %}
+    </div>
+</div>
+
+<table class="table table-striped  table-sm table-bordered text-center" id="tabla-sistema">
+    <thead class="thead-dark">
+        <!-- <colgroup>
+            <col width="20%">
+            <col width="45%">
+            <col width="45%">
+        </colgroup> -->
+        <tr>
+            <th scope="col">N°</th>
+            <th scope="col">Nombre de la configuracion</th>
+            {% if user.idrol.rol != "Gerencia" %}
+            <th scope="col">Operaciones</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for dato in config %}
+     <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{dato.nombre_configuracion}}</td>
+        {% if user.idrol.rol != "Gerencia" %}
+            <td>
+                <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-sistema" data-id="{{dato.idsistema}}" data-bs-toggle="modal" data-bs-target="#modal-sistema "><i class="lni lni-pencil editar"></i></button>
+                <form action="" class="d-inline-block" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+                </form>
+            </td>
+        {% endif %}
+     </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="modal fade" id="modal-sistema" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal"></h1>
+            </div>
+                <form autocomplete="off" id="form-modal" method="POST" action="{% url 'registrar_configuracion' %}">
+                    <div class="modal-body">
+                        
+                            {% csrf_token %}
+                            {{form}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="agregar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

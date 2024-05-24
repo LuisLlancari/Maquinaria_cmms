@@ -85,18 +85,18 @@
                     </div>
                     
 
-                    <div id="piece-container" class="container mt-4">
-                        <div class="row piece">
-                            <div class="col-md-5">
-                                <label for="txtPieza" class="form-label">Seleccione la pieza</label>
-                                {{ form.idpieza }}
-                            </div>
-                            <div class="col-md-5">
-                                <label for="txtCantidad" class="form-label">Seleccione la cantidad</label>
-                                {{ form.cantidad }}
-                            </div>
-                            <div class="col-md-2 mt-2">
-                                <button type="button" class="btn btn-danger remove-piece mt-4">Eliminar</button>
+                    <div id="contenedor-pieza" class="container mt-4">
+                        <div class="container piece">
+                            <div class="row">
+                                <div class="col-md-5 mt-4">
+                                    {{ form.idpieza }}
+                                </div>
+                                <div class="col-md-5 mt-4">
+                                    {{ form.cantidad }}
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger remove-piece mt-4">Eliminar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -113,12 +113,15 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const pieceContainer = document.getElementById('piece-container');
+    const pieceContainer = document.getElementById('contenedor-pieza');
     const errorMessage = document.getElementById('error-message');
     const addPieceButton = document.querySelector('.add-piece');
 
     function addPiece() {
         const pieceClone = pieceContainer.querySelector('.piece').cloneNode(true);
+        pieceClone.querySelectorAll('select, input').forEach(input => {
+            input.value = '';
+        });
         pieceClone.querySelector('.remove-piece').addEventListener('click', removePiece);
         pieceContainer.appendChild(pieceClone);
     }
@@ -132,6 +135,12 @@ document.addEventListener('DOMContentLoaded', function() {
             errorMessage.classList.remove('d-none');
         }
     }
+    setTimeout(function() {
+            var mensaje = document.getElementById('mensaje');
+            if (mensaje) {
+                mensaje.style.display = 'none';
+            }
+        }, 5000);
 
     addPieceButton.addEventListener('click', addPiece);
 

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Sistema, Componente, Pieza, ConfiguracionTipoImplemento, DetalleComponente
+from .models import Sistema, Componente, Pieza, ConfiguracionTipoImplemento, DetalleComponente, DettaleConfiguracion
 
 class SistemaForms(forms.ModelForm):
     class Meta:
@@ -44,6 +44,22 @@ class DetalleComponenteForms(forms.ModelForm):
         widgets = {
             'idcomponente': forms.Select(attrs={'class': 'form-control', 'id': 'txtComponente'}),
             'idpieza': forms.Select(attrs={'class': 'form-control', 'id': 'txtPieza'}),
-            'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'id': 'txtPieza', 'min': 1}),
-        }  
+            'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'id': 'txtPieza', 'min': 1, 'Placeholder': 'Numero de Piezas'}),
+        }
 
+class ConfiguracionTipoImplementoForms(forms.ModelForm):
+    class Meta:
+        model = ConfiguracionTipoImplemento
+        fields = ['nombre_configuracion']
+        widgets = {
+            'nombre_configuracion': forms.TextInput(attrs={'class': 'form-control', 'id': 'txtConfiguracion'}),
+        }
+
+class DettaleConfiguracionForms(forms.ModelForm):
+    class Meta:
+        model = DettaleConfiguracion
+        fields = ['idconfiguracion', 'idcomponente']
+        widgets = {
+            'idconfiguracion': forms.Select(attrs={'class': 'form-control', 'id': 'txtConfiguracion'}),
+            'idcomponente': forms.Select(attrs={'class': 'form-control', 'id': 'txtComponente'}),
+        }
