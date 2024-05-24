@@ -21,6 +21,10 @@ def registrarDetalleComponente(request):
         piezas = request.POST.getlist('idpieza')
         cantidades = request.POST.getlist('cantidad')
 
+        print(idcomponente)
+        print(piezas)
+        print(cantidades)
+
         for idpieza, cantidad in zip(piezas, cantidades):
             if DetalleComponente.objects.filter(idcomponente_id=idcomponente, idpieza_id=idpieza).exists():
                 dato = Pieza.objects.get(pk=idpieza) 

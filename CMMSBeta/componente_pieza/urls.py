@@ -13,6 +13,7 @@ urlpatterns = [
   path('pieza/', piezas.piezas, name="pieza"),
   path('det_componente/', det_conponente.det_componente, name="det_componente"),
   path('configuracion/', configuracion.configuracion, name="configuracion"),
+  path('detalle_cong/', detalle_cong.detalle_cong, name="detalle_cong"),
 
 
   path('registrar', componentes.registrarComponente, name="componente_registro"),
@@ -35,7 +36,7 @@ urlpatterns = [
 
   path('configuracion/registrar', configuracion.registrarConfiguracion, name="registrar_configuracion"),
 
-  path('detalle_cong/', detalle_cong.detalle_cong, name="detalle_cong"),
+  path('detalle_cong/registrar', detalle_cong.registrarDetalleConfiguracion, name="detalle_cong_registro"),
 
 
 
