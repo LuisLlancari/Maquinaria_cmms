@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'tractor',
     'localizacion',
     'fundo_cultivo',
-    'implemento',
+    'implemento.apps.ImplementoConfig',
     'componente_pieza',
     'operarios',
     'programacion_labor',

@@ -1,8 +1,10 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db.models import F
 from localizacion.models import Area
 from ceco.models import Ceco
-
-from componente_pieza.models import ConfiguracionTipoImplemento
+from componente_pieza.models import ConfiguracionTipoImplemento, Componente, Pieza
 from usuario.models import Usuario
 
 class TipoImplemento(models.Model):
@@ -40,11 +42,22 @@ class Implemento(models.Model):
         ordering = ['implemento', 'idtipoimplemento',]
     def __str__(self):
         return self.implemento
+    
+
 
 class DetImplementos(models.Model):
     iddetalleimplemento = models.AutoField(primary_key=True)
     idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
-    #idcomponente = models.ForeignKey(Componente, on_delete=models.SET_DEFAULT, default=None, verbose_name="Componente")
+    MRimplemento =  models.IntegerField(verbose_name="Mantenimientos realizados al implemento", default=0)
+    idcomponente = models.ForeignKey(Componente, on_delete=models.SET_DEFAULT, default=None, verbose_name="Componente")
+    MRcomponente = models.IntegerField(verbose_name="Mantenimientos realizados al componente", default=0)
+    HUcomponente = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Horas de uso del componente", default=0)
+    CRcomponente = models.IntegerField(verbose_name="Cambios realizados al componente", default=0)
+    idpieza = models.ForeignKey(Pieza, on_delete=models.SET_DEFAULT, default=None, verbose_name="Pieza")
+    cantidadpieza = models.IntegerField(verbose_name="Cantidad de piezas", default=0)
+    MRpieza = models.IntegerField(verbose_name="Mantenimientos realizados a la pieza",default=0)
+    HUpieza = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Horas de uso de la pieza", default=0)
+    CRpieza = models.IntegerField(verbose_name="Cambios realizados a la pieza", default=0)
     estado = models.BooleanField(default=True, verbose_name="Estado")
 
 
