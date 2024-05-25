@@ -32,6 +32,7 @@ urlpatterns = [
     path('programacion/', include('programacion_labor.urls')),
     path('tractor/', include('tractor.urls')),
     path('localizacion/', include('localizacion.urls')),
+    path('mantenimiento/', include('mantenimiento.urls')),
 
     # Importamos las vistas del login y logout
     path('login',usuario_views.login_user, name="login"),

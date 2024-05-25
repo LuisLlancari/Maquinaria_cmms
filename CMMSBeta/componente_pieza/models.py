@@ -10,8 +10,7 @@ class Sistema(models.Model):
         verbose_name_plural = "Sistemas"
         ordering = ['sistema']
     def __str__(self):
-        return self.sistema
-    
+        return self.sistema  
 
 class Componente(models.Model):
     idcomponente = models.AutoField(primary_key=True)
@@ -36,8 +35,8 @@ class Pieza(models.Model):
     pieza = models.CharField(max_length=45, verbose_name="Pieza")
     codpieza = models.CharField(max_length=12, verbose_name="Codigo de pieza")
     cantidad_piezas = models.IntegerField(verbose_name="Cantidad de piezas", default=1)
-    frecuencia_man = models.IntegerField(verbose_name="Frecuencia de mantenimiento de pieza")
-    tiempovida = models.IntegerField(verbose_name="Tiempo de vida de la pieza")
+    frecuencia_man = models.IntegerField(verbose_name="Frecuencia de mantenimiento")
+    tiempovida = models.IntegerField(verbose_name="Tiempo de vida")
     estado = models.BooleanField(default=True, verbose_name="Estado")
     creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     actualizado_en = models.DateField(auto_now=True, verbose_name="Fecha de edición")
@@ -48,7 +47,6 @@ class Pieza(models.Model):
     def __str__(self):
         return self.pieza
     
-
 class DetalleComponente(models.Model):
     iddetallecomponente = models.AutoField(primary_key=True)
     idcomponente = models.ForeignKey(Componente, on_delete=models.CASCADE, verbose_name="Componente")
@@ -83,8 +81,8 @@ class DettaleConfiguracion(models.Model):
     estado = models.BooleanField(default=True, verbose_name="Estado")
 
     class Meta:
-        verbose_name = "Detalles Configuracion"
-        verbose_name_plural = "Detalles Configuraciones"
+        verbose_name = "Detalles de Configuracion"
+        verbose_name_plural = "Detalles de configuraciones"
 
     def __str__(self):
         return str(self.iddetallecomponente)    

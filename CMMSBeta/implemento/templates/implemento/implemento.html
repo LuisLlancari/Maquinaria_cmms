@@ -52,7 +52,7 @@
 
             <tr>
                 <td>{{dato.idarea}}</td>
-                <td>{{dato.idtipoimplemento}}</td>
+                <td>{{dato.idtipoimplemento.tii}}</td>
                 <td>{{dato.implemento}}</td>
                 <td>{{dato.tiempovida}}</td>
                 <td>{{dato.horasdeuso}}</td>
@@ -61,7 +61,7 @@
                 <td>{{dato.idusuario.first_name}}</td>
                 {% if user.idrol.rol == "Admin" %}
                 <td>
-                    <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento"><i class="lni lni-pencil editar"></i></button>
+                    <button class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento"><i class="lni lni-pencil editar"></i></button>
                     <form action="{% url 'eliminar_implemento' dato.idimplemento %}" class="d-inline-block" method="POST">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>

@@ -86,7 +86,7 @@
                     <div class="modal-body">
                             {% csrf_token %}
                             <label for="txtUsuario" class="form-label">Supervisor a cargo:</label>
-                            <select class="form-select mb-3" name="usuario" id="txtUsuario">
+                            <select class="form-select mb-3" name="usuario" id="txtUsuario" required>
                                 <option selected>Seleccione: </option>
                                 {% for usuario in datos_usuarios %}
                                 <option value="{{usuario.id}}">{{usuario.first_name}} {{usuario.last_name}}</option>

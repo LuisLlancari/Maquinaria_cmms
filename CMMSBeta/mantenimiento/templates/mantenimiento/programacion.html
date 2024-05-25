@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %} 
+
+{% block titulo %}Programación mantenimiento{% endblock%} 
+
+{%block contenido %}
+<h1 class="text-center">Programación de los Mantenimientos</h1>
+<table class="table table-striped table-sm table-bordered text-center table-responsive mt-3" id="tabla-implemento" >
+  <thead class="thead-dark">
+    <tr>
+      <th>Implemento</th>
+      <th>Tipo Implemento</th>
+      <th>Codigo</th>
+      <!-- <th>Tiempo Vida</th> -->
+      <th>Horas de uso</th>
+      <th>F M</th>
+      <th>estado</th>
+      <th>Fecha Asignada</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for dato in datos %}
+    <tr>
+      <td>{{dato.idimplemento.implemento}}</td>
+      <td>{{dato.idimplemento.idtipoimplemento.tipoimplemento}}</td>
+      <td>{{dato.idimplemento.codimplemento}}</td>
+      <!-- <td>{{dato.idimplemento.idtipoimplemento.tiempo_vida}}</td> -->
+      <td>{{dato.idimplemento.horasdeuso}}</td>
+      <td>{{dato.idimplemento.idtipoimplemento.frecuencia_man}}</td>
+      <td>pendiente</td>
+      {% if dato.fechaprogramacion %}
+      <td>{{dato.fechaprogramacion}}</td>
+      {% else %}
+      <td>
+        <button class="btn btn-warning editar d-inline-block" id="registrar-fecha" data-id="{{dato.idimplemento.idimplemento}}" data-bs-toggle="modal" data-bs-target="#registro_fecha" >Programar Fecha</button>
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor%}
+  </tbody>
+</table>
+
+<div class="modal fade" id="registro_fecha" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-primary justify-content-center">
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Fecha</h1>
+      </div>
+
+      <form autocomplete="off" id="form-modal" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <label for="" class="form-label">Fecha de la programación</label>
+          <input type="date" name="fecha_programacion" id="fecha" class="form-control" required>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button>
+          <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const today = new Date().toISOString().split('T')[0];
+    const fecha = document.getElementById('fecha');
+    const btnRegistrarFecha = document.getElementById('registrar-fecha');
+    const formModal = document.getElementById("form-modal")
+
+    
+    fecha.setAttribute('min', today);
+
+    btnRegistrarFecha.addEventListener('click', function (event){
+      let id_implemento = event.currentTarget .dataset.id;
+      console.log(id_implemento)
+      formModal.setAttribute("action", `./programacion/registrar_fecha/${id_implemento}`)
+
+    })
+
+  })
+</script>
+
+{% endblock %}
