@@ -1,7 +1,148 @@
 {% extends 'core/base.html' %}
 
-{% block titulo %}Sistema{% endblock%}
+{% block titulo %}Asignacion de componente{% endblock %}
 
 {% block contenido %}
-<h1 class="text-center mb-2">Detalle de la configuracion</h1>
+<h1 class="text-center mb-2">Asignacion de componentes a la Configuracion</h1>
+<div class="row mt-4">
+    <div class="col md-3 mb-3">
+        <form>
+            <div class="input-group">
+                <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
+                <button class="btn btn-md btn-outline-secondary">Buscar</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-3 mb-3"></div>
+    <div class="col-md-3 mb-3">
+        {% if user.idrol.rol != "Gerencia" %}
+        <button type="button" class="btn btn-primary" id="registrar-componente" data-bs-toggle="modal" data-bs-target="#modal-componente">Asignar Componentes</button>
+        {% endif %}
+    </div>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+    <div id="mensaje" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+{% endif %}
+
+<table class="table table-striped  table-sm table-bordered text-center" id="tabla-componente">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Configuracion</th>
+            <th scope="col">Componentes</th>
+            {% if user.idrol.rol != "Gerencia" %}
+            <th scope="col">Operaciones</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for dato in lista_cong %}
+        <tr>
+            <td>{{ dato.idconfiguracion }}</td>
+            <td>{{ dato.idcomponente }}</td>
+            {% if user.idrol.rol != "Gerencia" %}
+            <td>
+                <button class="btn btn-warning editar d-inline-block" id="editar-sistema" data-id="{{ dato.idpieza }}" data-bs-toggle="modal" data-bs-target="#modal-componente">Editar</button>
+                <form action="" class="d-inline-block" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-danger eliminar"><i class="lni lni-trash-can eliminar"></i></button>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="modal fade" id="modal-componente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center">
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal">ASIGNACION DE PIEZAS A COMPONENTE</h1>
+            </div>
+            <form autocomplete="off" id="form-modal" method="POST" action="{% url 'detalle_cong_registro' %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="txtComponente" class="form-label">Seleccione el componente</label>
+                                {{ form.idconfiguracion }}
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1 class="mb-0">Seleccione los componentes</h1>
+                        <button type="button" class="btn btn-primary add-piece">Agregar</button>
+                    </div>
+                    
+
+                    <div id="contenedor-pieza" class="container mt-4">
+                        <div class="container piece">
+                            <div class="row">
+                                <div class="col-md-5 mt-4">
+                                    {{ form.idcomponente }}
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger remove-piece mt-4">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span id="error-message" class="text-danger d-none">El mínimo de contenedores es uno.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="agregar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                    <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const pieceContainer = document.getElementById('contenedor-pieza');
+        const errorMessage = document.getElementById('error-message');
+        const addPieceButton = document.querySelector('.add-piece');
+    
+        function addPiece() {
+            const pieceClone = pieceContainer.querySelector('.piece').cloneNode(true);
+            pieceClone.querySelectorAll('select, input').forEach(input => {
+                input.value = '';
+            });
+            pieceClone.querySelector('.remove-piece').addEventListener('click', removePiece);
+            pieceContainer.appendChild(pieceClone);
+        }
+    
+        function removePiece(event) {
+            const pieces = pieceContainer.querySelectorAll('.piece');
+            if (pieces.length > 1) {
+                event.target.closest('.piece').remove();
+                errorMessage.classList.add('d-none');
+            } else {
+                errorMessage.classList.remove('d-none');
+            }
+        }
+        setTimeout(function() {
+                var mensaje = document.getElementById('mensaje');
+                if (mensaje) {
+                    mensaje.style.display = 'none';
+                }
+            }, 5000);
+    
+        addPieceButton.addEventListener('click', addPiece);
+    
+        document.querySelectorAll('.remove-piece').forEach(button => {
+            button.addEventListener('click', removePiece);
+        });
+    });
+    </script>
+
 {% endblock %}

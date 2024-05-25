@@ -230,16 +230,16 @@
                     </a>
                     <ul id="componente" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="{% url 'componente' %}" class="sidebar-link">Componentes</a>
+                            <a href="{% url 'sistema' %}" class="sidebar-link">Sistemas</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'sistema' %}" class="sidebar-link">Sistemas</a>
+                            <a href="{% url 'componente' %}" class="sidebar-link">Componentes</a>
                         </li>
                         <li class="sidebar-item">
                             <a href="{% url 'pieza' %}" class="sidebar-link">Piezas</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'det_conponente' %}" class="sidebar-link">Asignacion Componente</a>
+                            <a href="{% url 'det_componente' %}" class="sidebar-link">Asignacion Componente</a>
                         </li>
                         <li class="sidebar-item">
                             <a href="{% url 'detalle_cong' %}" class="sidebar-link">Detalle configuracion</a>
@@ -251,24 +251,6 @@
                 </li>
 
 
-                {% endif %}
-
-                {% if user.idrol.rol == "Admin" %}
-                    <li class="sidebar-item">
-                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#componente" aria-expanded="false" aria-controls="componente">
-                            <i class="lni lni-cogs"></i>
-                            <span>Componentes</span>
-                        </a>
-                        <ul id="componente" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                            <li class="sidebar-item">
-                                <a href="{% url 'componente' %}" class="sidebar-link">Componentes</a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="{% url 'sistema' %}" class="sidebar-link">Sistema</a>
-                            </li>
-                        </ul>
-                    </li>
                 {% endif %}
 
                 {% if user.idrol.rol == "Admin" %}

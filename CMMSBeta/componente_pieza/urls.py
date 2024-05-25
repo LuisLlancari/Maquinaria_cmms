@@ -11,6 +11,9 @@ urlpatterns = [
   path('', componentes.componente, name="componente"),
   path('sistema/', sistema.sistema, name="sistema"),
   path('pieza/', piezas.piezas, name="pieza"),
+  path('det_componente/', det_conponente.det_componente, name="det_componente"),
+  path('configuracion/', configuracion.configuracion, name="configuracion"),
+  path('detalle_cong/', detalle_cong.detalle_cong, name="detalle_cong"),
 
 
   path('registrar', componentes.registrarComponente, name="componente_registro"),
@@ -29,9 +32,11 @@ urlpatterns = [
   path('pieza/obtener/<int:id_pieza>', piezas.obtenerDatos, name="obtener_pieza"),
   path('pieza/modificar/<int:id_pieza>', piezas.editarPieza, name="modificar_pieza"),
 
-  path('configuracion/', configuracion.configuracion, name="configuracion"),
-  path('det_conponente/', det_conponente.det_componente, name="det_conponente"),
-  path('detalle_cong/', detalle_cong.detalle_cong, name="detalle_cong"),
+  path('det_componente/registrar', det_conponente.registrarDetalleComponente, name="det_componente_registro"),
+
+  path('configuracion/registrar', configuracion.registrarConfiguracion, name="registrar_configuracion"),
+
+  path('detalle_cong/registrar', detalle_cong.registrarDetalleConfiguracion, name="detalle_cong_registro"),
 
 
 

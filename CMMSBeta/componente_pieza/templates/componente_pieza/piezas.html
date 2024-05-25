@@ -35,7 +35,6 @@
 <table class="table table-striped  table-sm table-bordered text-center" id="tabla-componente">
     <thead class="thead-dark">
         <tr>
-            <th scope="col">Componente</th>
             <th scope="col">Pieza</th>
             <th scope="col">Codigo Pieza</th>
             <th scope="col">Cantidad de Piezas</th>
@@ -48,7 +47,6 @@
     </thead>
     <tbody>
     {% for dato in datos_piezas %}
-        <td>{{dato.idcomponente}}</td>
         <td>{{dato.pieza}}</td>
         <td>{{dato.codpieza}}</td>
         <td>{{dato.cantidad_piezas}}</td>
@@ -78,11 +76,6 @@
                 <form autocomplete="off" id="form-modal">
                     <div class="modal-body">
                         {% csrf_token %}    
-
-                        <div class="col col-md-4">
-                            <label for="txtSistema" class="form-label">Componente:</label>
-                            {{form.idcomponente}}
-                        </div>
                         <div class="row mt-2">
                             <div class="col col-md-4">
                                 <label for="txtComponente" class="form-label">Pieza:</label>
