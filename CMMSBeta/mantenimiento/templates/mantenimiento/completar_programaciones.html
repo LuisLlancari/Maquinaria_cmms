@@ -8,17 +8,153 @@
   <h1> FILTROS</h1>
 </div>
 <div class="container">
-  <div class="row">
-    <div class="card border-success mb-3" style="max-width: 18rem;">
-      <div class="card-header bg-transparent border-success">Header</div>
-      <div class="card-body text-success">
-        <h5 class="card-title">Success card title</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  <div class="row" id="cards-mantenimiento">
+    <div class="col col-md-3">
+      <div class="card border-success mb-3" style="max-width: 18rem;">
+        <div class="card-header bg-transparent border-success text-center">Matenimiento 3</div>
+        <div class="card-body text-success">
+          <h5 class="card-title">Success card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+        <div class="card-footer bg-transparent border-success">Footer</div>
       </div>
-      <div class="card-footer bg-transparent border-success">Footer</div>
+    </div>
+    <div class="col col-md-3">
+      <div class="card border-success mb-3" style="max-width: 18rem;">
+        <div class="card-header bg-transparent border-success text-center">Matenimiento 3</div>
+          <div class="card-body text-success">
+              <h5 class="card-text text-center fw-bold"></h5>
+              <p class="card-text text-success m-0 fs-5" ><strong>Implemento:</strong></p>
+              <p class="card-text text-success m-0 fs-5" ><strong>Codigo:</strong></p>
+              <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong></p>
+             <p class="card-text text-success m-0 fs-5"></p>
+          </div>
+        <div class="card-footer bg-transparent border-success">Footer</div>
+      </div>
+    </div>
+  
+  </div>
+</div>
+
+<div class="modal fade" id="registro_fecha" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-primary justify-content-center">
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Fecha</h1>
+      </div>
+
+      <form autocomplete="off" id="form-modal" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <label for="" class="form-label">Fecha de la programación</label>
+          <input type="date" name="fecha_programacion" id="fecha" class="form-control" required>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button>
+          <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
+        </div>
+      </form>
+
     </div>
   </div>
-
 </div>
+
+<div class="modal fade" id="registro_fecha" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-primary justify-content-center">
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Fecha</h1>
+      </div>
+
+      <form autocomplete="off" id="form-modal" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <label for="" class="form-label">Fecha de la programación</label>
+          <input type="date" name="fecha_programacion" id="fecha" class="form-control" required>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button>
+          <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="registro_diagnostico" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-primary justify-content-center">
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Diagnostico</h1>
+      </div>
+
+      <form autocomplete="off" id="form-modal" method="POST">
+        {% csrf_token %}
+      
+        <div class="modal-footer">
+          <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button>
+          <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+
+    const cards = document.getElementById('cards-mantenimiento')
+
+    function obtenerMantenimientos(){
+        fetch(`./completar_programacion/datos_mantenimiento`)
+        .then(res => res.json())
+        .then(datos => {
+            console.log(datos);    
+            let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.idmantenimiento == 2);
+            console.log(datos_filtrados)
+            renderizarMantenimientos(datos_filtrados);   
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
+    function renderizarMantenimientos(datos) {
+      cards.innerHTML = '';
+
+      datos.forEach(mantenimiento => {
+        // Verificar si fecha_programada es null
+        let fechaProgramacion = mantenimiento.fechaingreso ? 
+          `<strong>Fecha Programacion:</strong>${mantenimiento.fechaingreso}` :
+          '<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Asignar</button>';
+
+        let nuevacard = `
+        <div class="col col-md-3">
+          <div class="card border-success mb-3" style="max-width: 18rem;">
+            <div class="card-header bg-transparent border-success text-center">Mantenimiento ${mantenimiento.idmantenimiento}</div>
+              <div class="card-body text-success">
+                <h5 class="card-text text-center fw-bold"></h5>
+                <p class="card-text text-success m-0 fs-5"><strong>Implemento:</strong>${mantenimiento.implemento}</p>
+                <p class="card-text text-success m-0 fs-5"><strong>Codigo:</strong>${mantenimiento.cod_implemento}</p>
+                <p class="card-text text-success m-0 fs-5"><strong>Codigo:</strong>${mantenimiento.cod_implemento}</p>
+                <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong>${mantenimiento.fecha_programada }</p>
+                <p class="card-text text-success m-0 fs-5">${fechaProgramacion}</p>
+                <p class="card-text text-success m-0 fs-5"></p>
+              </div>
+            <div class="card-footer bg-transparent border-success">Footer</div>
+          </div>
+        </div>
+        `;
+        cards.innerHTML += nuevacard;
+      }); 
+    }
+    obtenerMantenimientos();
+
+  }); // Fin del DOM
+</script>
 
 {% endblock%}

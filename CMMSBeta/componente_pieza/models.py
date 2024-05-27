@@ -34,7 +34,6 @@ class Pieza(models.Model):
     idpieza = models.AutoField(primary_key=True)
     pieza = models.CharField(max_length=45, verbose_name="Pieza")
     codpieza = models.CharField(max_length=12, verbose_name="Codigo de pieza")
-    cantidad_piezas = models.IntegerField(verbose_name="Cantidad de piezas", default=1)
     frecuencia_man = models.IntegerField(verbose_name="Frecuencia de mantenimiento")
     tiempovida = models.IntegerField(verbose_name="Tiempo de vida")
     estado = models.BooleanField(default=True, verbose_name="Estado")

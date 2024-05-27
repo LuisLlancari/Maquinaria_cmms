@@ -12,7 +12,7 @@ class sistemaAdmin(admin.ModelAdmin):
 
 @admin.register(Pieza)
 class piezaAdmin(admin.ModelAdmin):
-  list_display = [ 'pieza', 'cantidad_piezas', 'frecuencia_man', 'tiempovida']
+  list_display = [ 'pieza', 'frecuencia_man', 'tiempovida']
   readonly_fields= ['estado']
 
 @admin.register(ConfiguracionTipoImplemento)

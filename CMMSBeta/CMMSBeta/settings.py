@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'operarios',
     'programacion_labor',
     'ceco',
-    'mantenimiento',
+    'mantenimiento.apps.MantenimientoConfig',
 
 ]
 
