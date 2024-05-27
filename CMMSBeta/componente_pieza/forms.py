@@ -1,5 +1,5 @@
 from django import forms
-from .models import Sistema, Componente, Pieza, ConfiguracionTipoImplemento, DetalleComponente, DettaleConfiguracion
+from .models import Sistema, Componente, Pieza, ConfiguracionTipoImplemento, DetalleComponente, DetalleConfiguracion
 
 class SistemaForms(forms.ModelForm):
     class Meta:
@@ -28,11 +28,10 @@ class ComponenteForms(forms.ModelForm):
 class PiezaForms(forms.ModelForm):
     class Meta:
         model = Pieza
-        fields = ['pieza', 'cantidad_piezas','codpieza', 'frecuencia_man', 'tiempovida']
+        fields = ['pieza','codpieza', 'frecuencia_man', 'tiempovida']
         widgets = {
             'pieza': forms.TextInput(attrs={'class':'form-control', 'id': 'txtPieza'}),
             'codpieza': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCodPieza', 'min': 0}),
-            'cantidad_piezas': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCantidadPiezas', 'min': 1}),
             'frecuencia_man': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtFrecuenciaMan', 'min': 0}),
             'tiempovida': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtTiempovida', 'min': 0}),
         }
@@ -57,7 +56,7 @@ class ConfiguracionTipoImplementoForms(forms.ModelForm):
 
 class DettaleConfiguracionForms(forms.ModelForm):
     class Meta:
-        model = DettaleConfiguracion
+        model = DetalleConfiguracion
         fields = ['idconfiguracion', 'idcomponente']
         widgets = {
             'idconfiguracion': forms.Select(attrs={'class': 'form-control', 'id': 'txtConfiguracion'}),

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import Componente, Sistema, Pieza, ConfiguracionTipoImplemento, DettaleConfiguracion, DetalleComponente
+from . models import Componente, Sistema, Pieza, ConfiguracionTipoImplemento, DetalleConfiguracion, DetalleComponente
 
 @admin.register(Componente)
 class componeneteAdmin(admin.ModelAdmin):
@@ -12,14 +12,14 @@ class sistemaAdmin(admin.ModelAdmin):
 
 @admin.register(Pieza)
 class piezaAdmin(admin.ModelAdmin):
-  list_display = [ 'pieza', 'cantidad_piezas', 'frecuencia_man', 'tiempovida']
+  list_display = [ 'pieza', 'frecuencia_man', 'tiempovida']
   readonly_fields= ['estado']
 
 @admin.register(ConfiguracionTipoImplemento)
 class ConfiguracionTipoImplementoAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
 
-@admin.register(DettaleConfiguracion)
+@admin.register(DetalleConfiguracion)
 class DettaleConfiguracionAdmin(admin.ModelAdmin):
   list_display= ['iddetallecomponente','idconfiguracion','idcomponente']
   readonly_fields= ['estado']

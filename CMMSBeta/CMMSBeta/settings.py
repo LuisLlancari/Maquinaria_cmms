@@ -91,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'maquinaria_cmms',
         'USER': 'root',
-        'PASSWORD': 'admin123',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
     }

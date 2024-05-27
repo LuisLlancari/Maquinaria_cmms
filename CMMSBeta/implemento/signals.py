@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.db.models import F
 from .models import Implemento, DetImplementos
 from mantenimiento.models import Mantenimiento, ProgramacionMantenimiento 
-from componente_pieza.models import DetalleComponente, DettaleConfiguracion, Componente, Pieza
+from componente_pieza.models import DetalleComponente, DetalleConfiguracion, Componente, Pieza
 
 @receiver(post_save, sender =Implemento)
 def creacionDetalleImplemento(sender, instance, created, **kwargs):
@@ -21,7 +21,7 @@ def creacionDetalleImplemento(sender, instance, created, **kwargs):
         id_configuracion = config['idconfiguracion']
 
         # Obtener los componentes relacionados con la configuración
-        det_comp = DettaleConfiguracion.objects.filter(idconfiguracion=id_configuracion).values('idcomponente')
+        det_comp = DetalleConfiguracion.objects.filter(idconfiguracion=id_configuracion).values('idcomponente')
 
         for componente in det_comp:
             id_componente = componente['idcomponente']
