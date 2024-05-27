@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             name='Mantenimiento',
             fields=[
                 ('idmantenimiento', models.AutoField(primary_key=True, serialize=False)),
-                ('tipomantenimiento', models.CharField(max_length=45, verbose_name='Tipo mantenimiento')),
+                ('tipomantenimiento', models.CharField(choices=[('preventivo', 'Preventivo'), ('correctivo', 'Correctvo')], max_length=45, verbose_name='Tipo mantenimiento')),
                 ('fechaingreso', models.DateField(verbose_name='Fecha Ingreso')),
                 ('fechasalida', models.DateField(verbose_name='Fecha Fecha Salida')),
                 ('descripcion', models.CharField(max_length=45, verbose_name='Descripcion')),

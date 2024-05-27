@@ -63,7 +63,7 @@ def creacion_programacion(FM, HU, id_implemento):
 
 
 @receiver(pre_save, sender=Implemento)
-def implemento_post_save(sender, instance, **kwargs):
+def verificar_horasdeuso(sender, instance, **kwargs):
    if instance.pk:
     old_instance = Implemento.objects.get(pk = instance.pk)
     if old_instance.horasdeuso != instance.horasdeuso:  
