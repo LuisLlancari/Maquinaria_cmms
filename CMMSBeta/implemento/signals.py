@@ -54,12 +54,12 @@ def creacion_programacion(FM, HU, id_implemento):
     if HU < FM:
         FM -= 50
         if HU >= FM:
-            ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento)
+            ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento, tipomantenimiento = 1)
     else:
         FM -= 50
         residuo_horauso = HU % FM
         if residuo_horauso >= FM:
-            ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento)
+            ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento, tipomantenimiento = 1)
 
 
 @receiver(pre_save, sender=Implemento)
