@@ -7,5 +7,6 @@ urlpatterns = [
 
   path('completar_programacion', mantenimiento.mantenimientos_realizados, name= "mantenimiento_realizados" ),
   path('completar_programacion/datos_mantenimiento', mantenimiento.datos_mantenimiento, name= "datos_matenimiento" ),
+  path('completar_programacion/registrar_ingreso/<int:id_mantenimiento>', mantenimiento.registrar_ingreso, name= "registrar_ingreso" ),
 
 ]

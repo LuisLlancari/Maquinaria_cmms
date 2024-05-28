@@ -4,96 +4,104 @@
 
 {%block contenido %}
 <h1 class="text-center"> Estado de los mantenimientos</h1>
-<div class="conatiner">
-  <h1> FILTROS</h1>
+<div class="conatiner mb-3">
+  <div class="row">
+    <div class="col col-md-4">
+      <label for="" class="form-label">Seleccione Fecha:</label>
+      <input type="date" class="form-control">
+    </div>
+  </div>
 </div>
+<div class="container mb-3">
+  <div class="row">
+    <div class="col col-md-4 d-grid">
+        <button type="button" class="btn btn-warning btn btn-block" id="btnPendiente">Pendiente</button>
+    </div>
+    <div class="col col-md-4 d-grid">
+        <button type="button" class="btn btn-success btn btn-block" id="btnProceso">En proceso</button>
+    </div>
+    <div class="col col-md-4 d-grid">
+        <button type="button" class="btn btn-secondary btn btn-block" id="btnCompletados">Completados</button>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <div class="row" id="cards-mantenimiento">
-    <div class="col col-md-3">
-      <div class="card border-success mb-3" style="max-width: 18rem;">
-        <div class="card-header bg-transparent border-success text-center">Matenimiento 3</div>
-        <div class="card-body text-success">
-          <h5 class="card-title">Success card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        </div>
-        <div class="card-footer bg-transparent border-success">Footer</div>
-      </div>
-    </div>
-    <div class="col col-md-3">
-      <div class="card border-success mb-3" style="max-width: 18rem;">
-        <div class="card-header bg-transparent border-success text-center">Matenimiento 3</div>
-          <div class="card-body text-success">
-              <h5 class="card-text text-center fw-bold"></h5>
-              <p class="card-text text-success m-0 fs-5" ><strong>Implemento:</strong></p>
-              <p class="card-text text-success m-0 fs-5" ><strong>Codigo:</strong></p>
-              <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong></p>
-             <p class="card-text text-success m-0 fs-5"></p>
-          </div>
-        <div class="card-footer bg-transparent border-success">Footer</div>
-      </div>
-    </div>
-  
+
   </div>
 </div>
 
-<div class="modal fade" id="registro_fecha" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-header bg-primary justify-content-center">
-        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Fecha</h1>
-      </div>
-
-      <form autocomplete="off" id="form-modal" method="POST">
-        {% csrf_token %}
-        <div class="modal-body">
-          <label for="" class="form-label">Fecha de la programación</label>
-          <input type="date" name="fecha_programacion" id="fecha" class="form-control" required>
-
-        </div>
-        <div class="modal-footer">
-          <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button>
-          <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
-        </div>
-      </form>
-
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="registro_fecha" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-header bg-primary justify-content-center">
-        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Fecha</h1>
-      </div>
-
-      <form autocomplete="off" id="form-modal" method="POST">
-        {% csrf_token %}
-        <div class="modal-body">
-          <label for="" class="form-label">Fecha de la programación</label>
-          <input type="date" name="fecha_programacion" id="fecha" class="form-control" required>
-
-        </div>
-        <div class="modal-footer">
-          <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button>
-          <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
-        </div>
-      </form>
-
-    </div>
-  </div>
-</div>
 
 <div class="modal fade" id="registro_diagnostico" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
-  <div class="modal-dialog modal-md">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-primary justify-content-center">
         <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Diagnostico</h1>
       </div>
 
-      <form autocomplete="off" id="form-modal" method="POST">
+      <form autocomplete="off" id="form-xl" method="POST">
         {% csrf_token %}
-      
+        <div class="modal-body">
+          <div class="row">
+            <div class="col col-md-6">
+              <label for="fecha-salida" class="forml-label">Fecha de Salida:</label>
+              <input type="date" name="fecha-salida" id="fecha-salida" class="form-control mt-2"> 
+            </div>
+            <div class="col col-md-6">
+              <label for="encargado" class="form-label">Encargado:</label>
+              <select name="encargado" id="encargado" class="form-select">
+                <option value="">Seleccione:</option>
+              </select>
+            </div>
+          </div>
+          <h1 class="text-center" > Acciones</h1>
+          <div class="container" id="contenedor-tareas">
+            <button type="button" class="btn btn-success " id="agregar-tarea">agregar acciones</button>
+            <div class="container tarea">
+              <div class="row mt-2">
+                <div class="col col-md-10">
+                  <select name="" id="" class="form-select">
+                    <option value="">Accion 1 </option>
+                    <option value="">Accion 2</option>
+                    <option value="">Accion 3</option>
+                    <option value="">Accion 4</option>
+                  </select>
+                </div>
+                <div class="col col-md-2">
+                  <div class="col-md-2">
+                    <button type="button" class="btn btn-danger remove-piece">Eliminar</button>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+
+          <h1 class="text-center mb-0">Recambios</h1>
+          <div class="container" id="contenedor-componentes">
+            <button type="button" class="btn btn-success" id="agregar-item">agregar item</button>
+            <div class="container componente">
+              <div class="row mt-2">
+                <div class="col col-md-10">
+                  <select name="" id="" class="form-select">
+                    <option value="">Accion 1 </option>
+                    <option value="">Accion 2</option>
+                    <option value="">Accion 3</option>
+                    <option value="">Accion 4</option>
+                  </select>
+                </div>
+                <div class="col col-md-2">
+                  <button type="button" class="btn btn-danger remove-piece">Eliminar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span id="error-message" class="text-danger d-none">El mínimo de contenedores es uno.</span>
+    
+
+        </div>
         <div class="modal-footer">
           <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button>
           <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
@@ -108,19 +116,84 @@
   document.addEventListener('DOMContentLoaded', function(){
 
     const cards = document.getElementById('cards-mantenimiento')
+    const contenedorComponente = document.getElementById('contenedor-componentes')
+    const contenedorTareas = document.getElementById('contenedor-tareas')
+    const errorMessage = document.getElementById('error-message');
+    const btnAgregarItem = document.getElementById('agregar-item')
+    const btnAgregarTarea = document.getElementById('agregar-tarea')
+    var CSRF_TOKEN = '{{ csrf_token }}';
+
+    btnAgregarItem.addEventListener('click', agregarComponente)
+    btnAgregarTarea.addEventListener('click', agregarTarea)
+
+    function agregarTarea(){
+      const tareaClon = contenedorTareas.querySelector('.tarea').cloneNode(true);
+      tareaClon.querySelectorAll('select, input').forEach(input => {
+          input.value = '';
+      });
+      tareaClon.querySelector('.remove-piece').addEventListener('click', removerTarea);
+      contenedorTareas.appendChild(tareaClon)
+    }
+
+    function removerTarea(){
+      const tareas = contenedorTareas.querySelectorAll('.tarea');
+        if (tareas.length > 1) {
+            event.target.closest('.tarea').remove();
+            errorMessage.classList.add('d-none');
+        } else {
+            errorMessage.classList.remove('d-none');
+        }
+    }
+
+    function agregarComponente(){
+      const componenteclon = contenedorComponente.querySelector('.componente').cloneNode(true);
+      componenteclon.querySelectorAll('select, input').forEach(input => {
+              input.value = '';
+          });
+      componenteclon.querySelector('.remove-piece').addEventListener('click', removerItem);
+      contenedorComponente.appendChild(componenteclon)
+    }
+    
+    function removerItem(event) {
+        const componentes = contenedorComponente.querySelectorAll('.componente');
+        if (componentes.length > 1) {
+            event.target.closest('.componente').remove();
+            errorMessage.classList.add('d-none');
+        } else {
+            errorMessage.classList.remove('d-none');
+        }
+    }
+
 
     function obtenerMantenimientos(){
         fetch(`./completar_programacion/datos_mantenimiento`)
         .then(res => res.json())
         .then(datos => {
-            console.log(datos);    
+            // console.log(datos);    
             let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.idmantenimiento == 2);
-            console.log(datos_filtrados)
+            // console.log(datos_filtrados)
             renderizarMantenimientos(datos_filtrados);   
         })
         .catch((error) => {
             console.log(error);
         });
+    }
+
+    function registrarIngreso(idmantenimiento){
+      fetch(`./completar_programacion/registrar_ingreso/${idmantenimiento}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN
+        },
+      })
+      .then(res => res.json())
+      .then(datos => {
+          // Maneja la respuesta aquí
+      })
+      .catch((error) => {
+          console.log(error);
+      });
     }
 
     function renderizarMantenimientos(datos) {
@@ -129,21 +202,24 @@
       datos.forEach(mantenimiento => {
         // Verificar si fecha_programada es null
         let fechaProgramacion = mantenimiento.fechaingreso ? 
-          `<strong>Fecha Programacion:</strong>${mantenimiento.fechaingreso}` :
-          '<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Asignar</button>';
+          `<strong>Fecha Programacion:</strong>${mantenimiento.fechaingreso}
+           <button class="btn btn-primary mt-1" data-id="${mantenimiento.idmantenimiento}" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>`
+           :
+
+          `<form>;  
+            <button class="btn btn-primary mt-1 confirmar" data-id="${mantenimiento.idmantenimiento}">Confirmar Llegada</button>;
+          </form>`
 
         let nuevacard = `
-        <div class="col col-md-3">
-          <div class="card border-success mb-3" style="max-width: 18rem;">
+        <div class="col col-md-4">
+          <div class="card border-success mb-3" >
             <div class="card-header bg-transparent border-success text-center">Mantenimiento ${mantenimiento.idmantenimiento}</div>
               <div class="card-body text-success">
                 <h5 class="card-text text-center fw-bold"></h5>
                 <p class="card-text text-success m-0 fs-5"><strong>Implemento:</strong>${mantenimiento.implemento}</p>
                 <p class="card-text text-success m-0 fs-5"><strong>Codigo:</strong>${mantenimiento.cod_implemento}</p>
-                <p class="card-text text-success m-0 fs-5"><strong>Codigo:</strong>${mantenimiento.cod_implemento}</p>
                 <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong>${mantenimiento.fecha_programada }</p>
                 <p class="card-text text-success m-0 fs-5">${fechaProgramacion}</p>
-                <p class="card-text text-success m-0 fs-5"></p>
               </div>
             <div class="card-footer bg-transparent border-success">Footer</div>
           </div>
@@ -151,8 +227,19 @@
         `;
         cards.innerHTML += nuevacard;
       }); 
+      const btnConfimarFecha = document.querySelectorAll('.confirmar')
+      btnConfimarFecha.forEach(function(boton) {
+      boton.addEventListener("click", function(event) {
+          let id_mantenimiento = event.currentTarget.dataset.id;
+          registrarIngreso(id_mantenimiento);
+        });
+    });
+
     }
+
+    
     obtenerMantenimientos();
+
 
   }); // Fin del DOM
 </script>

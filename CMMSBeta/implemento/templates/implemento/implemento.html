@@ -209,7 +209,8 @@
     
         btnModificar.forEach(function(boton) {
         boton.addEventListener("click", function(event) {
-            let id_implemento = event.currentTarget .dataset.id;
+            console.log("das")
+            let id_implemento = event.currentTarget.dataset.id; 
             // console.log(id_pieza);
             obtener_implemento(id_implemento);
             });

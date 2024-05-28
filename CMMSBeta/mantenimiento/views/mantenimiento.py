@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
+from django.utils.timezone import now
 from mantenimiento.models import ProgramacionMantenimiento, Mantenimiento
 from django.http import JsonResponse
 
@@ -26,6 +27,15 @@ def datos_mantenimiento(request):
   mantenimiento = list(matenimiento)
   return JsonResponse({'mantenimientos':mantenimiento})
   # return render(request, 'mantenimiento/completar_programaciones.html')
+
+def registrar_ingreso(request, id_mantenimiento):
+  if request.method == 'POST':
+    fecha_hoy =now()
+    Mantenimiento.objects.filter(idmantenimiento = id_mantenimiento, estado = 1).update(fechaingreso= fecha_hoy)
+
+
+  return redirect('programacion_mantenimiento')
+    
 
 def mantenimientos_realizados(request):
   return render(request, 'mantenimiento/completar_programaciones.html')
