@@ -36,6 +36,9 @@
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Tipo implemento</th>
+                <th scope="col">Tiempo de vida</th>
+                <th scope="col">Frecuencia de Man</th>
+                <th scope="col">Configruacion</th>
                 {% if user.idrol.rol != "Gerencia" %}
                 <th scope="col">Operaciones</th>
                 {% endif %}
@@ -46,6 +49,9 @@
          <tr>
             <td>{{forloop.counter}}</td>
             <td>{{dato.tipoimplemento}}</td>
+            <td>{{dato.tiempo_vida}}</td>
+            <td>{{dato.frecuencia_man}}</td>
+            <td>{{dato.idconfiguracion_implemento}}</td>
             {% if user.idrol.rol != "Gerencia" %}
                 <td>
                     <button class="btn btn-warning editar d-inline-block" data-id="{{dato.idtipoimplemento}}" data-reg="{{dato}}" data-bs-toggle="modal" data-bs-target="#modal-tipoimplemento"><i class="lni lni-pencil editar"></i></button>

@@ -8,12 +8,13 @@ from django.contrib import messages
 
 
 def detalle_cong(request):
-  lista_cong = DettaleConfiguracion.objects.filter(estado=True)
-  contexto = {
-    'lista_cong': lista_cong,
-    'form': DettaleConfiguracionForms
-  }
-  return render(request, 'componente_pieza/detalle_cong.html', contexto)
+    lista_cong = DetalleConfiguracion.objects.filter(estado=True).order_by('idconfiguracion')
+    contexto = {
+        'lista_cong': lista_cong,
+        'form': DettaleConfiguracionForms
+    }
+    return render(request, 'componente_pieza/detalle_cong.html', contexto)
+
 
 
 def registrarDetalleConfiguracion(request):
@@ -25,7 +26,7 @@ def registrarDetalleConfiguracion(request):
         print(componentes)
 
         for idcomponente in componentes:
-            if DettaleConfiguracion.objects.filter(idconfiguracion_id=idconfig, idcomponente_id=idcomponente).exists():
+            if DetalleConfiguracion.objects.filter(idconfiguracion_id=idconfig, idcomponente_id=idcomponente).exists():
                 dato = Componente.objects.get(pk=idcomponente) 
                 messages.error(
                     request,
@@ -33,7 +34,7 @@ def registrarDetalleConfiguracion(request):
                     extra_tags='danger'
                 )           
             else:
-                DettaleConfiguracion.objects.create(
+                DetalleConfiguracion.objects.create(
                     idcomponente_id=idcomponente,
                     idconfiguracion_id=idconfig,
                 )

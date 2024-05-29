@@ -37,7 +37,6 @@
         <tr>
             <th scope="col">Pieza</th>
             <th scope="col">Codigo Pieza</th>
-            <th scope="col">Cantidad de Piezas</th>
             <th scope="col">Tiempo vida</th>
             <th scope="col">Frecuencia de mantenimiento</th>
             {% if user.idrol.rol != "Gerencia" %}
@@ -49,7 +48,6 @@
     {% for dato in datos_piezas %}
         <td>{{dato.pieza}}</td>
         <td>{{dato.codpieza}}</td>
-        <td>{{dato.cantidad_piezas}}</td>
         <td>{{dato.tiempovida}}</td>
         <td>{{dato.frecuencia_man}}</td>
         {% if user.idrol.rol != "Gerencia" %}
@@ -84,10 +82,6 @@
                             <div class="col col-md-4">
                                 <label for="txtCodigoComp" class="form-label">Codigo pieza:</label>
                                 {{form.codpieza}}
-                            </div>
-                            <div class="col col-md-4">
-                                <label for="txtCodigoComp" class="form-label">Cantidad pieza:</label>
-                                {{form.cantidad_piezas}}
                             </div>
                         </div>
                         <div class="row mt-2">

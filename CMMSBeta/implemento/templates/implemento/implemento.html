@@ -34,10 +34,10 @@
         <table class="table table-striped  table-sm table-bordered text-center" id="tabla-implemento">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">Area</th>
                     <th scope="col">Tipo Implemento</th>
                     <th scope="col">Implemento</th>
                     <th scope="col">Tiempo Vida</th>
+                    <th scope="col">FM</th>
                     <th scope="col">Horas de uso</th>
                     <th scope="col">Codigo implemento</th>
                     <th scope="col">CECO</th>
@@ -51,10 +51,10 @@
             {% for dato in datos %}
 
             <tr>
-                <td>{{dato.idarea}}</td>
-                <td>{{dato.idtipoimplemento.tii}}</td>
+                <td>{{dato.idtipoimplemento}}</td>
                 <td>{{dato.implemento}}</td>
-                <td>{{dato.tiempovida}}</td>
+                <td>{{dato.idtipoimplemento.tiempo_vida}}</td>
+                <td>{{dato.idtipoimplemento.frecuencia_man}}</td>
                 <td>{{dato.horasdeuso}}</td>
                 <td>{{dato.codimplemento}}</td>
                 <td>{{dato.idceco}}</td>
@@ -114,18 +114,10 @@
 
                             <div class="row mt-2">
                                 <div class="col col-md-4">
-                                    <label for="txtTiempoVida" class="form-label">Tiempo de Vida:</label>
-                                    {{form.tiempovida}}
-                                </div>
-                                <div class="col col-md-4">
                                     <label for="txtIdCeco" class="form-label">Ceco:</label>
                                     {{form.idceco}}
                                 </div>
-                            
-                                <div class="col col-md-4">
-                                    <label for="txtIdArea" class="form-label">Area:</label>
-                                    {{form.idarea}}
-                                </div>
+                        
                             </div>
                     </div>
                     <div class="modal-footer">

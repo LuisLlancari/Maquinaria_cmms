@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 
 def det_componente(request):
-  lista_componente = DetalleComponente.objects.filter(estado=True)
+  lista_componente = DetalleComponente.objects.filter(estado=True).select_related('idcomponente').order_by('idcomponente__componente')
   contexto = {
     'lista_componente': lista_componente,
     'form': DetalleComponenteForms

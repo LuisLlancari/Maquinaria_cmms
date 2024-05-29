@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.db.models import F
 from .models import Implemento, DetImplementos
 from mantenimiento.models import Mantenimiento, ProgramacionMantenimiento 
-from componente_pieza.models import DetalleComponente, DettaleConfiguracion, Componente, Pieza
+from componente_pieza.models import DetalleComponente, DetalleConfiguracion, Componente, Pieza
 
 @receiver(post_save, sender =Implemento)
 def creacionDetalleImplemento(sender, instance, created, **kwargs):
@@ -21,7 +21,7 @@ def creacionDetalleImplemento(sender, instance, created, **kwargs):
         id_configuracion = config['idconfiguracion']
 
         # Obtener los componentes relacionados con la configuración
-        det_comp = DettaleConfiguracion.objects.filter(idconfiguracion=id_configuracion).values('idcomponente')
+        det_comp = DetalleConfiguracion.objects.filter(idconfiguracion=id_configuracion).values('idcomponente')
 
         for componente in det_comp:
             id_componente = componente['idcomponente']
@@ -54,12 +54,12 @@ def creacion_programacion(FM, HU, id_implemento):
     if HU < FM:
         FM -= 50
         if HU >= FM:
-            ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento)
+            ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento, tipomantenimiento = 1)
     else:
         FM -= 50
         residuo_horauso = HU % FM
         if residuo_horauso >= FM:
-            ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento)
+            ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento, tipomantenimiento = 1)
 
 
 @receiver(pre_save, sender=Implemento)

@@ -24,7 +24,6 @@ class Programacion(models.Model):
     TURNO_CHOICES = (
         ('M', 'Mañana'),
         ('T', 'Tarde'),
-        ('N', 'Noche'),
     )
 
     idprogramacion = models.AutoField(primary_key=True)
