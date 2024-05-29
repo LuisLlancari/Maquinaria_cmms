@@ -79,8 +79,12 @@
 
           
 
-          <h1 class="text-center mb-0">Recambios</h1>
-          <div class="container" id="contenedor-componentes">
+          <div class="mb-3 container" id="recambios">
+            <h1 class="text-center mb-0">Recambios</h1>
+            <button type="button" class="btn btn-success mb-3" id="agregarRecambio">Agregar recambio</button>
+          </div>
+
+          <!-- <div class="container" id="contenedor-componentes">
             <button type="button" class="btn btn-success" id="agregar-item">agregar item</button>
             <div class="container componente">
               <div class="row mt-2">
@@ -98,7 +102,7 @@
               </div>
             </div>
           </div>
-          <span id="error-message" class="text-danger d-none">El mínimo de contenedores es uno.</span>
+          <span id="error-message" class="text-danger d-none">El mínimo de contenedores es uno.</span> -->
     
 
         </div>
@@ -121,10 +125,49 @@
     const errorMessage = document.getElementById('error-message');
     const btnAgregarItem = document.getElementById('agregar-item')
     const btnAgregarTarea = document.getElementById('agregar-tarea')
+    const btnAgregarRecambio = document.getElementById('agregarRecambio')
     var CSRF_TOKEN = '{{ csrf_token }}';
 
-    btnAgregarItem.addEventListener('click', agregarComponente)
+    // btnAgregarItem.addEventListener('click', agregarComponente)
     btnAgregarTarea.addEventListener('click', agregarTarea)
+
+    btnAgregarRecambio.addEventListener('click',function(){
+      let nuevoDiv = document.createElement("div");
+    nuevoDiv.classList.add("input-group", "mb-3");
+
+    // Crear un nuevo select
+    let nuevoSelect = document.createElement("select");
+    nuevoSelect.classList.add("form-select");
+    let option1 = document.createElement("option");
+    option1.value = "accion1";
+    option1.text = "Acción 1";
+    let option2 = document.createElement("option");
+    option2.value = "accion2";
+    option2.text = "Acción 2";
+    nuevoSelect.appendChild(option1);
+    nuevoSelect.appendChild(option2);
+
+    // Crear un botón de eliminar
+    let botonEliminar = document.createElement("button");
+    botonEliminar.innerText = "Eliminar";
+    botonEliminar.classList.add("btn", "btn-danger");
+
+    // Añadir evento al botón de eliminar
+    botonEliminar.addEventListener("click", function () {
+      nuevoDiv.remove();
+    });
+
+    // Añadir el select y el botón de eliminar al nuevo div
+    let divInputGroup = document.createElement("div");
+    divInputGroup.classList.add("input-group-append");
+    divInputGroup.appendChild(botonEliminar);
+
+    nuevoDiv.appendChild(nuevoSelect);
+    nuevoDiv.appendChild(divInputGroup);
+
+    // Añadir el nuevo div al contenedor de recambios
+    document.getElementById("recambios").appendChild(nuevoDiv);
+    })
 
     function agregarTarea(){
       const tareaClon = contenedorTareas.querySelector('.tarea').cloneNode(true);
@@ -145,24 +188,24 @@
         }
     }
 
-    function agregarComponente(){
-      const componenteclon = contenedorComponente.querySelector('.componente').cloneNode(true);
-      componenteclon.querySelectorAll('select, input').forEach(input => {
-              input.value = '';
-          });
-      componenteclon.querySelector('.remove-piece').addEventListener('click', removerItem);
-      contenedorComponente.appendChild(componenteclon)
-    }
+    // function agregarComponente(){
+    //   const componenteclon = contenedorComponente.querySelector('.componente').cloneNode(true);
+    //   componenteclon.querySelectorAll('select, input').forEach(input => {
+    //           input.value = '';
+    //       });
+    //   componenteclon.querySelector('.remove-piece').addEventListener('click', removerItem);
+    //   contenedorComponente.appendChild(componenteclon)
+    // }
     
-    function removerItem(event) {
-        const componentes = contenedorComponente.querySelectorAll('.componente');
-        if (componentes.length > 1) {
-            event.target.closest('.componente').remove();
-            errorMessage.classList.add('d-none');
-        } else {
-            errorMessage.classList.remove('d-none');
-        }
-    }
+    // function removerItem(event) {
+    //     const componentes = contenedorComponente.querySelectorAll('.componente');
+    //     if (componentes.length > 1) {
+    //         event.target.closest('.componente').remove();
+    //         errorMessage.classList.add('d-none');
+    //     } else {
+    //         errorMessage.classList.remove('d-none');
+    //     }
+    // }
 
 
     function obtenerMantenimientos(){
@@ -203,12 +246,19 @@
         // Verificar si fecha_programada es null
         let fechaProgramacion = mantenimiento.fechaingreso ? 
           `<strong>Fecha Programacion:</strong>${mantenimiento.fechaingreso}
-           <button class="btn btn-primary mt-1" data-id="${mantenimiento.idmantenimiento}" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>`
+          </div>
+          <div class="card-footer bg-transparent border-success">
+           <button class="btn btn-primary mt-1" data-id="${mantenimiento.idmantenimiento}" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
+          </div>`
            :
 
-          `<form>;  
-            <button class="btn btn-primary mt-1 confirmar" data-id="${mantenimiento.idmantenimiento}">Confirmar Llegada</button>;
-          </form>`
+          `</div>
+          <div class="card-footer bg-transparent border-success">
+            <form>
+              <button class="btn btn-primary mt-1 confirmar" data-id="${mantenimiento.idmantenimiento}">Confirmar Llegada</button>
+            </form>
+          </div>
+          `
 
         let nuevacard = `
         <div class="col col-md-4">
@@ -219,9 +269,9 @@
                 <p class="card-text text-success m-0 fs-5"><strong>Implemento:</strong>${mantenimiento.implemento}</p>
                 <p class="card-text text-success m-0 fs-5"><strong>Codigo:</strong>${mantenimiento.cod_implemento}</p>
                 <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong>${mantenimiento.fecha_programada }</p>
-                <p class="card-text text-success m-0 fs-5">${fechaProgramacion}</p>
+                ${fechaProgramacion}
               </div>
-            <div class="card-footer bg-transparent border-success">Footer</div>
+            
           </div>
         </div>
         `;
