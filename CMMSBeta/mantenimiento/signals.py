@@ -9,6 +9,7 @@ def creacion_mantenimiento(sender, instance, **kwargs):
     if Mantenimiento.objects.filter(idprogramacionmantenimiento = idprogramacion, estado= 1).exists():
       pass
     else:
+      print("llegó bien")
       Mantenimiento.objects.create(
         idprogramacionmantenimiento_id = idprogramacion
       )

@@ -3,6 +3,10 @@
 {% block titulo %}Estado Mantenimientos{% endblock%} 
 
 {%block contenido %}
+<style>
+   .big-checkbox {width: 30px; height: 30px;}
+
+</style>
 <h1 class="text-center"> Estado de los mantenimientos</h1>
 <div class="conatiner mb-3">
   <div class="row">
@@ -37,50 +41,52 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-primary justify-content-center">
-        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Diagnostico</h1>
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Detalle</h1>
       </div>
 
-      <form autocomplete="off" id="form-xl" method="POST">
+      <form action="{% url 'finalizar_mantenimiento' 1 %}" autocomplete="off" id="form-detalle" method="POST">
         {% csrf_token %}
         <div class="modal-body">
           <div class="row">
             <div class="col col-md-6">
               <label for="fecha-salida" class="forml-label">Fecha de Salida:</label>
-              <input type="date" name="fecha-salida" id="fecha-salida" class="form-control mt-2"> 
+              <input type="date" name="fecha-salida" id="fecha-salida" class="form-control mt-2" required> 
             </div>
             <div class="col col-md-6">
               <label for="encargado" class="form-label">Encargado:</label>
-              <select name="encargado" id="encargado" class="form-select">
+              <select name="encargado" id="encargado" class="form-select" required>
                 <option value="">Seleccione:</option>
               </select>
             </div>
           </div>
-          <h1 class="text-center" > Acciones</h1>
+          <h1 class="text-center mt-3" > Acciones</h1>
+          <button type="button" class="btn btn-success " id="agregar-tarea">agregar acciones</button>
           <div class="container" id="contenedor-tareas">
-            <button type="button" class="btn btn-success " id="agregar-tarea">agregar acciones</button>
-            <div class="container tarea">
-              <div class="row mt-2">
-                <div class="col col-md-10">
-                  <select name="" id="" class="form-select">
-                    <option value="">Accion 1 </option>
-                    <option value="">Accion 2</option>
-                    <option value="">Accion 3</option>
-                    <option value="">Accion 4</option>
+            <div class="container tarea" id="cuerpo-acciones">
+              <!-- inicio del select -->
+              <!-- <div class="row mt-2">
+                <div class="col-md-10">
+                  <select name="tareas" class="form-control">
+                    <option value="">Seleccione</option>
                   </select>
                 </div>
-                <div class="col col-md-2">
-                  <div class="col-md-2">
-                    <button type="button" class="btn btn-danger remove-piece">Eliminar</button>
+                <div class="col-md-1">
+                  <div class="form-check">
+                    <input class="form-check-input big-checkbox mr-3" type="checkbox" id="inlineCheckbox1" value="option1">
+                  </div>
                 </div>
+                <div class="col-md-1">
+                  <button type="button" class="btn-close mt-2 remover-tarea"></button>
                 </div>
-              </div>
+              </div> -->
+              <!-- fin del select -->
             </div>
           </div>
 
           
 
           <div class="mb-3 container" id="recambios">
-            <h1 class="text-center mb-0">Recambios</h1>
+            <h1 class="text-center mt-3">Recambios</h1>
             <button type="button" class="btn btn-success mb-3" id="agregarRecambio">Agregar recambio</button>
           </div>
 
@@ -119,41 +125,51 @@
 <script>
   document.addEventListener('DOMContentLoaded', function(){
 
-    const cards = document.getElementById('cards-mantenimiento')
-    const contenedorComponente = document.getElementById('contenedor-componentes')
-    const contenedorTareas = document.getElementById('contenedor-tareas')
+    const cards = document.getElementById('cards-mantenimiento');
+    const contenedorComponente = document.getElementById('contenedor-componentes');
+    const contenedorTareas = document.getElementById('contenedor-tareas');
     const errorMessage = document.getElementById('error-message');
-    const btnAgregarItem = document.getElementById('agregar-item')
-    const btnAgregarTarea = document.getElementById('agregar-tarea')
-    const btnAgregarRecambio = document.getElementById('agregarRecambio')
+    const formDetalle = document.getElementById('form-detalle')
+    const btnAgregarItem = document.getElementById('agregar-item');
+    const btnAgregarTarea = document.getElementById('agregar-tarea');
+    const btnAgregarRecambio = document.getElementById('agregarRecambio');
     var CSRF_TOKEN = '{{ csrf_token }}';
 
+    let det_componente = '';
+    let det_tareas = '';
+    let det_encargados = '';
+    let contador = 0
+
     // btnAgregarItem.addEventListener('click', agregarComponente)
-    btnAgregarTarea.addEventListener('click', agregarTarea)
+    btnAgregarTarea.addEventListener('click', function(){
+      contador ++;
+      console.log(contador)
+      createTaskRow(det_tareas, contador)
+    });
 
     btnAgregarRecambio.addEventListener('click',function(){
       let nuevoDiv = document.createElement("div");
-    nuevoDiv.classList.add("input-group", "mb-3");
+      nuevoDiv.classList.add("input-group", "mb-3");
 
-    // Crear un nuevo select
-    let nuevoSelect = document.createElement("select");
-    nuevoSelect.classList.add("form-select");
-    let option1 = document.createElement("option");
-    option1.value = "accion1";
-    option1.text = "Acción 1";
-    let option2 = document.createElement("option");
-    option2.value = "accion2";
-    option2.text = "Acción 2";
-    nuevoSelect.appendChild(option1);
-    nuevoSelect.appendChild(option2);
+      // Crear un nuevo select
+      let nuevoSelect = document.createElement("select");
+      nuevoSelect.classList.add("form-select");
+      let option1 = document.createElement("option");
+      option1.value = "accion1";
+      option1.text = "Acción 1";
+      let option2 = document.createElement("option");
+      option2.value = "accion2";
+      option2.text = "Acción 2";
+      nuevoSelect.appendChild(option1);
+      nuevoSelect.appendChild(option2);
 
-    // Crear un botón de eliminar
-    let botonEliminar = document.createElement("button");
-    botonEliminar.innerText = "Eliminar";
-    botonEliminar.classList.add("btn", "btn-danger");
+      // Crear un botón de eliminar
+      let botonEliminar = document.createElement("button");
+      botonEliminar.innerText = "Eliminar";
+      botonEliminar.classList.add("btn", "btn-danger");
 
-    // Añadir evento al botón de eliminar
-    botonEliminar.addEventListener("click", function () {
+      // Añadir evento al botón de eliminar
+      botonEliminar.addEventListener("click", function () {
       nuevoDiv.remove();
     });
 
@@ -169,57 +185,159 @@
     document.getElementById("recambios").appendChild(nuevoDiv);
     })
 
-    function agregarTarea(){
-      const tareaClon = contenedorTareas.querySelector('.tarea').cloneNode(true);
-      tareaClon.querySelectorAll('select, input').forEach(input => {
-          input.value = '';
-      });
-      tareaClon.querySelector('.remove-piece').addEventListener('click', removerTarea);
-      contenedorTareas.appendChild(tareaClon)
-    }
+    function createTaskRow(datos, contador) {
+      const row = document.createElement('div');
+      row.className = 'row mt-2';
 
-    function removerTarea(){
-      const tareas = contenedorTareas.querySelectorAll('.tarea');
-        if (tareas.length > 1) {
-            event.target.closest('.tarea').remove();
-            errorMessage.classList.add('d-none');
-        } else {
-            errorMessage.classList.remove('d-none');
-        }
-    }
+      const colMd10 = document.createElement('div');
+      colMd10.className = 'col-md-10';
 
-    // function agregarComponente(){
-    //   const componenteclon = contenedorComponente.querySelector('.componente').cloneNode(true);
-    //   componenteclon.querySelectorAll('select, input').forEach(input => {
-    //           input.value = '';
-    //       });
-    //   componenteclon.querySelector('.remove-piece').addEventListener('click', removerItem);
-    //   contenedorComponente.appendChild(componenteclon)
-    // }
+      const select = document.createElement('select');
+      select.name = '--';
+      select.className = 'form-control';
+      const option = document.createElement('option');
+      option.value = ``;
+      option.textContent = `Seleccione:`;
+
+      select.appendChild(option);
+      datos.forEach(tarea => {
+          const option = document.createElement('option');
+          option.value = `${tarea.idaccion}`;
+          option.textContent = `${tarea.accion}`;
     
-    // function removerItem(event) {
-    //     const componentes = contenedorComponente.querySelectorAll('.componente');
-    //     if (componentes.length > 1) {
-    //         event.target.closest('.componente').remove();
-    //         errorMessage.classList.add('d-none');
-    //     } else {
-    //         errorMessage.classList.remove('d-none');
-    //     }
-    // }
+          select.appendChild(option);
+      })
+      colMd10.appendChild(select);
 
+      let colMd1Checkbox = document.createElement('div');
+      colMd1Checkbox.className = 'col-md-1';
+
+      let formCheck = document.createElement('div');
+      formCheck.className = 'form-check form-check-inline';
+
+      let checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'form-check-input big-checkbox mr-3';
+      checkbox.name = 'realizado'
+      checkbox.id = `inlineCheckbox${contador}`;
+      checkbox.value = ``;
+
+      formCheck.appendChild(checkbox);
+      colMd1Checkbox.appendChild(formCheck);
+
+      // Crear la tercera columna (botón remover tarea)
+      let colMd1Button = document.createElement('div');
+      colMd1Button.className = 'col-md-1';
+
+      let button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'btn-close mt-2 remover-tarea';
+
+      select.addEventListener('change', function(){
+        algo = select.value;
+        checkbox.value = algo
+        console.log(algo)
+      })
+      button.addEventListener('click', function() {
+        // Remover la fila cuando se hace clic en el botón
+        checkbox.value = ''
+        row.remove();
+      });
+
+      colMd1Button.appendChild(button);
+
+      row.appendChild(colMd10);
+      row.appendChild(colMd1Checkbox);
+      row.appendChild(colMd1Button);
+
+      contenedorTareas.appendChild(row);
+    }
+
+    function rederizarTareas(datos){
+      contenedorTareas.innerHTML = ''
+      datos.forEach(tarea => {
+        let row = document.createElement('div');
+        row.className = 'row mt-2 ';
+
+        let colmd1 = document.createElement('div');
+        colmd1.className = 'col col-md-10';
+
+        let input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'tareas'
+        input.className = 'form-control';
+        input.value = `${tarea.tarea}`
+        input.setAttribute('readonly', true)
+        colmd1.appendChild(input);
+
+        let colmd2 = document.createElement('div');
+        colmd2.className = 'col col-md-2';
+
+        let formCheck = document.createElement('div');
+        formCheck.className = 'form-check form-check-inline';
+
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = 'realizado';
+        checkbox.className = 'form-check-input big-checkbox';
+        checkbox.id = 'inlineCheckbox1';
+        checkbox.value = `${tarea.idtarea}`;
+
+        formCheck.appendChild(checkbox);
+
+        colmd2.appendChild(formCheck);
+
+        row.appendChild(colmd1);
+        row.appendChild(colmd2);
+
+        contenedorTareas.appendChild(row);   
+      });
+    }
+
+    function rederizarEncargado(datos){
+      const Select = document.getElementById('encargado')
+      Select.innerHTML= ''
+      datos.forEach(encargado => {
+        const option = document.createElement('option');
+        option.value = encargado.idpersona
+        option.text = encargado.nombres,''+'',encargado.apellidos;
+        Select.appendChild(option)
+      })
+    }
 
     function obtenerMantenimientos(){
         fetch(`./completar_programacion/datos_mantenimiento`)
         .then(res => res.json())
         .then(datos => {
             // console.log(datos);    
-            let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.idmantenimiento == 2);
+            det_tareas = datos.tareas
+            det_encargados = datos.personas
+            let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.idmantenimiento == 1);
             // console.log(datos_filtrados)
             renderizarMantenimientos(datos_filtrados);   
         })
         .catch((error) => {
             console.log(error);
         });
+    }
+
+    function obtenerDatosImplementos(idmantenimiento){
+      fetch(`./completar_programacion/datos_implemento/${idmantenimiento}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN
+        },
+      })
+      .then(res => res.json())
+      .then(datos => {
+          console.log(datos.partes)
+          console.log(datos.tareas)
+          rederizarTareas(datos.tareas)
+      })
+      .catch((error) => {
+          console.log(error);
+      });
     }
 
     function registrarIngreso(idmantenimiento){
@@ -248,7 +366,7 @@
           `<strong>Fecha Programacion:</strong>${mantenimiento.fechaingreso}
           </div>
           <div class="card-footer bg-transparent border-success">
-           <button class="btn btn-primary mt-1" data-id="${mantenimiento.idmantenimiento}" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
+           <button class="btn btn-primary mt-1" data-id="${mantenimiento.idmantenimiento}" id="finalizar-mantenimiento" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
           </div>`
            :
 
@@ -278,18 +396,25 @@
         cards.innerHTML += nuevacard;
       }); 
       const btnConfimarFecha = document.querySelectorAll('.confirmar')
+      const btnFinalizarMantenimiento = document.getElementById('finalizar-mantenimiento')
+
       btnConfimarFecha.forEach(function(boton) {
       boton.addEventListener("click", function(event) {
           let id_mantenimiento = event.currentTarget.dataset.id;
           registrarIngreso(id_mantenimiento);
         });
-    });
+      });
+
+      btnFinalizarMantenimiento.addEventListener("click",function(){
+        formDetalle.reset()
+        obtenerDatosImplementos(1)
+        rederizarEncargado(det_encargados);
+      });
 
     }
 
-    
+  
     obtenerMantenimientos();
-
 
   }); // Fin del DOM
 </script>
