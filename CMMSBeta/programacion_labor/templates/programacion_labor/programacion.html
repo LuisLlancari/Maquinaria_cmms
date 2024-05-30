@@ -12,7 +12,7 @@
         <div class="col-md-6"></div>
         <div class="col-md-2">
             {% if user.idrol.rol == "Supervisor" %}
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevo">Nueva Programacion
+            <button type="button" class="btn btn-success obtener" data-toggle="modal" data-target="#modalNuevo">Nueva Programacion
             </button>
             {% endif %}
         </div>
@@ -223,7 +223,7 @@
                                 </div>
                                 <div class="row mb-2 mt-2">
                                     <div class="col-md-8">
-                                        <strong for="idimplemento" >Lista de implmentos a usar:</strong>
+                                        <strong for="idimplemento" >Lista de implementos a usar:</strong>
                                     </div>
                                     <div class="col-md-4">
                                         <button type="button" class="btn btn-success float-end" id="btn-agregar">
@@ -486,9 +486,11 @@
                 });
             });
         });
+
+
+        
         
         //Llamado de funciones
-        
         filtrarImplementosPorUsuario(selectedUserId);
         filtrarTractoresPorUsuario(selectTractor);
         filtrarTractoristasPorUsuario(selectTractorista);

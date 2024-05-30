@@ -247,6 +247,24 @@
                     </ul>
                 </li>
 
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#mantenimiento" aria-expanded="false" aria-controls="mantenimiento">
+                        <i class="lni lni-users"></i>
+                        <span>Gestion Mant</span>
+                    </a>
+                    <ul id="mantenimiento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'programacion_mantenimiento' %}" class="sidebar-link">Programar Mantenimiento</a>
+                        </li>
+                    </ul>
+                    <ul id="mantenimiento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'mantenimiento_realizados' %}" class="sidebar-link">Gestionar Mantenimientos</a>
+                        </li>
+                    </ul>
+                </li>
+
 
                 {% endif %}
 

@@ -33,8 +33,11 @@ def programacion(request):
 
     #Obtenemos el idusuario
     usuario_id = request.user.id
-    tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
-    tractor = Tractor.objects.filter(estado = True, estado_actividad = True)
+
+    tractoristas = Tractorista.objects.filter(estado = True)
+    tractor = Tractor.objects.filter(estado = True)
+    implementos = Implemento.objects.filter(estado = True)
+
     fundos = Fundo.objects.filter(estado = True)
     lotes = Lote.objects.filter(estado = True)
     detalles = DetalleLabor.objects.filter(estado = True, idprogramacion__idusuario = usuario_id)
@@ -55,7 +58,6 @@ def programacion(request):
     #LISTA DE USUARIO PARA EL SELECT 
     usuario = Usuario.objects.filter(idrol = 3)
 
-    implementos = Implemento.objects.filter(estado_actividad = True, estado = True)
 
     return render(request, 'programacion_labor/programacion.html', {'cantidad': cantidad_tractores_hoy , 'fecha': hoy, 'detalle': detalles_unicos, 'tractor' : tractor , 'tractorista': tractoristas ,'idusuario': usuario_id, 'lista_usuarios': usuario ,'fundo': fundos,'lotes': lotes,'form_programacion': ProgramacionForm, 'implementos': implementos})
 
@@ -108,3 +110,6 @@ def obtener_data(request, id_programacion):
     else:
         data = {'mensaje': "Not found"}
     return JsonResponse(data)
+
+#def obetner_tractorista():
+
