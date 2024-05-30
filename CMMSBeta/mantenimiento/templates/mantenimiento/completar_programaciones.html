@@ -9,7 +9,7 @@
 </style>
 <h1 class="text-center"> Estado de los mantenimientos</h1>
 <div class="conatiner mb-3">
-  <div class="row">
+  <!-- <div class="row">
     <div class="col col-md-4">
       <label for="" class="form-label">Seleccione Fecha:</label>
       <input type="date" class="form-control">
@@ -28,7 +28,7 @@
         <button type="button" class="btn btn-secondary btn btn-block" id="btnCompletados">Completados</button>
     </div>
   </div>
-</div>
+</div> -->
 
 <div class="container">
   <div class="row" id="cards-mantenimiento">
@@ -363,7 +363,7 @@
       datos.forEach(mantenimiento => {
         // Verificar si fecha_programada es null
         let fechaProgramacion = mantenimiento.fechaingreso ? 
-          `<strong>Fecha Programacion:</strong>${mantenimiento.fechaingreso}
+          `<p class="card-text text-success m-0 fs-5"><strong>Fecha Ingreso:</strong> ${mantenimiento.fechaingreso}</p>
           </div>
           <div class="card-footer bg-transparent border-success">
            <button class="btn btn-primary mt-1 finalizar-mantenimiento" data-idmantenimiento="${mantenimiento.idmantenimiento}" data-idprogramacion="${mantenimiento.idprogramacion}" data-idimplemento="${mantenimiento.idimplemento}" id="finalizar-mantenimiento" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
@@ -384,9 +384,9 @@
             <div class="card-header bg-transparent border-success text-center">Mantenimiento ${mantenimiento.idmantenimiento}</div>
               <div class="card-body text-success">
                 <h5 class="card-text text-center fw-bold"></h5>
-                <p class="card-text text-success m-0 fs-5"><strong>Implemento:</strong>${mantenimiento.implemento}</p>
-                <p class="card-text text-success m-0 fs-5"><strong>Codigo:</strong>${mantenimiento.cod_implemento}</p>
-                <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong>${mantenimiento.fecha_programada }</p>
+                <p class="card-text text-success m-0 fs-5"><strong>Implemento: </strong> ${mantenimiento.implemento}</p>
+                <p class="card-text text-success m-0 fs-5"><strong>Codigo:  </strong> ${mantenimiento.cod_implemento}</p>
+                <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong> ${mantenimiento.fecha_programada }</p>
                 ${fechaProgramacion}
               </div>
             
