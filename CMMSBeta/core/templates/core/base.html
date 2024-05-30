@@ -28,20 +28,68 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
-                    <a href="{% url 'home' %}" class="sidebar-link" data-path="inicio">
+                    <a href="#" class="sidebar-link" data-path="inicio">
                         <i class="lni lni-user"></i>
                         <span class="text-uppercase">{{user.first_name}} {{user.last_name}} {{user.idrol}}</span>
                     </a>
                 </li>
 
+                 <!-- Para Gerencia -->
+                {% if user.idrol.rol == "Gerencia" %}
+                <li class="sidebar-item">
+                    <a href="{% url 'home' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Dashboard</span>
+                    </a>
+                </li>
                 <li class="sidebar-item">
                     <a href="{% url 'test' %}" class="sidebar-link" data-path="test">
                         <span class="text-uppercase">Lista de Programaciones</span>
                     </a>
                 </li>
+                {% endif %}
+                <!-- fin Gerencia -->
+
+                <!-- Asistente -->
+                {% if user.idrol.rol == "Asistente" %}
+                <li class="sidebar-item">
+                    <a href="{% url 'reportetractor' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Reporte Tractor</span>
+                    </a>
+                </li>
+                {% endif %}
+                <!-- Fin Asistente -->
 
 
-                {% if user.idrol.rol == "Admin" or user.idrol.rol == "Supervisor" %}
+                <!-- Supervisor-->
+                {% if user.idrol.rol == "Supervisor" %}
+                <li class="sidebar-item">
+                    <a href="{% url 'implemento' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Implemento</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'tractor' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Tractor</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'programacion' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Programación Labor</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'programacion_mantenimiento' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Programar mantenimiento</span>
+                    </a>
+                </li>
+                {% endif %}
+                
+                <!-- Fin Supervisor-->
+
+
+
+
+                {% if user.idrol.rol == "Admin"%}
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#implemento" aria-expanded="false" aria-controls="implemento">
@@ -49,7 +97,7 @@
                         <span>implemento</span>
                     </a>
                     <ul id="implemento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        {% if user.idrol.rol == "Admin" or user.idrol.rol == "Supervisor"  %}
+                        {% if user.idrol.rol == "Admin"%}
                             <li class="sidebar-item">
                                 <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
                             </li>
@@ -66,27 +114,9 @@
                     </ul>
                 </li>
 
-                <!-- <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#Usuario" aria-expanded="false" aria-controls="Usuario">
-                        <i class="lni lni-users"></i>
-                        <span>Usuario</span>
-                    </a>
-                    <ul id="Usuario" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="{% url 'roles' %}" class="sidebar-link" data-path="">Rol</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link" data-path="">Usuarios Personas</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="" class="sidebar-link" data-path="">Usuarios</a>
-                        </li>
-                    </ul>
-                </li> -->
                 {% endif %}
 
-                {% if user.idrol.rol == "Asistente" or user.idrol.rol == "Admin" or user.idrol.rol == "Supervisor" %}
+                {% if user.idrol.rol == "Admin"%}
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                             data-bs-target="#tractor" aria-expanded="false" aria-controls="tractor">
@@ -125,9 +155,9 @@
                             <span>localizacion</span>
                         </a>
                         <ul id="localizacion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                            <li class="sidebar-item">
+                            <!-- <li class="sidebar-item">
                                 <a href="{% url 'base' %}" class="sidebar-link" data-path="login">Base</a>
-                            </li>
+                            </li> -->
                             <li class="sidebar-item">
                                 <a href="{% url 'sede' %}" class="sidebar-link" data-path="s">Sede</a>
                             </li>
@@ -191,7 +221,7 @@
                     </li>
                 {% endif %}
 
-                {% if user.idrol.rol == "Admin" or user.idrol.rol == "Supervisor" %}
+                {% if user.idrol.rol == "Admin" %}
                 
                     <li class="sidebar-item">
                         <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
