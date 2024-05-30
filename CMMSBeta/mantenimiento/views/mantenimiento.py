@@ -13,9 +13,11 @@ def datos_mantenimiento(request):
     tipomantenimiento = F('idprogramacionmantenimiento__tipomantenimiento'),
     implemento = F('idprogramacionmantenimiento__idimplemento__implemento'),
     cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
+    idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
     idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
   ).values(
     'idmantenimiento',
+    'idprogramacion',
     'fecha_programada',
     'implemento',
     'cod_implemento',
@@ -26,6 +28,7 @@ def datos_mantenimiento(request):
     'descripcion',
     'persona',
     'fechaingreso',
+    'estado'
     ))
 
   tareas = list(Acciones.objects.filter(estado = 0).values('idaccion','accion'))
@@ -35,9 +38,9 @@ def datos_mantenimiento(request):
   datos = {'mantenimientos': mantenimiento, 'tareas':tareas, 'personas':personas}
   return JsonResponse(datos)
 
-def datos_implemento(request, id_implemento):
+def datos_implemento(request, id_programacion, id_implemento):
   pieza_implemento = list(DetImplementos.objects.filter(idimplemento = id_implemento).values())
-  tareas_implemento = list(DetMotivos.objects.filter(idprogramacionmantenimiento = id_implemento).annotate(
+  tareas_implemento = list(DetMotivos.objects.filter(idprogramacionmantenimiento = id_programacion).annotate(
     tarea= F('idaccion__accion'),
     idtarea= F('idaccion__idaccion')
   ).values('tarea', 'idtarea'))

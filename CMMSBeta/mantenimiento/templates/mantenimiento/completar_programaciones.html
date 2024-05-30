@@ -312,7 +312,7 @@
             // console.log(datos);    
             det_tareas = datos.tareas
             det_encargados = datos.personas
-            let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.idmantenimiento == 1);
+            let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
             // console.log(datos_filtrados)
             renderizarMantenimientos(datos_filtrados);   
         })
@@ -321,8 +321,8 @@
         });
     }
 
-    function obtenerDatosImplementos(idmantenimiento){
-      fetch(`./completar_programacion/datos_implemento/${idmantenimiento}`, {
+    function obtenerDatosImplementos(idprogramacion, idimplemento){
+      fetch(`./completar_programacion/datos_implemento/${idprogramacion}/${idimplemento}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -366,7 +366,7 @@
           `<strong>Fecha Programacion:</strong>${mantenimiento.fechaingreso}
           </div>
           <div class="card-footer bg-transparent border-success">
-           <button class="btn btn-primary mt-1" data-id="${mantenimiento.idmantenimiento}" id="finalizar-mantenimiento" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
+           <button class="btn btn-primary mt-1 finalizar-mantenimiento" data-idmantenimiento="${mantenimiento.idmantenimiento}" data-idprogramacion="${mantenimiento.idprogramacion}" data-idimplemento="${mantenimiento.idimplemento}" id="finalizar-mantenimiento" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
           </div>`
            :
 
@@ -396,7 +396,7 @@
         cards.innerHTML += nuevacard;
       }); 
       const btnConfimarFecha = document.querySelectorAll('.confirmar')
-      const btnFinalizarMantenimiento = document.getElementById('finalizar-mantenimiento')
+      const btnFinalizarMantenimiento = document.querySelectorAll('.finalizar-mantenimiento')
 
       btnConfimarFecha.forEach(function(boton) {
       boton.addEventListener("click", function(event) {
@@ -404,12 +404,16 @@
           registrarIngreso(id_mantenimiento);
         });
       });
-
-      btnFinalizarMantenimiento.addEventListener("click",function(){
-        formDetalle.reset()
-        obtenerDatosImplementos(1)
-        rederizarEncargado(det_encargados);
-      });
+      btnFinalizarMantenimiento.forEach(function(boton){
+        boton.addEventListener("click",function(event){
+          let id_implemento = event.target.dataset.idimplemento
+          let id_programacion = event.target.dataset.idprogramacion
+          console.log(id_implemento, id_programacion)
+          formDetalle.reset()
+          obtenerDatosImplementos(id_programacion, id_implemento)
+          rederizarEncargado(det_encargados);
+        });
+      })
 
     }
 
