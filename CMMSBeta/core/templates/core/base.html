@@ -34,6 +34,15 @@
                     </a>
                 </li>
 
+                {% if user.idrol.rol == "Mecanico"%}
+                <li class="sidebar-item">
+                    <a href="{% url 'mantenimiento_realizados' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Estado Mantenimientos</span>
+                    </a>
+                </li>
+                {% endif %}
+
+
                  <!-- Para Gerencia -->
                 {% if user.idrol.rol == "Gerencia" %}
                 <li class="sidebar-item">
