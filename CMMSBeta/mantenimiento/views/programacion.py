@@ -4,6 +4,8 @@ from django.db.models import F
 from mantenimiento.models import ProgramacionMantenimiento
 from django.http import JsonResponse
 
+from implemento.models import Implemento, TipoImplemento
+
 from mantenimiento.models import Acciones, DetMotivos
 
 # funcion que calculara las fechas de mantenimiento
@@ -11,9 +13,14 @@ from mantenimiento.models import Acciones, DetMotivos
 def programacion_mantenimiento(request):
     datos = ProgramacionMantenimiento.objects.filter(estado= 1).annotate( )
     acciones = Acciones.objects.filter(estado__in=[0, 2])
+    implementos = Implemento.objects.filter(estado = 1)
+    tipoimplementos = TipoImplemento.objects.filter(estado = True)
+    print(tipoimplementos)
     contexto = {
         'datos': datos,
-        'acciones': acciones
+        'acciones': acciones,
+        'implementos': implementos,
+        'tipoimplementos': tipoimplementos
     }
  
     return render(request, 'mantenimiento/programacion.html', contexto)
@@ -32,4 +39,22 @@ def registrar_fecha(request, id_implemento):
             DetMotivos.objects.create(idprogramacionmantenimiento_id = id_programacion, idaccion_id = idmotivo)
 
         
+    return redirect('programacion_mantenimiento')
+
+
+def registrar(request):
+    if request.method == 'POST':
+        implemento = request.POST.get('idimplemento')
+        fecha = request.POST.get('fecha_programacion')
+        motivos = request.POST.getlist('idmotivo')
+
+        print(implemento)
+        print(fecha)
+        print(motivos)
+
+        nueva_programacion =  ProgramacionMantenimiento.objects.create(idimplemento_id = implemento, fechaprogramacion = fecha, tipomantenimiento = 0)
+
+        for idmotivo in motivos:
+            DetMotivos.objects.create(idprogramacionmantenimiento_id = nueva_programacion.idprogramacionmantenimiento , idaccion_id = idmotivo)
+
     return redirect('programacion_mantenimiento')

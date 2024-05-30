@@ -22,7 +22,6 @@ class ProgramacionMantenimiento(models.Model):
       return str(self.idprogramacionmantenimiento)
 
 class Mantenimiento(models.Model):
-
   idmantenimiento = models.AutoField(primary_key=True)
   idprogramacionmantenimiento = models.ForeignKey(ProgramacionMantenimiento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Programacion" )
   fechaingreso = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, verbose_name='Fecha Ingreso')

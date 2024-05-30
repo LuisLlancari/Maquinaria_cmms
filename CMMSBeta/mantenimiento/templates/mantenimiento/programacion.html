@@ -11,15 +11,15 @@
 
 <table class="table table-striped table-sm table-bordered text-center table-responsive mt-3" id="tabla-implemento">
   <thead class="thead-dark">
-    <tr>
+    <tr class="table-dark">
       <th>Implemento</th>
       <th>Tipo Implemento</th>
       <th>Codigo</th>
       <!-- <th>Tiempo Vida</th> -->
       <th>Horas de uso</th>
       <th>F M</th>
-      <th>Fecha Asignada</th>
       <th>Tipo Mantenimiento</th>
+      <th>Fecha Asignada</th>
     </tr>
   </thead>
   <tbody>
@@ -32,9 +32,9 @@
       <td>{{dato.idimplemento.horasdeuso}}</td>
       <td>{{dato.idimplemento.idtipoimplemento.frecuencia_man}}</td>
       {% if dato.tipomantenimiento == 1 %}
-      <td>Preventivo</td>
+      <td class="bg-primary">Preventivo</td>
       {% else %}
-      <td>Correctivo</td>
+      <td class="bg-danger">Correctivo</td>
       {% endif %}
       {% if dato.fechaprogramacion %}
       <td>{{dato.fechaprogramacion}}</td>
@@ -49,7 +49,7 @@
 </table>
 
 <div class="modal fade" id="registro_fecha" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
-  <div class="modal-dialog modal-md">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-primary justify-content-center">
         <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Fecha Mantenimiento</h1>
@@ -85,12 +85,57 @@
   </div>
 </div>
 
-<div class="modal fade" id="programar" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
+<div class="modal fade" id="programar" tabindex="-1" aria-labelledby="" aria-hidden="true">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header bg-primary justify-content-center">
-        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Fecha</h1>
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Fecha Mantenimiento</h1>
       </div>
+
+      <form autocomplete="off" id="" method="POST" action="./programacion/registrar">
+        {% csrf_token %}
+        <div class="modal-body">
+          <label for="idimplemento" class="form-label">Selecione el tipo de Implemento:</label>
+          <select name="idtipoimplemento" id="idtipoimplemento" class="form-control" required>
+            <option value="">--------------------</option>
+            {% for dato in tipoimplementos %}
+              <option value="{{dato.idtipoimplemento}}">{{dato.tipoimplemento}}</option>
+            {% endfor %}
+          </select>
+
+          <label for="idimplemento" class="form-label">Selecione el implemento:</label>
+          <select name="idimplemento" id="idimplemento" class="form-control" required>
+            <option value="">--------------------</option>
+            {% for dato in implementos %}
+              <option value="{{dato.idimplemento}}" data-impletipo="{{dato.idtipoimplemento.idtipoimplemento}}" >{{dato.implemento}}</option>
+            {% endfor %}
+          </select>
+
+          <label for="" class="form-label mt-3">Fecha de la programación:</label>
+          <input type="date" name="fecha_programacion" id="fecha2" class="form-control" required>
+
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <label for="" class="form-label mb-0" name="1" id="label_implemento">Motivos del mantenimiento:</label>
+            <button type="button" id="clone-motivos2" class="btn btn-success ms-2">Añadir Motivo</button>
+          </div>
+
+          <select name="idmotivo" id="" class="form-control mt-3" required>
+            <option value="">-------------------------------------</option>
+            {% for dato in acciones %}
+              <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+            {% endfor %}
+          </select>
+
+          <div id="comienza2">
+            
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill">Guardar</button>
+          <button type="button" id="cerrar" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -98,12 +143,19 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const today = new Date().toISOString().split('T')[0];
-    const fecha = document.getElementById('fecha');
+    const fecha = document.getElementById('fecha2');
+    const fecha2 = document.getElementById('fecha');
     const formModal = document.getElementById("form-modal");
     const btnCloneMotivos = document.getElementById('clone-motivos');
+    const btnCloneMotivos2 = document.getElementById('clone-motivos2');
     const nombre = document.getElementById('label_implemento');
 
+    //Para filtrar en el campo de tipoimplemento - Implementos
+    const tipoImplementoSelect = document.getElementById('idtipoimplemento');
+    const implementoSelect = document.getElementById('idimplemento');
+
     fecha.setAttribute('min', today);
+    fecha2.setAttribute('min', today);
     selectMotivo.value = 12
 
     var btnRegistrarFecha = document.querySelectorAll('.registrar');
@@ -130,7 +182,7 @@
               <div class="contenedor-motivos">
                 <div class="row mb-3">
                   <div class="col-md-9">
-                    <select name="idmotivo" id="selectMotivos" class="form-control mt-3">
+                    <select name="idmotivo" id="selectMotivos" class="form-control mt-3" required>
                       <option value="">-------------------------------------</option>
                       {% for dato in acciones %}
                         <option value="{{dato.idaccion}}">{{dato.accion}}</option>
@@ -147,10 +199,56 @@
       comienza.innerHTML += clone;
     });
 
+    btnCloneMotivos2.addEventListener('click', () => {
+      let clone = `
+            <div id="motivos-container" class="mt-3">
+              <div class="contenedor-motivos">
+                <div class="row mb-3">
+                  <div class="col-md-9">
+                    <select name="idmotivo" id="selectMotivos" class="form-control mt-3" required>
+                      <option value="">-------------------------------------</option>
+                      {% for dato in acciones %}
+                        <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="col-md-3 mt-3">
+                    <button type="button" class="btn btn-danger btn-remove">Eliminar</button>
+                  </div>
+              </div>
+            </div>
+      `
+
+      comienza2.innerHTML += clone;
+    });
+
     document.addEventListener('click', (event) => {
       if (event.target.classList.contains('btn-remove')) {
         event.target.closest('#motivos-container').remove();
       }
+    });
+
+    // Ocultar todas las opciones de implementos inicialmente
+    Array.from(implementoSelect.options).forEach(option => {
+      if (option.value !== "") {
+        option.style.display = 'none';
+      }
+    });
+
+    tipoImplementoSelect.addEventListener('change', function() {
+      const selectedTipo = this.value;
+
+      // Mostrar solo los implementos que coincidan con el tipoimplemento seleccionado
+      Array.from(implementoSelect.options).forEach(option => {
+        if (option.getAttribute('data-impletipo') === selectedTipo || option.value === "") {
+          option.style.display = 'block';
+        } else {
+          option.style.display = 'none';
+        }
+      });
+
+      // Resetear el valor del select de implementos
+      implementoSelect.value = "";
     });
 
   });
