@@ -4,6 +4,7 @@ from mantenimiento.models import ProgramacionMantenimiento, Mantenimiento
 
 @receiver(post_save, sender = ProgramacionMantenimiento)
 def creacion_mantenimiento(sender, instance, **kwargs):
+  print("se ejecuto bien")
   if instance.pk and instance.fechaprogramacion:
     idprogramacion = instance.idprogramacionmantenimiento
     if Mantenimiento.objects.filter(idprogramacionmantenimiento = idprogramacion, estado= 1).exists():

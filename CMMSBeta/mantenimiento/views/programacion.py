@@ -15,7 +15,7 @@ def programacion_mantenimiento(request):
     acciones = Acciones.objects.filter(estado__in=[0, 2])
     implementos = Implemento.objects.filter(estado = 1)
     tipoimplementos = TipoImplemento.objects.filter(estado = True)
-    print(tipoimplementos)
+    # print(tipoimplementos)
     contexto = {
         'datos': datos,
         'acciones': acciones,
@@ -28,13 +28,17 @@ def programacion_mantenimiento(request):
 def registrar_fecha(request, id_implemento):
     if request.method == 'POST':
         fecha = request.POST.get('fecha_programacion')
-        print(fecha)
+        # print(fecha)
         motivos = request.POST.getlist('idmotivo')
-        print(motivos)
+        # print(motivos)
         # id_programacion = ProgramacionMantenimiento.objects.filter(idimplemento=id_implemento).values_list('idprogramacionmantenimiento', flat=True).first()
         # print(id_programacion)
 
-        ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento=id_implemento, estado = 1).update(fechaprogramacion=fecha)
+        #ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento=id_implemento, estado = 1).update(fechaprogramacion=fecha)
+        # Actaulizar Programacion con un save
+        programacion = get_object_or_404(ProgramacionMantenimiento, idprogramacionmantenimiento=id_implemento, estado=1)
+        programacion.fechaprogramacion = fecha
+        programacion.save()
 
         for idmotivo in motivos:
             DetMotivos.objects.create(idprogramacionmantenimiento_id = id_implemento, idaccion_id = idmotivo)
