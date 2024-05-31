@@ -14,10 +14,16 @@ from django.contrib import messages
 def fundo(request):
   fundos = Fundo.objects.filter(estado=True)
   sedes = Sede.objects.filter(estado=True)
-  for fundo in fundos:
-    #MANEJO DE ESTADO
-    fundo.estado = 'Activo' if fundo.estado else 'Inactivo'
-  return render(request, 'fundo_cultivo/fundo.html', {'datos': fundos,'sedes': sedes ,'form_fundo': FundoForm})
+
+  print (fundos)
+
+  context = {
+    'datos': fundos,
+    'sedes': sedes,
+    'form_fundo': FundoForm
+  }
+
+  return render(request, 'fundo_cultivo/fundo.html', context)
 
 def registrar_fundo(request):
   if request.method == 'POST':
