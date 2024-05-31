@@ -34,9 +34,9 @@ def programacion(request):
     #Obtenemos el idusuario
     usuario_id = request.user.id
 
-    tractoristas = Tractorista.objects.filter(estado = True)
-    tractor = Tractor.objects.filter(estado = True)
-    implementos = Implemento.objects.filter(estado = True)
+    tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
+    tractor = Tractor.objects.filter(estado = True, estado_actividad = True)
+    implementos = Implemento.objects.filter(estado = True, estado_actividad = True)
 
     fundos = Fundo.objects.filter(estado = True)
     lotes = Lote.objects.filter(estado = True)
@@ -111,5 +111,23 @@ def obtener_data(request, id_programacion):
         data = {'mensaje': "Not found"}
     return JsonResponse(data)
 
-#def obetner_tractorista():
+
+def obtener_select(request, fecha, turno):
+    # Obtener los ids de tractoristas de las programaciones según fecha y turno
+    list_tractorista = list(Programacion.objects.filter(fechahora=fecha, turno=turno).values_list('idtractorista_id', flat=True))
+    print(list_tractorista)
+
+    # Excluir los tractoristas con los ids obtenidos
+    tractoristas = Tractorista.objects.exclude(idtractorista__in=list_tractorista)
+
+    # Preparar los datos para la respuesta JSON
+    datos = list(tractoristas.values())  # Convierte los QuerySets a una lista de diccionarios
+
+    if datos:
+        data = {'mensaje': "Success", 'tractoristas': datos}
+    else:
+        data = {'mensaje': "Not found"}
+
+    return JsonResponse(data)
+
 

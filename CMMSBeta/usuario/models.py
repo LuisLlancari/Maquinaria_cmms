@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from django.db import models
+
 class Persona(models.Model):
     idpersona = models.AutoField(primary_key=True)
     nombres = models.CharField(max_length=45, verbose_name="Nombres")
@@ -19,14 +21,19 @@ class Persona(models.Model):
         return f"{self.nombres} {self.apellidos}"
 
     def save(self, *args, **kwargs):
-        if not self.codigo:  # Si el código no está establecido
-            last_persona = Persona.objects.order_by('-codigo').first()  # Obtener el último registro
-            if last_persona:  # Si hay registros existentes
-                last_codigo = int(last_persona.codigo)
-                self.codigo = str(last_codigo + 1)  # Incrementar el código en 1
+        if not self.codigo:
+            last_persona = Persona.objects.filter(codigo__startswith='10').order_by('-codigo').first()
+            if last_persona:
+                last_codigo_str = ''.join(filter(str.isdigit, last_persona.codigo))
+                if last_codigo_str:
+                    last_codigo = int(last_codigo_str)
+                    self.codigo = str(last_codigo + 1)
+                else:
+                    self.codigo = "10000"
             else:
-                self.codigo = "1000"  # Si no hay registros, empezar en 1000
+                self.codigo = "10000"
         super().save(*args, **kwargs)
+
 
 
 

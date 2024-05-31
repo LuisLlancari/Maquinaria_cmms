@@ -17,6 +17,8 @@ urlpatterns = [
     path('registrar_programacion', programacion_view.registrar_programacion, name='registrar_programacion'),
     path('eliminar_programacion/<int:id_programacion>', programacion_view.eliminar_programacion, name='eliminar_programacion'),
     path('obtener_data/<int:id_programacion>', programacion_view.obtener_data, name='obtener_data'),
+    path('obtener_select/<str:fecha>/<str:turno>', programacion_view.obtener_select, name='obtener_select'),
     #Urls de detalle labor
     path('detallelabor', detallelabor_view.detallelabor, name='detallelabor'),
+
 ]
