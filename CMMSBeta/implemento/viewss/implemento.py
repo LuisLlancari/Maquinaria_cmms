@@ -53,9 +53,9 @@ def editarImplemento(request, id_implemento):
     form = ImplementoForms(request.POST, instance=implemento)
     nom_implemento = request.POST.get('implemento').strip()
     cod_implemento = request.POST.get('codimplemento').strip()
-    #existe_nom = Implemento.objects.filter(implemento = nom_implemento, estado = True).exists()
-    #existe_cod = Implemento.objects.filter(codimplemento = cod_implemento, estado = True).exists()
-    if form.is_valid():
+    existe_nom = Implemento.objects.filter(implemento = nom_implemento, estado = True).exists()
+    existe_cod = Implemento.objects.filter(codimplemento = cod_implemento, estado = True).exists()
+    if form.is_valid() and existe_nom == False:
       form.save()
       messages.success(request, 'Implemento editado con exito', extra_tags='primary')
       return redirect('implemento')

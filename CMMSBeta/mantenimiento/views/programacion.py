@@ -11,7 +11,7 @@ from mantenimiento.models import Acciones, DetMotivos
 # funcion que calculara las fechas de mantenimiento
 
 def programacion_mantenimiento(request):
-    datos = ProgramacionMantenimiento.objects.filter(estado= 1).annotate( )
+    datos = ProgramacionMantenimiento.objects.filter(estado= 1)
     acciones = Acciones.objects.filter(estado__in=[0, 2])
     implementos = Implemento.objects.filter(estado = 1)
     tipoimplementos = TipoImplemento.objects.filter(estado = True)
@@ -31,12 +31,13 @@ def registrar_fecha(request, id_implemento):
         print(fecha)
         motivos = request.POST.getlist('idmotivo')
         print(motivos)
-        id_programacion = ProgramacionMantenimiento.objects.filter(idimplemento=id_implemento).values_list('idprogramacionmantenimiento', flat=True).first()
-        print(id_programacion)
-        ProgramacionMantenimiento.objects.filter(idimplemento=id_implemento, estado = 1).update(fechaprogramacion=fecha)
+        # id_programacion = ProgramacionMantenimiento.objects.filter(idimplemento=id_implemento).values_list('idprogramacionmantenimiento', flat=True).first()
+        # print(id_programacion)
+
+        ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento=id_implemento, estado = 1).update(fechaprogramacion=fecha)
 
         for idmotivo in motivos:
-            DetMotivos.objects.create(idprogramacionmantenimiento_id = id_programacion, idaccion_id = idmotivo)
+            DetMotivos.objects.create(idprogramacionmantenimiento_id = id_implemento, idaccion_id = idmotivo)
 
         
     return redirect('programacion_mantenimiento')

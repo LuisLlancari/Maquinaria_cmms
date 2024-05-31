@@ -40,7 +40,7 @@
       <td>{{dato.fechaprogramacion}}</td>
       {% else %}
       <td>
-        <button class="btn btn-warning editar d-inline-block registrar" id="registrar-fecha" data-id="{{dato.idimplemento.idimplemento}}" data-imple_nombre="{{dato.idimplemento.implemento}}" data-idprogramacion="{{dato.idprogramacionmantenimiento}}"  data-bs-toggle="modal" data-bs-target="#registro_fecha">Programar Fecha</button>
+        <button class="btn btn-warning editar d-inline-block registrar" id="registrar-fecha" data-id="{{dato.idprogramacionmantenimiento}}" data-imple_nombre="{{dato.idimplemento.implemento}}" data-idprogramacion="{{dato.idprogramacionmantenimiento}}"  data-bs-toggle="modal" data-bs-target="#registro_fecha">Programar Fecha</button>
       </td>
       {% endif %}
     </tr>
@@ -156,17 +156,17 @@
 
     fecha.setAttribute('min', today);
     fecha2.setAttribute('min', today);
-    selectMotivo.value = 12
+    selectMotivo.value = 1
 
     var btnRegistrarFecha = document.querySelectorAll('.registrar');
     btnRegistrarFecha.forEach(function (button) {
       button.addEventListener('click', function () {
-        let id_implemento = this.dataset.id;
+        let id_programacion_mantenimiento = this.dataset.id;
         let imple_nombre = this.dataset.imple_nombre;
         let idprog = this.dataset.idprogramacion;
 
-        console.log(id_implemento)
-        formModal.setAttribute("action", `./programacion/registrar_fecha/${id_implemento}`)
+        console.log(id_programacion_mantenimiento)
+        formModal.setAttribute("action", `./programacion/registrar_fecha/${id_programacion_mantenimiento}`)
 
         document.getElementById('label_implemento').innerHTML = `Motivos del mantenimiento ${imple_nombre} :`;
       });

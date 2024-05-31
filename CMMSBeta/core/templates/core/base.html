@@ -36,8 +36,18 @@
 
                 {% if user.idrol.rol == "Mecanico"%}
                 <li class="sidebar-item">
-                    <a href="{% url 'mantenimiento_realizados' %}" class="sidebar-link" data-path="test">
+                    <a href="{% url 'mantenimiento_proceso' %}" class="sidebar-link" data-path="test">
                         <span class="text-uppercase">Estado Mantenimientos</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'mantenimiento_pendiente' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Inicio Mantenimiento</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'mantenimientos_realizados' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Historial Manteniento</span>
                     </a>
                 </li>
                 {% endif %}
@@ -286,24 +296,7 @@
                     </ul>
                 </li>
 
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#mantenimiento" aria-expanded="false" aria-controls="mantenimiento">
-                        <i class="lni lni-users"></i>
-                        <span>Gestion Mant</span>
-                    </a>
-                    <ul id="mantenimiento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="{% url 'programacion_mantenimiento' %}" class="sidebar-link">Programar Mantenimiento</a>
-                        </li>
-                    </ul>
-                    <ul id="mantenimiento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="{% url 'mantenimiento_realizados' %}" class="sidebar-link">Gestionar Mantenimientos</a>
-                        </li>
-                    </ul>
-                </li>
-
+           
 
                 {% endif %}
 

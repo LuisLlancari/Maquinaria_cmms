@@ -1,0 +1,155 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}Mantenimientos Realizados{% endblock%}
+
+{% block contenido %} 
+<div class="container">
+  <h1 class="text-center">Mantenimientos Realizados</h1>
+  <!-- filtros -->
+  <div class="row"></div>
+
+<!-- fin filtro -->
+
+  <div class="container">
+    <div class="row" id="contenido-cards">
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="detalle_mantenimiento" tabindex="-1" aria-labelledby="example" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary justify-content-center">
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Detalle</h1>
+      </div>
+
+      <form action="{% url 'finalizar_mantenimiento' 1 %}" autocomplete="off" id="form-detalle" method="POST">
+        <div class="modal-body">
+          <h1>Tareas realizadas</h1>
+          <div class="container" id="cuerpo_tareas">
+           
+
+            
+           
+            
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <!-- <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button> -->
+          <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const contenerdoCards = document.getElementById('contenido-cards')
+    const contenerdorTareas = document.getElementById('cuerpo_tareas')
+
+    var CSRF_TOKEN = '{{ csrf_token }}';
+
+    function RenderizarDetalleMantenimiento(datos){
+      let nuevafila = '';
+      contenerdorTareas.innerHTML='';
+      datos.forEach(tarea =>{
+        nuevafila = `
+
+        <div class="row mt-2" id="contenerdor-tareas">
+          <div class="col-md-10">
+            <input type="text" class="form-control border border-0" value="${tarea.tareas}" readonly>
+          </div>
+          <div class="col-md-1"></div>
+          <div class="col-md-1"></div>
+        </div>
+        `;
+        contenerdorTareas.innerHTML += nuevafila;
+      })
+    }
+
+    function obtenerDetalleMantenimiento(idmantenimiento){
+      fetch(`./realizado/detalle_mantenimiento/${idmantenimiento}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN
+        },
+      })
+      .then(res => res.json())
+      .then(datos => {
+        console.log(datos)
+        RenderizarDetalleMantenimiento(datos.tareas)
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+    }
+
+    obtenerDetalleMantenimiento(1)
+
+    function rederizarMantenimientosPendientes(datos){
+      contenerdoCards.innerHTML=''
+      let nuevaCard = ''
+
+      datos.forEach(realizado => {
+        nuevaCard = `
+      </div>  <div class="col col-md-4">
+        <div class="card border-success mb-3" >
+          <div class="card-header bg-transparent border-success text-center">Mantenimiento ${realizado.idmantenimiento}</div>
+            <div class="card-body text-success">
+              <h5 class="card-text text-center fw-bold"></h5>
+              <p class="card-text text-success m-0 fs-5"><strong>Implemento: </strong> ${realizado.implemento}</p>
+              <p class="card-text text-success m-0 fs-5"><strong>Codigo:  </strong> ${realizado.cod_implemento}</p>
+              <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong> ${realizado.fecha_programada }</p>
+              <p class="card-text text-success m-0 fs-5"><strong>Fecha Ingreso:</strong> ${realizado.fechaingreso}</p>
+              <p class="card-text text-success m-0 fs-5"><strong>Fecha Salida:</strong> ${realizado.fechasalida}</p>
+              <p class="card-text text-success m-0 fs-5"><strong>Fecha Encargado:</strong> ${realizado.nombres} ${realizado.apellidos}</p>
+            </div>
+            <div class="card-footer bg-transparent border-success">
+              <form>
+                <button type= "button" class="btn btn-primary mt-1 w-100 ver-detalle" data-id="${realizado.idmantenimiento}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento">Ver detalle</button>
+              </form>
+            </div>
+            </div>
+        </div>
+      </div>
+        `;
+        contenerdoCards.innerHTML += nuevaCard;
+      });
+
+      const btnConfimarFecha = document.querySelectorAll('.ver-detalle')
+      btnConfimarFecha.forEach(function(boton) {
+      boton.addEventListener("click", function(event) {
+        console.log("hola")
+        });
+      });
+
+    }
+
+    function obtenerDatosMantenimientosRealizados(){
+      fetch(`./realizados/datos_mantenimiento`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN
+        },
+      })
+      .then(res => res.json())
+      .then(datos => {
+
+        rederizarMantenimientosPendientes(datos.mantenimientos)
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+    }
+
+    obtenerDatosMantenimientosRealizados()
+
+  });
+</script>
+
+{% endblock %}
