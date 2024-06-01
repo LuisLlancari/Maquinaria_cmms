@@ -169,6 +169,7 @@
         .then(res => res.json())
         .then(datos => {
             console.log(datos)
+
             titulo_modal.textContent = "Editar Implemento" ;
             formModal.setAttribute("action", `./modificar/${id}`);
             formModal.setAttribute("method", "POST");
@@ -200,8 +201,14 @@
     
         btnModificar.forEach(function(boton) {
         boton.addEventListener("click", function(event) {
+<<<<<<< HEAD
             let id_implemento = event.currentTarget.dataset.id;
             console.log(id_implemento); 
+=======
+            formModal.reset();
+            console.log("das")
+            let id_implemento = event.currentTarget.dataset.id; 
+>>>>>>> interfaz-graficos
             // console.log(id_pieza);
             obtener_implemento(id_implemento);
             });

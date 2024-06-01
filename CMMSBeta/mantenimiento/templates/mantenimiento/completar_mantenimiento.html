@@ -8,27 +8,6 @@
 
 </style>
 <h1 class="text-center"> Estado de los mantenimientos</h1>
-<div class="conatiner mb-3">
-  <div class="row">
-    <div class="col col-md-4">
-      <label for="" class="form-label">Seleccione Fecha:</label>
-      <input type="date" class="form-control">
-    </div>
-  </div>
-</div>
-<div class="container mb-3">
-  <div class="row">
-    <div class="col col-md-4 d-grid">
-        <button type="button" class="btn btn-warning btn btn-block" id="btnPendiente">Pendiente</button>
-    </div>
-    <div class="col col-md-4 d-grid">
-        <button type="button" class="btn btn-success btn btn-block" id="btnProceso">En proceso</button>
-    </div>
-    <div class="col col-md-4 d-grid">
-        <button type="button" class="btn btn-secondary btn btn-block" id="btnCompletados">Completados</button>
-    </div>
-  </div>
-</div>
 
 <div class="container">
   <div class="row" id="cards-mantenimiento">
@@ -37,14 +16,14 @@
 </div>
 
 
-<div class="modal fade" id="registro_diagnostico" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
+<div class="modal fade" id="registro_diagnostico" tabindex="-1" aria-labelledby="example" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-primary justify-content-center">
         <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Detalle</h1>
       </div>
 
-      <form action="{% url 'finalizar_mantenimiento' 1 %}" autocomplete="off" id="form-detalle" method="POST">
+      <form autocomplete="off" id="form-detalle" method="POST">
         {% csrf_token %}
         <div class="modal-body">
           <div class="row">
@@ -60,57 +39,26 @@
             </div>
           </div>
           <h1 class="text-center mt-3" > Acciones</h1>
-          <button type="button" class="btn btn-success " id="agregar-tarea">agregar acciones</button>
+          <button type="button" class="btn btn-success " id="agregar-tarea">Agregar acciones</button>
           <div class="container" id="contenedor-tareas">
             <div class="container tarea" id="cuerpo-acciones">
-              <!-- inicio del select -->
-              <!-- <div class="row mt-2">
-                <div class="col-md-10">
-                  <select name="tareas" class="form-control">
-                    <option value="">Seleccione</option>
-                  </select>
-                </div>
-                <div class="col-md-1">
-                  <div class="form-check">
-                    <input class="form-check-input big-checkbox mr-3" type="checkbox" id="inlineCheckbox1" value="option1">
-                  </div>
-                </div>
-                <div class="col-md-1">
-                  <button type="button" class="btn-close mt-2 remover-tarea"></button>
-                </div>
-              </div> -->
-              <!-- fin del select -->
             </div>
-          </div>
-
-          
+          </div>    
 
           <div class="mb-3 container" id="recambios">
             <h1 class="text-center mt-3">Recambios</h1>
             <button type="button" class="btn btn-success mb-3" id="agregarRecambio">Agregar recambio</button>
           </div>
 
-          <!-- <div class="container" id="contenedor-componentes">
-            <button type="button" class="btn btn-success" id="agregar-item">agregar item</button>
-            <div class="container componente">
-              <div class="row mt-2">
-                <div class="col col-md-10">
-                  <select name="" id="" class="form-select">
-                    <option value="">Accion 1 </option>
-                    <option value="">Accion 2</option>
-                    <option value="">Accion 3</option>
-                    <option value="">Accion 4</option>
-                  </select>
-                </div>
-                <div class="col col-md-2">
-                  <button type="button" class="btn btn-danger remove-piece">Eliminar</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <span id="error-message" class="text-danger d-none">El mínimo de contenedores es uno.</span> -->
+          <div class="container mt-5">
+            <h1>Buscar en Array</h1>
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
+            <ul id="resultList" class="list-group mt-3">
+                <!-- Resultados de la búsqueda se mostrarán aquí -->
+            </ul>
+        </div>
     
-
+    
         </div>
         <div class="modal-footer">
           <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button>
@@ -128,23 +76,42 @@
     const cards = document.getElementById('cards-mantenimiento');
     const contenedorComponente = document.getElementById('contenedor-componentes');
     const contenedorTareas = document.getElementById('contenedor-tareas');
-    const errorMessage = document.getElementById('error-message');
     const formDetalle = document.getElementById('form-detalle')
     const btnAgregarItem = document.getElementById('agregar-item');
     const btnAgregarTarea = document.getElementById('agregar-tarea');
     const btnAgregarRecambio = document.getElementById('agregarRecambio');
+    const searchInput = document.getElementById('searchInput');
+    const resultList = document.getElementById('resultList');
+
     var CSRF_TOKEN = '{{ csrf_token }}';
 
     let det_componente = '';
     let det_tareas = '';
     let det_encargados = '';
-    let contador = 0
+    let contador = 0;
+    let fechaProgramacion = '' 
+    let datos_busqueda = '';
 
-    // btnAgregarItem.addEventListener('click', agregarComponente)
     btnAgregarTarea.addEventListener('click', function(){
       contador ++;
       console.log(contador)
       createTaskRow(det_tareas, contador)
+    });
+
+    function searchArray(query) {
+        resultList.innerHTML = '';
+        const filteredResults = datos_busqueda.filter(item => item.toLowerCase().includes(query.toLowerCase()));
+        filteredResults.forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.textContent = idimplemento_id;
+            listItem.classList.add('list-group-item');
+            resultList.appendChild(listItem);
+        });
+    }
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value;
+        searchArray(query);
     });
 
     btnAgregarRecambio.addEventListener('click',function(){
@@ -306,7 +273,7 @@
     }
 
     function obtenerMantenimientos(){
-        fetch(`./completar_programacion/datos_mantenimiento`)
+        fetch(`./proceso/datos_mantenimiento`)
         .then(res => res.json())
         .then(datos => {
             // console.log(datos);    
@@ -322,7 +289,7 @@
     }
 
     function obtenerDatosImplementos(idprogramacion, idimplemento){
-      fetch(`./completar_programacion/datos_implemento/${idprogramacion}/${idimplemento}`, {
+      fetch(`./proceso/datos_implemento/${idprogramacion}/${idimplemento}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -331,26 +298,8 @@
       })
       .then(res => res.json())
       .then(datos => {
-          console.log(datos.partes)
-          console.log(datos.tareas)
+          datos_busqueda = datos.partes
           rederizarTareas(datos.tareas)
-      })
-      .catch((error) => {
-          console.log(error);
-      });
-    }
-
-    function registrarIngreso(idmantenimiento){
-      fetch(`./completar_programacion/registrar_ingreso/${idmantenimiento}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': CSRF_TOKEN
-        },
-      })
-      .then(res => res.json())
-      .then(datos => {
-          // Maneja la respuesta aquí
       })
       .catch((error) => {
           console.log(error);
@@ -361,54 +310,36 @@
       cards.innerHTML = '';
 
       datos.forEach(mantenimiento => {
-        // Verificar si fecha_programada es null
-        let fechaProgramacion = mantenimiento.fechaingreso ? 
-          `<strong>Fecha Programacion:</strong>${mantenimiento.fechaingreso}
-          </div>
-          <div class="card-footer bg-transparent border-success">
-           <button class="btn btn-primary mt-1 finalizar-mantenimiento" data-idmantenimiento="${mantenimiento.idmantenimiento}" data-idprogramacion="${mantenimiento.idprogramacion}" data-idimplemento="${mantenimiento.idimplemento}" id="finalizar-mantenimiento" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
-          </div>`
-           :
-
-          `</div>
-          <div class="card-footer bg-transparent border-success">
-            <form>
-              <button class="btn btn-primary mt-1 confirmar" data-id="${mantenimiento.idmantenimiento}">Confirmar Llegada</button>
-            </form>
-          </div>
-          `
-
+    
         let nuevacard = `
         <div class="col col-md-4">
           <div class="card border-success mb-3" >
             <div class="card-header bg-transparent border-success text-center">Mantenimiento ${mantenimiento.idmantenimiento}</div>
               <div class="card-body text-success">
                 <h5 class="card-text text-center fw-bold"></h5>
-                <p class="card-text text-success m-0 fs-5"><strong>Implemento:</strong>${mantenimiento.implemento}</p>
-                <p class="card-text text-success m-0 fs-5"><strong>Codigo:</strong>${mantenimiento.cod_implemento}</p>
-                <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong>${mantenimiento.fecha_programada }</p>
-                ${fechaProgramacion}
+                <p class="card-text text-success m-0 fs-5"><strong>Implemento: </strong> ${mantenimiento.implemento}</p>
+                <p class="card-text text-success m-0 fs-5"><strong>Codigo:  </strong> ${mantenimiento.cod_implemento}</p>
+                <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong> ${mantenimiento.fecha_programada }</p>
+                <p class="card-text text-success m-0 fs-5"><strong>Fecha Ingreso:</strong> ${mantenimiento.fechaingreso}</p>
+                </div>
+                <div class="card-footer bg-transparent border-success">
+                  <button class="btn btn-primary mt-1 finalizar-mantenimiento" data-idmantenimiento="${mantenimiento.idmantenimiento}" data-idprogramacion="${mantenimiento.idprogramacion}" data-idimplemento="${mantenimiento.idimplemento}" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
+                </div>
               </div>
-            
           </div>
         </div>
         `;
         cards.innerHTML += nuevacard;
       }); 
-      const btnConfimarFecha = document.querySelectorAll('.confirmar')
       const btnFinalizarMantenimiento = document.querySelectorAll('.finalizar-mantenimiento')
 
-      btnConfimarFecha.forEach(function(boton) {
-      boton.addEventListener("click", function(event) {
-          let id_mantenimiento = event.currentTarget.dataset.id;
-          registrarIngreso(id_mantenimiento);
-        });
-      });
       btnFinalizarMantenimiento.forEach(function(boton){
         boton.addEventListener("click",function(event){
           let id_implemento = event.target.dataset.idimplemento
+          let id_mantenimiento = event.target.dataset.idmantenimiento
           let id_programacion = event.target.dataset.idprogramacion
           console.log(id_implemento, id_programacion)
+          formDetalle.setAttribute('action', `./proceso/finalizar_mantenimiento/${id_mantenimiento}`)
           formDetalle.reset()
           obtenerDatosImplementos(id_programacion, id_implemento)
           rederizarEncargado(det_encargados);
