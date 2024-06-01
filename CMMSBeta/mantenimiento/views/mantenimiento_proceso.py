@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
-from implemento.models import DetImplementos
+from implemento.models import DetImplementos, Implemento
 from usuario.models import Persona
 from mantenimiento.models import Mantenimiento, DetMotivos, Acciones, DetalleMantenimiento
 from django.http import JsonResponse
@@ -56,11 +56,19 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     fecha_salida = request.POST.get('fecha-salida')
     tareas = request.POST.getlist('realizado')
 
-    Mantenimiento.objects.filter(idmantenimiento = id_mantenimiento).update(
-      persona_id= encargado,
-      fechasalida = fecha_salida,
-      estado = False
-    )
+    # Mantenimiento.objects.filter(idmantenimiento = id_mantenimiento).update(
+    #   persona_id= encargado,
+    #   fechasalida = fecha_salida,
+    #   estado = 0
+    # )
+    mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento)
+    mantenimiento.persona_id = encargado
+    mantenimiento.fechasalida = fecha_salida
+    mantenimiento.estado = 0
+    mantenimiento.save()
+
+    implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
+    Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 1) 
 
     for tarea in tareas:
       DetalleMantenimiento.objects.create(
@@ -69,7 +77,7 @@ def finalizar_mantenimiento(request, id_mantenimiento):
       )
 
       
-    print(tareas)
+    
   return redirect('mantenimiento_proceso')
 
 def detalle_mantenimiento (request, id_mantenimiento):

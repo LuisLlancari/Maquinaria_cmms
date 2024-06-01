@@ -88,7 +88,6 @@
       });
     }
 
-    obtenerDetalleMantenimiento(1)
 
     function rederizarMantenimientosPendientes(datos){
       contenerdoCards.innerHTML=''
@@ -123,7 +122,8 @@
       const btnConfimarFecha = document.querySelectorAll('.ver-detalle')
       btnConfimarFecha.forEach(function(boton) {
       boton.addEventListener("click", function(event) {
-        console.log("hola")
+        let idmantenimiento = event.target.dataset.id
+        obtenerDetalleMantenimiento(idmantenimiento)
         });
       });
 

@@ -112,15 +112,14 @@
         <h1 id="h1-remplazar" class="text-center"></h1>
     </div>
 
-    <!-- Modal Registrar Ceco -->
     <div class="modal fade" id="modalNuevo" tabindex="-1" role="dialog" aria-labelledby="modalNuevoLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-success">
-                    <h1 class="modal-title text-white" id="modalProgramacion">Nueva Programacion</h1>
+                <div class="modal-header bg-secondary">
+                    <h1 class="modal-title text-center text-white " id="modalProgramacion">Nueva Programación</h1>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="background-color: #E5E8E8;">
                     <form method="post" action="{% url 'registrar_programacion' %}" autocomplete="off" id="form-ceco">
                         {% csrf_token %}
                         <strong for="idcimplemnto" >Datos Generales:</strong>
@@ -186,23 +185,6 @@
 
                         <!--FIN-->
                         <div class="row mt-3">
-                            <!-- <div class="col-md-4">
-                                <label for="idlote" >Tipo de labor:</label>
-                                {{form_programacion.idtipolabor}}
-                            </div> -->
-                            <!-- <div class="col-md-4">
-                                <label for="idsolicitante">Lote:</label>
-                                {{form_programacion.idlote}}
-                            </div> -->
-                            <!-- <div class="col-md-4">
-                                <label for="idtractor">Nombre del Tractor:</label>
-                                <select name="idtractor" class="form-control mb-2" required id="id_idtractor">
-                                    <option value="">---------</option>
-                                    {% for i in tractor %}
-                                    <option value="{{i.idtractor}}">{{i.nrotractor}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div> -->
                         </div>
                         
                         <hr>
@@ -211,7 +193,7 @@
 
                         <div class="row mt-2">
                             
-                            <div class="col-md-4 bg-primary">
+                            <div class="col-md-4">
                                 <div class="row mt-2">
                                     <div class="col-md-8">
                                         <select name="usuario_id" class="form-select" id="usuario_id">
@@ -241,7 +223,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4 bg-success">                            
+                            <div class="col-md-4">                            
                                 <div class="row mt-2">
                                     <div class="col-md-8">
                                         <select name="usuario_id" class="form-select" id="usuario_id_2" required>
@@ -263,7 +245,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 bg-secondary">                            
+                            <div class="col-md-4">                            
                                 <div class="row mt-2">
                                     <div class="col-md-8">
                                         <select name="usuario_id" class="form-select" id="usuario_id_3" required>

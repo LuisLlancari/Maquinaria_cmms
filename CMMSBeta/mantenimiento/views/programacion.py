@@ -40,7 +40,9 @@ def registrar_fecha(request, id_implemento):
         # print(id_programacion)
 
         #ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento=id_implemento, estado = 1).update(fechaprogramacion=fecha)
-        # Actaulizar Programacion con un save
+       
+       # Actaulizar Programacion con un save
+
         programacion = get_object_or_404(ProgramacionMantenimiento, idprogramacionmantenimiento=id_implemento, estado=1)
         programacion.fechaprogramacion = fecha
         programacion.save()
