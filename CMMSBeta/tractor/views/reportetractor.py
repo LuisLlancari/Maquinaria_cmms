@@ -43,6 +43,7 @@ def registrarReporte(request):
 
         # Calculando Horas de uso del tractor 
         horauso_implemento = float((hora_final - hora_inicial) *0.9)
+        horauso_Detimplemento = (hora_final - hora_inicial)
         horauso_tractor = horausoinicial + (hora_final - hora_inicial)
 
 
@@ -54,13 +55,16 @@ def registrarReporte(request):
             horauso_final_implemento = horasuso_implemento + horauso_implemento
 
             Implemento.objects.filter(idimplemento = int(implemento['idimplemento'])).update(estado_actividad = True)
-            Implemento.objects.filter(idimplemento = int(implemento['idimplemento'])).update(horasdeuso = horauso_final_implemento)
-
+            # Implemento.objects.filter(idimplemento = int(implemento['idimplemento'])).update(horasdeuso = horauso_final_implemento)
+            dato_implemento = get_object_or_404(Implemento, idimplemento = implemento['idimplemento'])
+            dato_implemento.horasdeuso = horauso_final_implemento
+            dato_implemento.save()
+            
         # Actualizamos campos
         Programacion.objects.filter(idprogramacion = int(programacion_id)).update(estado = False)
 
         # DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(estado = False)
-        DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(horadeuso = horasuso_implemento)
+        DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(horadeuso = horauso_Detimplemento)
         Tractor.objects.filter(idtractor = int(tractor_id)).update(horainicial = hora_final )
         Tractor.objects.filter(idtractor = int(tractor_id)).update(horauso = horauso_tractor )
         Tractor.objects.filter(idtractor = int(tractor_id)).update(estado_actividad = True )
