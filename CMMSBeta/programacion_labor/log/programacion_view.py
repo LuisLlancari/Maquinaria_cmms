@@ -20,23 +20,26 @@ from fundo_cultivo.models import *
 
 from django.contrib.auth.decorators import login_required
 
+from datetime import timedelta
+
 #Programacion 
 @login_required(login_url='login', redirect_field_name='')
 def programacion(request):
-    
-    programacion = Programacion.objects.filter(estado=True)
 
-    # Obtener la cantidad de tractores utilizados hoy
-    hoy = timezone.now().date()
+    # Formateo de la fecha - Peru
+    ahora_utc = timezone.now()
+    ahora_peru = ahora_utc - timedelta(hours=5)
+    hoy = ahora_peru.date()
+        #Uso del Formateo
     cantidad_tractores_hoy = Programacion.objects.filter(fechahora=hoy, idusuario = request.user).count()
-
+    # Fin Formateo de la fecha
 
     #Obtenemos el idusuario
     usuario_id = request.user.id
 
-    tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
-    tractor = Tractor.objects.filter(estado = True, estado_actividad = True)
-    implementos = Implemento.objects.filter(estado = True, estado_actividad = True)
+    #tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
+    #tractor = Tractor.objects.filter(estado = True, estado_actividad = True)
+    #implementos = Implemento.objects.filter(estado = True, estado_actividad = True)
 
     fundos = Fundo.objects.filter(estado = True)
     lotes = Lote.objects.filter(estado = True)
@@ -58,40 +61,57 @@ def programacion(request):
     #LISTA DE USUARIO PARA EL SELECT 
     usuario = Usuario.objects.filter(idrol = 3)
 
+    # Pasamos los datos al contexto
+    contexto = {
+        'cantidad'          : cantidad_tractores_hoy ,
+        'fecha'             : hoy, 
+        'detalle'           : detalles_unicos, 
+        'idusuario'         : usuario_id, 
+        'lista_usuarios'    : usuario ,
+        'fundo'             : fundos,
+        'lotes'             : lotes,
+        'form_programacion' : ProgramacionForm, 
+    }
 
-    return render(request, 'programacion_labor/programacion.html', {'cantidad': cantidad_tractores_hoy , 'fecha': hoy, 'detalle': detalles_unicos, 'tractor' : tractor , 'tractorista': tractoristas ,'idusuario': usuario_id, 'lista_usuarios': usuario ,'fundo': fundos,'lotes': lotes,'form_programacion': ProgramacionForm, 'implementos': implementos})
+
+    return render(request, 'programacion_labor/programacion.html', contexto)
 
 def registrar_programacion(request):
     if request.method == 'POST':
         form = ProgramacionForm(request.POST)
         if form.is_valid():
-            idtractor = form.cleaned_data['idtractor']
-            # idtractorista = form.cleaned_data['idtractorista']
-            idtractorista = request.POST.get('idtractorista')
+            try:
+                idtractor = form.cleaned_data['idtractor']
+                # idtractorista = form.cleaned_data['idtractorista']
+                idtractorista = request.POST.get('idtractorista')
 
-            programacion = form.save()
+                programacion = form.save()
 
-            # Obtener el ID de la última programación guardada
-            ultimo_id = Programacion.objects.aggregate(Max('idprogramacion'))['idprogramacion__max']
+                # Obtener el ID de la última programación guardada
+                ultimo_id = Programacion.objects.aggregate(Max('idprogramacion'))['idprogramacion__max']
 
-            # Obtener los implementos seleccionados del formulario
-            implementos_seleccionados = request.POST.getlist('idimplemento')
-            print(implementos_seleccionados)
+                # Obtener los implementos seleccionados del formulario
+                implementos_seleccionados = request.POST.getlist('idimplemento')
+                print(implementos_seleccionados)
 
-            # Crear un detalle de labor para cada implemento seleccionado
-            for implemento_id in implementos_seleccionados:
-                implemento = Implemento.objects.get(pk=implemento_id)
-                Implemento.objects.filter(pk = implemento_id).update(estado_actividad = False)
-                DetalleLabor.objects.create(idprogramacion=programacion, idimplemento=implemento, horadeuso=0)
+                # Crear un detalle de labor para cada implemento seleccionado
+                for implemento_id in implementos_seleccionados:
+                    implemento = Implemento.objects.get(pk=implemento_id)
+                    # Implemento.objects.filter(pk=implemento_id).update(estado_actividad=False)
+                    DetalleLabor.objects.create(idprogramacion=programacion, idimplemento=implemento, horadeuso=0)
 
-            Tractor.objects.filter(nrotractor = idtractor).update(estado_actividad = False)
-            Tractorista.objects.filter(pk = idtractorista).update(estado_actividad = False)
+                #Tractor.objects.filter(nrotractor=idtractor).update(estado_actividad=False)
+                # Tractorista.objects.filter(pk=idtractorista).update(estado_actividad=False)
 
-            messages.success(request, "La programacion ha sido agregada correctamente", extra_tags='success')
+                messages.success(request, "La programación ha sido agregada correctamente", extra_tags='success')
+                return redirect('programacion')
+            except Exception as e:
+                messages.error(request, f"Error al registrar la programación: {e}", extra_tags='danger')
+                return redirect('programacion')
+        else:
+            print(form.errors)
+            messages.error(request, f"Errores en el formulario: {form.errors}", extra_tags='danger')
             return redirect('programacion')
-    else:
-        messages.success(request, "Ingrese datos válidos", extra_tags='danger')
-        return redirect('programacion')
 
 def eliminar_programacion(request, id_programacion):
     programacion = get_object_or_404(DetalleLabor, pk=id_programacion)
@@ -115,18 +135,28 @@ def obtener_data(request, id_programacion):
 def obtener_select(request, fecha, turno):
     # Obtener los ids de tractoristas de las programaciones según fecha y turno
     list_tractorista = list(Programacion.objects.filter(fechahora=fecha, turno=turno).values_list('idtractorista_id', flat=True))
-    print(list_tractorista)
+    list_tractores = list(Programacion.objects.filter(fechahora=fecha, turno=turno).values_list('idtractor_id', flat=True))
+
+    # Para obtener los implemenos , hacemos una jugada ganadora
+    list_programaciones = list(Programacion.objects.filter(fechahora=fecha, turno=turno))
+    list_implementos = list(DetalleLabor.objects.filter(idprogramacion__in=list_programaciones).values_list('idimplemento_id', flat=True))
 
     # Excluir los tractoristas con los ids obtenidos
-    tractoristas = Tractorista.objects.exclude(idtractorista__in=list_tractorista)
+    tractoristas = Tractorista.objects.filter(estado = True).exclude(idtractorista__in=list_tractorista)
+    tractores = Tractor.objects.filter(estado = True).exclude(idtractor__in=list_tractores)
+    implementos = Implemento.objects.filter(estado = True).exclude(idimplemento__in=list_implementos)
 
     # Preparar los datos para la respuesta JSON
-    datos = list(tractoristas.values())  # Convierte los QuerySets a una lista de diccionarios
+    datos_tractoristas = list(tractoristas.values('idtractorista', 'idusuario_id', 'idpersona_id__nombres', 'idpersona_id__apellidos'))  # Convierte los QuerySets a una lista de diccionarios
+    datos_tractores = list(tractores.values())
+    datos_implementos = list(implementos.values('idimplemento', 'idusuario_id', 'implemento'))
 
-    if datos:
-        data = {'mensaje': "Success", 'tractoristas': datos}
-    else:
-        data = {'mensaje': "Not found"}
+    data = {
+        'mensaje': "Success" if datos_tractoristas or datos_tractores else "Not found",
+        'tractoristas': datos_tractoristas,
+        'tractores': datos_tractores,
+        'implementos': datos_implementos
+    }
 
     return JsonResponse(data)
 

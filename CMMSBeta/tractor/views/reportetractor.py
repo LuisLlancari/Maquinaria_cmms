@@ -48,6 +48,7 @@ def registrarReporte(request):
 
 
         implementos = list(DetalleLabor.objects.filter(idprogramacion = programacion_id).values('idimplemento'))
+        print(implementos)
         for implemento in implementos:
             dato = Implemento.objects.filter(idimplemento = int(implemento['idimplemento'])).values('horasdeuso').first()
             horasuso_implemento = dato['horasdeuso']

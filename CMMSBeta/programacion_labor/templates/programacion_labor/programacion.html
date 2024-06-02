@@ -2,7 +2,17 @@
 
 {% block titulo %}implemento{% endblock%}
 
-{% block contenido %} 
+{% block contenido %}
+
+<style>
+    .implemento-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+</style>
+
 <div class="container">
     <h1 class="text-center mb-3">Creacion de Programacion de Labor</h1>
     <div class="row">
@@ -12,7 +22,7 @@
         <div class="col-md-6"></div>
         <div class="col-md-2">
             {% if user.idrol.rol == "Supervisor" %}
-            <button type="button" class="btn btn-success obtener" data-toggle="modal" data-target="#modalNuevo">Nueva Programacion
+            <button type="button" id="agregar" class="btn btn-success obtener" data-toggle="modal" data-target="#modalNuevo">Nueva Programacion
             </button>
             {% endif %}
         </div>
@@ -120,19 +130,10 @@
                     <h1 class="modal-title text-center text-white " id="modalProgramacion">Nueva Programación</h1>
                 </div>
                 <div class="modal-body" style="background-color: #E5E8E8;">
-                    <form method="post" action="{% url 'registrar_programacion' %}" autocomplete="off" id="form-ceco">
+                    <form method="post" action="{% url 'registrar_programacion' %}" autocomplete="off" id="form_programacion">
                         {% csrf_token %}
                         <strong for="idcimplemnto" >Datos Generales:</strong>
                         <div class="row mt-3">
-                            <div class="col-md-0">
-                                <!-- <label for="idtractorista">Tractorista:</label>
-                                <select name="idtractorista" class="form-select mb-2" id="id_idtractorista" required>
-                                    <option value="">---------</option>
-                                    {% for i in tractorista %}
-                                    <option value="{{i.idtractorista}}">{{i.idpersona.nombres}} {{i.idpersona.apellidos}}</option>
-                                    {% endfor %}
-                                </select> -->
-                            </div>
                             <div class="col-md-4">
                                 <label for="turn4o">Fecha de labor:</label>
                                 <select name="fechahora" class="form-select mb-2" id="id_fechahora">
@@ -142,14 +143,15 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="turno">Turno:</label>
-                                {{form_programacion.turno}}
+                                <select name="turno" class="form-select mb-2" id="id_turno">
+                                    <option id="1" value="M" selected>Dia</option>
+                                    <option id="2" value="T">Tarde</option>
+                                </select>
                             </div>
                             <div class="col-md-5">
                                 <label for="fechahora">Solicitante:</label>
                                 {{form_programacion.idsolicitante}}
-                            </div>
-                            
-                            
+                            </div>     
                         </div>
                         
 
@@ -212,14 +214,18 @@
                                             Agregar
                                         </button>
                                     </div>
-                                    <div class="implementos-container mt-2">
-                                        <select name="idimplemento" class="form-select mb-2" id="id_idimplemento" required>
-                                            <option value="">---------</option>
-                                            {% for implemento in implementos %}
-                                            <option data-idusuario="{{ implemento.idusuario_id }}" value="{{ implemento.idimplemento }}">{{ implemento.implemento }}</option>
-                                            {% endfor %}
-                                        </select>
+
+                                    <select name="idimplemento" class="form-select mb-2" id="id_idimplemento" required>
+                                    </select>
+
+                                    <div class="implementos">
+                                        <div class="implemento-item">
+                                            <select id="id_idimplemento">
+                                                <!-- Opciones serán añadidas aquí -->
+                                            </select>
+                                        </div>
                                     </div>
+                                    
                                 </div>
                             </div>
 
@@ -238,9 +244,6 @@
                                     <div class="mt-4">
                                         <select name="idtractor" id="id_idtractor" class="form-select" required>
                                             <option value="">---------</option>
-                                            {% for data in tractor %}
-                                            <option data-idusuario="{{data.idusuario.id}}" value="{{data.idtractor}}">{{data.nrotractor}}</option>
-                                            {% endfor %}
                                         </select>
                                     </div>
                                 </div>
@@ -258,28 +261,24 @@
                                 <div class="row mb-2 mt-2">
                                     <strong for="idimplemento">Selecione al Tractorista:</strong>
                                     <div class="mt-4">
-                                        <select name="idtractorista" id="id_idtractorista" class="form-select" required>
-                                            <option value="">---------</option>
-                                            {% for data in tractorista %}
-                                            <option data-idusuario="{{data.idusuario.id}}" value="{{data.idtractorista}}">{{data.idpersona}}</option>
-                                            {% endfor %}
+                                        <select name="idtractorista" id="id_idtractorista" class="form-select" required>                                   
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            
-
+                            </div>                            
                         </div>
-
 
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Guardar</button>
                         </div>
+                        
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    
+    
 
     <div class="modal fade" id="modalListImplemento" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -288,19 +287,29 @@
                     <h5 class="modal-title" id="">Lista de Implementos</h5>
                 </div>
                 <div class="modal-body">
-
+                    
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.3.0/luxon.min.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-
+        
+        // Incluye la biblioteca luxon
+        const { DateTime } = luxon;
+        
+        // Uso de HTML
         const h1 = document.querySelector('#h1-remplazar');
         const buscador = document.querySelector('#buscador');
         const filasTabla = document.querySelectorAll('#tabla-labor tbody tr');
+        const form = document.getElementById('form_programacion');
+        id_turno.value = 'M';
 
         function filtrarTabla() {
             const valorBusqueda = buscador.value.trim().toLowerCase();
@@ -321,36 +330,144 @@
             });
             h1.textContent = noHayResultados ? 'Datos no encontrados' : '';
         }
+        
+        // HACEMOS EL TRUCO NAZHEE
+        function obtener_data_select(fecha, turno) {
+            //Limpiamos el form
+            
+            //id_turno.value = 'M';
+            // Referencia al select de limpiamos y creamos
+            id_idtractorista.innerHTML = '';
+            id_idtractorista.innerHTML = '<option value="">---------</option>';
+            id_idtractor.innerHTML = '';
+            id_idtractor.innerHTML = '<option value="">---------</option>';
+            id_idimplemento.innerHTML = '';
+            id_idimplemento.innerHTML = '<option value="">---------</option>';
+
+
+            fetch(`./obtener_select/${fecha}/${turno}`)
+            .then(res => res.json())
+            .then(dataRecibida => {
+                
+                // Referencia al select de tractoristas
+                const selectTractorista = document.getElementById('id_idtractorista');
+                const selectTractor = document.getElementById('id_idtractor');
+                const selectImplemento = document.getElementById('id_idimplemento');
+
+                // Verificar si hay tractoristas disponibles y agregarlos al select
+                if (dataRecibida.tractoristas && dataRecibida.tractoristas.length > 0) {
+                    dataRecibida.tractoristas.forEach(tractorista => {
+                        let option = document.createElement('option');
+                        option.value = tractorista.idtractorista;
+                        option.dataset.idusuario = tractorista.idusuario_id;
+                        option.textContent = `${tractorista.idpersona_id__nombres} ${tractorista.idpersona_id__apellidos}`;
+                        selectTractorista.appendChild(option);
+                    });
+                } else {
+                    let option = document.createElement('option');
+                    option.textContent = "No hay tractoristas disponibles";
+                    selectTractorista.appendChild(option);
+                }
+
+                // Verificar si hay tractores disponibles y agregarlos al select
+                if (dataRecibida.tractores && dataRecibida.tractores.length > 0) {
+                    dataRecibida.tractores.forEach(tractor => {
+                        let option = document.createElement('option');
+                        option.value = tractor.idtractor;
+                        option.dataset.idusuario = tractor.idusuario_id;
+                        option.textContent = tractor.nrotractor;
+                        selectTractor.appendChild(option);
+                    });
+                } else {
+                    let option = document.createElement('option');
+                    option.textContent = "No hay tractores disponibles";
+                    selectTractor.appendChild(option);
+                }
+
+                if (dataRecibida.implementos && dataRecibida.implementos.length > 0) {
+                dataRecibida.implementos.forEach(implemento => {
+                    let option = document.createElement('option');
+                    option.value = implemento.idimplemento;
+                    option.dataset.idusuario = implemento.idusuario_id;
+                    option.textContent = implemento.implemento;
+                    selectImplemento.appendChild(option);
+                });
+                } else {
+                    let option = document.createElement('option');
+                    option.textContent = "No hay implementos disponibles";
+                    selectImplemento.appendChild(option);
+                }
+
+
+
+                // Disparar eventos de cambio en los selects
+                selectUsuario.dispatchEvent(new Event('change'));
+                selectUsuario2.dispatchEvent(new Event('change'));
+                selectUsuario3.dispatchEvent(new Event('change'));
+            })
+            .catch(error => console.log(error));
+        }
+
+        agregar.addEventListener('click', () => {
+            const fecha = document.getElementById('id_fechahora').value;
+            const turno = document.getElementById('id_turno').value;
+            document.querySelector('.implementos').innerHTML = '';
+            form.reset();
+            obtener_data_select(fecha, turno);
+        });
+        
+        id_fechahora.addEventListener('change', () => {
+            const fecha = document.getElementById('id_fechahora').value;
+            const turno = document.getElementById('id_turno').value;
+            document.querySelector('.implementos').innerHTML = '';
+            obtener_data_select(fecha, turno);
+        })
+        id_turno.addEventListener('change', () => {
+            const fecha = document.getElementById('id_fechahora').value;
+            const turno = document.getElementById('id_turno').value;
+            document.querySelector('.implementos').innerHTML = '';
+            obtener_data_select(fecha, turno);
+        })
+
+        // FIN DEL TRUCO
+
 
         //Eventos
         buscador.addEventListener('input', filtrarTabla);
 
         //MANEJO DE FECHAS
+
+        // Configura la zona horaria de Perú
+        const zonaHorariaPeru = 'America/Lima';
+
+        // Obtén la fecha y hora actual en la zona horaria de Perú
+        let fechaActual = DateTime.now().setZone(zonaHorariaPeru);
+        let fechaMañana = fechaActual.plus({ days: 1 });
+
+        // Formatea las fechas en el formato 'yyyy-MM-dd'
+        let hoy = fechaActual.toFormat('yyyy-MM-dd');
+        let mañana = fechaMañana.toFormat('yyyy-MM-dd');
+
+        // Asigna los valores a las opciones del select
         let selectFecha = document.getElementById('id_fechahora');
         let option_1 = document.getElementById('1');
-        let option_2 = document.getElementById('2'); 
-    
-        let fechaActual = new Date();
-        let fechaMañana = new Date();
-        fechaMañana.setDate(fechaMañana.getDate() + 1);
-        
-        let hoy = fechaActual.toISOString().split('T')[0];
-        let mañana = fechaMañana.toISOString().split('T')[0];
+        let option_2 = document.getElementById('2');
 
         option_1.value = hoy;
+        option_1.innerHTML = `HOY - ${hoy}`;
         option_2.value = mañana;
-        
+        option_2.innerHTML = `MAÑANA - ${mañana}`;
+
         selectFecha.addEventListener('change', () => {
             let seleccion = selectFecha.value;
-            console.log(seleccion);
         });
+
         //FIN DE MANEJO DE FECHAS
 
         //CAMBIA EL VALOR POR QUE SE ENCUENTRA LOGUEADO
         usuario_id.value = "{{idusuario}}";
         usuario_id_2.value = "{{idusuario}}";
         usuario_id_3.value = "{{idusuario}}";
-        console.log(usuario_id.value);  
 
         let selectUsuario = document.getElementById('usuario_id');
         let selectedUserId = document.getElementById('usuario_id').value;
@@ -384,9 +501,29 @@
                     option.style.display = 'block';
                 }
             });
+
+            let implementoOptions1 = document.querySelectorAll('#id_idimplemento_1 option');
+            implementoOptions1.forEach(option => {
+                if (option.dataset.idusuario !== userId && option.value !== '') {
+                    option.style.display = 'none';
+                } else {
+                    option.style.display = 'block';
+                }
+            });
+
+            let implementoOptions2 = document.querySelectorAll('#id_idimplemento_2 option');
+            implementoOptions2.forEach(option => {
+                if (option.dataset.idusuario !== userId && option.value !== '') {
+                    option.style.display = 'none';
+                } else {
+                    option.style.display = 'block';
+                }
+            });
+
         }
 
         function filtrarTractoristasPorUsuario(userId) {
+            id_idtractorista.value = '';
             let tractoristaOptions = document.querySelectorAll('#id_idtractorista option');
             tractoristaOptions.forEach(option => {
                 if (option.dataset.idusuario !== userId && option.value !== '') {
@@ -428,18 +565,40 @@
             filtrarLotesPorFundo(selectedTractorId);
         });
         
-        let maxImplementos = 3;
+        let maxImplementos = 2;
         document.getElementById('btn-agregar').addEventListener('click', () => {
-            let implementosAgregados = document.querySelectorAll('.implementos-container select').length;
+            let implementosAgregados = document.querySelectorAll('.implementos .implemento-item').length;
             if (implementosAgregados < maxImplementos) {
-                var selectClonado = document.getElementById('id_idimplemento').cloneNode(true);        
-                document.querySelector('.implementos-container').appendChild(selectClonado);
+                // Clonar el select
+                var selectClonado = document.getElementById('id_idimplemento').cloneNode(true);
+                selectClonado.id = `id_idimplemento_${implementosAgregados + 1}`;
+
+                // Crear un contenedor para el select y el botón de eliminar
+                var contenedor = document.createElement('div');
+                contenedor.classList.add('implemento-item');
+
+                // Crear el botón de eliminar
+                var botonEliminar = document.createElement('button');
+                botonEliminar.textContent = 'Eliminar';
+                botonEliminar.classList.add('btn', 'btn-danger', 'ms-2');
+                botonEliminar.addEventListener('click', () => {
+                    contenedor.remove();
+                });
+
+                // Añadir el select clonado y el botón al contenedor
+                contenedor.appendChild(selectClonado);
+                contenedor.appendChild(botonEliminar);
+
+                // Añadir el contenedor a la lista de implementos
+                document.querySelector('.implementos').appendChild(contenedor);
             } else {
-                if (!document.querySelector('.implementos-container .text-danger')) {
+                // Mostrar mensaje de límite alcanzado si no existe ya
+                if (!document.querySelector('.implementos .text-danger')) {
                     var mensaje = document.createElement('span');
-                    mensaje.textContent = '¡Has alcanzado el máximo de implementos permitidos!';
+                    mensaje.id = 10;
+                    mensaje.textContent = '¡Llegaste al máximo de implementos permitidos!';
                     mensaje.classList.add('text-danger', 'ms-2');
-                    document.querySelector('.implementos-container').insertBefore(mensaje, document.querySelector('.implementos-container').firstChild);
+                    document.querySelector('.implementos').insertBefore(mensaje, document.querySelector('.implementos').firstChild);
                 }
             }
         });
@@ -447,7 +606,6 @@
         document.querySelectorAll('.btn-ver').forEach(button => {
             button.addEventListener('click', function() {
                 let idProgramacion = this.getAttribute('data-idprogramacion');
-                console.log(idProgramacion);
                 fetch(`./obtener_data/${idProgramacion}`)
                 .then(response => response.json())
                 .then(data => {
@@ -480,17 +638,24 @@
 
         //Funcion que se disparan automatico
         selectFecha.dispatchEvent(new Event('change'));
-        selectUsuario.dispatchEvent(new Event('change'));
-        selectUsuario2.dispatchEvent(new Event('change'));
-        selectUsuario3.dispatchEvent(new Event('change'));
+        
         
         //Funcion para que el mensaje tenga un tiempo de espera de 3 segundos
         setTimeout(function() {
             var errorMessage = document.getElementById('message');
-            if (errorMessage) {
+
+            if (errorMessage ) {
                 errorMessage.style.display = 'none';
             }
-        },3000);
+        },10000);
+
+        setTimeout(function() {
+            var span_error = document.getElementById('10');
+
+            if (span_error) {
+                span_error.style.display = 'none';
+            }
+        },5000);
 
         });
 </script>
