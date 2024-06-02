@@ -12,8 +12,6 @@ class TipoLaborForm(forms.ModelForm):
         }
 
 class ProgramacionForm(forms.ModelForm):
-    idtractorista = forms.ModelChoiceField(queryset=Tractorista.objects.filter(estado=True, estado_actividad=True), widget=forms.Select(attrs={'class': 'form-control mb-2'}), to_field_name='idtractorista', label="Tractorista")
-
     class Meta:
         model = Programacion
         fields = ['idtipolabor', 'idlote', 'idtractor', 'idusuario', 'idtractorista', 'idsolicitante', 'fechahora', 'turno']
@@ -27,15 +25,7 @@ class ProgramacionForm(forms.ModelForm):
             'fechahora': forms.DateInput(attrs={'class': 'form-control mb-2', 'type': 'date'}),
             'turno': forms.Select(attrs={'class': 'form-control mb-2'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['idtractor'].queryset = Tractor.objects.filter(estado=True, estado_actividad=True)
-        self.fields['idtractorista'].queryset = Tractorista.objects.filter(estado=True, estado_actividad=True)
         
-
-    # def label_from_instance(self, obj):
-    #     return f"{obj.nombres} {obj.apellidos}"
 
 class DetalleLaborForm(forms.ModelForm):
 
