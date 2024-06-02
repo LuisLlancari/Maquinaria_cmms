@@ -62,19 +62,19 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     #   estado = 0
     # )
     mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento)
-    mantenimiento.persona_id = encargado
-    mantenimiento.fechasalida = fecha_salida
-    mantenimiento.estado = 0
-    mantenimiento.save()
+    # mantenimiento.persona_id = encargado
+    # mantenimiento.fechasalida = fecha_salida
+    # mantenimiento.estado = 0
+    # mantenimiento.save()
 
-    implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
-    Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 1) 
+    # implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
+    # Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 1) 
 
-    for tarea in tareas:
-      DetalleMantenimiento.objects.create(
-        idmantenimiento_id = id_mantenimiento,
-        idaccion_id = tarea
-      )
+    # for tarea in tareas:
+    #   DetalleMantenimiento.objects.create(
+    #     idmantenimiento_id = id_mantenimiento,
+    #     idaccion_id = tarea
+    #   )
 
       
     

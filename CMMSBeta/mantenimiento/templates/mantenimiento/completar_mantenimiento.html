@@ -5,7 +5,8 @@
 {%block contenido %}
 <style>
    .big-checkbox {width: 30px; height: 30px;}
-
+   .highlight {background-color: #d3d3d3;}
+</style>
 </style>
 <h1 class="text-center"> Estado de los mantenimientos</h1>
 
@@ -46,16 +47,16 @@
           </div>    
 
           <div class="mb-3 container" id="recambios">
-            <h1 class="text-center mt-3 d-none">Recambios</h1>
-            <button type="button" class="btn btn-success mb-3 d-none" id="agregarRecambio"></button>
+            <h1 class="text-center mt-3">Recambios</h1>
+            <button type="button" class="btn btn-success mb-3" id="agregarRecambio"></button>
           </div>
 
-          <!-- <div class="container mt-5">
+          <div class="container mt-5">
             <h1>Buscar en Array</h1>
             <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
-            <ul id="resultList" class="list-group mt-3">
+            <ul id="resultList" class="list-group">
             </ul>
-          </div> -->
+          </div>
     
     
         </div>
@@ -72,6 +73,22 @@
 <script>
   document.addEventListener('DOMContentLoaded', function(){
 
+    const datos_busqueda = [
+        "Manzana",
+        "Banana",
+        "Cereza",
+        "Durazno",
+        "Frambuesa",
+        "Grosella",
+        "Higo",
+        "Kiwi",
+        "Limón",
+        "Mango",
+        "Naranja",
+        "Papaya",
+        "Sandía"
+    ];
+
     const cards = document.getElementById('cards-mantenimiento');
     const contenedorComponente = document.getElementById('contenedor-componentes');
     const contenedorTareas = document.getElementById('contenedor-tareas');
@@ -81,6 +98,7 @@
     const btnAgregarRecambio = document.getElementById('agregarRecambio');
     const searchInput = document.getElementById('searchInput');
     const resultList = document.getElementById('resultList');
+    let currentIndex = -1;
 
     var CSRF_TOKEN = '{{ csrf_token }}';
 
@@ -89,7 +107,6 @@
     let det_encargados = '';
     let contador = 0;
     let fechaProgramacion = '' 
-    let datos_busqueda = '';
 
     btnAgregarTarea.addEventListener('click', function(){
       contador ++;
@@ -97,21 +114,69 @@
       createTaskRow(det_tareas, contador)
     });
 
-    // function searchArray(query) {
-    //     resultList.innerHTML = '';
-    //     const filteredResults = datos_busqueda.filter(item => item.toLowerCase().includes(query.toLowerCase()));
-    //     filteredResults.forEach(item => {
-    //         const listItem = document.createElement('li');
-    //         listItem.textContent = idimplemento_id;
-    //         listItem.classList.add('list-group-item');
-    //         resultList.appendChild(listItem);
-    //     });
-    // }
+    function searchArray(query) {
+        resultList.innerHTML = ''; // Limpiar los resultados anteriores
+        if (query) {
+            const filteredResults = datos_busqueda.filter(item => item.toLowerCase().includes(query.toLowerCase()));
+            filteredResults.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = item;
+                listItem.classList.add('list-group-item','border-0');
+                listItem.addEventListener('click', () => {
+                    searchInput.value = item;
+                    resultList.innerHTML = ''; // Limpiar los resultados después de la selección
+                });
+                listItem.addEventListener('mouseover', () => {
+                    highlightItem(index);
+                });
+                listItem.addEventListener('mouseout', () => {
+                    removeHighlight(index);
+                });
+                resultList.appendChild(listItem);
+            });
+            currentIndex = -1; // Reiniciar el índice actual cuando se actualiza la lista
+        }
+    }
 
-    // searchInput.addEventListener('input', (e) => {
-    //     const query = e.target.value;
-    //     searchArray(query);
-    // });
+    function highlightItem(index) {
+        const items = resultList.getElementsByTagName('li');
+        for (let i = 0; i < items.length; i++) {
+            if (i === index) {
+                items[i].classList.add('highlight');
+            } else {
+                items[i].classList.remove('highlight');
+            }
+        }
+        currentIndex = index; // Actualizar el índice actual al que está resaltado
+    }
+
+    function removeHighlight(index) {
+        const items = resultList.getElementsByTagName('li');
+        if (index >= 0 && index < items.length) {
+            items[index].classList.remove('highlight');
+        }
+    }
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value;
+        searchArray(query);
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+        const items = resultList.getElementsByTagName('li');
+        if (items.length > 0) {
+            if (e.key === 'ArrowDown') {
+                currentIndex = (currentIndex + 1) % items.length;
+                highlightItem(currentIndex);
+            } else if (e.key === 'ArrowUp') {
+                currentIndex = (currentIndex - 1 + items.length) % items.length;
+                highlightItem(currentIndex);
+            } else if (e.key === 'Enter' && currentIndex >= 0) {
+                searchInput.value = items[currentIndex].textContent;
+                resultList.innerHTML = ''; // Limpiar los resultados después de la selección
+            }
+        }
+    });
 
     btnAgregarRecambio.addEventListener('click',function(){
       let nuevoDiv = document.createElement("div");
