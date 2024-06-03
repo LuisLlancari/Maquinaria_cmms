@@ -36,6 +36,7 @@ def programacion(request):
 
     #Obtenemos el idusuario
     usuario_id = request.user.id
+    print(usuario_id)
 
     #tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
     #tractor = Tractor.objects.filter(estado = True, estado_actividad = True)

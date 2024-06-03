@@ -14,6 +14,6 @@ class tipoimplementoAdmin(admin.ModelAdmin):
 
 @admin.register(DetImplementos)
 class detalleimplementoAdmin(admin.ModelAdmin):
-  list_display = ['iddetalleimplemento', 'idimplemento', 'idcomponente', 'idpieza']
+  list_display = ['iddetalleimplemento', 'idimplemento']
   readonly_fields= ['estado']
 

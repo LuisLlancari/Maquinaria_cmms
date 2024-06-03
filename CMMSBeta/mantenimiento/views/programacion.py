@@ -4,9 +4,6 @@ from django.db.models import F
 from mantenimiento.models import ProgramacionMantenimiento
 from django.http import JsonResponse
 
-from componente_pieza.models import DetalleComponente, DetalleConfiguracion, Componente, Pieza
-
-
 from implemento.models import Implemento, TipoImplemento, DetImplementos
 
 from mantenimiento.models import Acciones, DetMotivos
@@ -36,44 +33,15 @@ def programacion_mantenimiento(request):
 def registrar_fecha(request, id_implemento):
     if request.method == 'POST':
         fecha = request.POST.get('fecha_programacion')
-        det_config = Implemento.objects.filter(idimplemento=1).annotate(
-        idconfiguracion=F('idtipoimplemento__idconfiguracion_implemento__idconfiguraciontipoimplemento'),
-        ).values('idconfiguracion', 'horasdeuso', 'idimplemento')
+        motivos = request.POST.getlist('idmotivo')
+       
+       # Actaulizar Programacion con un save
+        programacion = get_object_or_404(ProgramacionMantenimiento, idprogramacionmantenimiento=id_implemento, estado=1)
+        programacion.fechaprogramacion = fecha
+        programacion.save()
 
-        if det_config.exists():
-            # Asignamos valores del det_config a variables
-            config = det_config[0]
-            id_implemento = config['idimplemento']
-            horauso_implemento = config['horasdeuso']
-            id_configuracion = config['idconfiguracion']
-
-            # Obtener los componentes relacionados con la configuración
-            det_comp = DetalleConfiguracion.objects.filter(idconfiguracion=id_configuracion).values('idcomponente')
-
-            for componente in det_comp:
-                id_componente = componente['idcomponente']
-
-                # Obtener las piezas relacionadas con el componente
-                det_pieza = DetalleComponente.objects.filter(idcomponente=id_componente).values('iddetallecomponente','idcomponente','idpieza', 'cantidad')
-                print(list(det_pieza))
-                # for pieza in det_pieza:
-                #     id_pieza = pieza['idpieza']
-                #     cant_pieza = pieza['cantidad']
-
-                #     # Crear instancias de los modelos relacionados
-                #     inst_implemento = Implemento.objects.get(idimplemento=id_implemento)
-                #     inst_componente = Componente.objects.get(idcomponente=id_componente)
-                #     inst_pieza = Pieza.objects.get(idpieza=id_pieza)
-
-                #     # Crear el detalle del implemento
-                #     DetImplementos.objects.create(
-                #         idimplemento=inst_implemento, 
-                #         idcomponente=inst_componente,
-                #         HUcomponente=horauso_implemento,
-                #         idpieza=inst_pieza,
-                #         HUpieza=horauso_implemento,
-                #         cantidadpieza=cant_pieza)
-        
+        for idmotivo in motivos:
+            DetMotivos.objects.create(idprogramacionmantenimiento_id = id_implemento, idaccion_id = idmotivo)
     return redirect('programacion_mantenimiento')
 
 

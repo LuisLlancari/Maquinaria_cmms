@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from django.db.models import F
 from localizacion.models import Area
 from ceco.models import Ceco
-from componente_pieza.models import ConfiguracionTipoImplemento, Componente, Pieza
+from componente_pieza.models import ConfiguracionTipoImplemento, Componente, Pieza, DetalleComponente
 from usuario.models import Usuario
 
 class TipoImplemento(models.Model):
@@ -49,11 +49,10 @@ class DetImplementos(models.Model):
     iddetalleimplemento = models.AutoField(primary_key=True)
     idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
     MRimplemento =  models.IntegerField(verbose_name="Mantenimientos realizados al implemento", default=0)
-    idcomponente = models.ForeignKey(Componente, on_delete=models.SET_DEFAULT, default=None, verbose_name="Componente")
     MRcomponente = models.IntegerField(verbose_name="Mantenimientos realizados al componente", default=0)
     HUcomponente = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Horas de uso del componente", default=0)
     CRcomponente = models.IntegerField(verbose_name="Cambios realizados al componente", default=0)
-    idpieza = models.ForeignKey(Pieza, on_delete=models.SET_DEFAULT, default=None, verbose_name="Pieza")
+    iddetallecomponente = models.ForeignKey(DetalleComponente, on_delete=models.SET_DEFAULT, default=None, verbose_name="Detalle componente")
     cantidadpieza = models.IntegerField(verbose_name="Cantidad de piezas", default=0)
     MRpieza = models.IntegerField(verbose_name="Mantenimientos realizados a la pieza",default=0)
     HUpieza = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Horas de uso de la pieza", default=0)

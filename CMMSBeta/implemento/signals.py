@@ -1,4 +1,5 @@
 from django.db.models.signals import post_save, pre_save
+from django.shortcuts import get_object_or_404
 from django.dispatch import receiver
 from django.db.models import F
 from .models import Implemento, DetImplementos
@@ -14,36 +15,33 @@ def creacionDetalleImplemento(sender, instance, created, **kwargs):
       ).values('idconfiguracion', 'horasdeuso', 'idimplemento')
 
       if det_config.exists():
-        # Asignamos valores del det_config a variables
-        config = det_config[0]
-        id_implemento = config['idimplemento']
-        horauso_implemento = config['horasdeuso']
-        id_configuracion = config['idconfiguracion']
+          # Asignamos valores del det_config a variables
+            config = det_config[0]
+            id_implemento = config['idimplemento']
+            horauso_implemento = config['horasdeuso']
+            id_configuracion = config['idconfiguracion']
 
-        # Obtener los componentes relacionados con la configuración
-        det_comp = DetalleConfiguracion.objects.filter(idconfiguracion=id_configuracion).values('idcomponente')
+            # Obtener los componentes relacionados con la configuración
+            det_comp = DetalleConfiguracion.objects.filter(idconfiguracion=id_configuracion).values('idcomponente')
 
-        for componente in det_comp:
-            id_componente = componente['idcomponente']
+            for componente in det_comp:
+                id_componente = componente['idcomponente']
+                print(id_componente)
 
-            # Obtener las piezas relacionadas con el componente
-            det_pieza = DetalleComponente.objects.filter(idcomponente=id_componente).values('idpieza', 'cantidad')
-
-            for pieza in det_pieza:
-                id_pieza = pieza['idpieza']
-                cant_pieza = pieza['cantidad']
-
-                # Crear instancias de los modelos relacionados
+                # Obtener las piezas relacionadas con el componente
+                det_componentes = DetalleComponente.objects.filter(idcomponente=id_componente).values('iddetallecomponente','idcomponente','idpieza', 'cantidad')
                 inst_implemento = Implemento.objects.get(idimplemento=id_implemento)
-                inst_componente = Componente.objects.get(idcomponente=id_componente)
-                inst_pieza = Pieza.objects.get(idpieza=id_pieza)
 
-                # Crear el detalle del implemento
-                DetImplementos.objects.create(
+                for det_componente in det_componentes:
+                    id_detcomponente = det_componente['iddetallecomponente']
+                    cant_pieza = det_componente['cantidad']
+                    inst_detcomponente = get_object_or_404(DetalleComponente,iddetallecomponente =id_detcomponente)
+
+                    #Crear el detalle del implemento
+                    DetImplementos.objects.create(
                     idimplemento=inst_implemento, 
-                    idcomponente=inst_componente,
+                    iddetallecomponente = inst_detcomponente,
                     HUcomponente=horauso_implemento,
-                    idpieza=inst_pieza,
                     HUpieza=horauso_implemento,
                     cantidadpieza=cant_pieza)
 

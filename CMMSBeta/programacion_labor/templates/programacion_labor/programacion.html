@@ -335,6 +335,10 @@
         function obtener_data_select(fecha, turno) {
             //Limpiamos el form
             
+            //CAMBIA EL VALOR POR QUE SE ENCUENTRA LOGUEADO
+            usuario_id.value = "{{idusuario}}";
+            usuario_id_2.value = "{{idusuario}}";
+            usuario_id_3.value = "{{idusuario}}";
             //id_turno.value = 'M';
             // Referencia al select de limpiamos y creamos
             id_idtractorista.innerHTML = '';
@@ -464,10 +468,6 @@
 
         //FIN DE MANEJO DE FECHAS
 
-        //CAMBIA EL VALOR POR QUE SE ENCUENTRA LOGUEADO
-        usuario_id.value = "{{idusuario}}";
-        usuario_id_2.value = "{{idusuario}}";
-        usuario_id_3.value = "{{idusuario}}";
 
         let selectUsuario = document.getElementById('usuario_id');
         let selectedUserId = document.getElementById('usuario_id').value;

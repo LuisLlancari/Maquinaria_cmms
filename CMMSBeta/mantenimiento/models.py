@@ -36,8 +36,6 @@ class Mantenimiento(models.Model):
 
   def __str__(self):
       return str(self.idmantenimiento)
-
-
   
 class Diagnostico(models.Model):
   iddiagnostico = models.AutoField(primary_key=True)
@@ -48,11 +46,9 @@ class Diagnostico(models.Model):
     verbose_name = "Diagnostico"
     verbose_name_plural = "Diagnosticos"
 
-  def _str_(self):
+  def __str__(self):
     return str(self.iddiagnostico)
   
-
-# Para las acciones
 class Acciones(models.Model):
     ESTADO_CHOICES = [
         (0, 'Supervisor'),
@@ -81,14 +77,14 @@ class DetMotivos(models.Model):
     verbose_name = "Motivo"
     verbose_name_plural = "Motivos"
 
-  def _str_(self):
+  def __str__(self):
     return str(self.iddetmotivo)
   
 class DetalleMantenimiento(models.Model):
   iddetallemantenimiento = models.AutoField(primary_key=True)
   idaccion = models.ForeignKey(Acciones,on_delete=models.SET_DEFAULT, default=None, verbose_name="Accion")
   idmantenimiento = models.ForeignKey(Mantenimiento,on_delete=models.SET_DEFAULT, default=None, verbose_name="Mantenimiento")
-  completado = models.CharField(max_length=2, verbose_name="Completado")
+  completado = models.BooleanField(default=True, verbose_name="Realizado")
   creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
   estado = models.BooleanField(default=True, verbose_name="Estado")
   
@@ -96,10 +92,11 @@ class DetalleMantenimiento(models.Model):
     verbose_name = "Detalle Mantenimiento"
     verbose_name_plural = "Detalles de Mantenimientos"
 
-  def _str(self):
+  def __str__(self):
     return str(self.iddetallemantenimiento)
    
 class DetalleCambios(models.Model):
+
   iddetallecambio = models.AutoField(primary_key=True)
   idmantenimiento = models.ForeignKey(Mantenimiento,on_delete=models.SET_DEFAULT, default=None, verbose_name="Mantenimiento")
   iddetalleimplemento = models.ForeignKey(DetImplementos,on_delete=models.SET_DEFAULT, default=None, verbose_name="Mantenimiento")
@@ -109,5 +106,18 @@ class DetalleCambios(models.Model):
     verbose_name = "Detalle Cambio"
     verbose_name_plural = "Detalles de Cambios"
 
-  def _str(self):
+  def __str__(self):
     return str(self.iddetallecambio)
+  
+class Recambios(models.Model):
+  idrecambio = models.AutoField(primary_key=True)
+  idmantenimiento = models.ForeignKey(Mantenimiento,on_delete=models.SET_DEFAULT, default=None, verbose_name="Mantenimiento")
+  item = models.CharField(max_length=45, verbose_name="Parte del recambio" )
+  codigo = models.CharField(max_length=12, verbose_name="Codigo")
+  estado = models.BooleanField(default=True, verbose_name="Estado")
+  creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
+  class Meta:
+    verbose_name = "Recambio"
+    verbose_name_plural = "Recambios"
+  def __str__(self):
+    return str(self.idrecambio)
