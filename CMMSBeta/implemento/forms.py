@@ -39,8 +39,10 @@ class DetImplementoForms(forms.ModelForm):
 class TipoImplementoForms(forms.ModelForm):
   class Meta:
     model = TipoImplemento
-    fields = ['tipoimplemento', 'idconfiguracion_implemento']
+    fields = ['tipoimplemento', 'idconfiguracion_implemento', 'tiempo_vida', 'frecuencia_man']
     widgets = {
       'tipoimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtTipoImplemento'}),
       'idconfiguracion_implemento': forms.Select(attrs={'class':'form-select', 'id':'txtIdConfiguracionImplemento'}),
+      'tiempo_vida': forms.NumberInput(attrs={'class':'form-control', 'id':'txtTiempoVida', 'type':'number', 'min':'0'}),
+      'frecuencia_man': forms.NumberInput(attrs={'class':'form-control', 'id':'txtFrecuenciaMan', 'type':'number', 'min':'0'}),
     }

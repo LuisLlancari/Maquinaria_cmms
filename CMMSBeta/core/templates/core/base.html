@@ -15,12 +15,27 @@
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
- 
+    {% if user.idrol.rol == "Supervisor" or user.idrol.rol == "Mecanico" or user.idrol.rol == "Asistente" or user.idrol.rol == "Gerencia" %}
+    <style>
+        .wrapper {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+    
+        .main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+    </style>
+    {% endif %}
+    
 </head>
 
 <body style="background-color: #E5E8E8;">
     <div class="wrapper">
-        <aside id="sidebar">
+        <aside id="sidebar" class="sidebar">
             <div class="d-flex">
                 <button class="toggle-btn" type="button">
                     <i class="lni lni-grid-alt"></i>
@@ -86,22 +101,26 @@
                 {% if user.idrol.rol == "Supervisor" %}
                 <li class="sidebar-item">
                     <a href="{% url 'implemento' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-construction-hammer"></i>
                         <span class="text-uppercase">Implemento</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a href="{% url 'tractor' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-ambulance"></i>
                         <span class="text-uppercase">Tractor</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a href="{% url 'programacion' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-pencil-alt"></i>
                         <span class="text-uppercase">Programación Labor</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a href="{% url 'programacion_mantenimiento' %}" class="sidebar-link" data-path="test">
-                        <span class="text-uppercase">Programar mantenimiento</span>
+                        <i class="lni lni-cog"></i>
+                        <span class="text-uppercase">Prog mantenimiento</span>
                     </a>
                 </li>
                 {% endif %}
@@ -112,11 +131,98 @@
 
 
                 {% if user.idrol.rol == "Admin"%}
+
+                
+                <li class="sidebar-item">
+                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#ceco" aria-expanded="false" aria-controls="ceco">
+                        <i class="lni lni-invest-monitor"></i>
+                        <span>CECO - RESPONSABLE</span>
+                    </a>
+                    <ul id="ceco" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'ceco' %}" class="sidebar-link" data-path="login">Centro de Costo</a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#localizacion" aria-expanded="false" aria-controls="localizacion">
+                        <i class="lni lni-map-marker"></i>
+                        <span>localizacion</span>
+                    </a>
+                    <ul id="localizacion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <!-- <li class="sidebar-item">
+                            <a href="{% url 'base' %}" class="sidebar-link" data-path="login">Base</a>
+                        </li> -->
+                        <li class="sidebar-item">
+                            <a href="{% url 'sede' %}" class="sidebar-link" data-path="s">Sede</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="sidebar-item">
+                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#fundo" aria-expanded="false" aria-controls="fundo">
+                        <i class="lni lni-sprout"></i>
+                        <span>Fundo - Cultivo</span>
+                    </a>
+                    <ul id="fundo" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'fundo' %}" class="sidebar-link" data-path="login">Fundo</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'cultivo' %}" class="sidebar-link" data-path="login">Cultivo</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'variedad' %}" class="sidebar-link" data-path="login">Variedad</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'lote' %}" class="sidebar-link" data-path="login">Lote</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#componente" aria-expanded="false" aria-controls="componente">
+                        <i class="lni lni-cogs"></i>
+                        <span>Configuracion</span>
+                    </a>
+                    <ul id="componente" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'sistema' %}" class="sidebar-link">Sistemas</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'componente' %}" class="sidebar-link">Componentes</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'pieza' %}" class="sidebar-link">Piezas</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'det_componente' %}" class="sidebar-link">Asignacion Componente</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'configuracion' %}" class="sidebar-link">Configuracion</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'detalle_cong' %}" class="sidebar-link">Detalle configuracion</a>
+                        </li>
+                    </ul>
+                </li>
+
+                
+                
+
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#implemento" aria-expanded="false" aria-controls="implemento">
                         <i class="lni lni-construction-hammer"></i>
-                        <span>implemento</span>
+                        <span>Implemento</span>
                     </a>
                     <ul id="implemento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         {% if user.idrol.rol == "Admin"%}
@@ -170,21 +276,6 @@
                 {% endif %}
 
                 {% if user.idrol.rol == "Admin" %}
-                    <li class="sidebar-item">
-                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#localizacion" aria-expanded="false" aria-controls="localizacion">
-                            <i class="lni lni-map-marker"></i>
-                            <span>localizacion</span>
-                        </a>
-                        <ul id="localizacion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                            <!-- <li class="sidebar-item">
-                                <a href="{% url 'base' %}" class="sidebar-link" data-path="login">Base</a>
-                            </li> -->
-                            <li class="sidebar-item">
-                                <a href="{% url 'sede' %}" class="sidebar-link" data-path="s">Sede</a>
-                            </li>
-                        </ul>
-                    </li>
 
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -205,42 +296,8 @@
                         </ul>
                     </li>
 
-                    <li class="sidebar-item">
-                        <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
-                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#fundo" aria-expanded="false" aria-controls="fundo">
-                            <i class="lni lni-sprout"></i>
-                            <span>Fundo - Cultivo</span>
-                        </a>
-                        <ul id="fundo" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                            <li class="sidebar-item">
-                                <a href="{% url 'fundo' %}" class="sidebar-link" data-path="login">Fundo</a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="{% url 'cultivo' %}" class="sidebar-link" data-path="login">Cultivo</a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="{% url 'variedad' %}" class="sidebar-link" data-path="login">Variedad</a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="{% url 'lote' %}" class="sidebar-link" data-path="login">Lote</a>
-                            </li>
-                        </ul>
-                    </li>
+                    
 
-                    <li class="sidebar-item">
-                        <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
-                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#ceco" aria-expanded="false" aria-controls="ceco">
-                            <i class="lni lni-invest-monitor"></i>
-                            <span>CECO - RESPONSABLE</span>
-                        </a>
-                        <ul id="ceco" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                            <li class="sidebar-item">
-                                <a href="{% url 'ceco' %}" class="sidebar-link" data-path="login">Centro de Costo</a>
-                            </li>
-                        </ul>
-                    </li>
                 {% endif %}
 
                 {% if user.idrol.rol == "Admin" %}
@@ -271,33 +328,7 @@
                     </ul>
                 </li>
 
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#componente" aria-expanded="false" aria-controls="componente">
-                        <i class="lni lni-cogs"></i>
-                        <span>Configuracion</span>
-                    </a>
-                    <ul id="componente" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="{% url 'sistema' %}" class="sidebar-link">Sistemas</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'componente' %}" class="sidebar-link">Componentes</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'pieza' %}" class="sidebar-link">Piezas</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'det_componente' %}" class="sidebar-link">Asignacion Componente</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'configuracion' %}" class="sidebar-link">Configuracion</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'detalle_cong' %}" class="sidebar-link">Detalle configuracion</a>
-                        </li>
-                    </ul>
-                </li>
+                
 
            
 
