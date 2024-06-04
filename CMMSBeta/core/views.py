@@ -1,11 +1,12 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Subquery, F,Value
+from django.db.models.functions import Concat
 from programacion_labor.models import Programacion, DetalleLabor
 from tractor.models import Tractor
 from operarios.models import Solicitante
-from django.contrib.auth.decorators import login_required
 from usuario.models import * 
 from django.http import JsonResponse
-from django.db.models import Count, Subquery
 from programacion_labor.models import *
 from implemento.models import *
 from django.core.paginator import Paginator
@@ -13,17 +14,16 @@ from django.core.paginator import Paginator
 
 @login_required(login_url='login', redirect_field_name='home')
 def home(request,):
-
     usuario = request.user
     usuarios = Usuario.objects.filter(idrol = 3)
-    tipos_labor = Programacion.objects.values('idtipolabor', 'idtipolabor__tipolabor').distinct()
-    
+    tipos_labor = Programacion.objects.values('idtipolabor', 'idtipolabor__tipolabor')
+
     data = {
         'user': usuario,
         'usuarios': usuarios,
         'tipolabor': tipos_labor,
     }
-   
+
     return render(request, 'core/home.html', data)
 
 def datos_grafico(request, fecha, supervisor, turnos):
@@ -87,7 +87,7 @@ def datos_tabla(request, fecha, supervisor, turno):
 
     # Obtener los fundos de tractores y contar cuántos tractores hay en cada fundo
     info_fundos = tractores_usuario.values('idfundo__fundo', 'idfundo').annotate(total_tractores=Count('idfundo'))
-    print(info_fundos)
+    # print(info_fundos)
 
     # Obtener los tractores programados en la fecha y turno especificados en los fundos relacionados al usuario
     tractores_programados = Programacion.objects.filter(
@@ -114,6 +114,7 @@ def datos_tabla(request, fecha, supervisor, turno):
     return JsonResponse({'tabla_tractor': resultado})
     
 def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
+    # Tractores no Asignados
     tractores_sin_programacion = list(Tractor.objects.filter(
         idusuario=supervisor,
         idfundo=idfundo
@@ -126,51 +127,63 @@ def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
         ).values('idtractor'))
     ).values('nrotractor'))
 
-
-    # Obtenemos los implementos utilizados
-    detprogramaciones = DetalleLabor.objects.filter(
-        idprogramacion__fechahora= fecha,
-        idprogramacion__turno= turno,
-        idprogramacion__idtractor__idusuario_id = supervisor,
-        idprogramacion__idtractor__idfundo_id = idfundo
-    ).values(       
-        'idimplemento__implemento',
-        'idimplemento__idimplemento'
-    )
-    detprogramacione_list=[]
-
-    for detprogramacion in detprogramaciones:
-        implemento = detprogramacion['idimplemento__implemento']
-        detprogramacione_list.append({
-            'implemento_usado' : implemento     
-        })
-
     # Obtenemos la informacion de los tractores que tuvieron una programacion
     programaciones = Programacion.objects.filter(
         fechahora=fecha,
         turno=turno,
         idtractor__idusuario=supervisor,
         idtractor__idfundo_id=idfundo
+    ).annotate(
+        id_tractor = F('idtractor__idtractor'),
+        tractor = F('idtractor__nrotractor'),
+        labor = F('idtipolabor__tipolabor'),
+        solicitante= Concat(F('idsolicitante__idpersona__nombres'),Value(' '), F('idsolicitante__idpersona__apellidos'))
     ).values(
-        'idtractor__idtractor', 
+        'id_tractor',
         'idprogramacion',
-        'idtractor__nrotractor', 
-        'idtipolabor__tipolabor',
-        'idsolicitante__idpersona__nombres',
-        'idsolicitante__idpersona__apellidos')
-
+        'tractor',
+        'labor',
+        'solicitante'
+    )
+    # Recorremos las programaciones para obtener los implementos utilizados por cada programación
     programaciones_list = []
     for programacion in programaciones:
-        nombre_tractor = programacion['idtractor__nrotractor']
-        labor_tractor = programacion['idtipolabor__tipolabor']
-        nombre_solicitante = f"{programacion['idsolicitante__idpersona__nombres']} {programacion['idsolicitante__idpersona__apellidos']}"
-        programaciones_list.append({
-            'tractor': nombre_tractor,
-            'labor': labor_tractor,
-            'solicitante': nombre_solicitante,
-            'implementos':detprogramacione_list
-        })    
-        
+        id_programacion = programacion['idprogramacion']
+        tractor = programacion['tractor']
+        labor = programacion['labor']
+        solicitante = programacion['solicitante']
+
+        # Obtenemos los implementos utilizados
+        detprogramaciones = DetalleLabor.objects.filter(
+            idprogramacion__fechahora= fecha,
+            idprogramacion__turno= turno,
+            idprogramacion = id_programacion,
+            idprogramacion__idtractor__idusuario_id = supervisor,
+            idprogramacion__idtractor__idfundo_id = idfundo
+        ).annotate(
+            implemento = F('idimplemento__implemento'),
+            id_implemento = F('idimplemento__idimplemento'),
+        ).values(       
+            'id_implemento',
+            'implemento',
+        )
+        # Creamos una lista de los implementos
+        datos_implementos=[]
+        for detalle in detprogramaciones:
+            implemento = detalle['implemento']
+            dato_implemento= {'implemento': implemento}
+            datos_implementos.append(dato_implemento)
+
+        # Añadimos los datos
+        datos = {
+            'programacion': id_programacion,
+            'tractor': tractor,
+            'labor': labor,
+            'solicitante': solicitante,
+            'implementos':datos_implementos
+        } 
+        programaciones_list.append(datos)  
+    # print(programaciones_list)
 
     return JsonResponse({'programaciones':programaciones_list, 'tractores_sin_programacion': tractores_sin_programacion})
 

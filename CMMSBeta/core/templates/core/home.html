@@ -323,6 +323,7 @@
         .then(datos => {
             // console.log(datos.programaciones.length);
             Detalle_cuerpo.innerHTML = '';
+            console.log(datos)
 
             TractoresConProgramacion = datos.programaciones
             TractoresNoProgramados = datos.tractores_sin_programacion;
@@ -333,13 +334,18 @@
                 datos.programaciones.forEach(registro=>{
                 nuvacard = `
                 <div class="col col-md-6">
-                    <div class="card border-success mb-3">
-                        <div class="card-body text-success">
-                            <h5 class="card-text text-center fw-bold">${registro.tractor}</h5>
-                            <p class="card-text text-success m-0 fs-5" ><strong>Labor:</strong> ${registro.labor}</p>
-                            <p class="card-text text-success m-0 fs-5" ><strong>Solicitante:</strong> ${registro.solicitante}</p>
-                            <p class="card-text text-success fs-5" ><strong>Implementos:</strong></p>
-                            ${registro.implementos.map(implemento => `<p class="card-text text-success m-0 fs-5">- ${implemento.implemento_usado}</p>`).join('')}
+                    <div class="card mb-3">
+                        <div class="card-header bg-dark">
+                            <h5 class="card-text text-center text-white fw-bold">Programacion: ${registro.programacion}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class=" m-0 fs-5" ><strong>Tractor:</strong> ${registro.tractor}</p>
+                            <p class=" m-0 fs-5" ><strong>Labor:</strong> ${registro.labor}</p>
+                            <p class=" m-0 fs-5" ><strong>Solicitante:</strong> ${registro.solicitante}</p>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <p class="fs-5 text-center" ><strong>Implementos:</strong></p>
+                            ${registro.implementos.map(implemento =>`<p class="m-0 fs-5">- ${implemento.implemento}</p>`).join('')}
                         </div>
                     </div>
                 </div>
@@ -385,13 +391,18 @@
                 tractores_con_programacion.forEach(registro=>{
                 nuvacard = `
                 <div class="col col-md-6">
-                    <div class="card border-success mb-3">
-                        <div class="card-body text-success">
-                            <h5 class="card-text text-center fw-bold">${registro.tractor}</h5>
-                            <p class="card-text text-success m-0 fs-5" ><strong>Labor:</strong> ${registro.labor}</p>
-                            <p class="card-text text-success m-0 fs-5" ><strong>Solicitante:</strong> ${registro.solicitante}</p>
-                            <p class="card-text text-success fs-5" ><strong>Implementos:</strong></p>
-                            ${registro.implementos.map(implemento => `<p class="card-text text-success m-0 fs-5">- ${implemento.implemento_usado}</p>`).join('')}
+                    <div class="card mb-3">
+                        <div class="card-header bg-dark">
+                            <h5 class="card-text text-center text-white fw-bold">Programacion: ${registro.programacion}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class=" m-0 fs-5" ><strong>Tractor:</strong> ${registro.tractor}</p>
+                            <p class=" m-0 fs-5" ><strong>Labor:</strong> ${registro.labor}</p>
+                            <p class=" m-0 fs-5" ><strong>Solicitante:</strong> ${registro.solicitante}</p>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <p class="fs-5 text-center" ><strong>Implementos:</strong></p>
+                            ${registro.implementos.map(implemento =>`<p class="m-0 fs-5">- ${implemento.implemento}</p>`).join('')}
                         </div>
                     </div>
                 </div>
@@ -443,7 +454,7 @@
             btnNoProgramado.removeAttribute('disabled')
 
             let nombreFundo = fila.querySelector('td').textContent;
-            titulo_modal.innerHTML = `${nombreFundo}`
+            titulo_modal.innerHTML = `Fundo ${nombreFundo}`
             let fecha = Fecha.value
             let supervisor = Supervisor.value
             let turno = Turno.value
