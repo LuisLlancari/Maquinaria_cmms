@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import F, Value
 from django.db.models.functions import Concat
+from operarios.models import Encargado
 from implemento.models import DetImplementos, Implemento
 from componente_pieza.models import DetalleConfiguracion
 from usuario.models import Persona
@@ -38,9 +39,11 @@ def datos_mantenimiento(request):
 
   tareas = list(Acciones.objects.filter(estado = 0).values('idaccion','accion'))
 
-  personas = list(Persona.objects.filter(estado = 1).values('idpersona', 'nombres', 'apellidos'))
+  encargados = list(Encargado.objects.filter(estado = 1).annotate(
+    nombre =Concat(F('persona__nombres'),Value(' '), F('persona_apellidos')) 
+  ).values('idencargado', 'nombre'))
 
-  datos = {'mantenimientos': mantenimiento, 'tareas':tareas, 'personas':personas}
+  datos = {'mantenimientos': mantenimiento, 'tareas':tareas, 'personas':encargados}
   return JsonResponse(datos)
 
 def datos_implemento(request, id_programacion, id_implemento):

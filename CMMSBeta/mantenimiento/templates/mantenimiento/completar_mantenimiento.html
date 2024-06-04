@@ -341,8 +341,8 @@
       Select.innerHTML= ''
       datos.forEach(encargado => {
         const option = document.createElement('option');
-        option.value = encargado.idpersona
-        option.text = encargado.nombres,''+'',encargado.apellidos;
+        option.value = encargado.idencargado
+        option.text = nombre;
         Select.appendChild(option)
       })
     }
@@ -353,7 +353,7 @@
         .then(datos => {
             // console.log(datos);    
             det_tareas = datos.tareas
-            det_encargados = datos.personas
+            det_encargados = datos.encargados
             let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
             // console.log(datos_filtrados)
             renderizarMantenimientos(datos_filtrados);   

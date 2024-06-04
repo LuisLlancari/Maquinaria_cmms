@@ -427,7 +427,7 @@
         let fecha = Fecha.value
         let supervisor = Supervisor.value
         let turno = Turno.value
-        console.log(fecha, supervisor, turno)
+        // console.log(fecha, supervisor, turno)
         datosGrafico(fecha,supervisor,turno);
         datosTablaTractores(fecha,supervisor,turno);
 
@@ -459,10 +459,7 @@
             let supervisor = Supervisor.value
             let turno = Turno.value
             let idFundo = fila.getAttribute('data-id');
-            
             obtenerDetalleTractores(fecha, supervisor, turno, idFundo)
-
-
             modal_detalle.show()
 
             console.log("ID del Fundo:", idFundo);

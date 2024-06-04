@@ -15,7 +15,7 @@ def login_user(request):
       login(request, user)
       return redirect('home')
     else:
-      messages.success(request, ("Contraseña o usuraio Incorrecto"))
+      messages.success(request, ("Contraseña o Usuario Incorrecto"))
       return redirect('login')
 
   else:

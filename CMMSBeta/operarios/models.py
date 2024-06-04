@@ -31,7 +31,6 @@ class Solicitante(models.Model):
     def __str__(self):
         return f"{self.idpersona.nombres} {self.idpersona.apellidos}"
     
-
 class Tractorista(models.Model):
     idtractorista = models.AutoField(primary_key=True)
     idusuario = models.ForeignKey('usuario.Usuario', on_delete=models.SET_DEFAULT, default=None, verbose_name="Usuario")
@@ -48,3 +47,8 @@ class Tractorista(models.Model):
 
     def __str__(self):
         return f"{self.idpersona.nombres} {self.idpersona.apellidos}"
+
+class Encargado(models.Model):
+    idencargado = models.AutoField(primary_key=True)
+    persona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
+    estado = models.BooleanField(default=True, verbose_name="Estado")
