@@ -4,7 +4,7 @@ from django.db.models import F
 from django.utils.timezone import now
 from implemento.models import DetImplementos
 from usuario.models import Persona
-from mantenimiento.models import ProgramacionMantenimiento, Mantenimiento, DetMotivos, Acciones, DetalleMantenimiento
+from mantenimiento.models import ProgramacionMantenimiento, Mantenimiento, DetMotivos, Acciones, DetalleMantenimiento, Recambios
 from django.http import JsonResponse
 
 def datos_mantenimientos(request):
@@ -45,7 +45,10 @@ def detalle_mantenimiento (request, id_mantenimiento):
   ).values(
     'tareas',
     'completado'))
-  return JsonResponse({'tareas': tareas})
+  
+  recambios = list(Recambios.objects.filter(idmantenimiento= id_mantenimiento).values())
+
+  return JsonResponse({'tareas': tareas, 'recambios':recambios})
 
 def mantenimientos_realizados(request):
   return render(request, 'mantenimiento/mantenimientos_realizados.html')

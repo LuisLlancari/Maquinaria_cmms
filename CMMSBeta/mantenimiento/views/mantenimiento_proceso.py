@@ -114,7 +114,7 @@ def finalizar_mantenimiento(request, id_mantenimiento):
       DetalleMantenimiento.objects.create(
         idaccion = accion,
         idmantenimiento = mantenimiento,
-        completado = True,
+        completado = False,
       )
 
     # Creamos Detelle de Recambios
@@ -144,6 +144,7 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     # activamos el implemento 
     implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
     Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 1) 
+    
   return redirect('mantenimiento_proceso')
 
 def detalle_mantenimiento (request, id_mantenimiento):

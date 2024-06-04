@@ -21,18 +21,34 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-primary justify-content-center">
-        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Detalle</h1>
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Detalle Mantenimiento</h1>
       </div>
 
-      <form action="{% url 'finalizar_mantenimiento' 1 %}" autocomplete="off" id="form-detalle" method="POST">
+      <form autocomplete="off" id="form-detalle" >
         <div class="modal-body">
-          <h1>Tareas realizadas</h1>
+          <h1 class="text-center">Lista de Acciones</h1>
+          <div class="row"> 
+            <div class="col col-md-6 text-center">
+              <h1>Acciones:</h1>
+            </div>
+            <div class="col col-md-6 text-center">
+              <h1>Estado</h1>
+            </div>
+          </div>
           <div class="container" id="cuerpo_tareas">
-           
+          </div>
 
-            
-           
-            
+          <h1 class="text-center">Recambios</h1>
+          <div class="row"> 
+            <div class="col col-md-6 text-center">
+              <h1>Item</h1>
+            </div>
+            <div class="col col-md-6 text-center">
+              <h1>Codigo</h1>
+            </div>
+          </div>
+          <div class="conatiner" id="cuerpo_recambios">
+
           </div>
 
         </div>
@@ -47,23 +63,51 @@
 </div>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const contenerdoCards = document.getElementById('contenido-cards')
-    const contenerdorTareas = document.getElementById('cuerpo_tareas')
-
+    const contenerdoCards = document.getElementById('contenido-cards');
+    const contenerdorTareas = document.getElementById('cuerpo_tareas');
+    const contenerdorRecambio = document.getElementById('cuerpo_recambios');
     var CSRF_TOKEN = '{{ csrf_token }}';
 
+
+    function RenderizarDetalleRecambio(datos) {
+      let nuevafila = '';
+      contenerdorRecambio.innerHTML = '';
+      
+      if (datos.length > 0) {
+        datos.forEach(recambio => {
+          nuevafila += `
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <input type="text" class="form-control border border-0 text-center" value="${recambio.item}" readonly>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control border border-0 text-center" value="${recambio.codigo}" readonly>
+              </div>
+            </div>
+          `;
+        });
+        contenerdorRecambio.innerHTML = nuevafila;
+      } else {
+        contenerdorRecambio.innerHTML = '<h1 class="text-center">No hay Recambios para este mantenimiento</h1>';
+      }
+    }
+          
     function RenderizarDetalleMantenimiento(datos){
       let nuevafila = '';
       contenerdorTareas.innerHTML='';
       datos.forEach(tarea =>{
-        nuevafila = `
+        if (tarea.completado == true){
+          dato = `<div class="col-md-6 text-center text-success">"Realizado"</div>`
+        }else{
+          dato = `<div class="col-md-2">"NO"</div>`
+        }
 
+        nuevafila = `
         <div class="row mt-2" id="contenerdor-tareas">
-          <div class="col-md-10">
-            <input type="text" class="form-control border border-0" value="${tarea.tareas}" readonly>
+          <div class="col-md-6">
+            <input type="text" class="form-control border border-0 text-center" value="${tarea.tareas}" readonly>
           </div>
-          <div class="col-md-1"></div>
-          <div class="col-md-1"></div>
+          ${dato}
         </div>
         `;
         contenerdorTareas.innerHTML += nuevafila;
@@ -80,14 +124,13 @@
       })
       .then(res => res.json())
       .then(datos => {
-        console.log(datos)
+        RenderizarDetalleRecambio(datos.recambios)
         RenderizarDetalleMantenimiento(datos.tareas)
       })
       .catch((error) => {
           console.log(error);
       });
     }
-
 
     function rederizarMantenimientosPendientes(datos){
       contenerdoCards.innerHTML=''
