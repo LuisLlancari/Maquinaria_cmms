@@ -140,3 +140,17 @@ a.sidebar-link:hover {
     transform: rotate(45deg);
     transition: all .2s ease-out;
 }
+
+html, body {
+    text-transform: uppercase;
+}
+
+select {
+    text-transform: uppercase;
+}
+
+input[type="text"] {
+    text-transform: uppercase;
+}
+
+
