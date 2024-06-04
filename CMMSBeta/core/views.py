@@ -15,7 +15,7 @@ from django.core.paginator import Paginator
 @login_required(login_url='login', redirect_field_name='home')
 def home(request,):
     usuario = request.user
-    usuarios = Usuario.objects.filter(idrol = 3)
+    usuarios = Usuario.objects.filter(idrol = 3, is_active = 1)
     tipos_labor = Programacion.objects.values('idtipolabor', 'idtipolabor__tipolabor')
 
     data = {
@@ -198,7 +198,7 @@ def test(request):
 
     lista_implementos = Implemento.objects.all()
     #
-    lista_supervisor = Usuario.objects.filter(idrol = 3)
+    lista_supervisor = Usuario.objects.filter(idrol = 3, is_active = 1)
 
     context = {
         'detlabor': lista_detalle,  # Pasar el objeto de la página a la plantilla

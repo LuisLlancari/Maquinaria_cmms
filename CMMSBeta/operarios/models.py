@@ -50,5 +50,5 @@ class Tractorista(models.Model):
 
 class Encargado(models.Model):
     idencargado = models.AutoField(primary_key=True)
-    persona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
+    idpersona = models.ForeignKey(Persona, on_delete=models.SET_DEFAULT, default=None, verbose_name="Persona")
     estado = models.BooleanField(default=True, verbose_name="Estado")

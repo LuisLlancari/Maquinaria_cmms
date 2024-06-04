@@ -17,8 +17,8 @@ def datos_mantenimiento(request):
     cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
     idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
     idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
-    nombres = F(f'persona__nombres'),
-    apellidos = F(f'persona__apellidos')
+    nombres = F('idencargado__idpersona__nombres'),
+    apellidos = F('idencargado__idpersona__nombres')
   ).values(
     'idmantenimiento',
     'idprogramacion',
@@ -30,7 +30,7 @@ def datos_mantenimiento(request):
     'fechaingreso',
     'fechasalida',
     'descripcion',
-    'persona',
+    'idencargado',
     'nombres',
     'apellidos',
     'fechaingreso',
@@ -40,10 +40,11 @@ def datos_mantenimiento(request):
   tareas = list(Acciones.objects.filter(estado = 0).values('idaccion','accion'))
 
   encargados = list(Encargado.objects.filter(estado = 1).annotate(
-    nombre =Concat(F('persona__nombres'),Value(' '), F('persona_apellidos')) 
+    nombre =Concat(F('idpersona__nombres'),Value(' '), F('idpersona__apellidos')) 
   ).values('idencargado', 'nombre'))
 
-  datos = {'mantenimientos': mantenimiento, 'tareas':tareas, 'personas':encargados}
+  
+  datos = {'mantenimientos': mantenimiento, 'tareas':tareas, 'encargados':encargados}
   return JsonResponse(datos)
 
 def datos_implemento(request, id_programacion, id_implemento):
@@ -139,7 +140,7 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     print(f'Recambios :{recambios}')
     # Colocamos fecha de salida y encatgado al registro de mantenimiento
     mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento)
-    mantenimiento.persona_id = encargado
+    mantenimiento.idencargado_id = encargado
     mantenimiento.fechasalida = fecha_salida
     mantenimiento.estado = 0
     mantenimiento.save()

@@ -342,7 +342,7 @@
       datos.forEach(encargado => {
         const option = document.createElement('option');
         option.value = encargado.idencargado
-        option.text = nombre;
+        option.text = encargado.nombre;
         Select.appendChild(option)
       })
     }
@@ -354,6 +354,7 @@
             // console.log(datos);    
             det_tareas = datos.tareas
             det_encargados = datos.encargados
+            // console.log(det_encargados)
             let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
             // console.log(datos_filtrados)
             renderizarMantenimientos(datos_filtrados);   

@@ -28,7 +28,7 @@ class Mantenimiento(models.Model):
   fechaingreso = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, verbose_name='Fecha Ingreso')
   fechasalida = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, verbose_name="Fecha Fecha Salida")
   descripcion = models.CharField(max_length=45, verbose_name="Descripcion")
-  persona = models.ForeignKey(Encargado, on_delete=models.SET_DEFAULT, null=True, blank=True, default=None, verbose_name="Persona")
+  idencargado = models.ForeignKey(Encargado, on_delete=models.SET_DEFAULT, null=True, blank=True, default=None, verbose_name="Encargado")
   estado = models.BooleanField(default=True, verbose_name="Estado")
   
   class Meta:

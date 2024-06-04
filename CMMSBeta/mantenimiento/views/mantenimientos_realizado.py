@@ -15,8 +15,8 @@ def datos_mantenimientos(request):
   cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
   idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
   idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
-  nombres = F(f'persona__nombres'),
-  apellidos = F(f'persona__apellidos')
+  nombres = F(f'idencargado__idpersona__nombres'),
+  apellidos = F(f'idencargado__idpersona__apellidos')
   ).values(
     'idmantenimiento',
     'idprogramacion',
@@ -28,7 +28,7 @@ def datos_mantenimientos(request):
     'fechaingreso',
     'fechasalida',
     'descripcion',
-    'persona',
+    'idencargado',
     'nombres',
     'apellidos',
     'fechaingreso',

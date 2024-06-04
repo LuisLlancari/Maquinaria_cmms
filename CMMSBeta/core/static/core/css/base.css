@@ -148,9 +148,3 @@ html, body {
 select {
     text-transform: uppercase;
 }
-
-input[type="text"] {
-    text-transform: uppercase;
-}
-
-

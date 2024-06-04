@@ -22,7 +22,7 @@ def registrarUsuario(request):
         messages.error(request, 'Usuario registrado correctamente',extra_tags='success')
         return redirect('registro_usuario')
     else:
-      messages.error(request, 'El usuario ya esta existe',extra_tags='success')
+      messages.error(request, 'Error al crear el usuario',extra_tags='danger')
       return redirect('registro_usuario')
   else:
       return redirect('registro_usuario')

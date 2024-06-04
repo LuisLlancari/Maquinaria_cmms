@@ -9,7 +9,7 @@ class ImplementoForms(forms.ModelForm):
   def __init__(self, *args, **kwargs):
         super(ImplementoForms, self).__init__(*args, **kwargs)
         self.fields['idtipoimplemento'].queryset = TipoImplemento.objects.filter(estado = True)
-        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 3)
+        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 3, is_active = 1)
         self.fields['idceco'].queryset = Ceco.objects.filter(estado = True)
   class Meta:
     model = Implemento

@@ -60,7 +60,7 @@ def programacion(request):
 
 
     #LISTA DE USUARIO PARA EL SELECT 
-    usuario = Usuario.objects.filter(idrol = 3)
+    usuario = Usuario.objects.filter(idrol = 3, is_active = 1)
 
     # Pasamos los datos al contexto
     contexto = {
@@ -97,9 +97,17 @@ def registrar_programacion(request):
 
                 # Crear un detalle de labor para cada implemento seleccionado
                 for implemento_id in implementos_seleccionados:
-                    implemento = Implemento.objects.get(pk=implemento_id)
-                    # Implemento.objects.filter(pk=implemento_id).update(estado_actividad=False)
-                    DetalleLabor.objects.create(idprogramacion=programacion, idimplemento=implemento, horadeuso=0)
+                    if DetalleLabor.objects.filter(idprogramacion=programacion, idimplemento_id=implemento_id).exists():
+                        implemento = Implemento.objects.get(pk=implemento_id)
+                        messages.error(
+                            request,
+                            f'El implemento {implemento.implemento} ya se encuentra registrado en esta programación.',
+                            extra_tags='danger'
+                        )
+                    else:
+                        implemento = Implemento.objects.get(pk=implemento_id)
+                        DetalleLabor.objects.create(idprogramacion=programacion, idimplemento=implemento, horadeuso=0)
+
 
                 #Tractor.objects.filter(nrotractor=idtractor).update(estado_actividad=False)
                 # Tractorista.objects.filter(pk=idtractorista).update(estado_actividad=False)

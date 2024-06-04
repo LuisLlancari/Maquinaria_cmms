@@ -97,9 +97,9 @@
       contenerdorTareas.innerHTML='';
       datos.forEach(tarea =>{
         if (tarea.completado == true){
-          dato = `<div class="col-md-6 text-center text-success">"Realizado"</div>`
+          dato = `<div class="col-md-6 text-center text-success"><strong>Realizado</strong></div>`
         }else{
-          dato = `<div class="col-md-2">"NO"</div>`
+          dato = `<div class="col-md-6 text-center text-danger"><strong>No realizado</strong></div>`
         }
 
         nuevafila = `

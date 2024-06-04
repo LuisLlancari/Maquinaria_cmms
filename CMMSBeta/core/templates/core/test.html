@@ -39,53 +39,55 @@
   </div>
 
   <div class="contaniner table">
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered text-center mt-3 table-hover table-responsive">
+        <thead class="table-dark">
+          <tr>
+            <th class="text-center" scope="col">Tractorista</th>
+            <th class="text-center" scope="col">Tractor</th>
+            <th class="text-center" scope="col">Implementos</th>
+            <th class="text-center" scope="col">Dia</th>
+            <th class="text-center" scope="col">Lote</th>
+            <th class="text-center" scope="col">Labor</th>
+            <th class="text-center" scope="col">Solicitante</th>
+            <th class="text-center" scope="col">Supervisor</th>
+          </tr>
+        </thead>
+  
+        <tbody>
+          {% for data in detlabor %}
+              {% with programacion_usuario=data.idprogramacion.idusuario %}
+              <tr {% if programacion_usuario != data.idimplemento.idusuario %} class="table-warning" {% endif %} data-idusuario="{{ data.idprogramacion.idusuario.id }}" data-fecha="{{ data.idprogramacion.fechahora|date:"Y-m-d" }}">
+                {# <tr {% if programacion_usuario != data.idimplemento.idusuario and programacion_usuario != tractorista_usuario and programacion_usuario != tractor_usuario %} class="table-warning" {% endif %}> #}
+                  <td class="text-center">{{ data.idprogramacion.idtractorista }}</td>
+                  <td class="text-center">{{ data.idprogramacion.idtractor }}</td>
+                  <td class="text-center">
+                      {% for detalle in data.idprogramacion.detallelabor_set.all %}
+                          {{ detalle.idimplemento.implemento }}
+                          {% if not forloop.last %}, {% endif %}
+                      {% endfor %}
+                  </td>
+                  <td class="text-center">
+                      {{ data.idprogramacion.fechahora|date:"d-m-Y"}}
+                      {% if data.idprogramacion.turno == 'M' %}
+                        <i class="bi bi-brightness-high-fill text-warning fs-4"></i>
+                      {% elif data.idprogramacion.turno == 'T' %}
+                        <i class="lni lni-cloudy-sun text-secondary fs-5"></i>
+                      {% elif data.idprogramacion.turno == 'N' %}
+                        <i class="bi bi-moon-stars-fill text-primary fs-5"></i>
+                      {% endif %}
+                  </td>
+                  <td class="text-center">{{ data.idprogramacion.idlote }}</td>
+                  <td class="text-center">{{ data.idprogramacion.idtipolabor }}</td>
+                  <td class="text-center">{{ data.idprogramacion.idsolicitante }}</td>
+                  <td class="text-center">{{ data.idprogramacion.idusuario }}</td>
+              </tr>
+              {% endwith %}
+          {% endfor %}
+        </tbody>   
+      </table>
+    </div>
 
-    <table class="table table-striped table-bordered text-center mt-3 table-hover table-responsive">
-      <thead class="table-dark">
-        <tr>
-          <th class="text-center" scope="col">Tractorista</th>
-          <th class="text-center" scope="col">Tractor</th>
-          <th class="text-center" scope="col">Implementos</th>
-          <th class="text-center" scope="col">Dia</th>
-          <th class="text-center" scope="col">Lote</th>
-          <th class="text-center" scope="col">Labor</th>
-          <th class="text-center" scope="col">Solicitante</th>
-          <th class="text-center" scope="col">Supervisor</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {% for data in detlabor %}
-            {% with programacion_usuario=data.idprogramacion.idusuario %}
-            <tr {% if programacion_usuario != data.idimplemento.idusuario %} class="table-warning" {% endif %} data-idusuario="{{ data.idprogramacion.idusuario.id }}" data-fecha="{{ data.idprogramacion.fechahora|date:"Y-m-d" }}">
-              {# <tr {% if programacion_usuario != data.idimplemento.idusuario and programacion_usuario != tractorista_usuario and programacion_usuario != tractor_usuario %} class="table-warning" {% endif %}> #}
-                <td class="text-center">{{ data.idprogramacion.idtractorista }}</td>
-                <td class="text-center">{{ data.idprogramacion.idtractor }}</td>
-                <td class="text-center">
-                    {% for detalle in data.idprogramacion.detallelabor_set.all %}
-                        {{ detalle.idimplemento.implemento }}
-                        {% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </td>
-                <td class="text-center">
-                    {{ data.idprogramacion.fechahora|date:"d-m-Y"}}
-                    {% if data.idprogramacion.turno == 'M' %}
-                      <i class="bi bi-brightness-high-fill text-warning fs-4"></i>
-                    {% elif data.idprogramacion.turno == 'T' %}
-                      <i class="lni lni-cloudy-sun text-secondary fs-5"></i>
-                    {% elif data.idprogramacion.turno == 'N' %}
-                      <i class="bi bi-moon-stars-fill text-primary fs-5"></i>
-                    {% endif %}
-                </td>
-                <td class="text-center">{{ data.idprogramacion.idlote }}</td>
-                <td class="text-center">{{ data.idprogramacion.idtipolabor }}</td>
-                <td class="text-center">{{ data.idprogramacion.idsolicitante }}</td>
-                <td class="text-center">{{ data.idprogramacion.idusuario }}</td>
-            </tr>
-            {% endwith %}
-        {% endfor %}
-      </tbody>   
-    </table>
     <h1 id="no_coincidencia" class="text-center"></h1>
   </div>
 
