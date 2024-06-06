@@ -1,25 +1,26 @@
 {% extends 'core/base.html' %}
 
-{% block titulo %}Mantenimientos Pendientes{% endblock%}
+{% block titulo %}Implementos Ingreso{% endblock%}
 
 {% block contenido %} 
 <div class="container">
-  <h1 class="text-center">Mantenimientos pendientes</h1>
+  <h1 class="text-center">Ingreso de implemento</h1>
   <!-- filtros -->
-<div class="row">
-</div>
-<!-- fin filtro -->
+  <div class="row"></div>
+  <!-- fin filtro -->
 
-<div class="container">
-  <div class="row" id="contenido-cards">
-
+  <div class="container">
+    <div class="row" id="contenido-cards"></div>
+    <div id="no-results-message" class="alert alert-danger text-center" style="display: none;">
+      No hay implementos por aceptar
+    </div>
   </div>
 </div>
-</div>
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const contenerdoCards = document.getElementById('contenido-cards')
-
+    const contenerdoCards = document.getElementById('contenido-cards');
+    const noResultsMessage = document.getElementById('no-results-message');
     var CSRF_TOKEN = '{{ csrf_token }}';
 
     function registrarIngreso(idmantenimiento){
@@ -40,41 +41,44 @@
     }
 
     function rederizarMantenimientosPendientes(datos){
-      contenerdoCards.innerHTML=''
-      let nuevaCard = ''
-      datos.forEach(pendiente => {
-      
-        nuevaCard = `
-        <div class="col col-md-4">
-          <div class="card border-success mb-3" >
-            <div class="card-header bg-transparent border-success text-center">Mantenimiento ${pendiente.idmantenimiento}</div>
-              <div class="card-body text-success">
-                <h5 class="card-text text-center fw-bold"></h5>
-                <p class="card-text text-success m-0 fs-5"><strong>Implemento: </strong> ${pendiente.implemento}</p>
-                <p class="card-text text-success m-0 fs-5"><strong>Codigo:  </strong> ${pendiente.cod_implemento}</p>
-                <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong> ${pendiente.fecha_programada }</p>
+      contenerdoCards.innerHTML = '';
+      if (datos.length === 0) {
+        noResultsMessage.style.display = 'block';
+      } else {
+        noResultsMessage.style.display = 'none';
+        datos.forEach(pendiente => {
+          let nuevaCard = `
+          <div class="col col-md-4">
+            <div class="card border-success mb-3" >
+              <div class="card-header bg-transparent border-success text-center">Mantenimiento ${pendiente.idmantenimiento}</div>
+                <div class="card-body text-success">
+                  <h5 class="card-text text-center fw-bold"></h5>
+                  <p class="card-text text-success m-0 fs-5"><strong>Implemento: </strong> ${pendiente.implemento}</p>
+                  <p class="card-text text-success m-0 fs-5"><strong>Codigo:  </strong> ${pendiente.cod_implemento}</p>
+                  <p class="card-text text-success m-0 fs-5"><strong>Fecha Programacion:</strong> ${pendiente.fecha_programada}</p>
+                </div>
+                <div class="card-footer bg-transparent border-success">
+                  <form>
+                    <button class="btn btn-primary mt-1 w-100 confirmar" data-id="${pendiente.idmantenimiento}">Confirmar Llegada</button>
+                  </form>
+                </div>
               </div>
-              <div class="card-footer bg-transparent border-success">
-                <form>
-                  <button class="btn btn-primary mt-1 w-100 confirmar" data-id="${pendiente.idmantenimiento}">Confirmar Llegada</button>
-                </form>
-              </div>
-              </div>
+            </div>
           </div>
-        </div>
-        `;
-        contenerdoCards.innerHTML += nuevaCard;
-      });
-
-      const btnConfimarFecha = document.querySelectorAll('.confirmar')
-      btnConfimarFecha.forEach(function(boton) {
-      boton.addEventListener("click", function(event) {
-         let id_mantenimiento = event.currentTarget.dataset.id;
-        console.log(`hola ${id_mantenimiento}`)
-          registrarIngreso(id_mantenimiento);
+          `;
+          contenerdoCards.innerHTML += nuevaCard;
         });
-      });
 
+        const btnConfimarFecha = document.querySelectorAll('.confirmar');
+        btnConfimarFecha.forEach(function(boton) {
+          boton.addEventListener("click", function(event) {
+            event.preventDefault();
+            let id_mantenimiento = event.currentTarget.dataset.id;
+            console.log(`hola ${id_mantenimiento}`);
+            registrarIngreso(id_mantenimiento);
+          });
+        });
+      }
     }
 
     function obtenerDatosMantenimientosPendientes(){
@@ -87,14 +91,14 @@
       })
       .then(res => res.json())
       .then(datos => {
-       rederizarMantenimientosPendientes(datos.mantenimiento)
+        rederizarMantenimientosPendientes(datos.mantenimiento);
       })
       .catch((error) => {
           console.log(error);
       });
     }
 
-    obtenerDatosMantenimientosPendientes()
+    obtenerDatosMantenimientosPendientes();
 
   });
 </script>

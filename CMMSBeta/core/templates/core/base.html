@@ -54,13 +54,13 @@
 
                 {% if user.idrol.rol == "Mecanico"%}
                 <li class="sidebar-item">
-                    <a href="{% url 'mantenimiento_proceso' %}" class="sidebar-link" data-path="test">
-                        <span class="text-uppercase">Estado Mantenimientos</span>
+                    <a href="{% url 'mantenimiento_pendiente' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Aceptar Ingreso</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="{% url 'mantenimiento_pendiente' %}" class="sidebar-link" data-path="test">
-                        <span class="text-uppercase">Inicio Mantenimiento</span>
+                    <a href="{% url 'mantenimiento_proceso' %}" class="sidebar-link" data-path="test">
+                        <span class="text-uppercase">Finalizar Mantenimientos</span>
                     </a>
                 </li>
                 <li class="sidebar-item">

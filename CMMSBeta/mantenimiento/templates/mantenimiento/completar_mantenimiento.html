@@ -8,11 +8,15 @@
    .highlight {background-color: #d3d3d3;}
 </style>
 </style>
-<h1 class="text-center"> Estado de los mantenimientos</h1>
+<h1 class="text-center"> Finalizar mantenimientos</h1>
 
 <div class="container">
   <div class="row" id="cards-mantenimiento">
 
+  </div>
+
+  <div id="no_resultados" class="alert alert-danger text-center" style="display: none;">
+    No hay mantenimientos por realizar
   </div>
 </div>
 
@@ -386,45 +390,51 @@
 
     function renderizarMantenimientos(datos) {
       cards.innerHTML = '';
+      if (datos.length === 0) {
+        no_resultados.style.display = 'block';
+      }else {
+        no_resultados.style.display = 'none';
+      
 
-      datos.forEach(mantenimiento => {
-    
-        let nuevacard = `
-        <div class="col col-md-4">
-          <div class="card border-success mb-3" >
-            <div class="card-header bg-transparent border-success text-center">Mantenimiento ${mantenimiento.idmantenimiento}</div>
-              <div class="card-body text-success">
-                <h5 class="card-text text-center fw-bold"></h5>
-                <p class="card-text text-success m-0 fs-5"><strong>Implemento: </strong> ${mantenimiento.implemento}</p>
-                <p class="card-text text-success m-0 fs-5"><strong>Codigo:  </strong> ${mantenimiento.cod_implemento}</p>
-                <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong> ${mantenimiento.fecha_programada }</p>
-                <p class="card-text text-success m-0 fs-5"><strong>Fecha Ingreso:</strong> ${mantenimiento.fechaingreso}</p>
+        datos.forEach(mantenimiento => {
+      
+          let nuevacard = `
+          <div class="col col-md-4">
+            <div class="card border-success mb-3" >
+              <div class="card-header bg-transparent border-success text-center">Mantenimiento ${mantenimiento.idmantenimiento}</div>
+                <div class="card-body text-success">
+                  <h5 class="card-text text-center fw-bold"></h5>
+                  <p class="card-text text-success m-0 fs-5"><strong>Implemento: </strong> ${mantenimiento.implemento}</p>
+                  <p class="card-text text-success m-0 fs-5"><strong>Codigo:  </strong> ${mantenimiento.cod_implemento}</p>
+                  <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong> ${mantenimiento.fecha_programada }</p>
+                  <p class="card-text text-success m-0 fs-5"><strong>Fecha Ingreso:</strong> ${mantenimiento.fechaingreso}</p>
+                  </div>
+                  <div class="card-footer bg-transparent border-success">
+                    <button class="btn btn-primary mt-1 finalizar-mantenimiento" data-idmantenimiento="${mantenimiento.idmantenimiento}" data-idprogramacion="${mantenimiento.idprogramacion}" data-idimplemento="${mantenimiento.idimplemento}" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
+                  </div>
                 </div>
-                <div class="card-footer bg-transparent border-success">
-                  <button class="btn btn-primary mt-1 finalizar-mantenimiento" data-idmantenimiento="${mantenimiento.idmantenimiento}" data-idprogramacion="${mantenimiento.idprogramacion}" data-idimplemento="${mantenimiento.idimplemento}" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
-                </div>
-              </div>
+            </div>
           </div>
-        </div>
-        `;
-        cards.innerHTML += nuevacard;
-      }); 
-      const btnFinalizarMantenimiento = document.querySelectorAll('.finalizar-mantenimiento')
+          `;
+          cards.innerHTML += nuevacard;
+        }); 
+        const btnFinalizarMantenimiento = document.querySelectorAll('.finalizar-mantenimiento')
 
-      btnFinalizarMantenimiento.forEach(function(boton){
-        boton.addEventListener("click",function(event){
-          let id_implemento = event.target.dataset.idimplemento;
-          let id_mantenimiento = event.target.dataset.idmantenimiento;
-          let id_programacion = event.target.dataset.idprogramacion;
-          // console.log(id_implemento, id_programacion)
-          formDetalle.setAttribute('action', `./proceso/finalizar_mantenimiento/${id_mantenimiento}`)
-          formDetalle.reset();
-          contenedor_recambio.innerHTML = '';
-          // console.log(id_programacion, id_implemento);
-          obtenerDatosImplementos(id_programacion, id_implemento);
-          rederizarEncargado(det_encargados);
-        });
-      })
+        btnFinalizarMantenimiento.forEach(function(boton){
+          boton.addEventListener("click",function(event){
+            let id_implemento = event.target.dataset.idimplemento;
+            let id_mantenimiento = event.target.dataset.idmantenimiento;
+            let id_programacion = event.target.dataset.idprogramacion;
+            // console.log(id_implemento, id_programacion)
+            formDetalle.setAttribute('action', `./proceso/finalizar_mantenimiento/${id_mantenimiento}`)
+            formDetalle.reset();
+            contenedor_recambio.innerHTML = '';
+            // console.log(id_programacion, id_implemento);
+            obtenerDatosImplementos(id_programacion, id_implemento);
+            rederizarEncargado(det_encargados);
+          });
+        })
+      }
 
     }
 

@@ -148,3 +148,35 @@ html, body {
 select {
     text-transform: uppercase;
 }
+
+.implemento-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.legend-color-1 {
+    width: 20px;
+    height: 20px;
+    background-color: #FFC107;
+    margin-right: 10px;
+}
+
+.legend-color-2 {
+    width: 20px;
+    height: 20px;
+    background-color: #3498DB;
+    margin-right: 15px;
+}
+
+.legend-color-3 {
+    width: 20px;
+    height: 20px;
+    background-color: #E74C3C;
+    margin-right: 10px;
+}
+
+
+.legend-text {
+    font-size: 14px;
+}
