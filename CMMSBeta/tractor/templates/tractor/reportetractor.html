@@ -5,19 +5,19 @@
 <div class="container">
     <h1 class="text-center">Completar Programacion</h1>
     <div class="container">
-        <div class="row">
-            <div class="col col-md-6">
-                <label for="" class="form-label">Buscar por:</label>
-                <input type="text" class="form-control" id="busqueda">
-            </div>
-            <div class="col col-md-6"></div>
-        </div>
+<!--        <div class="row">-->
+<!--            <div class="col col-md-6">-->
+<!--                <label for="" class="form-label">Buscar por:</label>-->
+<!--                <input type="text" class="form-control" id="busqueda">-->
+<!--            </div>-->
+<!--            <div class="col col-md-6"></div>-->
+<!--        </div>-->
     </div>
-
+</div>
 <div class="container mt-3">
     <div class="row">
         <div class="col col md 4">
-            <label for="" class="form-label">Seleccione Solicitante</label>
+            <label for="selectusuario" class="form-label">Seleccione Solicitante</label>
             <select name="" class="form-select" id="selectusuario">
                 <option value="">-----</option>
                 {% for usuario in usuarios %}
@@ -25,7 +25,10 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col col md 4"></div>
+        <div class="col col md 4">
+            <label class="form-label">Seleccione Fecha</label>
+            <input class="form-control" id="filter-date" type="date">
+        </div>
         <div class="col col md 4"></div>
     </div>
 
@@ -33,31 +36,26 @@
 
 <div class="container mt-3">
     <div class="card-group m-3">
-        {% for dato in datos %}
-            
-            <div class="card m-3 border rounded flex-fill" style="background-color: rgb(255, 255, 255);">
-                <div class="card-body d-flex flex-column">
-                    <h4 class="card-title text-center fw-bold" id="h6">Reporte Tractor {{ dato.idprogramacion}}</h4>
-                    <div class="report-info">
-                        <p class="mt-2 mb-0 fw-bold"><span class="info-label">Tipo labor: </span> {{ dato.idtipolabor }}</p>
-                        <p class="mt-2 mb-0 fw-bold"><span class="info-label">Lote: </span> 100A- {{ dato.idlote }}</p>
-                        <p class="mt-2 mb-0 fw-bold"><rspan class="info-label">Tracto:</rspan> {{ dato.idtractor.nrotractor }}</p>
-                        <p class="mt-2 mb-0 fw-bold"><span class="info-label">Fecha:</span> {{ dato.fechahora }}</p>
-                        
-                        
+    {% for dato in datos %}
+        <div class="card m-3 border rounded flex-fill" style="background-color: rgb(255, 255, 255);" data-fecha="{{ dato.fechahora|date:'Y-m-d' }}">
+            <div class="card-body d-flex flex-column">
+                <h4 class="card-title text-center fw-bold" id="h6">Reporte Tractor {{ dato.idprogramacion }}</h4>
+                <div class="report-info">
+                    <p class="mt-2 mb-0 fw-bold"><span class="info-label">Tipo labor: </span> {{ dato.idtipolabor }}</p>
+                    <p class="mt-2 mb-0 fw-bold"><span class="info-label">Lote: </span> 100A- {{ dato.idlote }}</p>
+                    <p class="mt-2 mb-0 fw-bold"><span class="info-label">Tracto: </span> {{ dato.idtractor.nrotractor }}</p>
+                    <p class="mt-2 mb-0 fw-bold"><span class="info-label">Fecha: </span> {{ dato.fechahora }}</p>
+
                     <!-- Utilizamos estos datos para los filtros -->
-                        <p class="mt-2 mb-0 fw-bold idususario" style="display: none;">{{ dato.idusuario_id }}</p>
-                        <p class="mt-2 mb-0 fw-bold tractor" style="display: none;">{{ dato.idtractor.nrotractor }}</p>
-                    </div>
-                    {% if user.idrol.rol != "Gerencia" %}
-                    <button class="btn btn-primary mt-3 finalizar" data-bs-toggle="modal" data-bs-target="#moda-programacion" data-programacion="{{dato.idprogramacion}}" data-tractor="{{dato.idtractor_id}}" >Finalizar Reporte</button>
-                    {% endif %}
+                    <p class="mt-2 mb-0 fw-bold idususario" style="display: none;">{{ dato.idusuario_id }}</p>
+                    <p class="mt-2 mb-0 fw-bold tractor" style="display: none;">{{ dato.idtractor.nrotractor }}</p>
                 </div>
+                {% if user.idrol.rol != "Gerencia" %}
+                    <button class="btn btn-primary mt-3 finalizar" data-bs-toggle="modal" data-bs-target="#moda-programacion" data-programacion="{{ dato.idprogramacion }}" data-tractor="{{ dato.idtractor_id }}">Finalizar Reporte</button>
+                {% endif %}
             </div>
-            
-    
-    
-        {% endfor %}
+        </div>
+    {% endfor %}
     </div>
 </div>
 
@@ -100,27 +98,28 @@
     document.addEventListener("DOMContentLoaded", () => {
 
         const btnFinalizar = document.querySelectorAll(".finalizar");
+        const btnFecha = document.getElementById('filter-date')
         
         const cards = document.querySelectorAll(".card");
         const selectUsuario = document.getElementById("selectusuario");
 
-        document.getElementById("busqueda").addEventListener("keyup", function() {
-        var input, filter, cards, card, tractorNumber, i, txtValue;
-        input = document.getElementById("busqueda");
-        filter = input.value.toUpperCase();
-        cards = document.querySelectorAll(".tractor");
-        
-        for (i = 0; i < cards.length; i++) {
-            card = cards[i].closest(".card");
-            tractorNumber = cards[i].textContent.trim();
-            txtValue = tractorNumber.toUpperCase();
-            if (txtValue.indexOf(filter) > -1) {
-                card.style.display = "";
-            } else {
-                card.style.display = "none";
-            }
-        }
-        });
+<!--        document.getElementById("busqueda").addEventListener("keyup", function() {-->
+<!--        var input, filter, cards, card, tractorNumber, i, txtValue;-->
+<!--        input = document.getElementById("busqueda");-->
+<!--        filter = input.value.toUpperCase();-->
+<!--        cards = document.querySelectorAll(".tractor");-->
+<!--        -->
+<!--        for (i = 0; i < cards.length; i++) {-->
+<!--            card = cards[i].closest(".card");-->
+<!--            tractorNumber = cards[i].textContent.trim();-->
+<!--            txtValue = tractorNumber.toUpperCase();-->
+<!--            if (txtValue.indexOf(filter) > -1) {-->
+<!--                card.style.display = "";-->
+<!--            } else {-->
+<!--                card.style.display = "none";-->
+<!--            }-->
+<!--        }-->
+<!--        });-->
         
         selectUsuario.addEventListener("change", function() {
             const usuarioSeleccionado = this.value;
@@ -159,6 +158,20 @@
                 obtener_horainicial(id_tractor);
             });          
         });
+
+        btnFecha.addEventListener('change', function() {
+             var selectedDate = this.value;
+            cards.forEach(function(card) {
+            var cardDate = card.getAttribute('data-fecha');
+            console.log(cardDate)
+            if (selectedDate === cardDate || !selectedDate) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+            }) ;
+        });
+
 
 
     
