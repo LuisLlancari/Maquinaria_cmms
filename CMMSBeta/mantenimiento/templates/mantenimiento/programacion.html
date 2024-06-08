@@ -34,6 +34,7 @@
       <th>F M</th>
       <th>Tipo Mantenimiento</th>
       <th>Fecha Asignada</th>
+      <th>Operacion</th>
     </tr>
   </thead>
   <tbody>
@@ -64,9 +65,22 @@
       <td>{{dato.fechaprogramacion}}</td>
       {% else %}
       <td>
-        <button class="btn btn-warning editar d-inline-block registrar" id="registrar-fecha" data-id="{{dato.idprogramacionmantenimiento}}" data-imple_nombre="{{dato.idimplemento.implemento}}" data-idprogramacion="{{dato.idprogramacionmantenimiento}}"  data-bs-toggle="modal" data-bs-target="#registro_fecha">Programar Fecha</button>
+        <button class="btn btn-warning d-inline-block registrar" id="registrar-fecha" data-id="{{dato.idprogramacionmantenimiento}}" data-imple_nombre="{{dato.idimplemento.implemento}}" data-idprogramacion="{{dato.idprogramacionmantenimiento}}"  data-bs-toggle="modal" data-bs-target="#registro_fecha">Programar Fecha</button>
       </td>
       {% endif %}
+      {% if dato.tipomantenimiento == 1 %}
+      <td>
+        <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha"><strong>Editar Fecha</strong></button>
+      </td>
+      {% else %}
+      <td>
+          <form action="{% url 'eliminar_programacion' dato.idprogramacionmantenimiento%}" class="d-inline-block w-100" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-md w-100"><strong>Eliminar</strong></button>
+        </form> 
+      </td>
+      {% endif %}
+
     </tr>
     {% endfor %}
   </tbody>
@@ -164,11 +178,35 @@
   </div>
 </div>
 
+<div class="modal fade" id="editarFecha" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Fecha</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="form-editar-fecha" method="POST" action="./programacion/editarFecha" autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-body">
+          <input type="hidden" id="idprogramacion1" name="idprogramacion">
+          <label for="idimplemento" class="form-label">Fecha de la programación:</label>
+          <input type="date" name="fechaprogramacion" id="fecha3" class="form-control" required>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const today = new Date().toISOString().split('T')[0];
     const fecha = document.getElementById('fecha2');
     const fecha2 = document.getElementById('fecha');
+    const fecha3 = document.getElementById('fecha3');
     const formModal = document.getElementById("form-modal");
     const btnCloneMotivos = document.getElementById('clone-motivos');
     const btnCloneMotivos2 = document.getElementById('clone-motivos2');
@@ -180,6 +218,7 @@
 
     fecha.setAttribute('min', today);
     fecha2.setAttribute('min', today);
+    fecha3.setAttribute('min', today);
     selectMotivo.value = 1
 
     var btnRegistrarFecha = document.querySelectorAll('.registrar');
@@ -274,6 +313,16 @@
       // Resetear el valor del select de implementos
       implementoSelect.value = "";
     });
+
+
+    var editButtons = document.querySelectorAll(".editar");
+      editButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var idprogMantenimiento = this.dataset.idprogramacion;
+          console.log(idprogMantenimiento)
+          document.querySelector('#idprogramacion1').value = idprogMantenimiento
+        });
+      });
 
   });
 </script>

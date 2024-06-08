@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Subquery, F,Value
+from django.db.models import Count, Subquery, F,Value, OuterRef
 from django.db.models.functions import Concat
 from programacion_labor.models import Programacion, DetalleLabor
 from tractor.models import Tractor
@@ -190,18 +190,23 @@ def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
 @login_required(login_url='login', redirect_field_name='home')
 def test(request):
     #
-    lista_detalle = DetalleLabor.objects.all().order_by('-idprogramacion__fechahora')
-    #paginator = Paginator(lista_detalle, 10)  # Muestra 10 elementos por página
-    page_number = request.GET.get('page')
-    #paginador
-    #page_obj = paginator.get_page(page_number)
+    subquery = DetalleLabor.objects.filter(
+    estado=True,
+    idprogramacion=OuterRef('idprogramacion')
+    ).order_by('idprogramacion__fechahora')[:1]
+
+    # Obtener los detalles únicos por idprogramacion y ordenarlos de forma ascendente por la fecha de idprogramacion
+    detalles_unicos = DetalleLabor.objects.filter(
+        pk=Subquery(subquery.values('pk'))
+    ).order_by('-idprogramacion__fechahora')
+
+    print(detalles_unicos)
 
     lista_implementos = Implemento.objects.all()
-    #
     lista_supervisor = Usuario.objects.filter(idrol = 3, is_active = 1)
 
     context = {
-        'detlabor': lista_detalle,  # Pasar el objeto de la página a la plantilla
+        'detlabor': detalles_unicos,  # Pasar el objeto de la página a la plantilla
         'imple': lista_implementos,
         'list_sup': lista_supervisor
     }

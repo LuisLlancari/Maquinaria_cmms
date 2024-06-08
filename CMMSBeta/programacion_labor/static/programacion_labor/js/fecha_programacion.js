@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let fechaMañana = fechaActual.plus({ days: 1 });
     let fechaAyer = fechaActual.plus({ days: -1 });
 
+
+    //PROGRAMACION LABOR
     // Formatea las fechas en el formato 'yyyy-MM-dd'
     let hoy = fechaActual.toFormat('yyyy-MM-dd');
     let mañana = fechaMañana.toFormat('yyyy-MM-dd');

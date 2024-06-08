@@ -160,6 +160,7 @@ select {
     height: 20px;
     background-color: #FFC107;
     margin-right: 10px;
+    border: 1px solid #000;
 }
 
 .legend-color-2 {
@@ -167,6 +168,7 @@ select {
     height: 20px;
     background-color: #3498DB;
     margin-right: 15px;
+    border: 1px solid #000;
 }
 
 .legend-color-3 {
@@ -174,6 +176,15 @@ select {
     height: 20px;
     background-color: #E74C3C;
     margin-right: 10px;
+    border: 1px solid #000;
+}
+
+.legend-color-4 {
+    width: 20px;
+    height: 20px;
+    background-color: #F2E7C3;
+    margin-right: 10px;
+    border: 1px solid #000;
 }
 
 

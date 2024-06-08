@@ -61,3 +61,19 @@ def registrar(request):
             DetMotivos.objects.create(idprogramacionmantenimiento_id = nueva_programacion.idprogramacionmantenimiento , idaccion_id = idmotivo)
 
     return redirect('programacion_mantenimiento')
+
+def eliminar_programacion(request, id_programacion):
+    programacion = get_object_or_404(ProgramacionMantenimiento, pk=id_programacion)
+    if request.method == 'POST':
+        programacion.delete()
+        return redirect('programacion_mantenimiento')
+
+def editar_fecha(request):
+    if request.method == 'POST':
+        print("entro")
+        idprogramacion = request.POST.get('idprogramacion')
+        fecha = request.POST.get('fechaprogramacion')
+        programacion = get_object_or_404(ProgramacionMantenimiento, pk = idprogramacion)
+        programacion.fechaprogramacion = fecha
+        programacion.save()
+        return redirect('programacion_mantenimiento')

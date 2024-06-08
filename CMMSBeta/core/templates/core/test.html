@@ -4,6 +4,8 @@
 
 {% block contenido %}
 
+{% load static %}
+
 <div class="container">
   <h1 class="text-center">Programaciones</h1>
 
@@ -34,6 +36,12 @@
       <button id="exportToExcel" type="button" class="btn btn-success m-4">EXCEL</button>
     </div>
   </div>
+  <div class="d-flex align-items-center justify-content-end mt-2">
+    <div class="legend-color-4"></div>
+      <div class="legend-text">
+          <strong>IMPLEMENTOS PRESTADOS</strong>
+      </div>
+  </div>
 
   <div class="contaniner table">
     <div class="table-responsive">
@@ -44,6 +52,7 @@
             <th class="text-center" scope="col">Tractor</th>
             <th class="text-center" scope="col">Implementos</th>
             <th class="text-center" scope="col">Dia</th>
+            <th class="text-center" scope="col">Turno</th>
             <th class="text-center" scope="col">Lote</th>
             <th class="text-center" scope="col">Labor</th>
             <th class="text-center" scope="col">Solicitante</th>
@@ -74,6 +83,7 @@
                         <i class="bi bi-moon-stars-fill text-primary fs-5"></i>
                       {% endif %}
                   </td>
+                  <td class="text-center">{{ data.idprogramacion.turno }}</td>
                   <td class="text-center">{{ data.idprogramacion.idlote }}</td>
                   <td class="text-center">{{ data.idprogramacion.idtipolabor }}</td>
                   <td class="text-center">{{ data.idprogramacion.idsolicitante }}</td>
@@ -97,6 +107,15 @@
     var rows = document.querySelectorAll('tbody tr');
     var supervisorSelect = document.getElementById('supervisorSelect');
     var fechaSelect = document.getElementById('fechaSelect');
+
+    // GERENCIA LISTA LABOR
+    const { DateTime } = luxon;
+    const zonaHorariaPeru = 'America/Lima';
+    let fechaActual = DateTime.now().setZone(zonaHorariaPeru);
+    let hoyGerencia = fechaActual.toFormat('yyyy-MM-dd');
+    fechaSelect.value = hoyGerencia;
+    console.log(hoyGerencia);
+    //
 
     supervisorSelect.addEventListener('change', function () {
         fechaSelect.value = '#';
@@ -140,6 +159,7 @@
         }
     });
 
+    fechaSelect.dispatchEvent(new Event('change'));
     function exportToExcel() {
         var rows = document.querySelectorAll('tbody tr');
         var headers = document.querySelectorAll('thead th');
