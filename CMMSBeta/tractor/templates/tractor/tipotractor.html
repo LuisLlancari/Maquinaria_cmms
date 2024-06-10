@@ -1,6 +1,8 @@
 {% extends "core/base.html" %} 
 {% block titulo %} Tipo Tractor {% endblock %} 
 {% block contenido %}
+{% load static %}
+
 <div class="container">
   <h1 class="text-center mt-3 mb-3">Gestión de Tipo de Tractores</h1>
   <div class="row">
@@ -61,9 +63,9 @@
             <i class="lni lni-pencil"></i>
           </button>
           
-          <form action="{% url 'eliminar_tipotractor' data.idtipotractor %}" class="d-inline-block" method="POST">
+          <form action="{% url 'eliminar_tipotractor' data.idtipotractor %}" id="form-{{ dato.idtipotractor }}" class="d-inline-block" method="POST">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger btn-sm">
+            <button type="submit" class="btn btn-danger btn-sm eliminar" data-registro="{{ dato.nombretipotractor }}" data-id="{{ dato.idtipotractor }}">
               <i class="lni lni-trash-can"></i>
             </button>
           </form>
@@ -99,12 +101,12 @@
             method="post"
             action="{% url 'registrar_tipotractor'  %}"
             autocomplete="off"
-            id="form-ceco"
+            id="form-tipotractor"
           >
             {% csrf_token %} 
             
             {{form}}
-            <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+            <button type="submit" id="guardar-datos" class="btn btn-primary mt-3">Guardar</button>
           </form>
         </div>
       </div>
@@ -143,17 +145,24 @@
             class="form-control mb-3"
           />
 
-          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+          <button type="submit" id="guardar-cambios" class="btn btn-primary">Guardar Cambios</button>
         </form>
       </div>
     </div>
   </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const TipoTractores = document.querySelectorAll("#tabla-tipo-tractor tbody tr");
     const inputBuscar = document.getElementById("buscador");
+    const btnGuardar = document.getElementById("guardar");
+    const btnEliminar = document.querySelectorAll(".eliminar")
+    const formEditar = document.getElementById("form-editar-tipo")
+    const formRegistrar = document.getElementById("form-tipotractor")
+    const btnGuardarCambios = document.getElementById("guardar-cambios");
+    const btnGuardarRegristro = document.getElementById("guardar-datos");
 
     // Agregar un event listener para el evento de entrada en el campo de búsqueda
     inputBuscar.addEventListener("input", function() {
@@ -189,7 +198,35 @@
         document.getElementById("TipoTractor").value = nombreTipo;
       });
     });
+
+    btnEliminar.forEach(function(boton) {
+      boton.addEventListener("click", function(event) {
+          event.preventDefault();
+          let tipotractor = event.currentTarget.dataset.registro;
+          let formId = event.currentTarget.dataset.id;
+          PreguntarEliminar(tipotractor, function() {
+              document.getElementById('form-' + formId).submit();
+          });
+      });
+    });
+
+    btnGuardarRegristro.addEventListener("click", function(event){
+            event.preventDefault();
+            PreguntarGuardar(function(){formRegistrar.submit();});
+
+        });
+
+    btnGuardarCambios.addEventListener("click", function(event){
+        event.preventDefault();
+        PreguntarGuardar(function(){formEditar.submit();});
+
+    });
+
+
+
   });
+
+
 </script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

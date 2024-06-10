@@ -3,6 +3,8 @@
 {% block titulo %}Fundos{% endblock%}
 
 {% block contenido %} 
+{% load static %}
+
 <div class="container">
     <h1 class="text-center mt-3 mb-3">Gestion de Fundos</h1>
     <div class="row">
@@ -46,9 +48,9 @@
                     {% if user.idrol.rol != "Gerencia" %}
                     <td>
                         <button class="btn btn-warning btn-sm editar d-inline-block" id="fundo" data-toggle="modal" data-target="#modalActualizar" data-idfundo='{{ data.idfundo }}' data-nombrefundo="{{ data.fundo }}" data-idsede="{{ data.idsede.idsede }}" type="button"><i class="lni lni-pencil"></i></button>
-                        <form action="{% url 'eliminar_fundo' data.idfundo %}" class="d-inline-block" method="POST">
+                        <form action="{% url 'eliminar_fundo' data.idfundo %}" class="d-inline-block" id="form-{{ data.idfundo }}" method="POST">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                            <button type="submit" class="btn btn-danger btn-sm eliminar" data-registro="{{ data.fundo }}" data-id="{{ data.idfundo }}"><i class="lni lni-trash-can"></i></button>
                         </form>      
                     </td>
                     {% endif %}
@@ -75,7 +77,7 @@
                         <label class="mt-2">Fundo</label>
                         {{form_fundo.fundo}}
 
-                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="submit" id="guardar-datos" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
             </div>
@@ -93,19 +95,20 @@
                         {% csrf_token %}
                         <input type="hidden" name="fundo_id" id="fundo_id">
                         
-                        <label for="idsede" class="form-label mb-3">Sede</label>
+                        <label for="idsede" class="form-label mb-2">Sede</label>
                         <select name="idsede" id="nombresede" class="form-control">
                             {% for sede in sedes %}
                             <option value="{{ sede.idsede }}">{{ sede.sede }}</option>
                             {% endfor %}
                         </select>
-                        <div class="form-group">
+
+                        <div class="form-group mt-2">
                             <label for="nombrefundo">Fundo</label>
                             <input type="text" class="form-control" name="fundo" id="nombrefundo">
                         </div>
                         
                         
-                        <button type="submit" class="btn btn-primary mt-2">Guardar Cambios</button>
+                        <button type="submit" id="guardar-cambios" class="btn btn-primary mt-3">Guardar Cambios</button>
                     </form>
                                     
                 </div>
@@ -114,12 +117,19 @@
     </div>
 
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const h1 = document.querySelector('#h1-remplazar');
         const buscador = document.querySelector('#buscador');
         const filasTabla = document.querySelectorAll('#tabla-fundo tbody tr');
+        const btnEliminar = document.querySelectorAll(".eliminar")
+        const formEditar = document.getElementById("form-editar-fundo")
+        const formRegistrar = document.getElementById("form-fundo")
+        const btnGuardarCambios = document.getElementById("guardar-cambios");
+        const btnGuardarRegristro = document.getElementById("guardar-datos");
+
 
         //Funciones
         function filtrarTabla() {
@@ -162,6 +172,33 @@
                 document.querySelector('#nombresede').value = idSede;
             });
         });
+
+        btnEliminar.forEach(function(boton) {
+        boton.addEventListener("click", function(event) {
+            event.preventDefault();
+            let fundo = event.currentTarget.dataset.registro;
+            let formId = event.currentTarget.dataset.id;
+            PreguntarEliminar(fundo, function() {
+                document.getElementById('form-' + formId).submit();
+            });
+            });
+        });
+
+        btnGuardarRegristro.addEventListener("click", function(event){
+            event.preventDefault();
+            PreguntarGuardar(function(){formRegistrar.submit();});
+
+        });
+
+        btnGuardarCambios.addEventListener("click", function(event){
+            event.preventDefault();
+            PreguntarGuardar(function(){formEditar.submit();});
+
+        });
+
+
+
+
     });
 </script>
 

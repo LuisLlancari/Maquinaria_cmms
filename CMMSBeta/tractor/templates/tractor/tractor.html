@@ -1,6 +1,7 @@
 {% extends "core/base.html" %} 
 {% block titulo %} Tractor {% endblock titulo %}
 {% block contenido %}
+{% load static %}
 <div class="container">
   <h1 class="text-center mt-3 mb-3">Gestion Tractores</h1>
   <div class="row">
@@ -74,9 +75,9 @@
                 data-horaini="{{data.horainicial}}" data-idtipotractor="{{data.idtipotractor}}" type="button">
                 <i class="lni lni-pencil"></i>
               </button>
-              <form action="{% url 'eliminartractor' data.idtractor %}" class="d-inline-block" method="POST">
+              <form action="{% url 'eliminartractor' data.idtractor %}" id="form-{{ dato.idtractor }}" class="d-inline-block" method="POST">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm">
+                <button type="submit" class="btn btn-danger btn-sm eliminar" data-registro="{{ dato.nrotractor }}" data-id="{{ dato.idtractor }}">
                   <i class="lni lni-trash-can"></i>
                 </button>
               </form>
@@ -107,11 +108,11 @@
             method="post"
             action="{% url 'registrar_tractor' %}"
             autocomplete="off"
-            id="form-area"
+            id="form-tractor"
           >
             {% csrf_token %} 
             {{form}}
-            <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+            <button type="submit" id="guardar-datos" class="btn btn-primary mt-3">Guardar</button>
           </form>
         </div>
       </div>
@@ -212,7 +213,7 @@
             </div>
 
             <!-- Botón de submit con Bootstrap -->
-            <button type="submit" class="btn btn-primary mt-3">
+            <button type="submit" id="guardar-cambios" class="btn btn-primary mt-3">
               Guardar Cambios
             </button>
           </form>
@@ -220,11 +221,19 @@
       </div>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const tractores = document.querySelectorAll("#tabla-tractor tbody tr");
       const Busqueda = document.getElementById("buscador");
+      const btnEliminar = document.querySelectorAll(".eliminar")
+      const formEditar = document.getElementById("form-editar-tractor")
+      const formRegistrar = document.getElementById("form-tractor")
+      const btnGuardarCambios = document.getElementById("guardar-cambios");
+      const btnGuardarRegristro = document.getElementById("guardar-datos");
+
 
     
 
@@ -274,6 +283,31 @@
           document.getElementById("idfundo").value = fundo;
         });
       });
+
+      btnEliminar.forEach(function(boton) {
+        boton.addEventListener("click", function(event) {
+            event.preventDefault();
+            let tipotractor = event.currentTarget.dataset.registro;
+            let formId = event.currentTarget.dataset.id;
+            PreguntarEliminar(tipotractor, function() {
+                document.getElementById('form-' + formId).submit();
+            });
+        });
+      });
+
+      btnGuardarRegristro.addEventListener("click", function(event){
+              event.preventDefault();
+              PreguntarGuardar(function(){formRegistrar.submit();});
+
+          });
+
+      btnGuardarCambios.addEventListener("click", function(event){
+          event.preventDefault();
+          PreguntarGuardar(function(){formEditar.submit();});
+
+      });
+
+
     });
   </script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

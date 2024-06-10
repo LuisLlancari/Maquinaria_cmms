@@ -2,6 +2,8 @@
 {% block titulo %} Reporte Tractor {% endblock titulo %} 
 
 {% block contenido %}
+{% load static %}
+
 <div class="container">
     <h1 class="text-center">Completar Programacion</h1>
     <div class="container">
@@ -62,18 +64,18 @@
 <div class="modal fade" id="moda-programacion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Finalizar Programación</h5>
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white" id="exampleModalLabel">Finalizar Programación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{% url 'registrar_reporte' %}" id="form-modal" method="POST">
                 <div class="modal-body">
                     {% csrf_token %}
 
-                    <label for="txtHorometroinicial" class="form-label mt-1">Horometro Inicial:</label>
+                    <label for="txtHorometroinicial" class="form-label mt-1">Horometro tractor Inicial:</label>
                     <input type="text" name="horometroini" class="form-control" id="txtHorometroinicial" required readonly>
                     
-                    <label for="id_horometrofinal" class="form-label mt-1">Horometro Final:</label>
+                    <label for="id_horometrofinal" class="form-label mt-1">Horometro tractor Final:</label>
                     <input type="number" name="horometrofinal" class="form-control" id="id_horometrofinal" max=0 min=0 required>
                     
                     <label for="id_correlativo" class="form-label mt-1">Correlativo:</label>
@@ -87,39 +89,26 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" style="width: 100%;" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Confirmar Reporte</button>
+                    <button type="submit" id="guardar" class="btn btn-primary" style="width: 100%;">Confirmar Reporte</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
 
         const btnFinalizar = document.querySelectorAll(".finalizar");
         const btnFecha = document.getElementById('filter-date')
-        
+        const btnGuardar = document.getElementById("guardar");
+        const formModal = document.getElementById("form-modal")
+
+
         const cards = document.querySelectorAll(".card");
         const selectUsuario = document.getElementById("selectusuario");
 
-<!--        document.getElementById("busqueda").addEventListener("keyup", function() {-->
-<!--        var input, filter, cards, card, tractorNumber, i, txtValue;-->
-<!--        input = document.getElementById("busqueda");-->
-<!--        filter = input.value.toUpperCase();-->
-<!--        cards = document.querySelectorAll(".tractor");-->
-<!--        -->
-<!--        for (i = 0; i < cards.length; i++) {-->
-<!--            card = cards[i].closest(".card");-->
-<!--            tractorNumber = cards[i].textContent.trim();-->
-<!--            txtValue = tractorNumber.toUpperCase();-->
-<!--            if (txtValue.indexOf(filter) > -1) {-->
-<!--                card.style.display = "";-->
-<!--            } else {-->
-<!--                card.style.display = "none";-->
-<!--            }-->
-<!--        }-->
-<!--        });-->
         
         selectUsuario.addEventListener("change", function() {
             const usuarioSeleccionado = this.value;
@@ -172,6 +161,10 @@
             }) ;
         });
 
+        btnGuardar.addEventListener("click", function(event) {
+        event.preventDefault();
+        PreguntarGuardar(function(){formModal.submit();});
+       });
 
 
     
