@@ -3,6 +3,7 @@
 {% block titulo %}Sistema{% endblock%}
 
 {% block contenido %}
+{% load static %}
 <h1 class="text-center mb-2">Gestion de Sistema de Componentes</h1>
 <div class="row mt-4">
     <div class="col md-3 mb-3">
@@ -46,9 +47,9 @@
         {% if user.idrol.rol != "Gerencia" %}
             <td>
                 <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-sistema" data-id="{{dato.idsistema}}" data-bs-toggle="modal" data-bs-target="#modal-sistema "><i class="lni lni-pencil editar"></i></button>
-                <form action="{% url 'eliminar_sistema' dato.idsistema %}" class="d-inline-block" method="POST">
+                <form action="{% url 'eliminar_sistema' dato.idsistema %}" id="form-{{ dato.idimplemento }}" class="d-inline-block" method="POST">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+                    <button type="submit" class="btn btn-danger flex-fill eliminar" data-registro="{{ dato.sistema }}" data-id="{{ dato.idsistema }}"><i class="lni lni-trash-can eliminar"></i></button>
                 </form>
             </td>
         {% endif %}
@@ -70,14 +71,15 @@
                             {{form}}
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="agregar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
                         <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
                     </div>
                 </form>
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
 
@@ -86,7 +88,8 @@
         const btnAgregar = document.getElementById("registrar-sistema");
         const titulo_modal = document.getElementById("titulo-modal");
         const btnModificar = document.querySelectorAll(".editar")
-            console.log(btnModificar)
+        const btnEliminar = document.querySelectorAll(".eliminar")
+        const btnGuardar = document.getElementById('guardar')
             
     function obtener_sistema(id){
     fetch(`./obtener/${id}`)
@@ -111,12 +114,26 @@
 
     btnModificar.forEach(function(boton) {
     boton.addEventListener("click", function(event) {
-        let idsis = event.target.dataset.id;
+        let idsis = event.currentTarget.dataset.id;
         obtener_sistema(idsis);
         });
     });
     
+    btnEliminar.forEach(function(boton) {
+            boton.addEventListener("click", function(event) {
+                event.preventDefault();
+                let sistema = event.currentTarget.dataset.registro;
+                let formId = event.currentTarget.dataset.id;
+                PreguntarEliminar(sistema, function() {
+                    document.getElementById('form-' + formId).submit();
+                });
+            });
+        });
 
+        btnGuardar.addEventListener("click", function(event) {
+            event.preventDefault();
+            PreguntarGuardar(function(){formModal.submit();});
+       });
 
 });
 

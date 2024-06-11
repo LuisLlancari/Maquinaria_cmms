@@ -3,6 +3,8 @@
 {% block titulo %}Tipo Implemento{% endblock%}
 
 {% block contenido %} 
+{% load static %}
+
 <h1 class="text-center mb-2"> Tipos de Implemento</h1>
 <div class="row mt-4">
     <div class="col md-3 mb-3">
@@ -54,10 +56,10 @@
             <td>{{dato.idconfiguracion_implemento}}</td>
             {% if user.idrol.rol != "Gerencia" %}
                 <td>
-                    <button class="btn btn-warning editar d-inline-block" data-id="{{dato.idtipoimplemento}}" data-reg="{{dato}}" data-bs-toggle="modal" data-bs-target="#modal-tipoimplemento"><i class="lni lni-pencil editar"></i></button>
-                    <form action="{% url 'eliminar_tipo' dato.idtipoimplemento %}" class="d-inline-block" method="POST">
+                    <button type="button" class="btn btn-warning editar d-inline-block" data-id="{{dato.idtipoimplemento}}" data-reg="{{dato}}" data-bs-toggle="modal" data-bs-target="#modal-tipoimplemento"><i class="lni lni-pencil editar"></i></button>
+                    <form action="{% url 'eliminar_tipo' dato.idtipoimplemento %}" id="form-{{ dato.idtipoimplemento }}" class="d-inline-block" method="POST">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+                        <button type="submit" class="btn btn-danger flex-fill eliminar" data-registro="{{ dato.tipoimplemento }}" data-id="{{ dato.idtipoimplemento }}"><i class="lni lni-trash-can eliminar"></i></button>
                     </form>
                 </td>
             {% endif %}
@@ -80,14 +82,15 @@
                             {{form}}
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="agregar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
                         <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
                     </div>
                 </form>
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
     
@@ -98,6 +101,9 @@
         const btnModificar = document.querySelectorAll(".editar")
         const TipoImplementos = document.querySelectorAll("#tabla-tipo-implemento tbody tr");
         const Busqueda = document.getElementById("buscar");
+        const btnEliminar = document.querySelectorAll('.eliminar');
+        const btnGuardar = document.getElementById("guardar");
+
 
     
 
@@ -125,7 +131,11 @@
             titulo_modal.textContent = "Editar Tipo Implemento" ;
             formModal.setAttribute("action", `./tipos/modificar/${id}`);
             formModal.setAttribute("method", "POST");
-            txtTipoImplemento.value = datos.tipos[0].tipoimplemento;           
+
+            txtTipoImplemento.value = datos.tipos[0].tipoimplemento;    
+            txtIdConfiguracionImplemento.value = datos.tipos[0].idconfiguracion_implemento_id;     
+            txtTiempoVida.value = datos.tipos[0].tiempo_vida;
+            txtFrecuenciaMan.value = datos.tipos[0].frecuencia_man;
         })
         .catch((error) => {
             console.log(error);
@@ -149,14 +159,28 @@
     
         btnModificar.forEach(function(boton) {
         boton.addEventListener("click", function(event) {
-            let id_tipo = event.target.dataset.id;
+            let id_tipo = event.currentTarget.dataset.id;
             // console.log(id_pieza);
             obtener_tipo(id_tipo);
             });
         });
+        
+        btnEliminar.forEach(function(boton) {
+            boton.addEventListener("click", function(event) {
+            event.preventDefault();
+            let tipoimplemento = event.currentTarget.dataset.registro;
+            let formId = event.currentTarget.dataset.id;
+            PreguntarEliminar(tipoimplemento, function() {
+                document.getElementById('form-' + formId).submit();
+            });
+            });
+        });
     
-    
-    
+        btnGuardar.addEventListener("click", function(event) {
+            event.preventDefault();
+            PreguntarGuardar(function(){formModal.submit();});
+        });
+
     });
     
     

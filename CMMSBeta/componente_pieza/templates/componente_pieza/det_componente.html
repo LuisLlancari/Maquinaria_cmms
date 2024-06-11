@@ -3,6 +3,8 @@
 {% block titulo %}Asignacion de componente{% endblock %}
 
 {% block contenido %}
+{% load static %}
+
 <h1 class="text-center mb-2">Asignacion de Piezas a Componentes</h1>
 <div class="row mt-4">
     <div class="col md-3 mb-3">
@@ -50,9 +52,9 @@
             {% if user.idrol.rol != "Gerencia" %}
             <td>
                 <button class="btn btn-warning editar d-inline-block" id="editar-sistema" data-id="{{ dato.idpieza }}" data-bs-toggle="modal" data-bs-target="#modal-componente">Editar</button>
-                <form action="" class="d-inline-block" method="POST">
+                <form action="" class="d-inline-block" id="form-{{ dato.idimplemento }}" method="POST">
                     {% csrf_token %}
-                    <button class="btn btn-danger eliminar"><i class="lni lni-trash-can eliminar"></i></button>
+                    <button class="btn btn-danger eliminar" data-registro="{{ dato.implemento }}" data-id="{{ dato.idimplemento }}"><i class="lni lni-trash-can eliminar"></i></button>
                 </form>
             </td>
             {% endif %}
@@ -103,19 +105,24 @@
                     <span id="error-message" class="text-danger d-none">El mínimo de contenedores es uno.</span>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" id="agregar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                    <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
                     <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill"><i class="bi bi-x-square-fill"></i>Cerrar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const pieceContainer = document.getElementById('contenedor-pieza');
     const errorMessage = document.getElementById('error-message');
     const addPieceButton = document.querySelector('.add-piece');
+    const btnGuardar = document.getElementById("guardar");
+    const btnEliminar = document.querySelectorAll(".eliminar");
+    const formModal = document.getElementById("form-modal")
+
 
     function addPiece() {
         const pieceClone = pieceContainer.querySelector('.piece').cloneNode(true);
@@ -148,6 +155,22 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.remove-piece').forEach(button => {
         button.addEventListener('click', removePiece);
     });
+
+    btnEliminar.forEach(function(boton) {
+            boton.addEventListener("click", function(event) {
+                event.preventDefault();
+                let det_componente = event.currentTarget.dataset.registro;
+                let formId = event.currentTarget.dataset.id;
+                PreguntarEliminar(det_componente, function() {
+                    document.getElementById('form-' + formId).submit();
+                });
+            });
+        });
+
+       btnGuardar.addEventListener("click", function(event) {
+        event.preventDefault();
+        PreguntarGuardar(function(){formModal.submit();});
+       });
 });
 </script>
 

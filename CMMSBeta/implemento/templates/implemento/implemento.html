@@ -2,16 +2,18 @@
 
 {% block titulo %}Implemento{% endblock%}
 
-{% block contenido %} 
+{% block contenido %}
+{% load static %}
+
     <h1 class="text-center mb-2">Implementos</h1>
     <div class="row mt-4">
         <div class="col md-3 mb-3">
-            <form>
+            <!-- <form>
                 <div class="input-group">
                     <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
                     <button class="btn btn-md btn-outline-secondary">Buscar</i></button>
                 </div>
-            </form>
+            </form> -->
         </div>
         <div class="col-md-3 mb-3">
 
@@ -63,9 +65,11 @@
                 {% if user.idrol.rol == "Admin" %}
                 <td>
                     <button class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento"><i class="lni lni-pencil editar"></i></button>
-                    <form action="{% url 'eliminar_implemento' dato.idimplemento %}" class="d-inline-block" method="POST">
+                   <form action="{% url 'eliminar_implemento' dato.idimplemento %}" id="form-{{ dato.idimplemento }}" class="d-inline-block" method="POST">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+                        <button type="submit" class="btn btn-danger flex-fill eliminar" data-registro="{{ dato.implemento }}" data-id="{{ dato.idimplemento }}">
+                            <i class="lni lni-trash-can eliminar"></i>
+                        </button>
                     </form>
                 </td>
                 {% endif %}
@@ -122,22 +126,25 @@
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="agregasr" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
                         <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
                     </div>
                 </form>
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
     
         // const modalvisor = new bootstrap.Modal(document.getElementById('modal-sistema'))
         const formModal = document.getElementById("form-modal")
         const btnAgregar = document.getElementById("registrar-implemento");
+        const btnGuardar = document.getElementById("guardar");
         const titulo_modal = document.getElementById("titulo-modal");
         const btnModificar = document.querySelectorAll(".editar")
+        const btnEliminar = document.querySelectorAll(".eliminar")
         const implementos = document.querySelectorAll("#tabla-implemento tbody tr");
         const Busqueda = document.getElementById("buscar");
 
@@ -212,8 +219,23 @@
             obtener_implemento(id_implemento);
             });
         });
-    
-    
+
+       btnEliminar.forEach(function(boton) {
+            boton.addEventListener("click", function(event) {
+                event.preventDefault();
+                let implemento = event.currentTarget.dataset.registro;
+                let formId = event.currentTarget.dataset.id;
+                PreguntarEliminar(implemento, function() {
+                    document.getElementById('form-' + formId).submit();
+                });
+            });
+        });
+
+       btnGuardar.addEventListener("click", function(event) {
+        event.preventDefault();
+        PreguntarGuardar(function(){formModal.submit();});
+       });
+
     
     });
     

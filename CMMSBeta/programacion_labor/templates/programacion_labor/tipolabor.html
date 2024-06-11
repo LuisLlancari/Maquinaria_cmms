@@ -3,6 +3,8 @@
 {% block titulo %}Tipos de labores{% endblock%}
 
 {% block contenido %} 
+{% load static %}
+
 <div class="container">
     <h1 class="text-center mt-3 mb-3">Gestion de Tipos de Labor</h1>
     <div class="row">
@@ -36,9 +38,9 @@
                     {% if user.idrol.rol != "Gerencia" %}
                     <td>
                         <button class="btn btn-warning btn-sm editar d-inline-block" id="tipolabor" data-toggle="modal" data-target="#modalEditar" data-idtipolabor="{{ data.idtipolabor }}" data-nombretipolabor="{{ data.tipolabor }}" type="button"><i class="lni lni-pencil"></i></button>
-                        <form action="{% url 'eliminar_tipolabor' data.idtipolabor %}" class="d-inline-block" method="POST">
+                        <form action="{% url 'eliminar_tipolabor' data.idtipolabor %}" id="form-{{ dato.idtipolabor }}" class="d-inline-block" method="POST">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                            <button type="submit" class="btn btn-danger btn-sm eliminar" data-registro="{{ dato.tipolabor }}" data-id="{{ dato.idtipolabor }}"><i class="lni lni-trash-can"></i></button>
                         </form>                       
                     </td>  
                     {% endif %}
@@ -57,10 +59,10 @@
                     <h5 class="modal-title" id="modalNuevoCecoLabel">Nuevo Tipo de labor</h5>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'registrar_tipolabor' %}" autocomplete="off" id="form-ceco">
+                    <form method="post" action="{% url 'registrar_tipolabor' %}" autocomplete="off" id="form-tipolabor">
                         {% csrf_token %}
                         {{ form_tipolabor }}
-                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="submit" id="guardar-datos" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
             </div>
@@ -75,7 +77,7 @@
                     <h5 class="modal-title" id="">Editar Tipo de labor</h5>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{% url 'editar_tipolabor' %}" autocomplete="off" id="form-editar-ceco">
+                    <form method="post" action="{% url 'editar_tipolabor' %}" autocomplete="off" id="form-editar-tipolabor">
                         {% csrf_token %}
                         <input type="hidden" id="tipolabor_id" name="tipolabor_id">
                         <div class="form-group">
@@ -83,19 +85,26 @@
                             <!-- el forms toma el name-->
                             <input type="text" class="form-control mb-2" id="nombre_tipolabor" name="tipolabor" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        <button type="submit" id="guardar-cambios" class="btn btn-primary">Guardar Cambios</button>
                     </form>                    
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const h1 = document.querySelector('#h1-remplazar');
         const buscador = document.querySelector('#buscador');
         const filasTabla = document.querySelectorAll('#tabla-tipolabor tbody tr');
+        const btnEliminar = document.querySelectorAll(".eliminar")
+        const formEditar = document.getElementById("form-editar-tipolabor")
+        const formRegistrar = document.getElementById("form-tipolabor")
+        const btnGuardarCambios = document.getElementById("guardar-cambios");
+        const btnGuardarRegristro = document.getElementById("guardar-datos");
+
 
         //Funciones
         function filtrarTabla() {
@@ -127,6 +136,32 @@
                 document.getElementById("nombre_tipolabor").value = nombreTipolabor;
             });
         });
+
+
+        btnEliminar.forEach(function(boton) {
+            boton.addEventListener("click", function(event) {
+                event.preventDefault();
+                let implemento = event.currentTarget.dataset.registro;
+                let formId = event.currentTarget.dataset.id;
+                PreguntarEliminar(implemento, function() {
+                    document.getElementById('form-' + formId).submit();
+                });
+            });
+        });
+
+        btnGuardarRegristro.addEventListener("click", function(event){
+            event.preventDefault();
+            PreguntarGuardar(function(){formRegistrar.submit();});
+
+        });
+
+        btnGuardarCambios.addEventListener("click", function(event){
+            event.preventDefault();
+            PreguntarGuardar(function(){formEditar.submit();});
+
+        });
+
+
     });
 </script>
 
