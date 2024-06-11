@@ -124,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let lote = document.getElementById('id_idlote').value;
 
     function filtrarTractoresPorUsuario(userId) {
+        id_idtractor.value = '';
         let tractorOptions = document.querySelectorAll('#id_idtractor option');
         tractorOptions.forEach(option => {
             if (option.dataset.idusuario !== userId && option.value !== '') {
@@ -177,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function filtrarLotesPorFundo(fundoId) {
+        id_idlote.value = '';
         let loteOptions = document.querySelectorAll('#id_idlote option');
         loteOptions.forEach(option => {
             if (option.dataset.idfundo !== fundoId && option.value !== '') {
