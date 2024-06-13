@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
-from mantenimiento.models import ProgramacionMantenimiento
+from mantenimiento.models import ProgramacionMantenimiento, Mantenimiento
 from django.http import JsonResponse
-
 from implemento.models import Implemento, TipoImplemento, DetImplementos
-
 from mantenimiento.models import Acciones, DetMotivos
+from django.contrib import messages
 
 # funcion que calculara las fechas de mantenimiento
 
@@ -44,17 +43,12 @@ def registrar_fecha(request, id_implemento):
             DetMotivos.objects.create(idprogramacionmantenimiento_id = id_implemento, idaccion_id = idmotivo)
     return redirect('programacion_mantenimiento')
 
-
 def registrar(request):
     if request.method == 'POST':
         implemento = request.POST.get('idimplemento')
         fecha = request.POST.get('fecha_programacion')
         motivos = request.POST.getlist('idmotivo')
-
-        # print(implemento)
-        # print(fecha)
-        # print(motivos)
-
+        # tipo_mantnimiento = 0 : Correctivo
         nueva_programacion =  ProgramacionMantenimiento.objects.create(idimplemento_id = implemento, fechaprogramacion = fecha, tipomantenimiento = 0)
 
         for idmotivo in motivos:
@@ -65,15 +59,32 @@ def registrar(request):
 def eliminar_programacion(request, id_programacion):
     programacion = get_object_or_404(ProgramacionMantenimiento, pk=id_programacion)
     if request.method == 'POST':
-        programacion.delete()
-        return redirect('programacion_mantenimiento')
+        aceptado = ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = id_programacion, estado_mantenimiento = 1).exists()
+        # Si es True, Sale una alerta , si es False elimina la programación
+        if aceptado == False:
+            #print(id_programacion)
+            # Encuentra todos los mantenimientos asociados a la programación
+            mantenimiento = Mantenimiento.objects.filter(idprogramacionmantenimiento_id=id_programacion)
+            mantenimiento.delete()
+            # Elimina cualquier registro dependiente de los mantenimientos, si existe alguna tabla relacionada, ej. MantenimientoDetMotivos
+            DetMotivos.objects.filter(idprogramacionmantenimiento_id= id_programacion).delete()
+            # Finalmente, elimina la programación
+            programacion.delete()
+        else:
+            messages.error(request, 'La programación se encuentra aceptada, no puede ser eliminada.', extra_tags='danger')
+
+    return redirect('programacion_mantenimiento')
 
 def editar_fecha(request):
     if request.method == 'POST':
         print("entro")
         idprogramacion = request.POST.get('idprogramacion')
-        fecha = request.POST.get('fechaprogramacion')
-        programacion = get_object_or_404(ProgramacionMantenimiento, pk = idprogramacion)
-        programacion.fechaprogramacion = fecha
-        programacion.save()
-        return redirect('programacion_mantenimiento')
+        aceptado = ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = idprogramacion, estado_mantenimiento = 1).exists()
+        if aceptado == False:
+            fecha = request.POST.get('fechaprogramacion')
+            programacion = get_object_or_404(ProgramacionMantenimiento, pk = idprogramacion)
+            programacion.fechaprogramacion = fecha
+            programacion.save()
+        else:
+            messages.error(request, 'La programación se encuentra aceptada, no puede ser editada.', extra_tags='danger')
+    return redirect('programacion_mantenimiento')

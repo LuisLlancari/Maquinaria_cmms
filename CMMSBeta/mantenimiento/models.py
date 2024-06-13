@@ -10,11 +10,18 @@ class ProgramacionMantenimiento(models.Model):
     (0, 'Correctvo')
   )
 
+  ESTADOMANTENIMIENTO_CHOICES = (
+    (0, 'Programado'),
+    (1, 'Aceptado'),
+    (2, 'Finalizado'),
+  )
+
   idprogramacionmantenimiento = models.AutoField(primary_key=True)
   fechaprogramacion = models.DateField(auto_now=False, auto_now_add=False, null=True, blank= True,verbose_name="Fecha mantenimiento")
   tipomantenimiento = models.IntegerField(choices=MANTENIMIENTO_CHOICES, verbose_name="Tipo mantenimiento", null=True, blank=True)
   idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
   estado = models.BooleanField(default=True, verbose_name="Estado")
+  estado_mantenimiento = models.IntegerField(choices=ESTADOMANTENIMIENTO_CHOICES, verbose_name="Estado del Mantenimiento", null=True, blank=True, default=0)
   class Meta:
     verbose_name = "Programacion Mantenimiento"
     verbose_name_plural = "Programacion de Mantenimientos"

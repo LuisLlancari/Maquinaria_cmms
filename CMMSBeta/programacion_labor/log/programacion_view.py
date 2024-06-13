@@ -7,19 +7,13 @@ from django.db.models import Max , Count, Subquery, OuterRef
 from implemento.models import *
 from django.http import JsonResponse
 from django.contrib import messages
-
 from django.utils import timezone
-
 from implemento.models import *
-
 from usuario.models import *
-
 from operarios.models import *
 from tractor.models import *
 from fundo_cultivo.models import *
-
 from django.contrib.auth.decorators import login_required
-
 from datetime import timedelta
 
 #Programacion 

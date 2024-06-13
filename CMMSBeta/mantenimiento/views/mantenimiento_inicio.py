@@ -34,6 +34,11 @@ def registrar_ingreso(request, id_mantenimiento):
     fecha_hoy =now()
     # Mantenimiento.objects.filter(idmantenimiento = id_mantenimiento, estado = 1).update(fechaingreso= fecha_hoy)
     mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento, estado = 1)
+
+    programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
+    print(programacion)
+    ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 1)
+
     mantenimiento.fechaingreso= fecha_hoy
     mantenimiento.save()
     implemento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
