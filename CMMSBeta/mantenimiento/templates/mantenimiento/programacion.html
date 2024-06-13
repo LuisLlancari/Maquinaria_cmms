@@ -23,6 +23,17 @@
   </div>
 </div>
 
+{% if messages %}
+  {% for message in messages %}
+  <div id="message" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      <strong>
+          {{ message }}
+      </strong>                       
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+
+{% endif %}
 <table class="table table-striped table-sm table-bordered text-center table-responsive mt-3" id="tabla-implemento">
   <thead class="thead-dark">
     <tr class="table-dark">
@@ -68,18 +79,38 @@
         <button class="btn btn-warning d-inline-block registrar" id="registrar-fecha" data-id="{{dato.idprogramacionmantenimiento}}" data-imple_nombre="{{dato.idimplemento.implemento}}" data-idprogramacion="{{dato.idprogramacionmantenimiento}}"  data-bs-toggle="modal" data-bs-target="#registro_fecha">Programar Fecha</button>
       </td>
       {% endif %}
-      {% if dato.tipomantenimiento == 1 %}
-      <td>
-        <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha"><strong>Editar Fecha</strong></button>
-      </td>
-      {% else %}
-      <td>
+
+      
+      
+
+      <!-- PRIMERO VERIFICAMOS SI YA LO ACEPTARON  -->
+      {% if dato.estado_mantenimiento == 0 %}
+        <!--Mantenimiento correctivo-->
+        {% if dato.tipomantenimiento == 0 %}
+        <td>
           <form action="{% url 'eliminar_programacion' dato.idprogramacionmantenimiento%}" class="d-inline-block w-100" method="POST">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger btn-md w-100"><strong>Eliminar</strong></button>
-        </form> 
+          </form> 
+        </td>
+        <!--Mantenimiento Preventivo-->
+        {% elif dato.tipomantenimiento == 1 %}
+        <td>
+          <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha"><strong>Editar Fecha</strong></button>
+        </td>
+        {% endif %}
+
+      {% elif dato.estado_mantenimiento == 1 %}
+      <td>
+        <button class="btn btn-secondary btn-md w-100" id="aceptado" disabled><strong>En proceso</strong></button>
+      </td>
+      {% elif dato.estado_mantenimiento == 2 %}
+      <td>
+        <button class="btn btn-warning btn-md w-100 finalizado" id="finalizado" data-idprogramacion="{{ dato.idprogramacionmantenimiento }}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento" ><strong>Ver diagnostico</strong"></button>
       </td>
       {% endif %}
+
+
 
     </tr>
     {% endfor %}
@@ -200,6 +231,37 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="detalle_mantenimiento" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Detalle del Mantenimiento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="form_det_mantenimiento" method="POST" action="" autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-body">
+          <table class="table table-bordered" id="detalle_mantenimiento">
+            <thead>
+              <tr>
+                <th colspan="4" >Información del Mantenimiento</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
@@ -325,6 +387,94 @@
       });
 
   });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  function detalle_mantenimiento(id) {
+      fetch(`http://127.0.0.1:8000/mantenimiento/programacion/datos_mantenimiento/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          const mantenimiento = data.mantenimientos[0];
+          const tareas = data.tareas;
+          const recambios = data.recambios;
+
+          const tbody = document.querySelector('#detalle_mantenimiento tbody');
+
+          // Información del mantenimiento
+          tbody.innerHTML = `
+            <tr>
+              <td><strong>Fecha de Ingreso:</strong></td>
+              <td>${mantenimiento.fechaingreso}</td>
+              <td><strong>Fecha de Salida:</strong></td>
+              <td>${mantenimiento.fechasalida}</td>
+            </tr>
+            <tr>
+              <td><strong>Mecanico:</strong></td>
+              <td>${mantenimiento.nombres} ${mantenimiento.apellidos}</td>
+              <td><strong>Estado:</strong></td>
+              <td>${mantenimiento.estado ? 'Pendiente' : 'Completado'}</td>
+            </tr>
+            <tr>
+              <td><strong>Fecha Programada:</strong></td>
+              <td>${mantenimiento.fecha_programada}</td>
+              <td><strong>Tipo de Mantenimiento:</strong></td>
+              <td>${mantenimiento.tipomantenimiento === 1 ? 'Preventivo' : 'Correctivo'}</td>
+            </tr>
+            <tr>
+              <td><strong>Implemento:</strong></td>
+              <td>${mantenimiento.implemento}</td>
+              <td><strong>Código de Implemento:</strong></td>
+              <td>${mantenimiento.cod_implemento}</td>
+            </tr>
+            <tr>
+              <th colspan="4">Información de las Tareas</th>
+            </tr>
+            <tr>
+              <td colspan="2"><strong>Tarea</strong></td>
+              <td colspan="2"><strong>Estado</strong></td>
+            </tr>
+            ${tareas.map(tarea => `
+              <tr>
+                <td colspan="2">${tarea.tareas}</td>
+                <td colspan="2">${tarea.completado ? 'Completada' : 'No Completada'}</td>
+              </tr>
+            `).join('')}
+            <tr>
+              <th colspan="4">Información de los Recambios</th>
+            </tr>
+            <tr>
+              <td colspan="2"><strong>Item</strong></td>
+              <td colspan="2"><strong>Codigo</strong></td>
+            </tr>
+            ${recambios.length > 0 ? recambios.map(recambio => `
+              <tr>
+                <td colspan="2">${recambio.item}</td>
+                <td colspan="2">${recambio.codigo}</td>
+              </tr>
+            `).join('') : `
+              <tr>
+                <td colspan="4">No hay recambios.</td>
+              </tr>
+            `}
+          `;
+        })
+        .catch(error => console.error('Error al cargar los datos:', error));
+  }
+  //detalle_mantenimiento();
+  var finalizado = document.querySelectorAll(".finalizado");
+    finalizado.forEach(function (button) {
+      button.addEventListener("click", function () {
+        var id = this.dataset.idprogramacion;
+        detalle_mantenimiento(id);
+      });
+    }
+  );
+});
+
+
+
+  
 </script>
 
 {% endblock %}

@@ -51,6 +51,9 @@ def registrar_ingreso(request, id_mantenimiento):
       implemento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
       Implemento.objects.filter(idimplemento=implemento).update(estado_actividad=0)
 
+      programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
+      ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 1)
+    
       # Retorna una respuesta JSON
       return JsonResponse({'status': 'success'}, status=200)
 

@@ -6,7 +6,7 @@ from operarios.models import Encargado
 from implemento.models import DetImplementos, Implemento
 from componente_pieza.models import DetalleConfiguracion
 from usuario.models import Persona
-from mantenimiento.models import Mantenimiento, DetMotivos, Acciones, DetalleMantenimiento, Recambios
+from mantenimiento.models import Mantenimiento, DetMotivos, Acciones, DetalleMantenimiento, Recambios, ProgramacionMantenimiento
 from django.http import JsonResponse
 
 def datos_mantenimiento(request):
@@ -145,7 +145,9 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     mantenimiento.estado = 0
     mantenimiento.save()
 
-    # Actualizamos el implemento 
+    programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
+    ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 2)
+    # activamos el implemento 
     implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
     frecuencia_mantenimiento =mantenimiento.idprogramacionmantenimiento.idimplemento.idtipoimplemento.frecuencia_man
     proximo_mantenimiento = mantenimiento.idprogramacionmantenimiento.idimplemento.proximo_mantenimiento
