@@ -444,8 +444,19 @@ document.addEventListener('DOMContentLoaded', function () {
               <th colspan="4">Información de los Recambios</th>
             </tr>
             <tr>
-              <td colspan="4">${recambios.length > 0 ? recambios.map(recambio => recambio).join(', ') : 'No hay recambios.'}</td>
+              <td colspan="2"><strong>Item</strong></td>
+              <td colspan="2"><strong>Codigo</strong></td>
             </tr>
+            ${recambios.length > 0 ? recambios.map(recambio => `
+              <tr>
+                <td colspan="2">${recambio.item}</td>
+                <td colspan="2">${recambio.codigo}</td>
+              </tr>
+            `).join('') : `
+              <tr>
+                <td colspan="4">No hay recambios.</td>
+              </tr>
+            `}
           `;
         })
         .catch(error => console.error('Error al cargar los datos:', error));
