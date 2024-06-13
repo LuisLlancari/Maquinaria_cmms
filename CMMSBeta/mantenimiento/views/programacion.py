@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
-from mantenimiento.models import ProgramacionMantenimiento, Mantenimiento
+from mantenimiento.models import ProgramacionMantenimiento, Mantenimiento, DetalleMantenimiento, Recambios
 from django.http import JsonResponse
 from implemento.models import Implemento, TipoImplemento, DetImplementos
 from mantenimiento.models import Acciones, DetMotivos
@@ -88,3 +88,49 @@ def editar_fecha(request):
         else:
             messages.error(request, 'La programación se encuentra aceptada, no puede ser editada.', extra_tags='danger')
     return redirect('programacion_mantenimiento')
+
+def datos_mantenimiento(request, id_programacion):
+
+  id = get_object_or_404(Mantenimiento, idprogramacionmantenimiento_id = id_programacion)
+
+  mantenimiento = list(Mantenimiento.objects.filter(estado = 0, idprogramacionmantenimiento_id = id_programacion).annotate(
+  fecha_programada = F('idprogramacionmantenimiento__fechaprogramacion'),
+  tipomantenimiento = F('idprogramacionmantenimiento__tipomantenimiento'),
+  implemento = F('idprogramacionmantenimiento__idimplemento__implemento'),
+  cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
+  idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
+  idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
+  nombres = F(f'idencargado__idpersona__nombres'),
+  apellidos = F(f'idencargado__idpersona__apellidos')
+  ).values(
+    'idmantenimiento',
+    'idprogramacion',
+    'fecha_programada',
+    'implemento',
+    'cod_implemento',
+    'idimplemento',
+    'tipomantenimiento',
+    'fechaingreso',
+    'fechasalida',
+    'descripcion',
+    'idencargado',
+    'nombres',
+    'apellidos',
+    'fechaingreso',
+    'estado'
+    ))
+  
+  tareas = list(DetalleMantenimiento.objects.filter(idmantenimiento = id.idmantenimiento).annotate(
+    tareas = F('idaccion__accion'),
+  ).values(
+    'tareas',
+    'completado'))
+  
+  recambios = list(Recambios.objects.filter(idmantenimiento= id.idmantenimiento).values())
+
+  datos = {
+      'mantenimientos': mantenimiento,
+      'tareas': tareas,
+      'recambios': recambios
+      }
+  return JsonResponse(datos)

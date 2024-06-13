@@ -7,6 +7,7 @@ urlpatterns = [
   path('programacion/registrar', programacion.registrar, name= "registrar" ),
   path('programacion/eliminar_programacion/<int:id_programacion>', programacion.eliminar_programacion, name= "eliminar_programacion" ),
   path('programacion/editarFecha', programacion.editar_fecha, name= "editarFecha" ),
+  path('programacion/datos_mantenimiento/<int:id_programacion>', programacion.datos_mantenimiento, name= "datos_matenimiento_realizado" ),
 
   path('pendiente', mantenimiento_inicio.mantenimiento_pendiente, name= "mantenimiento_pendiente" ),
   path('pendiente/datos_mantenimiento', mantenimiento_inicio.datos_mantenimiento, name= "datos_mantenimiento_pendientes" ),

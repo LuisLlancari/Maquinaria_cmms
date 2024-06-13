@@ -106,7 +106,7 @@
       </td>
       {% elif dato.estado_mantenimiento == 2 %}
       <td>
-        <button class="btn btn-warning btn-md w-100" id="finalizado"><strong>Ver diagnostico</strong"></button>
+        <button class="btn btn-warning btn-md w-100 finalizado" id="finalizado" data-idprogramacion="{{ dato.idprogramacionmantenimiento }}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento" ><strong>Ver diagnostico</strong"></button>
       </td>
       {% endif %}
 
@@ -232,6 +232,37 @@
   </div>
 </div>
 
+<div class="modal fade" id="detalle_mantenimiento" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Detalle del Mantenimiento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="form_det_mantenimiento" method="POST" action="" autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-body">
+          <table class="table table-bordered" id="detalle_mantenimiento">
+            <thead>
+              <tr>
+                <th colspan="4" >Información del Mantenimiento</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const today = new Date().toISOString().split('T')[0];
@@ -356,6 +387,83 @@
       });
 
   });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  function detalle_mantenimiento(id) {
+      fetch(`http://127.0.0.1:8000/mantenimiento/programacion/datos_mantenimiento/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          const mantenimiento = data.mantenimientos[0];
+          const tareas = data.tareas;
+          const recambios = data.recambios;
+
+          const tbody = document.querySelector('#detalle_mantenimiento tbody');
+
+          // Información del mantenimiento
+          tbody.innerHTML = `
+            <tr>
+              <td><strong>Fecha de Ingreso:</strong></td>
+              <td>${mantenimiento.fechaingreso}</td>
+              <td><strong>Fecha de Salida:</strong></td>
+              <td>${mantenimiento.fechasalida}</td>
+            </tr>
+            <tr>
+              <td><strong>Mecanico:</strong></td>
+              <td>${mantenimiento.nombres} ${mantenimiento.apellidos}</td>
+              <td><strong>Estado:</strong></td>
+              <td>${mantenimiento.estado ? 'Pendiente' : 'Completado'}</td>
+            </tr>
+            <tr>
+              <td><strong>Fecha Programada:</strong></td>
+              <td>${mantenimiento.fecha_programada}</td>
+              <td><strong>Tipo de Mantenimiento:</strong></td>
+              <td>${mantenimiento.tipomantenimiento === 1 ? 'Preventivo' : 'Correctivo'}</td>
+            </tr>
+            <tr>
+              <td><strong>Implemento:</strong></td>
+              <td>${mantenimiento.implemento}</td>
+              <td><strong>Código de Implemento:</strong></td>
+              <td>${mantenimiento.cod_implemento}</td>
+            </tr>
+            <tr>
+              <th colspan="4">Información de las Tareas</th>
+            </tr>
+            <tr>
+              <td colspan="2"><strong>Tarea</strong></td>
+              <td colspan="2"><strong>Estado</strong></td>
+            </tr>
+            ${tareas.map(tarea => `
+              <tr>
+                <td colspan="2">${tarea.tareas}</td>
+                <td colspan="2">${tarea.completado ? 'Completada' : 'No Completada'}</td>
+              </tr>
+            `).join('')}
+            <tr>
+              <th colspan="4">Información de los Recambios</th>
+            </tr>
+            <tr>
+              <td colspan="4">${recambios.length > 0 ? recambios.map(recambio => recambio).join(', ') : 'No hay recambios.'}</td>
+            </tr>
+          `;
+        })
+        .catch(error => console.error('Error al cargar los datos:', error));
+  }
+  //detalle_mantenimiento();
+  var finalizado = document.querySelectorAll(".finalizado");
+    finalizado.forEach(function (button) {
+      button.addEventListener("click", function () {
+        var id = this.dataset.idprogramacion;
+        detalle_mantenimiento(id);
+      });
+    }
+  );
+});
+
+
+
+  
 </script>
 
 {% endblock %}

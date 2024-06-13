@@ -140,13 +140,13 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     print(f'Recambios :{recambios}')
     # Colocamos fecha de salida y encatgado al registro de mantenimiento
     mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento)
-    programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
-    ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 2)
     mantenimiento.idencargado_id = encargado
     mantenimiento.fechasalida = fecha_salida
     mantenimiento.estado = 0
     mantenimiento.save()
 
+    programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
+    ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 2)
     # activamos el implemento 
     implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
     Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 1) 
