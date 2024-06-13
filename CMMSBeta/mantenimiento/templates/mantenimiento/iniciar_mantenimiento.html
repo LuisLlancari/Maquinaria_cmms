@@ -24,6 +24,7 @@
     var CSRF_TOKEN = '{{ csrf_token }}';
 
     function registrarIngreso(idmantenimiento){
+      console.log("hola")
       fetch(`./pendiente/registrar_ingreso/${idmantenimiento}`, {
         method: 'POST',
         headers: {
@@ -33,7 +34,11 @@
       })
       .then(res => res.json())
       .then(datos => {
-        // console.log(datos)
+        if (datos.status === 'success') {
+          // Manejar el éxito de la operación y redireccionar
+          console.log('Ingreso registrado con éxito');
+          window.location.href = './pendiente'; // Cambia esta ruta a la deseada
+        } 
       })
       .catch((error) => {
           console.log(error);

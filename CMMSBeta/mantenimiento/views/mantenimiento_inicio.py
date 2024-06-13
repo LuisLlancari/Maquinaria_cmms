@@ -29,17 +29,33 @@ def datos_mantenimiento(request):
   
   return JsonResponse({'mantenimiento':mantenimiento})
 
+# def registrar_ingreso(request, id_mantenimiento):
+#   if request.method == 'POST':
+
+#     fecha_hoy =now()
+
+#     mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento, estado = 1)
+#     mantenimiento.fechaingreso= fecha_hoy
+#     mantenimiento.save()
+#     implemento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
+#     Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 0)
+
+#   return redirect('mantenimiento_pendiente')
+
 def registrar_ingreso(request, id_mantenimiento):
   if request.method == 'POST':
-    fecha_hoy =now()
-    # Mantenimiento.objects.filter(idmantenimiento = id_mantenimiento, estado = 1).update(fechaingreso= fecha_hoy)
-    mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento, estado = 1)
-    mantenimiento.fechaingreso= fecha_hoy
-    mantenimiento.save()
-    implemento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
-    Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 0)
+      fecha_hoy = now()
+      mantenimiento = get_object_or_404(Mantenimiento, idmantenimiento=id_mantenimiento, estado=1)
+      mantenimiento.fechaingreso = fecha_hoy
+      mantenimiento.save()
+      implemento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
+      Implemento.objects.filter(idimplemento=implemento).update(estado_actividad=0)
 
-  return redirect('mantenimiento_pendiente')
+      # Retorna una respuesta JSON
+      return JsonResponse({'status': 'success'}, status=200)
+
+  # Si no es una solicitud POST, retornar un error
+  return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 

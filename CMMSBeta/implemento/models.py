@@ -29,6 +29,8 @@ class Implemento(models.Model):
     idusuario = models.ForeignKey(Usuario, on_delete=models.SET_DEFAULT, default=None, verbose_name="Encargado")
     horasdeuso = models.FloatField(verbose_name="Horas de uso", default=0)
     codimplemento = models.CharField(max_length=12, verbose_name="Codigo de Implemento")
+    mantenimientos = models.IntegerField(default=0, null=True, blank=True, verbose_name="Mantenimientos realizados")
+    proximo_mantenimiento = models.IntegerField(default=0, null=True, blank=True, verbose_name="Proximo Mantenimiento") 
     idtipoimplemento = models.ForeignKey(TipoImplemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Tipo Implemento")
     idceco = models.ForeignKey(Ceco, on_delete=models.SET_DEFAULT, default=None,verbose_name="Ceco")
     estado = models.BooleanField(default=True, verbose_name="Estado")
@@ -42,6 +44,8 @@ class Implemento(models.Model):
         ordering = ['implemento', 'idtipoimplemento',]
     def __str__(self):
         return self.implemento
+    
+
     
 
 

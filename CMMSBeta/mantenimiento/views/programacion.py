@@ -35,13 +35,14 @@ def registrar_fecha(request, id_implemento):
         fecha = request.POST.get('fecha_programacion')
         motivos = request.POST.getlist('idmotivo')
        
-       # Actaulizar Programacion con un save
+       # Actualizar Programacion con un save
         programacion = get_object_or_404(ProgramacionMantenimiento, idprogramacionmantenimiento=id_implemento, estado=1)
         programacion.fechaprogramacion = fecha
         programacion.save()
 
         for idmotivo in motivos:
             DetMotivos.objects.create(idprogramacionmantenimiento_id = id_implemento, idaccion_id = idmotivo)
+
     return redirect('programacion_mantenimiento')
 
 
@@ -70,7 +71,7 @@ def eliminar_programacion(request, id_programacion):
 
 def editar_fecha(request):
     if request.method == 'POST':
-        print("entro")
+        
         idprogramacion = request.POST.get('idprogramacion')
         fecha = request.POST.get('fechaprogramacion')
         programacion = get_object_or_404(ProgramacionMantenimiento, pk = idprogramacion)

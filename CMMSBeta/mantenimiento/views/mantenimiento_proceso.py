@@ -98,7 +98,7 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     recambios = request.POST.getlist('recambios')
 
 
-    # # Creamos Detalle Mantenimiento
+    # Creamos Detalle Mantenimiento
     for asignada in tareas_asignadas:
       if asignada in tareas_realizadas:
         # Instanciamos las foraneas
@@ -110,16 +110,16 @@ def finalizar_mantenimiento(request, id_mantenimiento):
           idmantenimiento = mantenimiento,
           completado = True,
         )
-    else:
-      # Instanciamos las foraneas
-      accion = get_object_or_404(Acciones, accion = asignada)
-      mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento)
-      # Creamos el registro
-      DetalleMantenimiento.objects.create(
-        idaccion = accion,
-        idmantenimiento = mantenimiento,
-        completado = False,
-      )
+      else:
+        # Instanciamos las foraneas
+        accion = get_object_or_404(Acciones, accion = asignada)
+        mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento)
+        # Creamos el registro
+        DetalleMantenimiento.objects.create(
+          idaccion = accion,
+          idmantenimiento = mantenimiento,
+          completado = False,
+        )
 
     # Creamos Detelle de Recambios
     if len(recambios) > 0:
@@ -138,16 +138,20 @@ def finalizar_mantenimiento(request, id_mantenimiento):
       pass
 
     print(f'Recambios :{recambios}')
-    # Colocamos fecha de salida y encatgado al registro de mantenimiento
+    # Colocamos fecha de salida y encargado al registro de mantenimiento
     mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento)
     mantenimiento.idencargado_id = encargado
     mantenimiento.fechasalida = fecha_salida
     mantenimiento.estado = 0
     mantenimiento.save()
 
-    # activamos el implemento 
+    # Actualizamos el implemento 
     implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
-    Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 1) 
+    frecuencia_mantenimiento =mantenimiento.idprogramacionmantenimiento.idimplemento.idtipoimplemento.frecuencia_man
+    proximo_mantenimiento = mantenimiento.idprogramacionmantenimiento.idimplemento.proximo_mantenimiento
+    nuevo_mantenimiento = proximo_mantenimiento + frecuencia_mantenimiento
+    
+    Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 1, proximo_mantenimiento = nuevo_mantenimiento ) 
     
   return redirect('mantenimiento_proceso')
 
