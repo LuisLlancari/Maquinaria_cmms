@@ -9,11 +9,10 @@ class ProgramacionMantenimiento(models.Model):
     (1, 'Preventivo'),
     (0, 'Correctvo')
   )
-
   ESTADOMANTENIMIENTO_CHOICES = (
-    (0, 'Programado'),
-    (1, 'Aceptado'),
-    (2, 'Finalizado'),
+  (0, 'Programado'),
+  (1, 'Aceptado'),
+  (2, 'Finalizado'),
   )
 
   idprogramacionmantenimiento = models.AutoField(primary_key=True)
