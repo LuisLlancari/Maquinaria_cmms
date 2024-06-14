@@ -15,7 +15,7 @@ def programacion_mantenimiento(request):
     usuario_id = request.user.id
     # print(usuario_id)
 
-    datos = ProgramacionMantenimiento.objects.filter(estado= 1).annotate( )
+    datos = ProgramacionMantenimiento.objects.filter(idimplemento__idusuario_id = usuario_id).order_by('-fechaprogramacion')
     acciones = Acciones.objects.filter(estado__in=[0, 2])
     implementos = Implemento.objects.filter(estado = 1, idusuario_id = usuario_id)
     tipoimplementos = TipoImplemento.objects.filter(estado = True)

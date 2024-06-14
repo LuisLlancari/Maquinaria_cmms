@@ -95,9 +95,15 @@
         </td>
         <!--Mantenimiento Preventivo-->
         {% elif dato.tipomantenimiento == 1 %}
-        <td>
-          <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha"><strong>Editar Fecha</strong></button>
-        </td>
+          {% if dato.fechaprogramacion is null %}
+          <td>
+            <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha" disabled><strong>Editar Fecha</strong></button>
+          </td>
+          {% else %}
+          <td>
+            <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha"><strong>Editar Fecha</strong></button>
+          </td>
+          {% endif %}
         {% endif %}
 
       {% elif dato.estado_mantenimiento == 1 %}
@@ -107,6 +113,10 @@
       {% elif dato.estado_mantenimiento == 2 %}
       <td>
         <button class="btn btn-warning btn-md w-100 finalizado" id="finalizado" data-idprogramacion="{{ dato.idprogramacionmantenimiento }}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento" ><strong>Ver diagnostico</strong"></button>
+      </td>
+      {% else %}
+      <td>
+        <button class="btn btn-secondary btn-md w-100" id="aceptado" disabled><strong>Error</strong></button>
       </td>
       {% endif %}
 
@@ -242,25 +252,31 @@
       <form id="form_det_mantenimiento" method="POST" action="" autocomplete="off">
         {% csrf_token %}
         <div class="modal-body">
-          <table class="table table-bordered" id="detalle_mantenimiento">
-            <thead>
-              <tr>
-                <th colspan="4" >Información del Mantenimiento</th>
-              </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
-          </table>
+          <div id="maintable">
+            <table class="table table-bordered" id="detalle_mantenimiento">
+              <thead>
+                <tr>
+                  <th colspan="4" >Información del Mantenimiento</th>
+                </tr>
+              </thead>
+              <tbody>
+  
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <!-- <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="pdfout" >PDF</button> -->
         </div>
       </form>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.js"></script>
 
 
 <script>
@@ -471,10 +487,115 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   );
 });
-
-
-
-  
 </script>
+
+<script>
+  document.getElementById('pdfout').addEventListener('click', function () {
+    var doc = new window.jspdf.jsPDF();
+    var maintable = document.getElementById('maintable');
+
+    // Configuración de estilos para la tabla
+    var styles = {
+      fontSize: 12,
+      fontStyle: 'normal',
+      font: 'helvetica',
+      lineColor: [0, 0, 0],
+      lineWidth: 0.5,
+      textColor: [0, 0, 0],
+    };
+
+    // Definir posición inicial y margen
+    var margin = 10;
+    var startY = 10;
+
+    // Obtener los datos de la tabla
+    var rows = [];
+    var headers = [];
+    var table = maintable.querySelector('table');
+
+    table.querySelectorAll('thead th').forEach(function (headerCell) {
+      headers.push(headerCell.textContent.trim());
+    });
+
+    table.querySelectorAll('tbody tr').forEach(function (row) {
+      var rowData = [];
+      row.querySelectorAll('td').forEach(function (cell) {
+        rowData.push(cell.textContent.trim());
+      });
+      rows.push(rowData);
+    });
+
+    // Agregar encabezado de la tabla
+    doc.setFontSize(18);
+    doc.text("Información del Mantenimiento", margin, startY);
+    startY += 20;
+
+    // Agregar contenido de la tabla
+    doc.setFontSize(12);
+    startY = doc.drawTable(headers, rows, {
+      xstart: margin,
+      ystart: startY,
+      tableWidth: 'auto',
+      styles: styles,
+    });
+
+    // Guardar el PDF con nombre 'Reporte.pdf'
+    doc.save('Reporte.pdf');
+  });
+
+  // Función para dibujar la tabla manualmente
+  window.jspdf.jsPDF.prototype.drawTable = function (headers, data, opt) {
+    var startY = opt.ystart;
+    var startX = opt.xstart;
+    var styles = opt.styles || {};
+    var tableWidth = opt.tableWidth || 'auto';
+    var pageWidth = this.internal.pageSize.width;
+    var cellPadding = 2;
+
+    // Calcular ancho de columna
+    var columnWidths = [];
+    if (tableWidth === 'auto') {
+      var availableWidth = pageWidth - startX * 2;
+      columnWidths = Array(headers.length).fill(availableWidth / headers.length);
+    } else if (Array.isArray(tableWidth)) {
+      columnWidths = tableWidth;
+    }
+
+    // Calcular altura de fila
+    var rowHeight = styles.fontSize * 1.2;
+
+    // Dibujar encabezados
+    this.setFontStyle(styles.fontStyle);
+    this.setFont(styles.font);
+    this.setFontSize(styles.fontSize);
+    this.setDrawColor(styles.lineColor[0], styles.lineColor[1], styles.lineColor[2]);
+    this.setLineWidth(styles.lineWidth);
+
+    var y = startY;
+    headers.forEach(function (header, i) {
+      this.rect(startX, y, columnWidths[i], rowHeight, 'S');
+      this.text(header, startX + cellPadding, y + rowHeight / 2, { baseline: 'middle' });
+      startX += columnWidths[i];
+    }, this);
+
+    y += rowHeight;
+
+    // Dibujar datos de la tabla
+    data.forEach(function (row) {
+      startX = opt.xstart;
+      row.forEach(function (cell, i) {
+        this.rect(startX, y, columnWidths[i], rowHeight, 'S');
+        this.text(cell, startX + cellPadding, y + rowHeight / 2, { baseline: 'middle' });
+        startX += columnWidths[i];
+      }, this);
+      y += rowHeight;
+    }, this);
+
+    return y;
+  };
+
+</script>
+
+
 
 {% endblock %}

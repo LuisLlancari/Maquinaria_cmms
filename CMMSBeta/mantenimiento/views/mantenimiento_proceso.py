@@ -146,7 +146,7 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     mantenimiento.save()
 
     programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
-    ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 2)
+    ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado = 0, estado_mantenimiento = 2)
     # activamos el implemento 
     implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
     frecuencia_mantenimiento =mantenimiento.idprogramacionmantenimiento.idimplemento.idtipoimplemento.frecuencia_man

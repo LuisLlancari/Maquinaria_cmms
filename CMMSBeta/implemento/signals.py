@@ -55,16 +55,6 @@ def creacion_programacion(FM, HU, proximo_mantenimiento, id_implemento):
     if HU >= horas_antes:
         ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento, tipomantenimiento = 1)
 
-    # if HU < FM:
-    #     FM -= 50
-    #     if HU >= FM:
-    #         ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento, tipomantenimiento = 1)
-    # else:
-    #     FM -= 50
-    #     residuo_horauso = HU % FM
-    #     if residuo_horauso >= FM:
-    #         ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento, tipomantenimiento = 1)
-
 
 @receiver(pre_save, sender=Implemento)
 def verificar_horasdeuso(sender, instance, **kwargs):
