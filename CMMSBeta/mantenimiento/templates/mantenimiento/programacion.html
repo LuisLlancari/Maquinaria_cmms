@@ -392,7 +392,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   function detalle_mantenimiento(id) {
-      fetch(`http://127.0.0.1:8000/mantenimiento/programacion/datos_mantenimiento/${id}`)
+      fetch(`./programacion/datos_mantenimiento/${id}`)
         .then(response => response.json())
         .then(data => {
           const mantenimiento = data.mantenimientos[0];
