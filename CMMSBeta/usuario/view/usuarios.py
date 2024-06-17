@@ -12,19 +12,25 @@ def gestorUsuario(request):
   return render(request, 'usuario/registro_usuario.html', {'form':UsuarioForm, 'usuarios':datos_usuarios, 'form2': RestablecerContraseña})
 
 def registrarUsuario(request):
-  datos_usuarios = Usuario.objects.filter(is_active = True)
-  user_name = request.POST.get('username')
-
   if request.method == 'POST':
+    user_name = request.POST.get('username')
+    clave1 = request.POST.get('password1')
+    clave2 = request.POST.get('password2')
+
     form = UsuarioForm(request.POST)
-    if form.is_valid():
+    # Validamos usuario único
+    if not Usuario.objects.filter(username= user_name).exists():
+       # Validamos contraseñas iguales
+       if clave1 == clave2:
+        # Retornamos mensaje si son correctas
         form.save()
         messages.error(request, 'Usuario registrado correctamente',extra_tags='success')
         return redirect('registro_usuario')
+       else:
+        messages.error(request, 'Las contraseñas deben ser iguales',extra_tags='danger')
+        return redirect('registro_usuario')
     else:
-      messages.error(request, 'Error al crear el usuario',extra_tags='danger')
-      return redirect('registro_usuario')
-  else:
+      messages.error(request, 'El usuario ya existe',extra_tags='danger')
       return redirect('registro_usuario')
 
 def editarUsuario(request, id_usuario):
@@ -58,8 +64,7 @@ def editarUsuario(request, id_usuario):
     return redirect('registro_usuario')
   else:
     return redirect('registro_usuario')
-
-   
+  
 def eliminarUsuario(request, id_usuario):
   if request.method == 'POST':
     # Obtenemos el usuario a eliminar 
@@ -83,7 +88,7 @@ def restablecerContraseña(request, id_usuario):
           messages.error(request, 'Contraseña restablecida correctamente',extra_tags='success')
           return redirect('registro_usuario')
       else:
-        messages.error(request, 'La contraseñas son diferentes',extra_tags='warning.')
+        messages.error(request, 'Las contraseñas son diferentes',extra_tags='danger')
         return redirect('registro_usuario')
   else:
       form = RestablecerContraseña(usuario)
