@@ -30,11 +30,6 @@ def programacion(request):
 
     #Obtenemos el idusuario
     usuario_id = request.user.id
-    print(usuario_id)
-
-    #tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
-    #tractor = Tractor.objects.filter(estado = True, estado_actividad = True)
-    #implementos = Implemento.objects.filter(estado = True, estado_actividad = True)
 
     fundos = Fundo.objects.filter(estado = True)
     lotes = Lote.objects.filter(estado = True)
@@ -117,11 +112,19 @@ def registrar_programacion(request):
             return redirect('programacion')
 
 def eliminar_programacion(request, id_programacion):
-    programacion = get_object_or_404(DetalleLabor, pk=id_programacion)
+    det = DetalleLabor.objects.filter(idprogramacion=id_programacion)
+    prog = Programacion.objects.filter(idprogramacion=id_programacion)
     if request.method == 'POST':
-        programacion.estado = False
-        programacion.save()
-        return redirect('programacion')
+        if prog[0].estado == 1:
+            det.delete()
+            prog.delete()
+            messages.success(request, "La programación ha sido eliminada correctamente", extra_tags='success')
+            return redirect('programacion')
+        else:
+            messages.error(request, "La programación ya se confirmo", extra_tags='danger')
+            return redirect('programacion')
+
+    return redirect('programacion')
 
 def obtener_data(request, id_programacion):
     detalles_labor = DetalleLabor.objects.filter(idprogramacion=id_programacion)

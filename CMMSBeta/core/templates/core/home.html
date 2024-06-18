@@ -26,7 +26,6 @@
     <div class="col col-md-4 mb-1">
         <label for="" class="form-label"><strong>SUPERVISOR:</strong></label>
         <select name="" class="form-select" id="supervisor">
-            <option value="">---------------</option>
             {% for data in usuarios %}
             <option value="{{ data.id }}">{{ data.first_name }}</option>
             {% endfor %}
@@ -37,6 +36,7 @@
         <select name="" class="form-select" id="turno">
             <option value="M">Mañana</option>
             <option value="T">Tarde</option>
+            <option value="N">Noche</option>
         </select>
     </div>
 </div>
@@ -218,6 +218,11 @@
     const Turno = document.getElementById('turno');
     const Detalle_cuerpo = document.getElementById('detalle-cuerpo');
 
+    const { DateTime} = luxon;
+    const zonaHoraria = 'America/Lima';
+
+    const fechaActual = DateTime.now().setZone(zonaHoraria).toFormat('yyyy-MM-dd');
+
     // Botones del modal
     const btnProgramado = document.getElementById("btnProgramado");
     const btnNoProgramado = document.getElementById("btnNoProgramado");
@@ -227,7 +232,7 @@
     let TractoresConProgramacion
 
     // Asignar la fecha actual al campo de fecha
-    let fechaActual = new Date().toISOString().split('T')[0];
+    //let fechaActual = new Date().toISOString().split('T')[0];
     Fecha.value = fechaActual;
 
     // Variable para instanciar gráfico 

@@ -1,9 +1,9 @@
-from django.apps import AppConfig
+# from django.apps import AppConfig
 
 
-class ImplementoConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'implemento'
+# class ImplementoConfig(AppConfig):
+#     default_auto_field = 'django.db.models.BigAutoField'
+#     name = 'implemento'
     
-    def ready(self):
-        from . import signals
+#     def ready(self):
+#         from . import signals

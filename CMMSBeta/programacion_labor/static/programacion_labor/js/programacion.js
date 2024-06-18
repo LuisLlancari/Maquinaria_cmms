@@ -270,6 +270,12 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     });
+
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip(); 
+    });
+
+    
     
     //Llamado de funciones
     filtrarImplementosPorUsuario(selectedUserId);

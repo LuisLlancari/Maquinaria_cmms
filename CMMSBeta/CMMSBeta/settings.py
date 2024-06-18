@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-dj9+y84%liifi)v=evex(z_!)s$085jyu8&p68q191)qaxmw-b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '172.20.10.7', '192.168.137.81', '172.17.192.1','192.168.18.83','192.168.101.20']
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -43,12 +43,12 @@ INSTALLED_APPS = [
     'tractor',
     'localizacion',
     'fundo_cultivo',
-    'implemento.apps.ImplementoConfig',
+    'implemento',
     'componente_pieza',
     'operarios',
     'programacion_labor',
     'ceco',
-    'mantenimiento.apps.MantenimientoConfig',
+    # 'mantenimiento.apps.MantenimientoConfig',
 
 ]
 
