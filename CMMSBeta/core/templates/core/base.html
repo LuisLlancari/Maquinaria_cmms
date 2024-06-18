@@ -213,9 +213,6 @@
                                 <a href="{% url 'tipoimplemento' %}" class="sidebar-link" data-path="login">Tipo implemento</a>
                             </li>
                         {% endif %}
-                        {% comment %} <li class="sidebar-item">
-                            <a href="{% url 'detalleimplemento' %}" class="sidebar-link" data-path="s">Detalle implemento</a>
-                        </li> {% endcomment %}
                     </ul>
                 </li>
 
@@ -298,9 +295,6 @@
                             <a href=" {% url 'programacion' %} " class="sidebar-link" data-path="login">Crear Programacion</a>
                         </li>
                         {% endif %}
-                        <!-- <li class="sidebar-item">
-                            <a href=" {% url 'detallelabor' %}" class="sidebar-link" data-path="login">Detalles Programacion</a>
-                        </li> -->
                         
                     </ul>
                 </li>
@@ -325,12 +319,6 @@
                         </ul>
                     </li>
                 {% endif %}
-
-
-                
-
-
-            {% comment %} fin del dropdown {% endcomment %}
 
             </ul>
             {% if user.is_authenticated %}
