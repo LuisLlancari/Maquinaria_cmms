@@ -254,6 +254,7 @@
           </table>
         </div>
         <div class="modal-footer">
+          <a type="button" id="reporte" class="btn btn-success" href="#" >Generar Reporte</a>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         </div>
       </form>
@@ -391,6 +392,8 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  const reporte = document.getElementById('reporte')
+
   function detalle_mantenimiento(id) {
       fetch(`./programacion/datos_mantenimiento/${id}`)
         .then(response => response.json())
@@ -466,6 +469,7 @@ document.addEventListener('DOMContentLoaded', function () {
     finalizado.forEach(function (button) {
       button.addEventListener("click", function () {
         var id = this.dataset.idprogramacion;
+        reporte.setAttribute('href', `./programacion/reporte_mantenimiento/${id}`)
         detalle_mantenimiento(id);
       });
     }

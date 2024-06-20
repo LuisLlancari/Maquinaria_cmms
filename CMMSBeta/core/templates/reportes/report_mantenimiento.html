@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<style>
+     table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+
+</style>
+<body>
+
+  {% for dato in mantenimiento %}
+  <h1>
+    Reporte mantenimiento {% if dato.tipomantenimiento == 0 %} Preventivo {% else %} Correctivo {% endif %}
+  </h1>
+  <p>
+      <b>N°:</b>{{ dato.idmantenimiento }}<br>
+      <b>FECHA PROGRAMADA:</b>{{ dato.fecha_programada }}<br>
+      <b>IMPLEMENTO:</b>{{ dato.implemento }}<br> 
+      <b>CODIGO:</b>{{ dato.cod_implemento }}<br> 
+      <b>ENCARGADO:</b>{{ dato.nombres }} {{ dato.apellidos }}<br>
+      <b>TIPO MANTENIMIENTO:</b>
+      {% if dato.tipomantenimiento == 0 %}
+          Preventivo
+      {% else %}
+          Correctivo
+      {% endif %}<br>
+      <b>FECHA DE INGRESO:</b>{{ dato.fechaingreso }}<br>
+      <b>FECHA DE SALIDA:</b>{{ dato.fechasalida }}<br>
+  </p>
+  {% endfor %}
+<h2>Detalle mantenimiento</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tareas Realizadas</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tarea in tareas %}
+    <tr>
+      <td>{{tarea.tareas}}</td>
+      <td>{% if tarea.completado%}
+        Realizado
+        {% else %}
+        No realizado
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Detalle Recambios</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Item:</th>
+      <th>Código:</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for recambio in recambios %}
+    <tr>
+      <td>{{recambio.item}}</td>
+      <td>{{recambio.codigo}}</td>
+    </tr>
+    {% endfor %}
+    
+  </tbody>
+</table>
+</body>
+</html>

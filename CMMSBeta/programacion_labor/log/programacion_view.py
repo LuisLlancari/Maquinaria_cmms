@@ -19,58 +19,61 @@ from datetime import timedelta
 #Programacion 
 @login_required(login_url='login', redirect_field_name='')
 def programacion(request):
+    rol = request.user.idrol.rol
+    if rol == "Supervisor":
+        # Formateo de la fecha - Peru
+        ahora_utc = timezone.now()
+        ahora_peru = ahora_utc - timedelta(hours=5)
+        hoy = ahora_peru.date()
+            #Uso del Formateo
+        cantidad_tractores_hoy = Programacion.objects.filter(fechahora=hoy, idusuario = request.user).count()
+        # Fin Formateo de la fecha
 
-    # Formateo de la fecha - Peru
-    ahora_utc = timezone.now()
-    ahora_peru = ahora_utc - timedelta(hours=5)
-    hoy = ahora_peru.date()
-        #Uso del Formateo
-    cantidad_tractores_hoy = Programacion.objects.filter(fechahora=hoy, idusuario = request.user).count()
-    # Fin Formateo de la fecha
+        #Obtenemos el idusuario
+        usuario_id = request.user.id
+        print(usuario_id)
 
-    #Obtenemos el idusuario
-    usuario_id = request.user.id
-    print(usuario_id)
+        #tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
+        #tractor = Tractor.objects.filter(estado = True, estado_actividad = True)
+        #implementos = Implemento.objects.filter(estado = True, estado_actividad = True)
 
-    #tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
-    #tractor = Tractor.objects.filter(estado = True, estado_actividad = True)
-    #implementos = Implemento.objects.filter(estado = True, estado_actividad = True)
+        fundos = Fundo.objects.filter(estado = True)
+        lotes = Lote.objects.filter(estado = True)
+        detalles = DetalleLabor.objects.filter(estado = True, idprogramacion__idusuario = usuario_id)
 
-    fundos = Fundo.objects.filter(estado = True)
-    lotes = Lote.objects.filter(estado = True)
-    detalles = DetalleLabor.objects.filter(estado = True, idprogramacion__idusuario = usuario_id)
+        #Obtenemos detalles unicos
+        subquery = DetalleLabor.objects.filter(
+        estado=True,
+        idprogramacion=OuterRef('idprogramacion'),
+        idprogramacion__idusuario=usuario_id
+        ).order_by('idprogramacion__fechahora')[:1]
 
-    #Obtenemos detalles unicos
-    subquery = DetalleLabor.objects.filter(
-    estado=True,
-    idprogramacion=OuterRef('idprogramacion'),
-    idprogramacion__idusuario=usuario_id
-    ).order_by('idprogramacion__fechahora')[:1]
+        # Obtener los detalles únicos por idprogramacion y ordenarlos de forma ascendente por la fecha de idprogramacion
+        detalles_unicos = DetalleLabor.objects.filter(
+            pk=Subquery(subquery.values('pk'))
+        ).order_by('-idprogramacion__fechahora')
 
-    # Obtener los detalles únicos por idprogramacion y ordenarlos de forma ascendente por la fecha de idprogramacion
-    detalles_unicos = DetalleLabor.objects.filter(
-        pk=Subquery(subquery.values('pk'))
-    ).order_by('-idprogramacion__fechahora')
+        #LISTA DE USUARIO PARA EL SELECT 
+        usuario = Usuario.objects.filter(idrol = 3, is_active = 1)
 
-
-    #LISTA DE USUARIO PARA EL SELECT 
-    usuario = Usuario.objects.filter(idrol = 3, is_active = 1)
-
-    # Pasamos los datos al contexto
-    contexto = {
-        'cantidad'          : cantidad_tractores_hoy ,
-        'fecha'             : hoy, 
-        'detalle'           : detalles_unicos, 
-        'idusuario'         : usuario_id, 
-        'lista_usuarios'    : usuario ,
-        'fundo'             : fundos,
-        'lotes'             : lotes,
-        'form_programacion' : ProgramacionForm, 
-    }
+        # Pasamos los datos al contexto
+        contexto = {
+            'cantidad'          : cantidad_tractores_hoy ,
+            'fecha'             : hoy, 
+            'detalle'           : detalles_unicos, 
+            'idusuario'         : usuario_id, 
+            'lista_usuarios'    : usuario ,
+            'fundo'             : fundos,
+            'lotes'             : lotes,
+            'form_programacion' : ProgramacionForm, 
+        }
 
 
-    return render(request, 'programacion_labor/programacion.html', contexto)
+        return render(request, 'programacion_labor/programacion.html', contexto)
+    else:
+        return redirect('home')
 
+@login_required(login_url='login', redirect_field_name='')
 def registrar_programacion(request):
     if request.method == 'POST':
         form = ProgramacionForm(request.POST)
@@ -116,6 +119,7 @@ def registrar_programacion(request):
             messages.error(request, f"Errores en el formulario: {form.errors}", extra_tags='danger')
             return redirect('programacion')
 
+@login_required(login_url='login', redirect_field_name='')
 def eliminar_programacion(request, id_programacion):
     programacion = get_object_or_404(DetalleLabor, pk=id_programacion)
     if request.method == 'POST':
@@ -123,6 +127,7 @@ def eliminar_programacion(request, id_programacion):
         programacion.save()
         return redirect('programacion')
 
+@login_required(login_url='login', redirect_field_name='')
 def obtener_data(request, id_programacion):
     detalles_labor = DetalleLabor.objects.filter(idprogramacion=id_programacion)
     nombres_implementos = []
@@ -135,6 +140,7 @@ def obtener_data(request, id_programacion):
     return JsonResponse(data)
 
 
+@login_required(login_url='login', redirect_field_name='')
 def obtener_select(request, fecha, turno):
     # Obtener los ids de tractoristas de las programaciones según fecha y turno
     list_tractorista = list(Programacion.objects.filter(fechahora=fecha, turno=turno).values_list('idtractorista_id', flat=True))

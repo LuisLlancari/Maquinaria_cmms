@@ -8,13 +8,17 @@ from django.contrib import messages
 
 @login_required(login_url='login', redirect_field_name='tipotractor')
 def tipotractor(request):
-    tipotractor = TipoTractor.objects.filter(estado = True)
-    form = TipoTractorForm()
-    data = {
-        'tipotractor' : tipotractor,
-        'form' : form
-    }
-    return render(request, 'tractor/tipotractor.html', data)
+    rol = request.user.idrol.rol
+    if rol == "Admin":
+        tipotractor = TipoTractor.objects.filter(estado = True)
+        form = TipoTractorForm()
+        data = {
+            'tipotractor' : tipotractor,
+            'form' : form
+        }
+        return render(request, 'tractor/tipotractor.html', data)
+    else:
+        return redirect('home')
 
 @login_required(login_url='login', redirect_field_name='tipotractor')
 def eliminar_tipotractor(request, idtractor):

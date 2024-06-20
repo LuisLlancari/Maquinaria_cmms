@@ -6,15 +6,20 @@ from ..forms import BaseForm
 
 @login_required(login_url='login', redirect_field_name='')
 def base(request):
-    bases = Base.objects.filter(estado = True)
-    sedes = Sede.objects.filter(estado = True)
-    formBase = BaseForm()
-    datos = {
-        'bases': bases,
-        'formBase': formBase,
-        'sedes':sedes,
-    }
-    return render(request, '../templates/localizacion/base.html', datos)
+    rol = request.user.idrol.rol
+    if rol == "Admin":
+        bases = Base.objects.filter(estado = True)
+        sedes = Sede.objects.filter(estado = True)
+        formBase = BaseForm()
+        datos = {
+            'bases': bases,
+            'formBase': formBase,
+            'sedes':sedes,
+        }
+        return render(request, '../templates/localizacion/base.html', datos)
+    else:
+        return redirect('home')
+    
 
 @login_required(login_url='login', redirect_field_name='')
 def eliminar_base(request, idbase):

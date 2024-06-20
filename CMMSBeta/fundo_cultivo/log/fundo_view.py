@@ -12,19 +12,22 @@ from django.contrib import messages
 
 @login_required(login_url='login', redirect_field_name='')
 def fundo(request):
-  fundos = Fundo.objects.filter(estado=True)
-  sedes = Sede.objects.filter(estado=True)
+  rol = request.user.idrol.rol
+  if rol == "Admin":
+    fundos = Fundo.objects.filter(estado=True)
+    sedes = Sede.objects.filter(estado=True)
 
-  print (fundos)
+    context = {
+      'datos': fundos,
+      'sedes': sedes,
+      'form_fundo': FundoForm
+    }
 
-  context = {
-    'datos': fundos,
-    'sedes': sedes,
-    'form_fundo': FundoForm
-  }
-
-  return render(request, 'fundo_cultivo/fundo.html', context)
-
+    return render(request, 'fundo_cultivo/fundo.html', context)
+  else:
+    return redirect('home')
+  
+@login_required(login_url='login', redirect_field_name='')
 def registrar_fundo(request):
   if request.method == 'POST':
     form = FundoForm(request.POST)
@@ -42,13 +45,15 @@ def registrar_fundo(request):
 
   return redirect('fundo')
 
+@login_required(login_url='login', redirect_field_name='')
 def eliminar_fundo(request, id_fundo):
   registro = get_object_or_404(Fundo, pk=id_fundo)
   if request.method == 'POST':
     registro.estado = False
     registro.save()
     return redirect('fundo')
-  
+
+@login_required(login_url='login', redirect_field_name='')
 def editar_fundo(request):
   if request.method == 'POST':
     fundo_id = request.POST.get('fundo_id')

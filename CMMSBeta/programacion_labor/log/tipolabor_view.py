@@ -9,21 +9,28 @@ from django.contrib.auth.decorators import login_required
 # Tipolabor
 @login_required(login_url='login', redirect_field_name='')
 def tipolabor(request):
-    tipolabor = TipoLabor.objects.filter(estado=True)
-    return render(request, 'programacion_labor/tipolabor.html', {'datos': tipolabor, 'form_tipolabor': TipoLaborForm })
-
+    rol = request.user.idrol.rol
+    if rol == "Admin":
+        tipolabor = TipoLabor.objects.filter(estado=True)
+        return render(request, 'programacion_labor/tipolabor.html', {'datos': tipolabor, 'form_tipolabor': TipoLaborForm })
+    else:
+        return redirect('home')
+    
+@login_required(login_url='login', redirect_field_name='')
 def registrar_tipolabor(request):
     form = TipoLaborForm(request.POST)
     form.save()
     return redirect('tipolabor')
 
+@login_required(login_url='login', redirect_field_name='')
 def eliminar_tipolabor(request, id_tipolabor):
     registro = get_object_or_404(TipoLabor, pk=id_tipolabor)
     if request.method == 'POST':
         registro.estado = False
         registro.save()
         return redirect('tipolabor')
-    
+
+@login_required(login_url='login', redirect_field_name='')    
 def editar_tipolabor(request):
     if request.method == 'POST':
         tipolabor_id = request.POST.get('tipolabor_id')

@@ -6,29 +6,39 @@ from django.http import JsonResponse
 from implemento.models import Implemento, TipoImplemento, DetImplementos
 from mantenimiento.models import Acciones, DetMotivos
 from django.contrib import messages
+import os
+from django.conf import settings
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.contrib.staticfiles import finders
+from django.http import JsonResponse
 
 # funcion que calculara las fechas de mantenimiento
-
+@login_required(login_url='login', redirect_field_name='')
 def programacion_mantenimiento(request):
-
-    #Obtenemos el idusuario logeado
     usuario_id = request.user.id
-    # print(usuario_id)
+    rol = request.user.idrol.rol
+    if rol == "Supervisor":
+        print(rol)
 
-    datos = ProgramacionMantenimiento.objects.filter(estado= 1, idimplemento__idusuario = usuario_id)
-    acciones = Acciones.objects.filter(estado__in=[0, 2])
-    implementos = Implemento.objects.filter(estado = 1, idusuario_id = usuario_id)
-    tipoimplementos = TipoImplemento.objects.filter(estado = True)
-    # print(tipoimplementos)
-    contexto = {
-        'datos': datos,
-        'acciones': acciones,
-        'implementos': implementos,
-        'tipoimplementos': tipoimplementos
-    }
- 
-    return render(request, 'mantenimiento/programacion.html', contexto)
-
+        datos = ProgramacionMantenimiento.objects.filter(estado= 1, idimplemento__idusuario = usuario_id)
+        acciones = Acciones.objects.filter(estado__in=[0, 2])
+        implementos = Implemento.objects.filter(estado = 1, idusuario_id = usuario_id)
+        tipoimplementos = TipoImplemento.objects.filter(estado = True)
+        # print(tipoimplementos)
+        contexto = {
+            'datos': datos,
+            'acciones': acciones,
+            'implementos': implementos,
+            'tipoimplementos': tipoimplementos
+        }
+    
+        return render(request, 'mantenimiento/programacion.html', contexto)
+    else:
+        return redirect('home')
+        
+@login_required(login_url='login', redirect_field_name='')
 def registrar_fecha(request, id_implemento):
     if request.method == 'POST':
         fecha = request.POST.get('fecha_programacion')
@@ -44,6 +54,7 @@ def registrar_fecha(request, id_implemento):
 
     return redirect('programacion_mantenimiento')
 
+@login_required(login_url='login', redirect_field_name='')
 def registrar(request):
     if request.method == 'POST':
         implemento = request.POST.get('idimplemento')
@@ -57,6 +68,7 @@ def registrar(request):
 
     return redirect('programacion_mantenimiento')
 
+@login_required(login_url='login', redirect_field_name='')
 def eliminar_programacion(request, id_programacion):
     programacion = get_object_or_404(ProgramacionMantenimiento, pk=id_programacion)
     if request.method == 'POST':
@@ -76,6 +88,7 @@ def eliminar_programacion(request, id_programacion):
 
     return redirect('programacion_mantenimiento')
 
+@login_required(login_url='login', redirect_field_name='')
 def editar_fecha(request):
     if request.method == 'POST':
         
@@ -90,6 +103,7 @@ def editar_fecha(request):
             messages.error(request, 'La programación se encuentra aceptada, no puede ser editada.', extra_tags='danger')
     return redirect('programacion_mantenimiento')
 
+@login_required(login_url='login', redirect_field_name='')
 def datos_mantenimiento(request, id_programacion):
 
   id = get_object_or_404(Mantenimiento, idprogramacionmantenimiento_id = id_programacion)
@@ -135,3 +149,45 @@ def datos_mantenimiento(request, id_programacion):
       'recambios': recambios
       }
   return JsonResponse(datos)
+
+@login_required(login_url='login', redirect_field_name='')
+def reporte_mantenimiento(request, id_programacion):
+  # Consultas 
+  # Datos Mantenimietos
+  id = get_object_or_404(Mantenimiento, idprogramacionmantenimiento_id = id_programacion)
+
+  mantenimiento = list(Mantenimiento.objects.filter(idprogramacionmantenimiento_id = id_programacion).annotate(
+  fecha_programada = F('idprogramacionmantenimiento__fechaprogramacion'),
+  tipomantenimiento = F('idprogramacionmantenimiento__tipomantenimiento'),
+  implemento = F('idprogramacionmantenimiento__idimplemento__implemento'),
+  cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
+  idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
+  idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
+  nombres = F(f'idencargado__idpersona__nombres'),
+  apellidos = F(f'idencargado__idpersona__apellidos')
+  ).values('idmantenimiento','idprogramacion','fecha_programada','implemento','cod_implemento',
+           'idimplemento','tipomantenimiento','fechaingreso','fechasalida','descripcion','idencargado',
+           'nombres','apellidos','fechaingreso','estado'
+  ))
+  # Datos Tareas y recambios
+  tareas = list(DetalleMantenimiento.objects.filter(idmantenimiento = id.idmantenimiento).annotate(
+  tareas = F('idaccion__accion'),
+  ).values('tareas','completado'))
+  
+  recambios = list(Recambios.objects.filter(idmantenimiento= id.idmantenimiento).values())
+
+  # Definimos planatilla
+  template = get_template('reportes/report_mantenimiento.html')
+  context = {'titulo': 'Primer Pdf', 'mantenimiento':mantenimiento, 'tareas': tareas, 'recambios':recambios}
+  html = template.render(context)
+  response = HttpResponse(content_type='application/pdf')
+  response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+
+  # crear pdf
+  pisa_status = pisa.CreatePDF(
+      html, dest=response)
+  
+  # Controlar el error
+  if pisa_status.err:
+      return HttpResponse('We had some errors <pre>' + html + '</pre>')
+  return response

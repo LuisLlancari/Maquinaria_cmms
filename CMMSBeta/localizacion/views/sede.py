@@ -6,10 +6,13 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login', redirect_field_name='')
 def sede(request):
-    sedes = Sede.objects.filter(estado = True)
-    form = SedeForm()
-    return render(request, '../templates/localizacion/sede.html', {'sedes': sedes, 'form': form})
-
+    rol = request.user.idrol.rol
+    if rol == "Admin":
+        sedes = Sede.objects.filter(estado = True)
+        form = SedeForm()
+        return render(request, '../templates/localizacion/sede.html', {'sedes': sedes, 'form': form})
+    else:
+        return redirect('home')
 
 @login_required(login_url='login', redirect_field_name='')
 def eliminar_sede(request, idsede):

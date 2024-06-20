@@ -29,7 +29,7 @@ def tractor(request):
         
         return render(request, 'tractor/tractor.html', data)
     
-    else:
+    elif rol_usuario == "Admin":
         tractores = Tractor.objects.filter(estado = True)
         tipotractor = TipoTractor.objects.filter(estado = True)
         fundo = Fundo.objects.filter(estado = True)
@@ -44,7 +44,8 @@ def tractor(request):
         }
         
         return render(request, 'tractor/tractor.html', data)
-
+    else:
+        return redirect('home')
 
 @login_required(login_url='login', redirect_field_name='')
 def eliminar_tractor(request, idtractor):

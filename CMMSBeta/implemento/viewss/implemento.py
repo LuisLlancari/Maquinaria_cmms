@@ -19,11 +19,13 @@ def implemento(request):
   if rol_usuario == "Supervisor":
     datos_implemento = Implemento.objects.filter(estado = True, idusuario = id_usuario)
     return render(request, 'implemento/implemento.html', {'datos': datos_implemento, 'form':ImplementoForms})
-
-  else:
+  elif rol_usuario == "Admin":
     datos_implemento = Implemento.objects.filter(estado = True) 
     return render(request, 'implemento/implemento.html', {'datos': datos_implemento, 'form':ImplementoForms})
+  else:
+    return redirect('home')
 
+@login_required(login_url='login', redirect_field_name='')
 def registrarImplemento(request):
   if request.method == 'POST':
     nom_implemento = request.POST.get('implemento').strip()
@@ -40,6 +42,7 @@ def registrarImplemento(request):
 
   return redirect('implemento')
 
+@login_required(login_url='login', redirect_field_name='')
 def eliminarimplemento(request, id_implemento):
   registro = get_object_or_404(Implemento, pk= id_implemento)
   if request.method == 'POST':
@@ -47,6 +50,7 @@ def eliminarimplemento(request, id_implemento):
     registro.save()
     return redirect('implemento')
   
+@login_required(login_url='login', redirect_field_name='')
 def editarImplemento(request, id_implemento):
   if request.method == 'POST':
     implemento = get_object_or_404(Implemento, pk=id_implemento)
@@ -64,6 +68,7 @@ def editarImplemento(request, id_implemento):
       return redirect('implemento')
   return redirect('implemento')
 
+@login_required(login_url='login', redirect_field_name='')
 def obtenerDatos(request, id_implemento):
   implemento = list(Implemento.objects.filter(pk=id_implemento).values())
   if(len(implemento) > 0):

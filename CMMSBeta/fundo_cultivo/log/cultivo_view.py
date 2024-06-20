@@ -10,9 +10,14 @@ from django.contrib import messages
 
 @login_required(login_url='login', redirect_field_name='')
 def cultivo(request):
-  cultivos = Cultivo.objects.filter(estado=True)
-  return render(request, 'fundo_cultivo/cultivo.html',{'datos': cultivos, 'form_cultivo': CultivoForm})
+  rol = request.user.idrol.rol
+  if rol == "Admin":
+    cultivos = Cultivo.objects.filter(estado=True)
+    return render(request, 'fundo_cultivo/cultivo.html',{'datos': cultivos, 'form_cultivo': CultivoForm})
+  else:
+    return redirect('home')
 
+@login_required(login_url='login', redirect_field_name='')
 def registrar_cultivo(request):
   if request.method == 'POST':
     #Manejo de caracteres el blanco 
@@ -30,6 +35,7 @@ def registrar_cultivo(request):
       messages.error(request, 'El cultivo ya existe', extra_tags='danger')
   return redirect('cultivo')
 
+@login_required(login_url='login', redirect_field_name='')
 def editar_cultivo(request):
   if request.method == 'POST':
     cultivo_id = request.POST.get('cultivo_id')
@@ -45,7 +51,8 @@ def editar_cultivo(request):
     else:
       messages.error(request, 'Error al actualizar el cultivo', extra_tags='danger')
   return redirect('cultivo')
-  
+
+@login_required(login_url='login', redirect_field_name='')  
 def eliminar_cultivo(request, id_cultivo):
   registro = get_object_or_404(Cultivo, pk=id_cultivo)
   if request.method == 'POST':
