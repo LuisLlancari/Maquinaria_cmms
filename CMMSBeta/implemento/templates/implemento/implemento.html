@@ -35,7 +35,7 @@
             {% endfor %}
         {% endif %}
         <table class="table table-striped table-sm table-bordered mt-3 text-center" id="tabla-implemento">
-            <thead class="thead-dark">
+            <thead class="table-dark">
                 <tr>
                     <th scope="col">Tipo Implemento</th>
                     <th scope="col">Implemento</th>
@@ -148,28 +148,6 @@
         const implementos = document.querySelectorAll("#tabla-implemento tbody tr");
         const Busqueda = document.getElementById("buscar");
 
-    
-
-
-        // Agregar un event listener para el evento de entrada en el campo de búsqueda
-        Busqueda.addEventListener("input", function() {
-            
-            var valorBusqueda = Busqueda.value.toLowerCase();
-
-            // Iterar sobre los implementos y mostrar u ocultar según el término de búsqueda
-            implementos.forEach(function(implemento) {
-                var area = implemento.querySelector("td:nth-child(1)").textContent.toLowerCase(); 
-                var supervisor = implemento.querySelector("td:nth-child(8)").textContent.toLowerCase(); 
-                var nombreImplemento = implemento.querySelector("td:nth-child(3)").textContent.toLowerCase();
-                
-                // Verificar si alguno de los campos coincide con el término de búsqueda
-                if (area.includes(valorBusqueda) || supervisor.includes(valorBusqueda) || nombreImplemento.includes(valorBusqueda)) {
-                    implemento.style.display = ""; 
-                } else {
-                    implemento.style.display = "none";
-                }
-            });
-        });
 
         function obtener_implemento(id){
         fetch(`./obtener/${id}`)

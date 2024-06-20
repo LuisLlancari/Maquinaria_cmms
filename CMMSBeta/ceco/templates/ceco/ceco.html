@@ -5,7 +5,7 @@
 
 {% load static %}
 <div class="container">
-    <h1 class="text-start mb-3">Gestion de Costos</h1>
+    <h1 class="text-center mb-3">Gestión de Centros de costos</h1>
     <div class="row">
         <div class="col-md-4">
             <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
@@ -14,7 +14,6 @@
         <div class="col-md-2">
             {% if user.idrol.rol != "Gerencia" %}
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoCeco">Nuevo Ceco</button>
-                <button type="button" class="btn btn-success" id="boton_secundario" >togle</button>
             {% endif %}
         </div>
     </div>

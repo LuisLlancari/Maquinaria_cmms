@@ -50,7 +50,7 @@ def creacionDetalleImplemento(sender, instance, created, **kwargs):
 def creacion_programacion(FM, HU, proximo_mantenimiento, id_implemento):
     if FM is None or HU is None:
         return 0, 0
-    
+    print("Lloego")
     horas_antes = proximo_mantenimiento - 50
     if HU >= horas_antes:
         ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento, tipomantenimiento = 1)
@@ -77,8 +77,8 @@ def verificar_horasdeuso(sender, instance, **kwargs):
         hora_uso = instance.horasdeuso
         frecuencia_mantenimiento = instance.idtipoimplemento.frecuencia_man
         proximo_mantenimiento = instance.proximo_mantenimiento
-        
-        if not ProgramacionMantenimiento.objects.filter(idimplemento = id_implemento , estado = 1).exists():
+        print("esta por llegar")
+        if not ProgramacionMantenimiento.objects.filter(idimplemento = id_implemento , estado = 0).exists():
             creacion_programacion(frecuencia_mantenimiento, proximo_mantenimiento, hora_uso, id_implemento)
 
 @receiver(pre_save, sender=Implemento)
