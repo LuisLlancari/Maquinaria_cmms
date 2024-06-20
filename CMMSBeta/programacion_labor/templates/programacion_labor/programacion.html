@@ -123,7 +123,6 @@
                             <i class="lni lni-eye"></i>
                         </button>
                     </td>
-                    {% if user.idrol.rol == "Admin" %}
                     <td>
                         {% if det.idprogramacion.estado == 1 %}
                             <form action="{% url 'eliminar_programacion' det.idprogramacion.idprogramacion %}" class="d-inline-block" method="POST">
@@ -138,7 +137,6 @@
                             </button>                       
                         {% endif %}
                         </td>
-                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
@@ -324,7 +322,7 @@
 </div>
 
 
-
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.3.0/luxon.min.js"></script>
 <script src="{% static 'programacion_labor/js/mensajes.js' %}"></script>
 <script src="{% static 'programacion_labor/js/fecha_programacion.js' %}"></script>
