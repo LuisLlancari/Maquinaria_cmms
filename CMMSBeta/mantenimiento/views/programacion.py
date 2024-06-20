@@ -6,12 +6,17 @@ from django.http import JsonResponse
 from implemento.models import Implemento, TipoImplemento, DetImplementos
 from mantenimiento.models import Acciones, DetMotivos
 from django.contrib import messages
+import os
+from django.conf import settings
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.contrib.staticfiles import finders
+from django.http import JsonResponse
 
 # funcion que calculara las fechas de mantenimiento
-
+@login_required(login_url='login', redirect_field_name='')
 def programacion_mantenimiento(request):
-
-    #Obtenemos el idusuario logeado
     usuario_id = request.user.id
     rol = request.user.idrol.rol
     if rol == "Supervisor":
