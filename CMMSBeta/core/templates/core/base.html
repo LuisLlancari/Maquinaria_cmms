@@ -30,6 +30,29 @@
             padding: 20px;
         }
     </style>
+    {% else %}
+    <style>
+        .wrapper {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+    
+        .sidebar {
+            flex: 0 0 auto;
+            width: 250px;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: #343a40;
+            color: white;
+        }
+
+        .main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+    </style>
     {% endif %}
     
 </head>

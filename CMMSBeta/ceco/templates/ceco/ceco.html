@@ -8,7 +8,7 @@
     <h1 class="text-center mb-3">Gestión de Centros de costos</h1>
     <div class="row">
         <div class="col-md-4">
-            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+            <!-- <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar..."> -->
         </div>
         <div class="col-md-6"></div>
         <div class="col-md-2">
@@ -31,7 +31,6 @@
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Centro de costo</th>
-                    <th scope="col">Estado</th>
                     {% if user.idrol.rol != "Gerencia" %}
                     <th scope="col">Operacion</th>
                     {% endif %}
@@ -43,7 +42,6 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ data.ceco }}</td>
-                    <td>{{ data.estado }}</td>
                     {% if user.idrol.rol != "Gerencia" %}
                         <td>
                             <button class="btn btn-warning btn-sm editar d-inline-block" id="ceco" data-toggle="modal" data-target="#modalEditarCeco" data-idceco="{{ data.idceco }}" data-nombrececo="{{ data.ceco }}" type="button"><i class="lni lni-pencil"></i></button>

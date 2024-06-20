@@ -191,3 +191,14 @@ select {
 .legend-text {
     font-size: 14px;
 }
+
+.tooltip-inner {
+    background-color: #28a745; /* Color de fondo del tooltip */
+    color: #fff; /* Color del texto */
+    font-weight: bold; /* Peso de la fuente */
+    padding: 10px; /* Espaciado interno */
+}
+
+.tooltip.bs-tooltip-top .arrow::before {
+    border-top-color: #28a745; /* Color de la flecha del tooltip */
+}

@@ -38,7 +38,7 @@ def datos_mantenimiento(request):
     'estado'
     ))
 
-  tareas = list(Acciones.objects.filter(estado = 0).values('idaccion','accion'))
+  tareas = list(Acciones.objects.filter(estado = 2).values('idaccion','accion'))
 
   encargados = list(Encargado.objects.filter(estado = 1).annotate(
     nombre =Concat(F('idpersona__nombres'),Value(' '), F('idpersona__apellidos')) 
@@ -149,7 +149,7 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     mantenimiento.save()
 
     programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
-    ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 2)
+    ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado = 0, estado_mantenimiento = 2)
     # activamos el implemento 
     implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
     frecuencia_mantenimiento =mantenimiento.idprogramacionmantenimiento.idimplemento.idtipoimplemento.frecuencia_man

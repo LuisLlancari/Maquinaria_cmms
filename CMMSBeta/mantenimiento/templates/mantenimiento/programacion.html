@@ -95,9 +95,15 @@
         </td>
         <!--Mantenimiento Preventivo-->
         {% elif dato.tipomantenimiento == 1 %}
-        <td>
-          <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha"><strong>Editar Fecha</strong></button>
-        </td>
+          {% if dato.fechaprogramacion is null %}
+          <td>
+            <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha" disabled><strong>Editar Fecha</strong></button>
+          </td>
+          {% else %}
+          <td>
+            <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha"><strong>Editar Fecha</strong></button>
+          </td>
+          {% endif %}
         {% endif %}
 
       {% elif dato.estado_mantenimiento == 1 %}
@@ -107,6 +113,10 @@
       {% elif dato.estado_mantenimiento == 2 %}
       <td>
         <button class="btn btn-warning btn-md w-100 finalizado" id="finalizado" data-idprogramacion="{{ dato.idprogramacionmantenimiento }}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento" ><strong>Ver diagnostico</strong"></button>
+      </td>
+      {% else %}
+      <td>
+        <button class="btn btn-secondary btn-md w-100" id="aceptado" disabled><strong>Error</strong></button>
       </td>
       {% endif %}
 
@@ -242,16 +252,18 @@
       <form id="form_det_mantenimiento" method="POST" action="" autocomplete="off">
         {% csrf_token %}
         <div class="modal-body">
-          <table class="table table-bordered" id="detalle_mantenimiento">
-            <thead>
-              <tr>
-                <th colspan="4" >Información del Mantenimiento</th>
-              </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
-          </table>
+          <div id="maintable">
+            <table class="table table-bordered" id="detalle_mantenimiento">
+              <thead>
+                <tr>
+                  <th colspan="4" >Información del Mantenimiento</th>
+                </tr>
+              </thead>
+              <tbody>
+  
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="modal-footer">
           <a type="button" id="reporte" class="btn btn-success" href="#" >Generar Reporte</a>
@@ -261,7 +273,6 @@
     </div>
   </div>
 </div>
-
 
 
 <script>
@@ -474,11 +485,11 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
   );
+
 });
-
-
-
-  
 </script>
+
+
+
 
 {% endblock %}
