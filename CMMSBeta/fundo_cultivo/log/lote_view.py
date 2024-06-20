@@ -11,12 +11,17 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login', redirect_field_name='')
 def lote(request):
-  lotes = Lote.objects.filter(estado=True, idvariedad__estado=True)
-  variedades = Variedad.objects.filter(estado=True)
-  Cultivos = Cultivo.objects.filter(estado=True)
-  Fundos = Fundo.objects.filter(estado=True)
-  return render(request, 'fundo_cultivo/lote.html',{'datos': lotes, 'variedades': variedades, 'cultivos': Cultivos, 'fundos': Fundos,'form_lote': LoteForm})
-
+  rol = request.user.idrol.rol
+  if rol == "Admin":
+    lotes = Lote.objects.filter(estado=True, idvariedad__estado=True)
+    variedades = Variedad.objects.filter(estado=True)
+    Cultivos = Cultivo.objects.filter(estado=True)
+    Fundos = Fundo.objects.filter(estado=True)
+    return render(request, 'fundo_cultivo/lote.html',{'datos': lotes, 'variedades': variedades, 'cultivos': Cultivos, 'fundos': Fundos,'form_lote': LoteForm})
+  else:
+    return redirect('home')
+  
+@login_required(login_url='login', redirect_field_name='')
 def registrar_lote(request):
   if request.method == 'POST':
     form = LoteForm(request.POST)
@@ -38,13 +43,15 @@ def registrar_lote(request):
   else:
     return redirect('lote')
 
+@login_required(login_url='login', redirect_field_name='')
 def eliminar_lote(request, id_lote):
   registro = get_object_or_404(Lote, pk=id_lote)
   if request.method == 'POST':
     registro.estado = False
     registro.save()
     return redirect('lote')
-  
+
+@login_required(login_url='login', redirect_field_name='')  
 def obtener_lote(request):
   variedad = list(Variedad.objects.filter(estado=True).values())
   if(len(variedad) > 0):
@@ -53,6 +60,7 @@ def obtener_lote(request):
     data = {'mensaje':"Not found"}
   return JsonResponse(data)
 
+@login_required(login_url='login', redirect_field_name='')
 def editar_lote(request):
   if request.method == 'POST':
     lote_id = request.POST.get('lote_id')

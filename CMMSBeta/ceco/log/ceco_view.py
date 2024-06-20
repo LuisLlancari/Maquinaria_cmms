@@ -12,14 +12,15 @@ from django.contrib import messages
 # Ceco
 @login_required(login_url='login', redirect_field_name='')
 def ceco(request):
-    #usuario = request.user
-    #print("Usuario logueado:", usuario)
-    cecos = Ceco.objects.filter(estado=True)
-    for ceco in cecos:
-        ceco.estado = 'Activo' if ceco.estado else 'Inactivo'
+    rol = request.user.idrol.rol
+    if rol == "Admin":
+        cecos = Ceco.objects.filter(estado=True)
+        for ceco in cecos:
+            ceco.estado = 'Activo' if ceco.estado else 'Inactivo'
 
-    return render(request, 'ceco/ceco.html', {'datos': cecos, 'form_ceco': CecoForm, })
-
+        return render(request, 'ceco/ceco.html', {'datos': cecos, 'form_ceco': CecoForm, })
+    else:
+        return redirect('home')
 
 @login_required(login_url='login', redirect_field_name='')
 def registrar_ceco(request):

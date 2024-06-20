@@ -13,10 +13,13 @@ from ..forms import VariedadForm
 
 @login_required(login_url='login', redirect_field_name='')
 def variedad(request):
-  variedad = Variedad.objects.filter(estado=True)
-  cultivo = Cultivo.objects.filter(estado=True)
-  return render(request, 'fundo_cultivo/variedad.html',{'datos': variedad, 'cultivos' : cultivo ,'form_variedad': VariedadForm})
-
+  rol = request.user.idrol.rol
+  if rol == "Admin":
+    variedad = Variedad.objects.filter(estado=True)
+    cultivo = Cultivo.objects.filter(estado=True)
+    return render(request, 'fundo_cultivo/variedad.html',{'datos': variedad, 'cultivos' : cultivo ,'form_variedad': VariedadForm})
+  else:
+     return redirect('home')
 
 @login_required(login_url='login', redirect_field_name='')
 def registrar_variedad(request):
@@ -50,6 +53,7 @@ def registrar_variedad(request):
         return HttpResponse("La solicitud no fue válida")
 
 
+@login_required(login_url='login', redirect_field_name='')
 def editar_variedad(request):
   if request.method == 'POST':
     variedad_id = request.POST.get('variedad_id')
@@ -64,7 +68,8 @@ def editar_variedad(request):
       messages.error(request, 'Error al actualizar', extra_tags='danger')
   return redirect('variedad')
   
-  
+
+@login_required(login_url='login', redirect_field_name='')
 def eliminar_variedad(request, id_variedad):
   registro = get_object_or_404(Variedad, pk=id_variedad)
   if request.method == 'POST':

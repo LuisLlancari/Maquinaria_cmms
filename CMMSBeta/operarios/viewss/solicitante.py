@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from ..models import Solicitante , TipoSolicitante
 from usuario.forms import PersonaForm
 from usuario.models import Persona
@@ -7,12 +8,17 @@ from django.http import JsonResponse
 
 #Manejo de errores
 from django.contrib import messages
-
+@login_required(login_url='login', redirect_field_name='')
 def solicitante(request):
-  datos_solicitantes = Solicitante.objects.filter(estado=True)
-  datos_tiposolicitante = TipoSolicitante.objects.filter(estado=True)
-  return render(request, 'operarios/solicitante.html', {'datos_solicitantes': datos_solicitantes, 'form':PersonaForm, 'datos_tiposolicitante':datos_tiposolicitante})
-
+  rol = request.user.idrol.rol
+  if rol == "Admin":
+    datos_solicitantes = Solicitante.objects.filter(estado=True)
+    datos_tiposolicitante = TipoSolicitante.objects.filter(estado=True)
+    return render(request, 'operarios/solicitante.html', {'datos_solicitantes': datos_solicitantes, 'form':PersonaForm, 'datos_tiposolicitante':datos_tiposolicitante})
+  else:
+    return redirect('home')
+  
+@login_required(login_url='login', redirect_field_name='')
 def registrarSolicitante(request):
   if request.method == 'POST':
       tipo_solicitante = request.POST.get('tiposolicitante')
@@ -39,14 +45,15 @@ def registrarSolicitante(request):
   else:
       return redirect('solicitante')
 
-
+@login_required(login_url='login', redirect_field_name='')
 def eliminarSolicitante(request, id_solicitante):
   registro = get_object_or_404(Solicitante, pk= id_solicitante)
   if request.method == 'POST':
     registro.estado = False
     registro.save()
     return redirect('solicitante')
-  
+
+@login_required(login_url='login', redirect_field_name='')  
 def editarSolicitante(request, id_solicitante):
   if request.method == 'POST':
     # Obtenemos el valor del tipo solicitante
@@ -73,6 +80,7 @@ def editarSolicitante(request, id_solicitante):
   else: 
     return redirect('solicitante')
 
+@login_required(login_url='login', redirect_field_name='')
 def obtenerDatos(request, id_solicitante):
   # Obtenemos el solicitante por el id
   solicitante = list(Solicitante.objects.filter(pk=id_solicitante).values())

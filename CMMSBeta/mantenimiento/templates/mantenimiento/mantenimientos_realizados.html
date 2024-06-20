@@ -41,6 +41,7 @@
         </div>
         <div class="modal-footer">
           <!-- <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button> -->
+          <a type="button" id="reporte" class="btn btn-outline-success flex-fill">Generar Reporte </a>
           <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
         </div>
       </form>
@@ -54,6 +55,7 @@
     const contenerdorTareas = document.getElementById('cuerpo_tareas');
     const contenerdorRecambio = document.getElementById('cuerpo_recambios');
     const cuerpoTabla = document.querySelector('#tabla_detalle tbody')
+    const reporte = document.getElementById('reporte')
     var CSRF_TOKEN = '{{ csrf_token }}';
 
     let datosGenerales = ''
@@ -162,6 +164,7 @@
       btnConfimarFecha.forEach(function(boton) {
       boton.addEventListener("click", function(event) {
         let idmantenimiento = event.target.dataset.id
+        reporte.setAttribute('href', `./realizados/reporte_mantenimiento/${idmantenimiento}`)
         obtenerDetalleMantenimiento(idmantenimiento)
         });
       });
@@ -180,6 +183,23 @@
       .then(datos => {
         datosGenerales = datos.mantenimientos
         rederizarMantenimientosPendientes(datos.mantenimientos)
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+    }
+
+    function generarReporte(idmantenimiento){
+      fetch(`./realizados/reporte_mantenimiento/${idmantenimiento}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN
+        },
+      })
+      .then(res => res.json())
+      .then(datos => {
+     
       })
       .catch((error) => {
           console.log(error);
@@ -214,20 +234,27 @@
                 <td><strong>Código de Implemento:</strong></td>
                 <td>${datosGeneral.cod_implemento}</td>
               </tr>
+              <tr>
+                <th colspan="4">Información de las Tareas</th>
+              </tr>
               ${detalle_mantenimiento.map(tarea => `
+              <tr>
+                <td colspan="2"><strong>Tarea</strong></td>
+                <td colspan="2"><strong>Estado</strong></td>
+              </tr>
               <tr>
                 <td colspan="2">${tarea.tareas}</td>
                 <td colspan="2">${tarea.completado ? 'Completada' : 'No Completada'}</td>
               </tr>
             `).join('')}
               <tr>
-                <th colspan="4">Información de las Tareas</th>
-              </tr>
-              <tr>
-                <td colspan="2"><strong>Tarea</strong></td>
-                <td colspan="2"><strong>Estado</strong></td>
+                <th colspan="4">Información de los recambios</th>
               </tr>
               ${detalle_recambio.length > 0 ? detalle_recambio.map(recambio => `
+              <tr>
+                <td colspan="2"><strong>Item</strong></td>
+                <td colspan="2"><strong>Código</strong></td>
+              </tr>
               <tr>
                 <td colspan="2">${recambio.item}</td>
                 <td colspan="2">${recambio.codigo}</td>
@@ -242,7 +269,15 @@
       })
       
     }
+    
+    // reporte.addEventListener('click',function(event){
+    //   let id_mantenimento = event.target.dataset.id
+    //   console.log(id_mantenimento)
+    //   generarReporte(id_mantenimento)
+    // });
+
     obtenerDatosMantenimientosRealizados();
+
 
   });
 </script>

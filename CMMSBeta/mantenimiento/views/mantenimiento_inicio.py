@@ -7,6 +7,7 @@ from usuario.models import Persona
 from mantenimiento.models import ProgramacionMantenimiento, Mantenimiento, DetMotivos
 from django.http import JsonResponse
 
+@login_required(login_url='login', redirect_field_name='')
 def datos_mantenimiento(request):
   mantenimiento = list(Mantenimiento.objects.filter(fechaingreso__isnull=True, estado = 1).annotate(
     fecha_programada = F('idprogramacionmantenimiento__fechaprogramacion'),
@@ -29,19 +30,7 @@ def datos_mantenimiento(request):
   
   return JsonResponse({'mantenimiento':mantenimiento})
 
-# def registrar_ingreso(request, id_mantenimiento):
-#   if request.method == 'POST':
-
-#     fecha_hoy =now()
-
-#     mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento, estado = 1)
-#     mantenimiento.fechaingreso= fecha_hoy
-#     mantenimiento.save()
-#     implemento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
-#     Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 0)
-
-#   return redirect('mantenimiento_pendiente')
-
+@login_required(login_url='login', redirect_field_name='')
 def registrar_ingreso(request, id_mantenimiento):
   if request.method == 'POST':
       fecha_hoy = now()
@@ -61,6 +50,10 @@ def registrar_ingreso(request, id_mantenimiento):
   return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-
+@login_required(login_url='login', redirect_field_name='')
 def mantenimiento_pendiente(request):
-  return render(request, 'mantenimiento/iniciar_mantenimiento.html')
+  rol = request.user.idrol.rol
+  if rol == "Mecanico": 
+    return render(request, 'mantenimiento/iniciar_mantenimiento.html')
+  else:
+        return redirect('home')

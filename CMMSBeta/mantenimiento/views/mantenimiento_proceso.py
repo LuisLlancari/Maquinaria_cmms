@@ -9,6 +9,7 @@ from usuario.models import Persona
 from mantenimiento.models import Mantenimiento, DetMotivos, Acciones, DetalleMantenimiento, Recambios, ProgramacionMantenimiento
 from django.http import JsonResponse
 
+@login_required(login_url='login', redirect_field_name='')
 def datos_mantenimiento(request):
   mantenimiento = list(Mantenimiento.objects.filter(fechaingreso__isnull=False, fechasalida__isnull=True, estado = 1).annotate(
     fecha_programada = F('idprogramacionmantenimiento__fechaprogramacion'),
@@ -47,6 +48,7 @@ def datos_mantenimiento(request):
   datos = {'mantenimientos': mantenimiento, 'tareas':tareas, 'encargados':encargados}
   return JsonResponse(datos)
 
+@login_required(login_url='login', redirect_field_name='')
 def datos_implemento(request, id_programacion, id_implemento):
   tareas_implemento = list(DetMotivos.objects.filter(idprogramacionmantenimiento = id_programacion).annotate(
     tarea= F('idaccion__accion'),
@@ -88,6 +90,7 @@ def datos_implemento(request, id_programacion, id_implemento):
 
   return JsonResponse({'partes': partes, 'tareas':tareas_implemento})
 
+@login_required(login_url='login', redirect_field_name='')
 def finalizar_mantenimiento(request, id_mantenimiento):
   if request.method == 'POST':
     # Obtenemos los datos del request
@@ -137,7 +140,7 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     else:
       pass
 
-    print(f'Recambios :{recambios}')
+    # print(f'Recambios :{recambios}')
     # Colocamos fecha de salida y encargado al registro de mantenimiento
     mantenimiento = get_object_or_404(Mantenimiento,idmantenimiento = id_mantenimiento)
     mantenimiento.idencargado_id = encargado
@@ -157,15 +160,19 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     
   return redirect('mantenimiento_proceso')
 
+@login_required(login_url='login', redirect_field_name='')
 def detalle_mantenimiento (request, id_mantenimiento):
   tareas = list(DetalleMantenimiento.objects.filter(idmantenimiento = id_mantenimiento).annotate(
     tareas = F('idaccion__accion'),
   ).values(
     'tareas',
     'completado'))
-  
-
   return JsonResponse({'tareas': tareas})
 
+@login_required(login_url='login', redirect_field_name='')
 def mantenimiento_proceso(request):
-  return render(request, 'mantenimiento/completar_mantenimiento.html')
+  rol = request.user.idrol.rol
+  if rol == "Mecanico":
+    return render(request, 'mantenimiento/completar_mantenimiento.html')
+  else:
+    return redirect('home')
