@@ -150,10 +150,10 @@ def obtener_select(request, fecha, turno):
     list_programaciones = list(Programacion.objects.filter(fechahora=fecha, turno=turno))
     list_implementos = list(DetalleLabor.objects.filter(idprogramacion__in=list_programaciones).values_list('idimplemento_id', flat=True))
 
-    # Excluir los tractoristas con los ids obtenidos
+    # Excluir los todo lo ingresado con los ids obtenidos
     tractoristas = Tractorista.objects.filter(estado = True).exclude(idtractorista__in=list_tractorista)
     tractores = Tractor.objects.filter(estado = True).exclude(idtractor__in=list_tractores)
-    implementos = Implemento.objects.filter(estado = True).exclude(idimplemento__in=list_implementos)
+    implementos = Implemento.objects.filter(estado = True, estado_actividad = 1).exclude(idimplemento__in=list_implementos)
 
     # Preparar los datos para la respuesta JSON
     datos_tractoristas = list(tractoristas.values('idtractorista', 'idusuario_id', 'idpersona_id__nombres', 'idpersona_id__apellidos'))  # Convierte los QuerySets a una lista de diccionarios
