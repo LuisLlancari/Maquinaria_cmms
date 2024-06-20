@@ -73,9 +73,7 @@
                     <th scope="col">Turno</th>
                     <th scope="col">Horas de Uso</th>
                     <th scope="col">Implementos</th>
-                    {% if user.idrol.rol == "Admin" %}
-                    <th scope="col">Operaciones</th>
-                    {% endif %}
+                    <th scope="col">Operacion</th>
                 </tr>
             </thead>
 
@@ -99,7 +97,14 @@
                         {{ det.idprogramacion.idtractorista.idpersona.apellidos }}
                     </td>
                     <td class="fecha" >{{ det.idprogramacion.fechahora|date:"d-m-Y"}}</td>
-                    <td>{{ det.idprogramacion.turno}}</td>
+
+                    {% if det.idprogramacion.turno == 'M' %}
+                    <td>Mañana</td>
+                    {% elif det.idprogramacion.turno == 'T' %}
+                    <td>Tarde</td>
+                    {% else %}
+                    <td>Noche</td>
+                    {% endif %}
 
                     <!-- Para manejar la confirmacion-->
                     {% if det.horadeuso == 0 %}
@@ -120,16 +125,18 @@
                     </td>
                     {% if user.idrol.rol == "Admin" %}
                     <td>
-                        <!-- <button class="btn btn-warning btn-sm editar d-inline-block" id="tipolabor" data-toggle="modal"
-                            data-target="#modalEditar" data-idtipolabor="{{ data.idtipolabor }}"
-                            data-nombretipolabor="{{ data.tipolabor }}" type="button"><i
-                            class="lni lni-pencil"></i></button> -->
-                            <form action="{% url 'eliminar_programacion' det.iddetlabor %}" class="d-inline-block" 
-                            method="POST">
+                        {% if det.idprogramacion.estado == 1 %}
+                            <form action="{% url 'eliminar_programacion' det.idprogramacion.idprogramacion %}" class="d-inline-block" method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm mx-5"><i
-                                class="lni lni-trash-can"></i></button>
+                                class="lni lni-trash-can"></i>
+                            </button>
                             </form>
+                            {% else %}
+                            <button id="successButton" class="btn btn-success btn-sm mx-5" data-toggle="tooltip" data-placement="top" title="¡Fue confirmado!" >
+                                <i class="lni lni-checkmark-circle"></i>
+                            </button>                       
+                        {% endif %}
                         </td>
                     {% endif %}
                 </tr>
@@ -160,6 +167,7 @@
                                 <select name="fechahora" class="form-select mb-2" id="id_fechahora">
                                     <option id="1" value="hoy">Hoy</option>
                                     <option id="2" value="mañana">Mañana</option>
+                                    <option id="3" value="N">Noche</option>
                                 </select>
                             </div>
                             <div class="col-md-3">

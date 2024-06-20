@@ -121,11 +121,19 @@ def registrar_programacion(request):
 
 @login_required(login_url='login', redirect_field_name='')
 def eliminar_programacion(request, id_programacion):
-    programacion = get_object_or_404(DetalleLabor, pk=id_programacion)
+    det = DetalleLabor.objects.filter(idprogramacion=id_programacion)
+    prog = Programacion.objects.filter(idprogramacion=id_programacion)
     if request.method == 'POST':
-        programacion.estado = False
-        programacion.save()
-        return redirect('programacion')
+        if prog[0].estado == 1:
+            det.delete()
+            prog.delete()
+            messages.success(request, "La programación ha sido eliminada correctamente", extra_tags='success')
+            return redirect('programacion')
+        else:
+            messages.error(request, "La programación ya se confirmo", extra_tags='danger')
+            return redirect('programacion')
+
+    return redirect('programacion')
 
 @login_required(login_url='login', redirect_field_name='')
 def obtener_data(request, id_programacion):
