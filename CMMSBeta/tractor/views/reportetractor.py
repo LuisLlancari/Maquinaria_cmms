@@ -10,7 +10,7 @@ from django.http import JsonResponse
 @login_required(login_url='login', redirect_field_name='')
 def reportetractor(request):
     rol = request.user.idrol.rol
-    if rol == "Gerencia":
+    if rol == "Asistente":
         datos_usuarios = Usuario.objects.filter(idrol = 3)
         datos_programacion = Programacion.objects.filter(estado=True)
         return render(request, 'tractor/reportetractor.html', {'datos': datos_programacion, 'form': ReporteTractorForm, 'usuarios':datos_usuarios})

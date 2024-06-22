@@ -38,7 +38,7 @@ def datos_mantenimiento(request):
     'estado'
     ))
 
-  tareas = list(Acciones.objects.filter(estado = 0).values('idaccion','accion'))
+  tareas = list(Acciones.objects.filter(estado = 2).values('idaccion','accion'))
 
   encargados = list(Encargado.objects.filter(estado = 1).annotate(
     nombre =Concat(F('idpersona__nombres'),Value(' '), F('idpersona__apellidos')) 
