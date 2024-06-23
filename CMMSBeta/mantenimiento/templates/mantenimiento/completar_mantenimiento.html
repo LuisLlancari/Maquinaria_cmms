@@ -31,24 +31,40 @@
       <form autocomplete="off" id="form-detalle" method="POST">
         {% csrf_token %}
         <div class="modal-body " style="background-color: #E5E8E8">
-          <div class="row">
-            <div class="col col-md-6">
-              <label for="fecha-salida" class="forml-label">Fecha de Salida:</label>
-              <input type="date" name="fecha-salida" id="fecha-salida" class="form-control mt-2" required> 
+          <div class="container">
+            
+            <div class="row" id="detalle-mantenimiento">
+              <div class="col col-md-6">
+                <p><strong>Implemento: </strong> dsadad</p>
+                <p><strong>Código del Implemento:</strong> ADDSD  </p>
+              </div>
+              <div class="col col-md-6">
+                <p><strong>Fecha del Ingreso:</strong></p>
+              </div>
             </div>
-            <div class="col col-md-6">
-              <label for="encargado" class="form-label">Encargado:</label>
-              <select name="encargado" id="encargado" class="form-select" required>
-                <option value="">Seleccione:</option>
-              </select>
+            
+            <div class="row">
+              <div class="col col-md-6">
+                <label for="fecha-salida" class="forml-label">Fecha de Salida:</label>
+                <input type="date" name="fecha-salida" id="fecha-salida" class="form-control mt-2" required> 
+              </div>
+              <div class="col col-md-6">
+                <label for="encargado" class="form-label">Encargado:</label>
+                <select name="encargado" id="encargado" class="form-select" required>
+                  <option value="">Seleccione:</option>
+                </select>
+              </div>
             </div>
+            <h1 class="text-center mt-3" > Acciones</h1>
+            <button type="button" class="btn btn-success " id="agregar-tarea">Agregar acciones</button>
+            <div id="contenedor-tareas">
+              <div class="container tarea" id="cuerpo-acciones">
+              </div>
+            </div>  
+
+            <!-- Fin del div.container   -->
           </div>
-          <h1 class="text-center mt-3" > Acciones</h1>
-          <button type="button" class="btn btn-success " id="agregar-tarea">Agregar acciones</button>
-          <div class="container" id="contenedor-tareas">
-            <div class="container tarea" id="cuerpo-acciones">
-            </div>
-          </div>    
+
 
           <div class="container">
             <h1 class="text-center mt-3">Recambios</h1>
@@ -104,6 +120,7 @@
     let det_encargados = '';
     let contador = 0;
     let fechaProgramacion = '' ;
+    let datos_mantenimiento = '';
 
     btnAgregarTarea.addEventListener('click', function(){
       contador ++;
@@ -351,6 +368,34 @@
       })
     }
 
+    function renderizarDatosMantenimiento(datos){
+     const det_mantenimiento = document.getElementById('detalle-mantenimiento')
+     det_mantenimiento.innerHTML = ''
+     datos.forEach(detman =>{
+        var div1 = document.createElement('div');
+        div1.className = 'col col-md-6';
+
+        var p1 = document.createElement('p');
+        p1.innerHTML = `<strong>Implemento: </strong>${detman.implemento}`;
+        div1.appendChild(p1);
+
+        var p2 = document.createElement('p');
+        p2.innerHTML = `<strong>Código del Implemento: </strong>${detman.cod_implemento}`;
+        div1.appendChild(p2);
+
+        var div2 = document.createElement('div');
+        div2.className = 'col col-md-6';
+
+        var p3 = document.createElement('p');
+        p3.innerHTML = `<strong>Fecha del Ingreso: </strong>${detman.fechaingreso}`;
+        div2.appendChild(p3);
+
+        // Agregar los divs creados al contenedor específico
+        det_mantenimiento.appendChild(div1);
+        det_mantenimiento.appendChild(div2);
+     });
+    }
+
     function obtenerMantenimientos(){
         fetch(`./proceso/datos_mantenimiento`)
         .then(res => res.json())
@@ -360,6 +405,8 @@
             det_encargados = datos.encargados
             // console.log(det_encargados)
             let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
+            datos_mantenimiento = datos.mantenimientos
+            console.log(datos_mantenimiento)
             // console.log(datos_filtrados)
             renderizarMantenimientos(datos_filtrados);   
         })
@@ -382,7 +429,9 @@
           datos_busqueda = transformData(datos.partes);
           // console.log(datos_busqueda);
           rederizarTareas(datos.tareas);
-      })
+          let mant_filtrado = datos_mantenimiento.filter(mantenimiento => mantenimiento.idprogramacion == idprogramacion)
+          renderizarDatosMantenimiento(mant_filtrado);
+        })
       .catch((error) => {
           console.log(error);
       });
