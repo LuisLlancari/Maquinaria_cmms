@@ -1,29 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   const h1 = document.querySelector('#h1-remplazar');
-  const buscador = document.querySelector('#buscador');
   const filasTabla = document.querySelectorAll('#tabla-ceco tbody tr');
   const booton = document.getElementById('boton_secundario')
+  const btnGuardarCambios = document.getElementById("guardar-cambios");
+  const btnGuardarRegistro = document.getElementById("guardar-datos");
+  const formEditar = document.getElementById("form-editar-ceco")
+  const formRegistrar = document.getElementById("form-ceco")
+  const btnEliminar = document.querySelectorAll('.eliminar');
 
-  //Funciones
-  function filtrarTabla() {
-      const valorBusqueda = buscador.value.trim().toLowerCase();
-      let noHayResultados = true;
-      filasTabla.forEach(fila => {
-          const ceco = fila.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
-          const coincide = ceco.includes(valorBusqueda);
-
-          if (coincide) {
-              fila.style.display = 'table-row';
-              noHayResultados = false;
-          } else {
-              fila.style.display = 'none';
-          }
-      });
-      h1.textContent = noHayResultados ? 'Datos no encontrados' : '';
-  }
 
   //Eventos
-  buscador.addEventListener('input', filtrarTabla);
 
   setTimeout(function() {
       var mensaje = document.getElementById('mensaje');
@@ -32,19 +18,40 @@ document.addEventListener("DOMContentLoaded", () => {
       }
   }, 3000);
 
-  booton.addEventListener('click', function(){
-      console.log('hola')
-  });
 
   var editButtons = document.querySelectorAll('.editar');
   editButtons.forEach(function(button) {
       button.addEventListener('click', function() {
-          console.log("hola")
           var idCeco = this.dataset.idceco;
           var nombreCeco = this.dataset.nombrececo;
           document.getElementById("ceco_id").value = idCeco;
           document.getElementById("nombre_ceco").value = nombreCeco;
       });
+  });
+
+  btnEliminar.forEach(function(boton) {
+    boton.addEventListener("click", function(event) {
+      event.preventDefault();
+      console.log("fgo,da")
+      let cultivo = event.currentTarget.dataset.registro;
+      let formId = event.currentTarget.dataset.id;
+    console.log(cultivo, formId)
+      PreguntarEliminar(cultivo, function() {
+          document.getElementById('form-' + formId).submit();
+      });
+    });
+  });
+
+  btnGuardarRegistro.addEventListener("click", function(event){
+    event.preventDefault();
+    PreguntarGuardar(function(){formRegistrar.submit();});
+
+  });
+
+  btnGuardarCambios.addEventListener("click", function(event){
+    event.preventDefault();
+    PreguntarGuardar(function(){formEditar.submit();});
+
   });
 
 
