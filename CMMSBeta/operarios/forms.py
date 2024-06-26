@@ -14,6 +14,7 @@ class TractoristaForms(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TractoristaForms, self).__init__(*args, **kwargs)
         self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 2)
+        
     class Meta:
         model = Tractorista
         fields = ['idusuario','idpersona']

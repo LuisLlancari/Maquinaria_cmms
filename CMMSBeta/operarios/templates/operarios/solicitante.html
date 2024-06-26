@@ -119,7 +119,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnGuardar = document.getElementById("guardar");
     const btnModificar = document.querySelectorAll(".editar")
     const btnEliminar = document.querySelectorAll(".eliminar")
+    const dniField = document.getElementById('txtDni');
 
+    dniField.addEventListener('input', function() {
+        if (this.value.length > 8) {
+            this.value = this.value.slice(0, 8);
+        }
+    });
 
     
     function obtener_solicitante(id){

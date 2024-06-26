@@ -1,17 +1,18 @@
 from django import forms
 from .models import Rol, Persona, Usuario
 from django.contrib.auth.forms import UserCreationForm ,SetPasswordForm
-from django.forms import ValidationError
+from django.forms import ValidationError, NumberInput
 
 
 class PersonaForm(forms.ModelForm):
+
     class Meta:
         model = Persona
-        fields  = ['nombres', 'apellidos', 'dni']
+        fields = ['nombres', 'apellidos', 'dni']
         widgets = {
-            'nombres': forms.TextInput(attrs={'class':'form-control mb-3', 'id':'txtNombres'}),
-            'apellidos': forms.TextInput(attrs={'class':'form-control mb-3', 'id':'txtApellidos'}),
-            'dni': forms.TextInput(attrs={'class':'form-control mb-3', 'id':'txtDni'}),
+            'nombres': forms.TextInput(attrs={'class': 'form-control mb-3', 'id': 'txtNombres'}),
+            'apellidos': forms.TextInput(attrs={'class': 'form-control mb-3', 'id': 'txtApellidos'}),
+            'dni': forms.TextInput(attrs={'class': 'form-control mb-3', 'id': 'txtDni', 'type': 'number', 'maxlength': '8'}),
         }
 
 class RolForm(forms.ModelForm):

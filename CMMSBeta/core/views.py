@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Subquery, F,Value, OuterRef
 from django.db.models.functions import Concat
@@ -14,24 +14,37 @@ from django.core.paginator import Paginator
 
 @login_required(login_url='login', redirect_field_name='home')
 def home(request,):
-    usuario = request.user
-    usuarios = Usuario.objects.filter(idrol = 3, is_active = 1)
-    tipos_labor = Programacion.objects.values('idtipolabor', 'idtipolabor__tipolabor')
+    rol_usuario = request.user.idrol.rol
+    if rol_usuario == "Supervisor":
+        return redirect('implemento')
+    elif rol_usuario == "Mecanico":
+        return redirect('mantenimiento_pendiente')
+    elif rol_usuario == "Asistente":
+        return redirect('reportetractor')
+    else:
+        usuario = request.user
+        usuarios = Usuario.objects.filter(idrol = 3, is_active = 1)
+        tipos_labor = Programacion.objects.values('idtipolabor', 'idtipolabor__tipolabor')
 
-    data = {
-        'user': usuario,
-        'usuarios': usuarios,
-        'tipolabor': tipos_labor,
-    }
-
-    return render(request, 'core/home.html', data)
-
+        data = {
+            'user': usuario,
+            'usuarios': usuarios,
+            'tipolabor': tipos_labor,
+        }
+        return render(request, 'core/home.html', data)
+    
+@login_required(login_url='login', redirect_field_name='')
 def datos_grafico(request, fecha, supervisor, turnos):
- 
-    # Consulta para encontrar los tractores que pertenecen al supervisor y no estuvieron programados
-    tractores_no_programados = Tractor.objects.filter(
-        idusuario=supervisor
-    ).exclude(
+    # Definir los filtros comunes
+    filtro_tractores = {}
+    filtro_programacion = {'fechahora': fecha, 'turno': turnos}
+
+    if supervisor != 0:
+        filtro_tractores['idusuario'] = supervisor
+        filtro_programacion.update({'idusuario': supervisor, 'idtractor__idusuario': supervisor})
+
+    # Consulta para encontrar los tractores que no estuvieron programados
+    tractores_no_programados = Tractor.objects.filter(**filtro_tractores).exclude(
         programacion__fechahora=fecha,
         programacion__turno=turnos
     )
@@ -39,25 +52,17 @@ def datos_grafico(request, fecha, supervisor, turnos):
     # Contar el número de tractores no programados
     num_tractores_no_programados = tractores_no_programados.count()
 
-    # Crear un diccionario para almacenar los resultados
+    # Crear un diccionario para almacenar los resultados de tractores
     resultado_tractores = {
         'nombre': 'Tractores no programados',
         'registros': num_tractores_no_programados
     }
 
     # Consulta para contar la cantidad de registros de cada solicitante
-    registros_por_solicitante = Programacion.objects.filter(
-        fechahora=fecha,
-        turno=turnos,
-        idusuario = supervisor,
-        idtractor__idusuario =supervisor
-    ).values('idsolicitante').annotate(num_registros=Count('idsolicitante'))
+    registros_por_solicitante = Programacion.objects.filter(**filtro_programacion).values('idsolicitante').annotate(num_registros=Count('idsolicitante'))
 
     # Lista para almacenar datos
-    resultados_solicitantes = []
-
-    # Agregamos el diccionario de tractores a la lista creada
-    resultados_solicitantes.append(resultado_tractores)
+    resultados_solicitantes = [resultado_tractores]
 
     # Agregar los resultados de los solicitantes a la lista
     for registro in registros_por_solicitante:
@@ -76,26 +81,31 @@ def datos_grafico(request, fecha, supervisor, turnos):
     for solicitante in todos_solicitantes:
         nombre_solicitante = f"{solicitante.idpersona.nombres} {solicitante.idpersona.apellidos}"
 
-    # Retornamos en Json
+    # Retornar en JSON
     return JsonResponse({
         'resultados_solicitantes': resultados_solicitantes
     })
 
+@login_required(login_url='login', redirect_field_name='')
 def datos_tabla(request, fecha, supervisor, turno):
+        # Definir el filtro para tractores
+    filtro_tractores = {}
+    filtro_programacion = {'fechahora': fecha, 'turno': turno}
+
+    if supervisor != 0:
+        filtro_tractores['idusuario'] = supervisor
+        filtro_programacion['idtractor__idusuario'] = supervisor
+
     # Obtener todos los tractores relacionados con el supervisor
-    tractores_usuario = Tractor.objects.filter(idusuario=supervisor)
+    tractores_usuario = Tractor.objects.filter(**filtro_tractores)
 
     # Obtener los fundos de tractores y contar cuántos tractores hay en cada fundo
     info_fundos = tractores_usuario.values('idfundo__fundo', 'idfundo').annotate(total_tractores=Count('idfundo'))
-    # print(info_fundos)
 
     # Obtener los tractores programados en la fecha y turno especificados en los fundos relacionados al usuario
-    tractores_programados = Programacion.objects.filter(
-        idtractor__idusuario=supervisor, 
-        fechahora=fecha, turno=turno
-        ).values('idtractor__idfundo__fundo').annotate(total_tractores_programados=Count('idtractor'))
+    tractores_programados = Programacion.objects.filter(**filtro_programacion).values('idtractor__idfundo__fundo').annotate(total_tractores_programados=Count('idtractor'))
 
-    # Colocamos la informacion en la lista
+    # Colocar la información en la lista
     resultado = []
     for fundo_info in info_fundos:
         fundo_nombre = fundo_info['idfundo__fundo']
@@ -112,32 +122,38 @@ def datos_tabla(request, fecha, supervisor, turno):
         })
 
     return JsonResponse({'tabla_tractor': resultado})
-    
+
+@login_required(login_url='login', redirect_field_name='')
 def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
+    # Definir los filtros comunes
+    filtro_tractores = {'idfundo': idfundo}
+    filtro_programacion = {
+        'fechahora': fecha,
+        'turno': turno,
+        'idtractor__idfundo_id': idfundo
+    }
+    filtro_detprogramaciones = {
+        'idprogramacion__fechahora': fecha,
+        'idprogramacion__turno': turno,
+        'idprogramacion__idfundo_id': idfundo
+    }
+
+    if supervisor != 0:
+        filtro_tractores['idusuario'] = supervisor
+        filtro_programacion['idtractor__idusuario'] = supervisor
+        filtro_detprogramaciones['idprogramacion__idtractor__idusuario_id'] = supervisor
+
     # Tractores no Asignados
-    tractores_sin_programacion = list(Tractor.objects.filter(
-        idusuario=supervisor,
-        idfundo=idfundo
-    ).exclude(
-        idtractor__in=Subquery(Programacion.objects.filter(
-            fechahora=fecha,
-            turno=turno,
-            idtractor__idusuario=supervisor,
-            idtractor__idfundo_id=idfundo
-        ).values('idtractor'))
+    tractores_sin_programacion = list(Tractor.objects.filter(**filtro_tractores).exclude(
+        idtractor__in=Subquery(Programacion.objects.filter(**filtro_programacion).values('idtractor'))
     ).values('nrotractor'))
 
-    # Obtenemos la informacion de los tractores que tuvieron una programacion
-    programaciones = Programacion.objects.filter(
-        fechahora=fecha,
-        turno=turno,
-        idtractor__idusuario=supervisor,
-        idtractor__idfundo_id=idfundo
-    ).annotate(
-        id_tractor = F('idtractor__idtractor'),
-        tractor = F('idtractor__nrotractor'),
-        labor = F('idtipolabor__tipolabor'),
-        solicitante= Concat(F('idsolicitante__idpersona__nombres'),Value(' '), F('idsolicitante__idpersona__apellidos'))
+    # Obtener la información de los tractores que tuvieron una programación
+    programaciones = Programacion.objects.filter(**filtro_programacion).annotate(
+        id_tractor=F('idtractor__idtractor'),
+        tractor=F('idtractor__nrotractor'),
+        labor=F('idtipolabor__tipolabor'),
+        solicitante=Concat(F('idsolicitante__idpersona__nombres'), Value(' '), F('idsolicitante__idpersona__apellidos'))
     ).values(
         'id_tractor',
         'idprogramacion',
@@ -145,6 +161,7 @@ def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
         'labor',
         'solicitante'
     )
+
     # Recorremos las programaciones para obtener los implementos utilizados por cada programación
     programaciones_list = []
     for programacion in programaciones:
@@ -155,24 +172,18 @@ def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
 
         # Obtenemos los implementos utilizados
         detprogramaciones = DetalleLabor.objects.filter(
-            idprogramacion__fechahora= fecha,
-            idprogramacion__turno= turno,
-            idprogramacion = id_programacion,
-            idprogramacion__idtractor__idusuario_id = supervisor,
-            idprogramacion__idtractor__idfundo_id = idfundo
+            idprogramacion=id_programacion,
+            **filtro_detprogramaciones
         ).annotate(
-            implemento = F('idimplemento__implemento'),
-            id_implemento = F('idimplemento__idimplemento'),
-        ).values(       
+            implemento=F('idimplemento__implemento'),
+            id_implemento=F('idimplemento__idimplemento')
+        ).values(
             'id_implemento',
-            'implemento',
+            'implemento'
         )
+
         # Creamos una lista de los implementos
-        datos_implementos=[]
-        for detalle in detprogramaciones:
-            implemento = detalle['implemento']
-            dato_implemento= {'implemento': implemento}
-            datos_implementos.append(dato_implemento)
+        datos_implementos = [{'implemento': detalle['implemento']} for detalle in detprogramaciones]
 
         # Añadimos los datos
         datos = {
@@ -180,12 +191,11 @@ def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
             'tractor': tractor,
             'labor': labor,
             'solicitante': solicitante,
-            'implementos':datos_implementos
-        } 
-        programaciones_list.append(datos)  
-    # print(programaciones_list)
+            'implementos': datos_implementos
+        }
+        programaciones_list.append(datos)
 
-    return JsonResponse({'programaciones':programaciones_list, 'tractores_sin_programacion': tractores_sin_programacion})
+    return JsonResponse({'programaciones': programaciones_list, 'tractores_sin_programacion': tractores_sin_programacion})
 
 @login_required(login_url='login', redirect_field_name='home')
 def test(request):

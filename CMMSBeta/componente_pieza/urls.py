@@ -1,11 +1,11 @@
 from django.urls import path, include
 # Importará las vistas de la app donde te encuentres
-from .viewss import componentes
-from .viewss import sistema
-from .viewss import piezas
-from .viewss import configuracion
-from .viewss import det_conponente
-from .viewss import detalle_cong
+from .views import componentes
+from .views import sistema
+from .views import piezas
+from .views import configuracion
+from .views import det_conponente
+from .views import detalle_cong
 
 urlpatterns = [
   path('', componentes.componente, name="componente"),
@@ -33,9 +33,7 @@ urlpatterns = [
   path('pieza/modificar/<int:id_pieza>', piezas.editarPieza, name="modificar_pieza"),
 
   path('det_componente/registrar', det_conponente.registrarDetalleComponente, name="det_componente_registro"),
-
   path('configuracion/registrar', configuracion.registrarConfiguracion, name="registrar_configuracion"),
-
   path('detalle_cong/registrar', detalle_cong.registrarDetalleConfiguracion, name="detalle_cong_registro"),
 
 

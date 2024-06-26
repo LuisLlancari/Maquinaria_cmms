@@ -34,6 +34,20 @@
   {% endfor %}
 
 {% endif %}
+
+<div class="row">
+  <div class="col col-md-4">
+    <label for="" class="form-label">Tipo mantenimiento</label>
+    <select name="" id="tipo-mantenimiento" class="form-select">
+      <option value="">--------</option>
+      <option value="0">Correctivo</option>
+      <option value="1">Preventivo</option>
+    </select>
+  </div>
+  <div class="col col-md-4"></div>
+  <div class="col col-md-4"></div>
+</div>
+
 <table class="table table-striped table-sm table-bordered text-center table-responsive mt-3" id="tabla-implemento">
   <thead class="thead-dark">
     <tr class="table-dark">
@@ -50,7 +64,7 @@
   </thead>
   <tbody>
     {% for dato in datos %}
-    <tr>
+    <tr data-tipo="{{ dato.tipomantenimiento }}">
       <td>{{dato.idimplemento.implemento}}</td>
       <td>{{dato.idimplemento.idtipoimplemento.tipoimplemento}}</td>
       <td>{{dato.idimplemento.codimplemento}}</td>
@@ -404,6 +418,25 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const reporte = document.getElementById('reporte')
+  const selectTipoMantenimiento = document.getElementById('tipo-mantenimiento');
+  const filasTabla = document.querySelectorAll('#tabla-implemento tbody tr');
+
+  // filtro
+
+  selectTipoMantenimiento.addEventListener('change', function() {
+    const tipoMantenimientoSeleccionado = this.value;
+    
+
+    filasTabla.forEach(fila => {
+      const tipoMantenimientoFila = fila.getAttribute('data-tipo');
+      
+      if (tipoMantenimientoSeleccionado === "" || tipoMantenimientoSeleccionado === tipoMantenimientoFila) {
+        fila.style.display = '';
+      } else {
+        fila.style.display = 'none';
+      }
+    });
+  });
 
   function detalle_mantenimiento(id) {
       fetch(`./programacion/datos_mantenimiento/${id}`)

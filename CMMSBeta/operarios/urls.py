@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .viewss import solicitante, tipos_solicitante, tractorista 
+from .views import solicitante, tipos_solicitante, tractorista, encargado
 
 urlpatterns = [
   path('solicitante',solicitante.solicitante, name='solicitante'),
@@ -22,5 +22,11 @@ urlpatterns = [
   path('tractorista/eliminar/<int:id_tractorista>', tractorista.eliminarTractorista, name="tractorista_eliminar"),
   path('tractorista/obtener/<int:id_tractorista>', tractorista.obtenerDatos, name="obtener_tractorista"),
   path('tractorista/modificar/<int:id_tractorista>', tractorista.editarTractoristas, name="modificar_tractorista"),
+
+  path('encargado', encargado.responsable, name='responsable'),
+  path('encargado/registrar_responsable',encargado.registrar_responsable, name='registrar_responsable'),
+  path('encargado/editar_responsable/<int:id_encargado>',encargado.editar_responsable, name='editar_responsable'),
+  path('encargado/eliminar_responsable/<int:id_encargado>', encargado.eliminar_responsable, name='eliminar_responsable'),
+  path('encargado/obtener/<int:id_encargado>', encargado.obtenerDatos, name='obtener_encargado'),
 
 ]

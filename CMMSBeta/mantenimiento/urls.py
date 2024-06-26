@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import mantenimiento_proceso, programacion, mantenimiento_inicio, mantenimientos_realizado
+from .views import mantenimiento_proceso, programacion, mantenimiento_inicio, mantenimientos_realizado, tareas
 
 urlpatterns = [
   path('programacion', programacion.programacion_mantenimiento, name= "programacion_mantenimiento" ),
@@ -24,6 +24,11 @@ urlpatterns = [
   path('realizado/detalle_mantenimiento/<int:id_mantenimiento>', mantenimientos_realizado.detalle_mantenimiento, name= "obtener_detallemantenimiento" ),
   path('realizados/reporte_mantenimiento/<int:id_mantenimiento>', mantenimientos_realizado.reporte_mantenimiento, name= "reporte_mantenimiento" ),
 
+  path('tareas', tareas.tareas, name= "tareas" ),
+  path('tareas/registrar', tareas.registrar_tareas, name= "registrar_tareas" ),
+  path('tareas/editar/<int:id_tarea>', tareas.editar_tareas, name= "editar_tareas" ),
+  path('tareas/eliminar/<int:id_tarea>', tareas.eliminar_tareas, name= "eliminar_tareas" ),
+  path('tareas/obtener/<int:id_tarea>', tareas.obtenerDatos, name= "datos_tareas" ),
 
 
 ]
