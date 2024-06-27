@@ -181,7 +181,7 @@ def reporte_mantenimiento(request, id_programacion):
   context = {'titulo': 'Primer Pdf', 'mantenimiento':mantenimiento, 'tareas': tareas, 'recambios':recambios}
   html = template.render(context)
   response = HttpResponse(content_type='application/pdf')
-  response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+#   response['Content-Disposition'] = 'attachment; filename="report.pdf"'
 
   # crear pdf
   pisa_status = pisa.CreatePDF(
