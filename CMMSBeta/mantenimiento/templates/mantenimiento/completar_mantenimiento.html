@@ -110,6 +110,12 @@
     const btnAgregarRecambio = document.getElementById('agregarRecambio');
     const searchInput = document.getElementById('searchInput');
     const resultList = document.getElementById('resultList');
+    const salida = document.getElementById('fecha-salida');
+    const today = new Date().toISOString().split('T')[0];
+    
+    salida.setAttribute('min', today);
+
+
     let currentIndex = -1;
     
     var CSRF_TOKEN = '{{ csrf_token }}';

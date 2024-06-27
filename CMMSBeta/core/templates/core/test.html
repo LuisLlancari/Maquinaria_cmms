@@ -6,7 +6,7 @@
 
 {% load static %}
 
-<div class="container">
+<div class="m-3">
   <h1 class="text-center">Programaciones</h1>
 
   <div class="row mt-3">
@@ -57,6 +57,7 @@
             <th class="text-center" scope="col">Labor</th>
             <th class="text-center" scope="col">Solicitante</th>
             <th class="text-center" scope="col">Supervisor</th>
+            <th class="text-center" scope="col">Estado</th>
           </tr>
         </thead>
   
@@ -75,19 +76,27 @@
                   </td>
                   <td class="text-center">
                       {{ data.idprogramacion.fechahora|date:"d-m-Y"}}
-                      {% if data.idprogramacion.turno == 'M' %}
-                        <i class="bi bi-brightness-high-fill text-warning fs-4"></i>
-                      {% elif data.idprogramacion.turno == 'T' %}
-                        <i class="lni lni-cloudy-sun text-secondary fs-5"></i>
-                      {% elif data.idprogramacion.turno == 'N' %}
-                        <i class="bi bi-moon-stars-fill text-primary fs-5"></i>
-                      {% endif %}
                   </td>
-                  <td class="text-center">{{ data.idprogramacion.turno }}</td>
-                  <td class="text-center">{{ data.idprogramacion.idlote }}</td>
+                  {% if data.idprogramacion.turno == 'M' %}
+                  <td class="text-center">Mañana</td>
+                  {% elif data.idprogramacion.turno == 'T' %}
+                  <td class="text-center">Tarde</td>
+                  {% elif data.idprogramacion.turno == 'N' %}
+                  <td class="text-center">Noche</td>
+                  {% endif %}
+                  <td class="text-center">
+                    {{ data.idprogramacion.idlote.idfundo }}
+                      -
+                    {{ data.idprogramacion.idlote }}
+                  </td>
                   <td class="text-center">{{ data.idprogramacion.idtipolabor }}</td>
                   <td class="text-center">{{ data.idprogramacion.idsolicitante }}</td>
                   <td class="text-center">{{ data.idprogramacion.idusuario }}</td>
+                  {% if data.idprogramacion.estado == True%}
+                  <td class="text-center">Pendiente</td>
+                  {% elif data.idprogramacion.estado == False %}
+                  <td class="text-center">Finalizado</td>
+                  {% endif %}
               </tr>
               {% endwith %}
           {% endfor %}
@@ -99,7 +108,6 @@
   </div>
 
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
 
 <script>
@@ -147,9 +155,6 @@
               visiblesFilas++;
           }else {
                 row.style.display = 'none';
-                //visiblesFilas++
-                //no_coincidencia.innerHTML = "";
-                //no_coincidencia.innerHTML = "No se encontraron registros";
           }
         });
 
@@ -194,49 +199,9 @@
         XLSX.writeFile(wb, `PROGRAMACIONES-${num}.xlsx`);
     }
 
-    /* function exportToPDF() {
-        var rows = document.querySelectorAll('tbody tr');
-        var headers = document.querySelectorAll('thead th');
-        var doc = new jsPDF();
-        
-        // Obtener las cabeceras
-        var headerRow = [];
-        headers.forEach(function (header) {
-            headerRow.push(header.innerText);
-        });
-
-        // Obtener datos de las filas visibles
-        var data = [];
-        rows.forEach(function (row) {
-            if (row.style.display !== 'none') {
-                var rowData = [];
-                row.querySelectorAll('td').forEach(function (cell) {
-                    rowData.push(cell.innerText);
-                });
-                data.push(rowData);
-            }
-        });
-
-        // Generar la tabla en el PDF
-        doc.autoTable({
-            head: [headerRow],
-            body: data,
-            theme: 'grid' // Opcional: puedes cambiar el tema de la tabla según lo necesites
-        });
-
-        // Guardar el archivo como PDF
-        doc.save('datos.pdf');
-    }*/
-
-
-
     document.getElementById('exportToExcel').addEventListener('click', function () {
       exportToExcel();
     });
-
-    // document.getElementById('exportToPDF').addEventListener('click', function () {
-    //   exportToPDF();
-    // });
 
   });
 
