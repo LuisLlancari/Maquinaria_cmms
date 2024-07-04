@@ -1,20 +1,40 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from ..models import Componente
-from ..forms import ComponenteForms
+from ..forms import ComponenteForms, DetalleComponenteForms
 from django.http import JsonResponse
+from ..models import DetalleComponente, Pieza
 
 #Manejo de errores
 from django.contrib import messages
 
 def componente(request):
   datos_componente = Componente.objects.filter(estado =True)
-  return render(request, 'componente_pieza/componente.html',{'datos_componente':datos_componente, 'form':ComponenteForms})
+  return render(request, 'componente_pieza/componente.html',{'datos_componente':datos_componente, 'form':ComponenteForms, 'det':DetalleComponenteForms})
 
 def registrarComponente(request):
   if request.method == 'POST':
       form = ComponenteForms(request.POST)
+      piezas = request.POST.getlist('idpieza')
+      cantidades = request.POST.getlist('cantidad')
       if form.is_valid():  # Verifica si los datos son válidos
-          form.save()
+        componente = form.save()
+        idcomponente = componente.idcomponente
+
+        for idpieza, cantidad in zip(piezas, cantidades):
+          if DetalleComponente.objects.filter(idcomponente_id=idcomponente, idpieza_id=idpieza).exists():
+            dato = Pieza.objects.get(pk=idpieza) 
+            messages.error(
+                request,
+                f'La pieza {dato.pieza} ya se encuentra registrada	.',
+                extra_tags='danger'
+            )           
+          else:
+            DetalleComponente.objects.create(
+                idcomponente_id=idcomponente,
+                idpieza_id=idpieza,
+                cantidad=cantidad
+            )
+
           messages.success(request, 'Componente registrado con exito', extra_tags='success')
           return redirect('componente')
   else:
