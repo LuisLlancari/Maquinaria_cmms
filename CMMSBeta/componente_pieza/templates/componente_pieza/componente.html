@@ -20,7 +20,7 @@
     </div>
     <div class="col-md-3 mb-3">
         {% if user.idrol.rol != "Gerencia" %}
-        <button type="button" class="btn btn-primary" id="registrar-componente" data-bs-toggle="modal" data-bs-target="#modal-componente">Agregar Componente</button>
+        <button type="button" class="btn btn-success" id="registrar-componente" data-bs-toggle="modal" data-bs-target="#modal-componente">Agregar Componente</button>
         {% endif %}
     </div>
 </div>
@@ -42,6 +42,7 @@
             <th scope="col">Codigo Componente</th>
             <th scope="col">Tiempo vida</th>
             <th scope="col">Frecuencia de mantenimiento</th>
+            <th scope="col">Piezas Asignadas</th>
             {% if user.idrol.rol != "Gerencia" %}
             <th scope="col">Operaciones</th>
             {% endif %}
@@ -54,14 +55,20 @@
         <td>{{dato.codcomponente}}</td>
         <td>{{dato.tiempovida}}</td>
         <td>{{dato.frecuencia_man}}</td>
+        <td>
+            <button class="btn btn-primary piezas d-inline-block" id ="editar-sistema" data-id="{{dato.idcomponente}}" data-bs-toggle="modal" data-bs-target="#modal-piezas">
+                <i class="lni lni-eye"></i>
+            </button>
+        </td>
+
         {% if user.idrol.rol != "Gerencia" %}
-            <td>
-                <button class="btn btn-warning editar d-inline-block" id ="editar-sistema" data-id="{{dato.idcomponente}}" data-bs-toggle="modal" data-bs-target="#modal-componente"><i class="lni lni-pencil editar"></i></button>
-                <form action="{% url 'eliminar_componente' dato.idcomponente %}" id="form-{{ dato.idcomponente }}" class="d-inline-block" method="POST">
-                    {% csrf_token %}
-                    <button class="btn btn-danger eliminar" data-registro="{{ dato.componente }}" data-id="{{ dato.idcomponente }}"><i class="lni lni-trash-can eliminar"></i></button>
-                </form>
-            </td>
+        <td>
+            <button class="btn btn-warning editar d-inline-block" id ="editar-sistema" data-id="{{dato.idcomponente}}" data-bs-toggle="modal" data-bs-target="#modal-componente"><i class="lni lni-pencil editar"></i></button>
+            <form action="{% url 'eliminar_componente' dato.idcomponente %}" id="form-{{ dato.idcomponente }}" class="d-inline-block" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-danger eliminar" data-registro="{{ dato.componente }}" data-id="{{ dato.idcomponente }}"><i class="lni lni-trash-can eliminar"></i></button>
+            </form>
+        </td>
         {% endif %}
         
      </tr>
@@ -137,6 +144,31 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-piezas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal">
+                    Piezas Asignadas
+                </h1>
+            </div>
+                <form autocomplete="off" id="form-modal">
+                    <div class="modal-body">
+                        {% csrf_token %}    
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
@@ -154,7 +186,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorMessage = document.getElementById('error-message');
     const addPieceButton = document.querySelector('.add-piece');
 
-
+    var piezas = document.querySelectorAll('.piezas');
+    piezas.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var idcomponente = this.dataset.id;
+            fetch().
+            then().
+            then().
+            catch((error) => {console.log(error)})
+        });
+    });
         
     function obtener_componentes(id){
     fetch(`./obtener/${id}`)
@@ -218,27 +259,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     setTimeout(function() {
-            var mensaje = document.getElementById('mensaje');
-            if (mensaje) {
-                mensaje.style.display = 'none';
-            }
-        }, 3000);
-    
-        btnEliminar.forEach(function(boton) {
-        boton.addEventListener("click", function(event) {
-          event.preventDefault();
-          let componente = event.currentTarget.dataset.registro;
-          let formId = event.currentTarget.dataset.id;
-          PreguntarEliminar(componente, function() {
-              document.getElementById('form-' + formId).submit();
-          });
-        });
-      });
+        var mensaje = document.getElementById('mensaje');
+        if (mensaje) {
+            mensaje.style.display = 'none';
+        }
+    }, 3000);
 
-      btnGuardar.addEventListener("click", function(event) {
+    btnEliminar.forEach(function(boton) {
+        boton.addEventListener("click", function(event) {
+        event.preventDefault();
+        let componente = event.currentTarget.dataset.registro;
+        let formId = event.currentTarget.dataset.id;
+            PreguntarEliminar(componente, function() {
+                document.getElementById('form-' + formId).submit();
+            });
+        });
+    });
+
+    btnGuardar.addEventListener("click", function(event) {
         event.preventDefault();
         PreguntarGuardar(function(){formModal.submit();});
-       });
+    });
 
 });
 

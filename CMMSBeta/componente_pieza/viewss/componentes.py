@@ -64,3 +64,11 @@ def obtenerDatos(request, id_componente):
   else:
     data = {'mensaje':"Not found"}
   return JsonResponse(data)
+
+def obtenerPiezas(request, id_componente):
+  piezas = list(DetalleComponente.objects.filter(idcomponente_id=id_componente).values())
+  if(len(piezas) > 0):
+    data = {'mensaje': "Success", 'piezas': piezas}
+  else:
+    data = {'mensaje':"Not found"}
+  return JsonResponse(data)
