@@ -200,8 +200,6 @@ def test(request):
         pk=Subquery(subquery.values('pk'))
     ).order_by('-idprogramacion__fechahora')
 
-    print(detalles_unicos)
-
     lista_implementos = Implemento.objects.all()
     lista_supervisor = Usuario.objects.filter(idrol = 3, is_active = 1)
 

@@ -88,7 +88,7 @@
         <!--Mantenimiento correctivo-->
         {% if dato.tipomantenimiento == 0 %}
         <td>
-          <form action="{% url 'eliminar_programacion' dato.idprogramacionmantenimiento%}" class="d-inline-block w-100" method="POST">
+          <form action="{% url 'eliminar_programacion_mantenimiento' dato.idprogramacionmantenimiento%}" class="d-inline-block w-100" method="POST">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger btn-md w-100"><strong>Eliminar</strong></button>
           </form> 

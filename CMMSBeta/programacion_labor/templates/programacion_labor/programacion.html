@@ -121,25 +121,28 @@
                     </td>
                     {% endif %}
                     <!--FIN DE LA CONFIRMACION-->
+
+                    <!-- IMPLEMENTOS MIOS-->
                     {% if det.idimplemento.idusuario.id != user.id %}
-                        <td class="text-center bg-warning"> 
-                            {% for detalle in det.idprogramacion.detallelabor_set.all %}
-                                <strong>
-                                {{ detalle.idimplemento.implemento }}
-                                    {% if not forloop.last %}, {% endif %}
-                                </strong>  
-                            {% endfor %}
-                        </td>
-                        {% else %}
-                        <td class="text-center">
-                            {% for detalle in det.idprogramacion.detallelabor_set.all %}
-                                <strong>
-                                {{ detalle.idimplemento.implemento }}
-                                    {% if not forloop.last %}, {% endif %}
-                                </strong>
-                            {% endfor %}
-                        </td>
+                    <td class="text-center bg-warning"> 
+                        {% for detalle in det.idprogramacion.detallelabor_set.all %}
+                            <strong>
+                            {{ detalle.idimplemento.implemento }}
+                                {% if not forloop.last %}, {% endif %}
+                            </strong>  
+                        {% endfor %}
+                    </td>
+                    {% else %}
+                    <td class="text-center">
+                        {% for detalle in det.idprogramacion.detallelabor_set.all %}
+                            <strong>
+                            {{ detalle.idimplemento.implemento }}
+                                {% if not forloop.last %}, {% endif %}
+                            </strong>
+                        {% endfor %}
+                    </td>
                     {% endif %}
+
                     <td>
                         {% if det.idprogramacion.estado == 1 %}
                             <form action="{% url 'eliminar_programacion' det.idprogramacion.idprogramacion %}" class="d-inline-block" method="POST">
