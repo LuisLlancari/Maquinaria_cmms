@@ -36,6 +36,8 @@ urlpatterns = [
   path('det_componente/registrar', det_conponente.registrarDetalleComponente, name="det_componente_registro"),
 
   path('configuracion/registrar', configuracion.registrarConfiguracion, name="registrar_configuracion"),
+  path('configuracion/obtener/<int:id_configuracion>', configuracion.obtener, name="obtener"),
+  path('configuracion/eliminar/<int:id_configuracion>', configuracion.eliminarConfiguracion, name="eliminar_configuracion"),
 
   path('detalle_cong/registrar', detalle_cong.registrarDetalleConfiguracion, name="detalle_cong_registro"),
 

@@ -34,6 +34,7 @@
         <tr>
             <th scope="col">N°</th>
             <th scope="col">Nombre de la configuracion</th>
+            <th scope="col">Componentes Asignados</th>
             {% if user.idrol.rol != "Gerencia" %}
             <th scope="col">Operaciones</th>
             {% endif %}
@@ -44,14 +45,18 @@
      <tr>
         <td>{{forloop.counter}}</td>
         <td>{{dato.nombre_configuracion}}</td>
+        <td>
+            <button class="btn btn-primary componente d-inline-block" id ="editar-sistema" data-id="{{dato.idconfiguraciontipoimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-componente">
+                <i class="lni lni-eye"></i>
+            </button>
+        </td>
         {% if user.idrol.rol != "Gerencia" %}
-            <td>
-                <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-sistema" data-id="{{dato.idsistema}}" data-bs-toggle="modal" data-bs-target="#modal-sistema "><i class="lni lni-pencil editar"></i></button>
-                <form action="" id="form-{{ dato.nombre_configuracion }}" class="d-inline-block" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
-                </form>
-            </td>
+        <td>
+            <form action="{% url 'eliminar_configuracion' dato.idconfiguraciontipoimplemento %}" id="form-{{ dato.nombre_configuracion }}" class="d-inline-block" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+            </form>
+        </td>
         {% endif %}
      </tr>
     {% endfor %}
@@ -69,6 +74,25 @@
                         
                             {% csrf_token %}
                             {{form}}
+                            <hr>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <strong class="mb-0">Seleccione los componentes</strong>
+                            <button type="button" class="btn btn-primary add-piece">Agregar</button>
+                        </div>
+
+                        <div id="contenedor-pieza" class="container mt-4">
+                            <div class="container piece">
+                                <div class="row">
+                                    <div class="col-md-8 mt-4">
+                                        {{ comp.idcomponente }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-danger remove-piece mt-4">Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span id="error-message" class="text-danger d-none">El mínimo de contenedores es uno.</span>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id="agregar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
@@ -79,4 +103,105 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-componente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center">
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal">
+                    Piezas Asignadas
+                </h1>
+            </div>
+            <form autocomplete="off" id="form-modal">
+                <div class="modal-body">
+                    {% csrf_token %}
+                     <div class="container">
+                         <div class="row">
+                             <div class="col-6 text-center">
+                                 <h3 class="fw-bold">Codigo</h3>
+                             </div>
+                             <div class="col-6 text-center">
+                                 <h3 class="fw-bold">Componentes</h3>
+                             </div>
+                         </div>
+                         <hr>
+                         <div class="row mb-3 text-center" id="componentes">
+                             
+                         </div>
+                     </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const pieceContainer = document.getElementById('contenedor-pieza');
+        const errorMessage = document.getElementById('error-message');
+        const addPieceButton = document.querySelector('.add-piece');
+
+        var componentes = document.querySelectorAll('.componente');
+        var componentes_modal = document.getElementById('componentes');
+
+        componentes.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var idcong = this.dataset.id;
+                fetch(`./obtener/${idcong}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                        componentes_modal.innerHTML = '';
+                        if (data.mensaje == 'Success') {
+                            data.componentes.forEach(pieza => {
+                                componentes_modal.innerHTML += `
+                                    <div class="col-6">
+                                            <h5 class="fw-bold">${pieza.cod}</h5>
+                                    </div>
+                                    <div class="col-6">
+                                            <h5 class="fw-bold">${pieza.compo}</h5>
+                                    </div>
+                                    <hr>    
+                                `;
+                            })
+                        }
+                        else {
+                            componentes_modal.innerHTML = `
+                                <div class="col-12">
+                                        <h3 class="fw-bold">No hay componentes</h3>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+        });
+        
+    
+        function addPiece() {
+            const pieceClone = pieceContainer.querySelector('.piece').cloneNode(true);
+            pieceClone.querySelectorAll('select, input').forEach(input => {
+                input.value = '';
+            });
+            pieceClone.querySelector('.remove-piece').addEventListener('click', removePiece);
+            pieceContainer.appendChild(pieceClone);
+        }
+    
+        function removePiece(event) {
+            const pieces = pieceContainer.querySelectorAll('.piece');
+            if (pieces.length > 1) {
+                event.target.closest('.piece').remove();
+                errorMessage.classList.add('d-none');
+            } else {
+                errorMessage.classList.remove('d-none');
+            }
+        }
+    
+        addPieceButton.addEventListener('click', addPiece);
+    
+        document.querySelectorAll('.remove-piece').forEach(button => {
+            button.addEventListener('click', removePiece);
+        });
+    });
+</script>
 {% endblock %}

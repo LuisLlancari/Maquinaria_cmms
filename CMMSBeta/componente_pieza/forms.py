@@ -55,6 +55,9 @@ class ConfiguracionTipoImplementoForms(forms.ModelForm):
         }
 
 class DettaleConfiguracionForms(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['idcomponente'].queryset = Componente.objects.filter(estado=1)
     class Meta:
         model = DetalleConfiguracion
         fields = ['idconfiguracion', 'idcomponente']
