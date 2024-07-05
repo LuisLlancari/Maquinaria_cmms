@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import tipotractor, tractor, reportetractor
+from .views import tipotractor, tractor, reportetractor, tractorsupervisor as trcsup
 
 urlpatterns = [
     path('', reportetractor.reportetractor, name='reportetractor'),
@@ -19,4 +19,10 @@ urlpatterns = [
     path('eliminartractor/<int:idtractor>', tractor.eliminar_tractor, name='eliminartractor'), 
     path('registrar_tractor', tractor.registrar_tractor, name='registrar_tractor'), 
     path('editar_tractor', tractor.editar_tractor, name='editar_tractor'),  
+
+    path('asignar_supervisor', trcsup.tractorSupervisor, name="asignar_supervisor_tractor" ),
+    path('asignar_supervisor/registrar', trcsup.registrartractorSupervisor, name="asignar_supervisor_tractor_registrar" ),
+    path('asignar_supervisor/eliminar/<int:id_registro>', trcsup.eliminartractorSupervisor, name="asignar_supervisor_tractor_eliminar" ),
+    path('asignar_supervisor/fechasalida/<int:id_registro>', trcsup.registrarFechaSalidaSupervisor, name="asignar_supervisor_tractor_fecha_salida" ),
+
 ]

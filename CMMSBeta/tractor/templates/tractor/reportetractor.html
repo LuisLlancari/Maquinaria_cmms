@@ -37,6 +37,17 @@
 </div>
 
 <div class="container mt-3">
+    {% if messages %}
+        {% for message in messages %}
+        <div id="message" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            
+            {{ message }}
+            
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    
+    {% endif %}
     <div class="card-group m-3">
     {% for dato in datos %}
         <div class="card m-3 border rounded flex-fill" style="background-color: rgb(255, 255, 255);" data-fecha="{{ dato.fechahora|date:'Y-m-d' }}">
@@ -109,7 +120,13 @@
         const cards = document.querySelectorAll(".card");
         const selectUsuario = document.getElementById("selectusuario");
 
-        
+        setTimeout(function() {
+            var errorMessage = document.getElementById('message');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+        }, 3000);
+
         selectUsuario.addEventListener("change", function() {
             const usuarioSeleccionado = this.value;
             cards.forEach(card => {

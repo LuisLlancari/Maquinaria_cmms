@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from ..models import *  
 from ..forms import *
+from django.db.models import F
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.db.models import Max , Count, Subquery, OuterRef
@@ -31,7 +32,6 @@ def programacion(request):
 
         #Obtenemos el idusuario
         usuario_id = request.user.id
-        print(usuario_id)
 
         #tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
         #tractor = Tractor.objects.filter(estado = True, estado_actividad = True)
@@ -90,19 +90,20 @@ def registrar_programacion(request):
 
                 # Obtener los implementos seleccionados del formulario
                 implementos_seleccionados = request.POST.getlist('idimplemento')
+                print("implementos:")
                 print(implementos_seleccionados)
 
                 # Crear un detalle de labor para cada implemento seleccionado
                 for implemento_id in implementos_seleccionados:
                     if DetalleLabor.objects.filter(idprogramacion=programacion, idimplemento_id=implemento_id).exists():
-                        implemento = Implemento.objects.get(pk=implemento_id)
+                        implemento = ImplementoSupervisor.objects.get(pk=implemento_id)
                         messages.error(
                             request,
-                            f'El implemento {implemento.implemento} ya se encuentra registrado en esta programación.',
+                            f'El implemento {implemento.idimplemento.implemento} ya se encuentra registrado en esta programación.',
                             extra_tags='danger'
                         )
                     else:
-                        implemento = Implemento.objects.get(pk=implemento_id)
+                        implemento = ImplementoSupervisor.objects.get(pk=implemento_id)
                         DetalleLabor.objects.create(idprogramacion=programacion, idimplemento=implemento, horadeuso=0)
 
 
@@ -115,7 +116,7 @@ def registrar_programacion(request):
                 messages.error(request, f"Error al registrar la programación: {e}", extra_tags='danger')
                 return redirect('programacion')
         else:
-            print(form.errors)
+            # print(form.errors)
             messages.error(request, f"Errores en el formulario: {form.errors}", extra_tags='danger')
             return redirect('programacion')
 
@@ -160,13 +161,28 @@ def obtener_select(request, fecha, turno):
 
     # Excluir los todo lo ingresado con los ids obtenidos
     tractoristas = Tractorista.objects.filter(estado = True).exclude(idtractorista__in=list_tractorista)
-    tractores = Tractor.objects.filter(estado = True).exclude(idtractor__in=list_tractores)
+    # Tractores
+    tractores = Tractor.objects.filter(estado = True).exclude(idtractor__in=list_tractores).values()
+    tractores2 = TractorSupervisor.objects.filter(estado = True).exclude(idtractorsupervisor__in=list_tractores).annotate(
+        idusuario =F('idsupervisor'),
+        idusuario_id =F('idsupervisor__idusuario'),
+        idfundo =F('idtractor__idfundo'),
+        nrotractor = F('idtractor__nrotractor')
+    ).values('idusuario', 'idusuario_id', 'idtractor', 'nrotractor', 'idfundo', 'idtractorsupervisor')
+    # Implementos
     implementos = Implemento.objects.filter(estado = True, estado_actividad = 1).exclude(idimplemento__in=list_implementos)
+    implementos2 = list(Implemento.objects.filter(estado = True, estado_actividad = 1).exclude(idimplemento__in=list_implementos))
+  
+    implementos3 = ImplementoSupervisor.objects.filter(estado =True, idimplemento__estado_actividad = 1).annotate(
+        implemento = F('idimplemento__implemento'),
+        idusuario = F('idsupervisor'),
+        idusuario_id = F('idsupervisor__idusuario'),
+    ).exclude(idimplementosupervisor__in=list_implementos).values('idimplemento','implemento','idusuario','idusuario_id','idimplementosupervisor')
 
     # Preparar los datos para la respuesta JSON
     datos_tractoristas = list(tractoristas.values('idtractorista', 'idusuario_id', 'idpersona_id__nombres', 'idpersona_id__apellidos'))  # Convierte los QuerySets a una lista de diccionarios
-    datos_tractores = list(tractores.values())
-    datos_implementos = list(implementos.values('idimplemento', 'idusuario_id', 'implemento'))
+    datos_tractores = list(tractores2.values('idusuario', 'idusuario_id', 'idtractor', 'nrotractor', 'idfundo', 'idtractorsupervisor'))
+    datos_implementos = list(implementos3.values('idimplemento', 'idusuario_id', 'implemento','idimplementosupervisor'))
 
     data = {
         'mensaje': "Success" if datos_tractoristas or datos_tractores else "Not found",

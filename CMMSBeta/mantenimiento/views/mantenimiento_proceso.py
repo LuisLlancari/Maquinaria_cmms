@@ -14,10 +14,10 @@ def datos_mantenimiento(request):
   mantenimiento = list(Mantenimiento.objects.filter(fechaingreso__isnull=False, fechasalida__isnull=True, estado = 1).annotate(
     fecha_programada = F('idprogramacionmantenimiento__fechaprogramacion'),
     tipomantenimiento = F('idprogramacionmantenimiento__tipomantenimiento'),
-    implemento = F('idprogramacionmantenimiento__idimplemento__implemento'),
-    cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
+    implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__implemento'),
+    cod_implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__codimplemento'),
     idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
-    idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
+    idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__idimplemento'),
     nombres = F('idencargado__idpersona__nombres'),
     apellidos = F('idencargado__idpersona__nombres')
   ).values(
@@ -151,9 +151,9 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
     ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 2)
     # activamos el implemento 
-    implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
-    frecuencia_mantenimiento =mantenimiento.idprogramacionmantenimiento.idimplemento.idtipoimplemento.frecuencia_man
-    proximo_mantenimiento = mantenimiento.idprogramacionmantenimiento.idimplemento.proximo_mantenimiento
+    implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.idimplemento
+    frecuencia_mantenimiento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.idtipoimplemento.frecuencia_man
+    proximo_mantenimiento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.proximo_mantenimiento
     nuevo_mantenimiento = proximo_mantenimiento + frecuencia_mantenimiento
     
     Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 1, proximo_mantenimiento = nuevo_mantenimiento ) 

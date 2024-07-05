@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, pre_save
 from django.shortcuts import get_object_or_404
 from django.dispatch import receiver
 from django.db.models import F
-from .models import Implemento, DetImplementos
+from .models import Implemento, DetImplementos, ImplementoSupervisor
 from mantenimiento.models import Mantenimiento, ProgramacionMantenimiento 
 from componente_pieza.models import DetalleComponente, DetalleConfiguracion, Componente, Pieza
 
@@ -50,10 +50,12 @@ def creacionDetalleImplemento(sender, instance, created, **kwargs):
 def creacion_programacion(FM, HU, proximo_mantenimiento, id_implemento):
     if FM is None or HU is None:
         return 0, 0
-    print("Lloego")
+    print("Llego")
     horas_antes = proximo_mantenimiento - 50
+    # Obtenemos el implemento ligado al usuario
+    implemento = get_object_or_404(ImplementoSupervisor, estado=True, idimplemento = id_implemento)
     if HU >= horas_antes:
-        ProgramacionMantenimiento.objects.create(idimplemento_id = id_implemento, tipomantenimiento = 1)
+        ProgramacionMantenimiento.objects.create(idimplemento = implemento, tipomantenimiento = 1)
 
 
 @receiver(pre_save, sender=Implemento)

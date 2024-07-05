@@ -1,0 +1,192 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}Asignar Supervisor{% endblock%}
+
+{% block contenido %}
+{% load static %}
+
+    <h1 class="text-center mb-2">Asignar Supervisor</h1>
+    <div class="row mt-4">
+        <div class="col md-3 mb-3">
+        </div>
+        <div class="col-md-3 mb-3">
+
+        </div>
+        <div class="col-md-3 mb-3">
+            <button type="button" class="btn btn-primary" id="asiganar-supervisor" data-bs-toggle="modal" data-bs-target="#modal-asignar">Asignar supervisor</button>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div id="mensaje" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <strong>{{ message }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>                
+                </div>
+            {% endfor %}
+        {% endif %}
+      <div class="table-responsive">
+          <table class="table table-striped table-sm table-bordered mt-3 text-center" id="tabla-implemento">
+              <thead class="table-dark text-center">
+                  <tr>
+                      <th scope="col">Implemento</th>
+                      <th scope="col">Supervisor</th>
+                      <th scope="col">Fecha inicio</th>
+                      <th scope="col">Fecha fin</th>
+                      <th scope="col">Operaciones</th>
+                  </tr>
+              </thead>
+              <tbody>
+              {% for dato in datos %}
+              <tr>
+                  <td>{{dato.idimplemento.implemento}}</td>
+                  <td>{{dato.idsupervisor.first_name}} {{dato.idsupervisor.last_name}}</td>
+                  <td>{{dato.fechaInicio}}</td>
+                  <td>{{dato.fechaFin}}</td>
+                  <td>
+                      <button class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplementosupervisor}}" data-bs-toggle="modal" data-bs-target="#modal-finalizar"><i class="lni lni-pencil editar"></i></button>
+                      <form action="{% url 'asignar_supervisor_eliminar' dato.idimplementosupervisor %}" id="form-{{ dato.idimplementosupervisor }}" class="d-inline-block" method="POST">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger flex-fill eliminar" data-id="{{ dato.idimplementosupervisor }}">
+                              <i class="lni lni-trash-can eliminar"></i>
+                          </button>
+                      </form>
+                  </td>
+              </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+      </div>
+    </div>
+
+<div class="modal fade" id="modal-asignar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+      <div class="modal-content">
+          <div class="modal-header bg-primary justify-content-center" >
+              <h1 class="modal-title fs-5 text-light" id="titulo-modal">Asignar Supervisor</h1>
+          </div>
+          <form autocomplete="off" id="form-modal" >
+              <div class="modal-body">
+                  {% csrf_token %}
+                  <div class="row mt-2 mb-3">
+                    <div class="col col-md-12 mb-3">
+                      <label for="txtImplemento" class="form-label">Implemento</label>
+                      {{form.idimplemento}}
+                    </div>
+
+                    <div class="col col-md-12 mb-3">
+                      <label for="txtSupervisor" class="form-label">Supervisor</label>
+                      {{form.idsupervisor}}
+                    </div>
+
+                    <div class="col col-md-12 mb-3">
+                      <label for="txtFechainicio" class="form-label">Fecha Inicio</label>
+                      {{form.fechaInicio}}
+                    </div>
+                  </div>
+              </div>
+
+              <div class="modal-footer">
+                  <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                  <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-finalizar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+      <div class="modal-content">
+          <div class="modal-header bg-primary justify-content-center" >
+              <h1 class="modal-title fs-5 text-light" id="titulo-modal-finalizar">Asignar fecha final del supervisor</h1>
+          </div>
+          <form autocomplete="off" id="form-finalizar" >
+              <div class="modal-body">
+                  {% csrf_token %}
+                  <div class="row mt-2 mb-2">
+                    <div class="col col-md-12 mb-2">
+                      <label for="txtImplemento" class="form-label">Fecha final</label>
+                      <input type="date" name="fechafin" class="form-control" required>
+                    </div>
+                  </div>
+              </div>
+
+              <div class="modal-footer">
+                  <button type="submit" id="guardar-finalizar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                  <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+    
+    // const modalvisor = new bootstrap.Modal(document.getElementById('modal-sistema'))
+    const formModal = document.getElementById("form-modal")
+    const formModalfinalizar = document.getElementById("form-finalizar")
+    const btnAgregar = document.getElementById("asiganar-supervisor");
+    const titulo_modal = document.getElementById("titulo-modal");
+    const titulo_modal_finalizar = document.getElementById("titulo-modal-finalizar");
+    const btnGuardar = document.getElementById("guardar");
+    const btnGuardarFinalizar = document.getElementById("guardar-finalizar");
+    const btnModificar = document.querySelectorAll(".editar")
+    const btnEliminar = document.querySelectorAll('.eliminar');
+
+
+
+    setTimeout(function() {
+        var mensaje = document.getElementById('mensaje');
+        if (mensaje) {
+            mensaje.style.display = 'none';
+        }
+    }, 3000);
+
+    btnAgregar.addEventListener("click", function() {
+        titulo_modal.textContent = "Asignar Supervisor" ;
+        formModal.reset();
+        formModal.setAttribute("action", "{% url 'asignar_supervisor_registrar' %}");
+        formModal.setAttribute("method", "POST");
+    });
+
+    btnModificar.forEach(function(boton) {
+        boton.addEventListener("click", function(event) {
+            let id_registro = event.currentTarget.dataset.id;
+            // console.log(id_registro);
+
+            titulo_modal_finalizar.textContent = "Asiganr Fecha salida del supervisor" ;
+            formModalfinalizar.setAttribute("action", `./asignar_supervisor/fechasalida/${id_registro}`);
+            formModalfinalizar.setAttribute("method", "POST");
+          });
+    });
+
+    btnEliminar.forEach(function(boton) {
+        boton.addEventListener("click", function(event) {
+        event.preventDefault();
+        let tipoimplemento = "estos datos"
+        let formId = event.currentTarget.dataset.id;
+        PreguntarEliminar(tipoimplemento, function() {
+            document.getElementById('form-' + formId).submit();
+        });
+        });
+    });
+    
+    btnGuardar.addEventListener("click", function(event) {
+      event.preventDefault();
+      PreguntarGuardar(function(){formModal.submit();});
+    });
+
+    btnGuardarFinalizar.addEventListener("click", function(event) {
+      event.preventDefault();
+      PreguntarGuardar(function(){formModalfinalizar.submit();});
+    });
+
+});
+</script>
+
+{% endblock %}

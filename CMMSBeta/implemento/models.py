@@ -45,10 +45,6 @@ class Implemento(models.Model):
     def __str__(self):
         return self.implemento
     
-
-    
-
-
 class DetImplementos(models.Model):
     iddetalleimplemento = models.AutoField(primary_key=True)
     idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
@@ -70,3 +66,20 @@ class DetImplementos(models.Model):
 
     def _str_(self):
         return str(self.iddetalleimplemento)
+    
+class ImplementoSupervisor(models.Model):
+    idimplementosupervisor = models.AutoField(primary_key=True, verbose_name="id")
+    idimplemento = models.ForeignKey(Implemento,on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento") 
+    idsupervisor = models.ForeignKey(Usuario, on_delete=models.SET_DEFAULT, default=None, verbose_name="Usuario")
+    fechaInicio = models.DateField(verbose_name="Fecha Inicio")
+    fechaFin = models.DateField(null=True, blank=True, verbose_name="Fecha Fin")
+    estado = models.BooleanField(default=True, verbose_name="Estado")
+
+    class Meta:
+        verbose_name = "Implemento por supervisor"
+        verbose_name_plural = "Implementos por supervisores"
+    
+    def __str__(self):
+        return str( self.idimplementosupervisor)
+
+

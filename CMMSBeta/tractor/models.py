@@ -11,7 +11,6 @@ class TipoTractor(models.Model):
 
     def __str__(self):
         return self.TipoTractor
-
     
 class Tractor(models.Model):
     idtractor = models.AutoField(primary_key=True)
@@ -47,3 +46,18 @@ class ReporteTractor(models.Model):
         
     def __str__(self):
         return str(self.idreportetractor)
+
+class TractorSupervisor(models.Model):
+    idtractorsupervisor = models.AutoField(primary_key=True, verbose_name="id")
+    idtractor = models.ForeignKey(Tractor,on_delete=models.SET_DEFAULT, default=None, verbose_name="Tractor") 
+    idsupervisor = models.ForeignKey(Usuario, on_delete=models.SET_DEFAULT, default=None, verbose_name="Usuario")
+    fechaInicio = models.DateField(verbose_name="Fecha Inicio")
+    fechaFin = models.DateField(null=True, blank=True,verbose_name="Fecha Fin")
+    estado = models.BooleanField(default=True, verbose_name="Estado")
+
+    class Meta:
+        verbose_name = "tractor por supervisor"
+        verbose_name_plural = "tractores por supervisores"
+    
+    def __str__(self):
+        return str( self.idtractorsupervisor)

@@ -328,6 +328,10 @@
 
             TractoresConProgramacion = datos.programaciones
             TractoresNoProgramados = datos.tractores_sin_programacion;
+
+            console.log(TractoresConProgramacion)
+            console.log(TractoresNoProgramados)
+
             
             if (datos.programaciones.length == 0) {
                 Detalle_cuerpo.innerHTML = '<p class="card-text text-success text-center">No hay tractores programados</p>'
@@ -372,7 +376,7 @@
             <div class="col col-md-6">
                 <div class="card border-danger mb-3">
                     <div class="card-body text-danger">
-                        <h5 class="card-text text-center fw-bold">${registro.nrotractor}</h5>
+                        <h5 class="card-text text-center fw-bold">${registro.idtractor__nrotractor}</h5>
                     </div>
                 </div>
             </div>
@@ -463,7 +467,7 @@
             obtenerDetalleTractores(fecha, supervisor, turno, idFundo)
             modal_detalle.show()
 
-            console.log("ID del Fundo:", idFundo);
+            // console.log("ID del Fundo:", idFundo);
         } else {
             return;
         }

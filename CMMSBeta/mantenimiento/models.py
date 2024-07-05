@@ -1,6 +1,6 @@
 from usuario.models import Persona
 from operarios.models import Encargado
-from implemento.models import Implemento, DetImplementos
+from implemento.models import Implemento, DetImplementos, ImplementoSupervisor
 from django.db import models
 
 class ProgramacionMantenimiento(models.Model):
@@ -18,7 +18,7 @@ class ProgramacionMantenimiento(models.Model):
   idprogramacionmantenimiento = models.AutoField(primary_key=True)
   fechaprogramacion = models.DateField(auto_now=False, auto_now_add=False, null=True, blank= True,verbose_name="Fecha mantenimiento")
   tipomantenimiento = models.IntegerField(choices=MANTENIMIENTO_CHOICES, verbose_name="Tipo mantenimiento", null=True, blank=True)
-  idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
+  idimplemento = models.ForeignKey(ImplementoSupervisor, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
   estado = models.BooleanField(default=True, verbose_name="Estado")
   estado_mantenimiento = models.IntegerField(choices=ESTADOMANTENIMIENTO_CHOICES, verbose_name="Estado del Mantenimiento", null=True, blank=True, default=0)
   class Meta:

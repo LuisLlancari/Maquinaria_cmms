@@ -36,15 +36,15 @@ def home(request,):
 @login_required(login_url='login', redirect_field_name='')
 def datos_grafico(request, fecha, supervisor, turnos):
     # Definir los filtros comunes
-    filtro_tractores = {}
-    filtro_programacion = {'fechahora': fecha, 'turno': turnos}
+    filtro_tractores = {'estado': True}
+    filtro_programacion = {'fechahora': fecha, 'turno': turnos, 'idtractor__estado': True}
 
     if supervisor != 0:
-        filtro_tractores['idusuario'] = supervisor
-        filtro_programacion.update({'idusuario': supervisor, 'idtractor__idusuario': supervisor})
+        filtro_tractores['idsupervisor'] = supervisor
+        filtro_programacion.update({'idusuario': supervisor, 'idtractor__idtractor__idusuario': supervisor})
 
     # Consulta para encontrar los tractores que no estuvieron programados
-    tractores_no_programados = Tractor.objects.filter(**filtro_tractores).exclude(
+    tractores_no_programados = TractorSupervisor.objects.filter(**filtro_tractores).exclude(
         programacion__fechahora=fecha,
         programacion__turno=turnos
     )
@@ -88,30 +88,34 @@ def datos_grafico(request, fecha, supervisor, turnos):
 
 @login_required(login_url='login', redirect_field_name='')
 def datos_tabla(request, fecha, supervisor, turno):
-        # Definir el filtro para tractores
-    filtro_tractores = {}
-    filtro_programacion = {'fechahora': fecha, 'turno': turno}
+  # Definir el filtro para tractores
+    filtro_tractores = {'estado': True}
+    filtro_programacion = {'fechahora': fecha, 'turno': turno, 'idtractor__estado': True}
 
     if supervisor != 0:
-        filtro_tractores['idusuario'] = supervisor
-        filtro_programacion['idtractor__idusuario'] = supervisor
+        filtro_tractores['idsupervisor'] = supervisor
+        filtro_tractores['estado'] = True
+        filtro_programacion['idtractor__idsupervisor'] = supervisor
 
     # Obtener todos los tractores relacionados con el supervisor
-    tractores_usuario = Tractor.objects.filter(**filtro_tractores)
+    tractores_usuario = TractorSupervisor.objects.filter(**filtro_tractores)
 
     # Obtener los fundos de tractores y contar cuántos tractores hay en cada fundo
-    info_fundos = tractores_usuario.values('idfundo__fundo', 'idfundo').annotate(total_tractores=Count('idfundo'))
+    info_fundos = tractores_usuario.values('idtractor__idfundo__fundo', 'idtractor__idfundo').annotate(total_tractores=Count('idtractor__idfundo'))
 
     # Obtener los tractores programados en la fecha y turno especificados en los fundos relacionados al usuario
-    tractores_programados = Programacion.objects.filter(**filtro_programacion).values('idtractor__idfundo__fundo').annotate(total_tractores_programados=Count('idtractor'))
+    tractores_programados = Programacion.objects.filter(**filtro_programacion).values('idtractor__idtractor__idfundo__fundo').annotate(total_tractores_programados=Count('idtractor')).values()
+
+    # Depuración: imprimir los resultados de tractores programados
+    print("tractores_programados:", list(tractores_programados))
 
     # Colocar la información en la lista
     resultado = []
     for fundo_info in info_fundos:
-        fundo_nombre = fundo_info['idfundo__fundo']
-        idfundo = fundo_info['idfundo']
+        fundo_nombre = fundo_info['idtractor__idfundo__fundo']
+        idfundo = fundo_info['idtractor__idfundo']
         total_tractores = fundo_info['total_tractores']
-        tractores_programados_en_fundo = next((tp['total_tractores_programados'] for tp in tractores_programados if tp['idtractor__idfundo__fundo'] == fundo_nombre), 0)
+        tractores_programados_en_fundo = next((tp['total_tractores_programados'] for tp in tractores_programados if tp.get('idtractor__idtractor__idfundo__fundo') == fundo_nombre), 0)
         tractores_sin_programar_en_fundo = total_tractores - tractores_programados_en_fundo
         resultado.append({
             'Fundo': fundo_nombre,
@@ -125,33 +129,38 @@ def datos_tabla(request, fecha, supervisor, turno):
 
 @login_required(login_url='login', redirect_field_name='')
 def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
-    # Definir los filtros comunes
-    filtro_tractores = {'idfundo': idfundo}
+   # Definir los filtros comunes
+    filtro_tractores = {'idtractor__idfundo': idfundo, 'estado': True}
     filtro_programacion = {
         'fechahora': fecha,
         'turno': turno,
-        'idtractor__idfundo_id': idfundo
+        'idtractor__idtractor__idfundo': idfundo,
+        'idtractor__idtractor__estado': True  # Asegurar que sólo tractores activos sean considerados
     }
     filtro_detprogramaciones = {
         'idprogramacion__fechahora': fecha,
         'idprogramacion__turno': turno,
-        'idprogramacion__idfundo_id': idfundo
+        'idprogramacion__idtractor__idtractor__idfundo': idfundo,
+        'idprogramacion__idtractor__idtractor__estado': True  # Asegurar que sólo tractores activos sean considerados
     }
 
     if supervisor != 0:
-        filtro_tractores['idusuario'] = supervisor
-        filtro_programacion['idtractor__idusuario'] = supervisor
-        filtro_detprogramaciones['idprogramacion__idtractor__idusuario_id'] = supervisor
+        filtro_tractores['idsupervisor'] = supervisor
+        filtro_programacion['idtractor__idsupervisor'] = supervisor
+        filtro_detprogramaciones['idprogramacion__idtractor__idsupervisor'] = supervisor
 
     # Tractores no Asignados
-    tractores_sin_programacion = list(Tractor.objects.filter(**filtro_tractores).exclude(
-        idtractor__in=Subquery(Programacion.objects.filter(**filtro_programacion).values('idtractor'))
-    ).values('nrotractor'))
+    tractores_programados = Programacion.objects.filter(**filtro_programacion).values('idtractor')
+    tractores_sin_programacion = list(
+        TractorSupervisor.objects.filter(**filtro_tractores).exclude(
+            idtractorsupervisor__in=tractores_programados
+        ).values('idtractor__nrotractor')
+    )
 
     # Obtener la información de los tractores que tuvieron una programación
     programaciones = Programacion.objects.filter(**filtro_programacion).annotate(
-        id_tractor=F('idtractor__idtractor'),
-        tractor=F('idtractor__nrotractor'),
+        id_tractor=F('idtractor__idtractor__idtractor'),
+        tractor=F('idtractor__idtractor__nrotractor'),
         labor=F('idtipolabor__tipolabor'),
         solicitante=Concat(F('idsolicitante__idpersona__nombres'), Value(' '), F('idsolicitante__idpersona__apellidos'))
     ).values(
@@ -175,8 +184,8 @@ def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
             idprogramacion=id_programacion,
             **filtro_detprogramaciones
         ).annotate(
-            implemento=F('idimplemento__implemento'),
-            id_implemento=F('idimplemento__idimplemento')
+            implemento=F('idimplemento__idimplemento__implemento'),
+            id_implemento=F('idimplemento__idimplemento__idimplemento')
         ).values(
             'id_implemento',
             'implemento'

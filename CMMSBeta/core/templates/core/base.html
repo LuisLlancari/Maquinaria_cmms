@@ -248,20 +248,17 @@
                         <span>Implemento</span>
                     </a>
                     <ul id="implemento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        {% if user.idrol.rol == "Admin"%}
                             <li class="sidebar-item">
                                 <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
                             </li>
-                        {% endif %}
 
-                        {% if user.idrol.rol == "Admin" %}
                             <li class="sidebar-item">
                                 <a href="{% url 'tipoimplemento' %}" class="sidebar-link" data-path="login">Tipo implemento</a>
                             </li>
-                        {% endif %}
-                        {% comment %} <li class="sidebar-item">
-                            <a href="{% url 'detalleimplemento' %}" class="sidebar-link" data-path="s">Detalle implemento</a>
-                        </li> {% endcomment %}
+                            <li class="sidebar-item">
+                                <a href="{% url 'asignar_supervisor_implemento' %}" class="sidebar-link" data-path="login">Asignar supervisor</a>
+                            </li>
+          
                     </ul>
                 </li>
 
@@ -280,17 +277,18 @@
                         {% endif %}
                         
                         
-                        {% if user.idrol.rol == "Supervisor" or user.idrol.rol == "Admin" %}
                         <li class="sidebar-item">
                             <a href="{% url 'tractor' %}" class="sidebar-link" data-path="login">Tractor</a>
                         </li>
-                        {% endif %}
 
-                        {% if user.idrol.rol == "Admin" %}
                         <li class="sidebar-item">
-                            <a href="{% url 'tipotractor' %}" class="sidebar-link" data-path="s">Tipo Tractor</a>
+                            <a href="{% url 'tipotractor' %}" class="sidebar-link" data-path="">Tipo Tractor</a>
                         </li>
-                        {% endif %}
+                        
+                        <li class="sidebar-item">
+                            <a href="{% url 'asignar_supervisor_tractor' %}" class="sidebar-link" data-path="">Asignar supervisor</a>
+                        </li>
+
                     </ul>
                 </li>
 

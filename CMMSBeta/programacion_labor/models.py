@@ -1,8 +1,8 @@
 from django.db import models
 from fundo_cultivo.models import Lote
-from tractor.models import Tractor
+from tractor.models import Tractor, TractorSupervisor
 from operarios.models import Tractorista, Solicitante
-from implemento.models import Implemento
+from implemento.models import Implemento, ImplementoSupervisor
 from django.contrib.auth.models import User
 from usuario.models import Usuario
 
@@ -30,7 +30,7 @@ class Programacion(models.Model):
     idprogramacion = models.AutoField(primary_key=True)
     idtipolabor = models.ForeignKey(TipoLabor, on_delete=models.SET_NULL, null=True, verbose_name="Tipo de labor")
     idlote = models.ForeignKey(Lote, on_delete=models.SET_NULL, null=True, verbose_name="Lote")
-    idtractor = models.ForeignKey(Tractor, on_delete=models.SET_NULL, null=True, verbose_name="Tractor")
+    idtractor = models.ForeignKey(TractorSupervisor, on_delete=models.SET_NULL, null=True, verbose_name="Tractor")
     idusuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, verbose_name="Usuario")
     idtractorista = models.ForeignKey(Tractorista, on_delete=models.SET_NULL, null=True, verbose_name="Tractorista")
     idsolicitante = models.ForeignKey(Solicitante, on_delete=models.SET_NULL, null=True, verbose_name="Solicitante")
@@ -47,7 +47,7 @@ class Programacion(models.Model):
     
 class DetalleLabor(models.Model):
     iddetlabor = models.AutoField(primary_key=True)
-    idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_NULL, null=True, verbose_name="Implemento")
+    idimplemento = models.ForeignKey(ImplementoSupervisor, on_delete=models.SET_NULL, null=True, verbose_name="Implemento")
     idprogramacion = models.ForeignKey(Programacion, on_delete=models.SET_NULL, null=True, verbose_name="Programacion")
     horadeuso = models.IntegerField(verbose_name='Hora de uso Implemento', null=True)
     estado = models.BooleanField(default=True, verbose_name='Estado')

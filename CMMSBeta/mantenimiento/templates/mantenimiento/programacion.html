@@ -65,12 +65,12 @@
   <tbody>
     {% for dato in datos %}
     <tr data-tipo="{{ dato.tipomantenimiento }}">
-      <td>{{dato.idimplemento.implemento}}</td>
-      <td>{{dato.idimplemento.idtipoimplemento.tipoimplemento}}</td>
-      <td>{{dato.idimplemento.codimplemento}}</td>
+      <td>{{dato.idimplemento.idimplemento.implemento}}</td>
+      <td>{{dato.idimplemento.idimplemento.idtipoimplemento.tipoimplemento}}</td>
+      <td>{{dato.idimplemento.idimplemento.codimplemento}}</td>
       <!-- <td>{{dato.idimplemento.idtipoimplemento.tiempo_vida}}</td> -->
-      <td>{{dato.idimplemento.horasdeuso}}</td>
-      <td>{{dato.idimplemento.idtipoimplemento.frecuencia_man}}</td>
+      <td>{{dato.idimplemento.idimplemento.horasdeuso}}</td>
+      <td>{{dato.idimplemento.idimplemento.idtipoimplemento.frecuencia_man}}</td>
 
       {% if dato.tipomantenimiento == 1 %}
       <td class="preventivo" style="background-color: #3498DB;">
@@ -102,7 +102,7 @@
         <!--Mantenimiento correctivo-->
         {% if dato.tipomantenimiento == 0 %}
         <td>
-          <form action="{% url 'eliminar_programacion' dato.idprogramacionmantenimiento%}" class="d-inline-block w-100" method="POST">
+          <form action="{% url 'eliminar_programacion_mantenimiento' dato.idprogramacionmantenimiento%}" class="d-inline-block w-100" method="POST">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger btn-md w-100"><strong>Eliminar</strong></button>
           </form> 
@@ -200,7 +200,7 @@
           <select name="idimplemento" id="idimplemento" class="form-control" required>
             <option value="">--------------------</option>
             {% for dato in implementos %}
-              <option value="{{dato.idimplemento}}" data-impletipo="{{dato.idtipoimplemento.idtipoimplemento}}" >{{dato.implemento}}</option>
+              <option value="{{dato.idimplementosupervisor}}" data-impletipo="{{dato.idimplemento.idtipoimplemento.idtipoimplemento}}" >{{dato.idimplemento.implemento}}</option>
             {% endfor %}
           </select>
 
@@ -513,6 +513,7 @@ document.addEventListener('DOMContentLoaded', function () {
     finalizado.forEach(function (button) {
       button.addEventListener("click", function () {
         var id = this.dataset.idprogramacion;
+        console.log(id)
         reporte.setAttribute('href', `./programacion/reporte_mantenimiento/${id}`)
         detalle_mantenimiento(id);
       });

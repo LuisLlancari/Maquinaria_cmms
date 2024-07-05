@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import F
 from mantenimiento.models import ProgramacionMantenimiento, Mantenimiento, DetalleMantenimiento, Recambios
 from django.http import JsonResponse
-from implemento.models import Implemento, TipoImplemento, DetImplementos
+from implemento.models import Implemento, TipoImplemento, DetImplementos, ImplementoSupervisor
 from mantenimiento.models import Acciones, DetMotivos
 from django.contrib import messages
 import os
@@ -20,20 +20,17 @@ def programacion_mantenimiento(request):
     usuario_id = request.user.id
     rol = request.user.idrol.rol
     if rol == "Supervisor":
-        print(rol)
 
-        datos = ProgramacionMantenimiento.objects.filter(idimplemento__idusuario = usuario_id)
+        datos = ProgramacionMantenimiento.objects.filter(idimplemento__idsupervisor = usuario_id)
         acciones = Acciones.objects.filter(estado__in=[0, 2])
-        implementos = Implemento.objects.filter(estado = 1, idusuario_id = usuario_id)
+        implementos = ImplementoSupervisor.objects.filter(estado = True, idsupervisor = usuario_id)
         tipoimplementos = TipoImplemento.objects.filter(estado = True)
-        # print(tipoimplementos)
         contexto = {
             'datos': datos,
             'acciones': acciones,
             'implementos': implementos,
             'tipoimplementos': tipoimplementos
-        }
-    
+        }    
         return render(request, 'mantenimiento/programacion.html', contexto)
     else:
         return redirect('home')
@@ -111,10 +108,10 @@ def datos_mantenimiento(request, id_programacion):
   mantenimiento = list(Mantenimiento.objects.filter(estado = 0, idprogramacionmantenimiento_id = id_programacion).annotate(
   fecha_programada = F('idprogramacionmantenimiento__fechaprogramacion'),
   tipomantenimiento = F('idprogramacionmantenimiento__tipomantenimiento'),
-  implemento = F('idprogramacionmantenimiento__idimplemento__implemento'),
-  cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
+  implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__implemento'),
+  cod_implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__codimplemento'),
   idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
-  idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
+  idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__idimplemento'),
   nombres = F(f'idencargado__idpersona__nombres'),
   apellidos = F(f'idencargado__idpersona__apellidos')
   ).values(
@@ -159,10 +156,10 @@ def reporte_mantenimiento(request, id_programacion):
   mantenimiento = list(Mantenimiento.objects.filter(idprogramacionmantenimiento_id = id_programacion).annotate(
   fecha_programada = F('idprogramacionmantenimiento__fechaprogramacion'),
   tipomantenimiento = F('idprogramacionmantenimiento__tipomantenimiento'),
-  implemento = F('idprogramacionmantenimiento__idimplemento__implemento'),
-  cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
+  implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__implemento'),
+  cod_implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__codimplemento'),
   idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
-  idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
+  idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__idimplemento'),
   nombres = F(f'idencargado__idpersona__nombres'),
   apellidos = F(f'idencargado__idpersona__apellidos')
   ).values('idmantenimiento','idprogramacion','fecha_programada','implemento','cod_implemento',
@@ -181,7 +178,7 @@ def reporte_mantenimiento(request, id_programacion):
   context = {'titulo': 'Primer Pdf', 'mantenimiento':mantenimiento, 'tareas': tareas, 'recambios':recambios}
   html = template.render(context)
   response = HttpResponse(content_type='application/pdf')
-#   response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+  response['Content-Disposition'] = 'attachment; filename="report.pdf"'
 
   # crear pdf
   pisa_status = pisa.CreatePDF(

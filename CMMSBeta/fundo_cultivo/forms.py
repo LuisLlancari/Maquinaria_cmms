@@ -16,7 +16,7 @@ class FundoForm(forms.ModelForm):
         fields = ['fundo', 'idsede']
         widgets = {
             'fundo': forms.TextInput(attrs={'class': 'form-control mb-2'}),
-            'idsede': forms.Select(attrs={'class': 'form-control mb-2'}),
+            'idsede': forms.Select(attrs={'class': 'form-select mb-2'}),
         }
 
 class CultivoForm(forms.ModelForm):

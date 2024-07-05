@@ -12,8 +12,8 @@ def datos_mantenimiento(request):
   mantenimiento = list(Mantenimiento.objects.filter(fechaingreso__isnull=True, estado = 1).annotate(
     fecha_programada = F('idprogramacionmantenimiento__fechaprogramacion'),
     tipomantenimiento = F('idprogramacionmantenimiento__tipomantenimiento'),
-    implemento = F('idprogramacionmantenimiento__idimplemento__implemento'),
-    cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
+    implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__implemento'),
+    cod_implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__codimplemento'),
     idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
     idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
   ).values(
@@ -31,7 +31,7 @@ def datos_mantenimiento(request):
   return JsonResponse({'mantenimiento':mantenimiento})
 
 @login_required(login_url='login', redirect_field_name='')
-def registrar_ingreso(request, id_mantenimiento):
+def registrar_ingreso(request, id_mantenimiento): 
   if request.method == 'POST':
       fecha_hoy = now()
       mantenimiento = get_object_or_404(Mantenimiento, idmantenimiento=id_mantenimiento, estado=1)

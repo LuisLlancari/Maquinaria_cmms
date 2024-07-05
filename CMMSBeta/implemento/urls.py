@@ -1,6 +1,6 @@
 from django.urls import path, include
 # Importará las vistas de la app donde te encuentres
-from .viewss import detalle, implemento, tipos 
+from .views import detalle, implemento, tipos, implementosupervisor as impsup
 
 urlpatterns = [
   path('', implemento.implemento , name='implemento'),
@@ -23,5 +23,8 @@ urlpatterns = [
   path('detalle/obtener/<int:id_detimplemento>', detalle.obtenerDatos, name="obtener_detalle"),
   path('detalle/modificar/<int:id_detimplemento>', detalle.editarDetalle, name="modificar_detalle"),
 
-
-]
+  path('asignar_supervisor', impsup.implementoSupervisor, name="asignar_supervisor_implemento" ),
+  path('asignar_supervisor/registrar', impsup.registrarImplementoSupervisor, name="asignar_supervisor_registrar" ),
+  path('asignar_supervisor/eliminar/<int:id_registro>', impsup.eliminarImplementoSupervisor, name="asignar_supervisor_eliminar" ),
+  path('asignar_supervisor/fechasalida/<int:id_registro>', impsup.registrarFechaSalidaSupervisor, name="asignar_supervisor_fecha_salida" ),
+] 

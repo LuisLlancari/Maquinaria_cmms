@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(`./obtener_select/${fecha}/${turno}`)
         .then(res => res.json())
         .then(dataRecibida => {
-            
+            console.log(dataRecibida.tractores)
             // Referencia al select de tractoristas
             const selectTractorista = document.getElementById('id_idtractorista');
             const selectTractor = document.getElementById('id_idtractor');
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (dataRecibida.tractores && dataRecibida.tractores.length > 0) {
                 dataRecibida.tractores.forEach(tractor => {
                     let option = document.createElement('option');
-                    option.value = tractor.idtractor;
+                    option.value = tractor.idtractorsupervisor;
                     option.dataset.idusuario = tractor.idusuario_id;
                     option.textContent = tractor.nrotractor;
                     selectTractor.appendChild(option);
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (dataRecibida.implementos && dataRecibida.implementos.length > 0) {
             dataRecibida.implementos.forEach(implemento => {
                 let option = document.createElement('option');
-                option.value = implemento.idimplemento;
+                option.value = implemento.idimplementosupervisor;
                 option.dataset.idusuario = implemento.idusuario_id;
                 option.textContent = implemento.implemento;
                 selectImplemento.appendChild(option);
@@ -107,10 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     // FIN DEL TRUCO
-
-
-
-
     let selectUsuario = document.getElementById('usuario_id');
     let selectedUserId = document.getElementById('usuario_id').value;
 

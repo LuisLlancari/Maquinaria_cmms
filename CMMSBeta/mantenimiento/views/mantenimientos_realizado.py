@@ -16,10 +16,10 @@ def datos_mantenimientos(request):
   mantenimiento = list(Mantenimiento.objects.filter(estado = 0).annotate(
   fecha_programada = F('idprogramacionmantenimiento__fechaprogramacion'),
   tipomantenimiento = F('idprogramacionmantenimiento__tipomantenimiento'),
-  implemento = F('idprogramacionmantenimiento__idimplemento__implemento'),
-  cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
+  implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__implemento'),
+  cod_implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__codimplemento'),
   idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
-  idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
+  idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__idimplemento'),
   nombres = F(f'idencargado__idpersona__nombres'),
   apellidos = F(f'idencargado__idpersona__apellidos')
   ).values(
@@ -46,7 +46,7 @@ def datos_mantenimientos(request):
 
 @login_required(login_url='login', redirect_field_name='')
 def detalle_mantenimiento (request, id_mantenimiento):
-  tareas = list(DetalleMantenimiento.objects.filter(idmantenimiento = id_mantenimiento).annotate(
+  tareas = list(DetalleMantenimiento.objects.filter(idmantenimiento__idmantenimiento = id_mantenimiento).annotate(
     tareas = F('idaccion__accion'),
   ).values('tareas','completado'))
   
@@ -69,10 +69,10 @@ def reporte_mantenimiento(request, id_mantenimiento):
   mantenimiento = list(Mantenimiento.objects.filter(idmantenimiento = id_mantenimiento).annotate(
   fecha_programada = F('idprogramacionmantenimiento__fechaprogramacion'),
   tipomantenimiento = F('idprogramacionmantenimiento__tipomantenimiento'),
-  implemento = F('idprogramacionmantenimiento__idimplemento__implemento'),
-  cod_implemento = F('idprogramacionmantenimiento__idimplemento__codimplemento'),
+  implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__implemento'),
+  cod_implemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__codimplemento'),
   idprogramacion = F('idprogramacionmantenimiento__idprogramacionmantenimiento'),
-  idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento'),
+  idimplemento = F('idprogramacionmantenimiento__idimplemento__idimplemento__idimplemento'),
   nombres = F(f'idencargado__idpersona__nombres'),
   apellidos = F(f'idencargado__idpersona__apellidos')
   ).values('idmantenimiento','idprogramacion','fecha_programada','implemento','cod_implemento',
