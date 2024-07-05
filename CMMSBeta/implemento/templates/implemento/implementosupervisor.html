@@ -43,7 +43,13 @@
                   <td>{{dato.idimplemento.implemento}}</td>
                   <td>{{dato.idsupervisor.first_name}} {{dato.idsupervisor.last_name}}</td>
                   <td>{{dato.fechaInicio}}</td>
+
+                  {% if dato.fechaFin == None %}
+                  <td>No registrada</td>
+                  {% else %}
                   <td>{{dato.fechaFin}}</td>
+                  {% endif %}
+
                   <td>
                       <button class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplementosupervisor}}" data-bs-toggle="modal" data-bs-target="#modal-finalizar"><i class="lni lni-pencil editar"></i></button>
                       <form action="{% url 'asignar_supervisor_eliminar' dato.idimplementosupervisor %}" id="form-{{ dato.idimplementosupervisor }}" class="d-inline-block" method="POST">
