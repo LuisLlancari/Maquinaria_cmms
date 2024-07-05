@@ -124,6 +124,8 @@ def registrar_programacion(request):
 def eliminar_programacion(request, id_programacion):
     det = DetalleLabor.objects.filter(idprogramacion=id_programacion)
     prog = Programacion.objects.filter(idprogramacion=id_programacion)
+    print(det)
+    print(prog)
     if request.method == 'POST':
         if prog[0].estado == 1:
             det.delete()

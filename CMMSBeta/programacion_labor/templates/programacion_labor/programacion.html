@@ -39,31 +39,36 @@
         <div class="">
             <strong>Fecha: {{fecha}}</strong>
         </div>
-        <strong class="text-primary">Tractores utilizados: {{ cantidad }}</strong>
+        <strong class="text-primary">Tractores utilizados HOY: {{ cantidad }}</strong>
 
-        <div class="d-flex justify-content-between align-items-center mt-2">
-            <div>
-                <label for="filtro" class="form-label"><strong>Filtrar por dia:</strong></label>
-                <select name="filtro" class="form-select" id="filtro">
-                    <option value="1" id="filtro_ayer">Ayer</option>
-                    <option value="2" id="filtro_hoy">Hoy</option>
-                    <option value="3" id="filtro_manana">Mañana</option>
-                </select>
+        <div class="mt-2">
+            <div class="mr-3">
+                <label for="filtro" class="form-label"><strong>Filtrar por fecha:</strong></label>
             </div>
-
-            <!-- Leyenda -->
-            <div class="d-flex align-items-center">
-                <div class="legend-color-1"></div>
-                <div class="legend-text">
-                    <strong>PRESTADOS</strong>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <input type="date" name="filtro" class="form-control" id="filtro">  
+                    </div>
+                    <div class=" ms-3 d-grid">
+                        <button type="button" class="btn btn-success" id="exportar">Exportar Excel</button>
+                    </div>
+                </div>
+    
+                <!-- Leyenda -->
+                <div class="d-flex align-items-center">
+                    <div class="legend-color-1"></div>
+                    <div class="legend-text">
+                        <strong>PRESTADOS</strong>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <table class="table table-striped table-sm table-bordered mt-3 text-center"  id="tabla-labor">
+
+        <table class="table table-striped table-sm table-bordered text-center mt-2"  id="tabla-labor">
             <thead class="text-center table-dark">
                 <tr class="table-dark">
-                    <th scope="col">N°</th>
                     <th scope="col">Tipo de Labor</th>
                     <th scope="col">Lote</th>
                     <th scope="col">Solicitante</th>
@@ -80,7 +85,6 @@
             <tbody>
                 {% for det in detalle %}
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ det.idprogramacion.idtipolabor }}</td>
                     <td>
                         {{ det.idprogramacion.idlote.idfundo }}
@@ -118,11 +122,27 @@
                     {% endif %}
                     <!--FIN DE LA CONFIRMACION-->
 
-                    <td class="text-center">
-                        <button class="btn {% if det.idimplemento.idusuario.id != user.id %}btn-warning{% else %}btn-primary{% endif %} btn-sm btn-ver"  data-toggle="modal" data-implementos="{{ det.idimplemento }}" data-idprogramacion='{{ det.idprogramacion }}' data-target="#modalListImplemento">
-                            <i class="lni lni-eye"></i>
-                        </button>
+                    <!-- IMPLEMENTOS MIOS-->
+                    {% if det.idimplemento.idusuario.id != user.id %}
+                    <td class="text-center bg-warning"> 
+                        {% for detalle in det.idprogramacion.detallelabor_set.all %}
+                            <strong>
+                            {{ detalle.idimplemento.implemento }}
+                                {% if not forloop.last %}, {% endif %}
+                            </strong>  
+                        {% endfor %}
                     </td>
+                    {% else %}
+                    <td class="text-center">
+                        {% for detalle in det.idprogramacion.detallelabor_set.all %}
+                            <strong>
+                            {{ detalle.idimplemento.implemento }}
+                                {% if not forloop.last %}, {% endif %}
+                            </strong>
+                        {% endfor %}
+                    </td>
+                    {% endif %}
+
                     <td>
                         {% if det.idprogramacion.estado == 1 %}
                             <form action="{% url 'eliminar_programacion' det.idprogramacion.idprogramacion %}" class="d-inline-block" method="POST">
@@ -165,7 +185,7 @@
                                 <select name="fechahora" class="form-select mb-2" id="id_fechahora">
                                     <option id="1" value="hoy">Hoy</option>
                                     <option id="2" value="mañana">Mañana</option>
-                                    <option id="3" value="N">Noche</option>
+                                    
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -173,6 +193,7 @@
                                 <select name="turno" class="form-select mb-2" id="id_turno">
                                     <option id="1" value="M" selected>Dia</option>
                                     <option id="2" value="T">Tarde</option>
+                                    <option id="3" value="N">Noche</option>
                                 </select>
                             </div>
                             <div class="col-md-5">
@@ -322,11 +343,60 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.3.0/luxon.min.js"></script>
 <script src="{% static 'programacion_labor/js/mensajes.js' %}"></script>
 <script src="{% static 'programacion_labor/js/fecha_programacion.js' %}"></script>
 <script src="{% static 'programacion_labor/js/buscador.js' %}"></script>
 <script src="{% static 'programacion_labor/js/programacion.js' %}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    var rows = document.querySelectorAll('tbody tr');
+    function exportToExcel() {
+        var rows = document.querySelectorAll('tbody tr');
+        var headers = document.querySelectorAll('thead th');
+        var data = [];
+
+        // Obtener las cabeceras con estilos aplicados
+        var headerRow = [];
+        headers.forEach(function (header, index) {
+            if (index < headers.length - 1) {
+                var cellData = {
+                    v: header.innerText
+                };
+                headerRow.push(cellData);
+            }
+        });
+        data.push(headerRow);
+
+        rows.forEach(function (row) {
+            if (row.style.display !== 'none') {
+                var rowData = [];
+                var cells = row.querySelectorAll('td');
+                // Iterar sobre las celdas, pero omitir la última (operaciones)
+                for (var i = 0; i < cells.length - 1; i++) {
+                    rowData.push(cells[i].innerText);
+                }
+                data.push(rowData);
+            }
+        });
+
+        var wb = XLSX.utils.book_new();
+        var ws = XLSX.utils.aoa_to_sheet(data);
+
+        XLSX.utils.book_append_sheet(wb, ws, 'Datos');
+
+        num = Math.floor(Math.random() * (99999 - 10000 + 1)) + 100000;
+        XLSX.writeFile(wb, `PROGRAMACIONES-${num}.xlsx`);
+    }
+
+    document.getElementById('exportar').addEventListener('click', function () {
+      exportToExcel();
+    });
+
+})
+</script>
 
 {% endblock %}

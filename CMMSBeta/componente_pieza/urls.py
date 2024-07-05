@@ -19,6 +19,7 @@ urlpatterns = [
   path('registrar', componentes.registrarComponente, name="componente_registro"),
   path('eliminar/<int:id_componente>', componentes.eliminarComponente, name="eliminar_componente"),
   path('obtener/<int:id_componente>', componentes.obtenerDatos, name="obtener_componente"),
+  path('obtener_piezas/<int:id_componente>', componentes.obtenerPiezas, name="obtener_piezas"),
   path('modificar/<int:id_componente>', componentes.editarComponente, name="modificar_componente"),
 
 
@@ -34,6 +35,9 @@ urlpatterns = [
 
   path('det_componente/registrar', det_conponente.registrarDetalleComponente, name="det_componente_registro"),
   path('configuracion/registrar', configuracion.registrarConfiguracion, name="registrar_configuracion"),
+  path('configuracion/obtener/<int:id_configuracion>', configuracion.obtener, name="obtener"),
+  path('configuracion/eliminar/<int:id_configuracion>', configuracion.eliminarConfiguracion, name="eliminar_configuracion"),
+
   path('detalle_cong/registrar', detalle_cong.registrarDetalleConfiguracion, name="detalle_cong_registro"),
 
 
