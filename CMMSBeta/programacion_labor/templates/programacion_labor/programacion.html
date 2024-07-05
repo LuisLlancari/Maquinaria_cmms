@@ -95,7 +95,8 @@
                         {{ det.idprogramacion.idsolicitante.idpersona.nombres }}
                         {{ det.idprogramacion.idsolicitante.idpersona.apellidos }}
                     </td>
-                    <td {% if det.idprogramacion.idtractor.idusuario.id != user.id %} class="bg-warning" {% endif %}>{{ det.idprogramacion.idtractor }}</td>
+                    <!-- Tractorista -->
+                    <td {% if det.idprogramacion.idtractor.idsupervisor.id != user.id %} class="bg-warning" {% endif %}>{{ det.idprogramacion.idtractor.idtractor.nrotractor}}</td>
                     <td {% if det.idprogramacion.idtractorista.idusuario.id != user.id %} class="bg-warning" {% endif %} >
                         {{ det.idprogramacion.idtractorista.idpersona.nombres }}
                         {{ det.idprogramacion.idtractorista.idpersona.apellidos }}
@@ -123,11 +124,11 @@
                     <!--FIN DE LA CONFIRMACION-->
 
                     <!-- IMPLEMENTOS MIOS-->
-                    {% if det.idimplemento.idusuario.id != user.id %}
+                    {% if det.idimplemento.idsupervisor.id != user.id %}
                     <td class="text-center bg-warning"> 
                         {% for detalle in det.idprogramacion.detallelabor_set.all %}
                             <strong>
-                            {{ detalle.idimplemento.implemento }}
+                            {{ detalle.idimplemento.idimplemento.implemento }}
                                 {% if not forloop.last %}, {% endif %}
                             </strong>  
                         {% endfor %}
@@ -136,7 +137,7 @@
                     <td class="text-center">
                         {% for detalle in det.idprogramacion.detallelabor_set.all %}
                             <strong>
-                            {{ detalle.idimplemento.implemento }}
+                            {{ detalle.idimplemento.idimplemento.implemento }}
                                 {% if not forloop.last %}, {% endif %}
                             </strong>
                         {% endfor %}

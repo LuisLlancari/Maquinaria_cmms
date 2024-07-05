@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from operarios.models import Tractorista
-from implemento.models import Implemento
+from implemento.models import Implemento, ImplementoSupervisor
 from django.contrib import messages
 from programacion_labor.models import Programacion, DetalleLabor
-from ..forms import ReporteTractorForm, ReporteTractor, Tractor
+from ..forms import ReporteTractorForm, ReporteTractor, Tractor, TractorSupervisor
 from usuario.models import Usuario
 from django.http import JsonResponse
 
@@ -35,20 +35,18 @@ def registrarReporte(request):
         if ReporteTractor.objects.filter(correlativo = correlativo).exists():
             messages.success(request, "El CORRELATIVO YA EXISTE", extra_tags='danger')
             return redirect('reportetractor')
-
         else:
-       
             # Creamos un reporte tractor
             reporte = ReporteTractor(idusuario = usuario, idprogramacion = programacion, horometroinicial = hora_inicial,
-                horometrofinal = hora_final, correlativo = correlativo)
+            horometrofinal = hora_final, correlativo = correlativo)
             reporte.save()
 
             # Obtenemos el id del tractorista, tractor y su hora de uso 
             tractor = Programacion.objects.filter(pk=programacion_id).values('idtractor').first()
             tractor_id = tractor['idtractor']
 
-            horauso = Tractor.objects.filter(pk = tractor_id).values('horauso').first()
-            horausoinicial = horauso['horauso']
+            horauso = TractorSupervisor.objects.filter(pk = tractor_id).values('idtractor__horauso').first()
+            horausoinicial = horauso['idtractor__horauso']
 
             programa = Programacion.objects.filter(pk = programacion_id).values('idtractorista').first()
             tractorista_id = programa['idtractorista']
@@ -61,25 +59,28 @@ def registrarReporte(request):
 
             implementos = list(DetalleLabor.objects.filter(idprogramacion = programacion_id).values('idimplemento'))
             for implemento in implementos:
-                dato = Implemento.objects.filter(idimplemento = int(implemento['idimplemento'])).values('horasdeuso').first()
-                horasuso_implemento = dato['horasdeuso']
+                dato = ImplementoSupervisor.objects.filter(idimplementosupervisor = implemento['idimplemento']).values('idimplemento__horasdeuso').first()
+                horasuso_implemento = dato['idimplemento__horasdeuso']
 
                 horauso_final_implemento = horasuso_implemento + horauso_implemento
 
-                Implemento.objects.filter(idimplemento = int(implemento['idimplemento'])).update(estado_actividad = True)
-                # Implemento.objects.filter(idimplemento = int(implemento['idimplemento'])).update(horasdeuso = horauso_final_implemento)
-                dato_implemento = get_object_or_404(Implemento, idimplemento = implemento['idimplemento'])
-                dato_implemento.horasdeuso = horauso_final_implemento
+                dato_implemento = get_object_or_404(ImplementoSupervisor, idimplementosupervisor = implemento['idimplemento'])
+                dato_implemento.idimplemento.horasdeuso = horauso_final_implemento
+                dato_implemento.idimplemento.estado_actividad = True
+                dato_implemento.idimplemento.save()
                 dato_implemento.save()
                 
             # Actualizamos campos
-            Programacion.objects.filter(idprogramacion = int(programacion_id)).update(estado = False)
-
-            # DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(estado = False)
+            Programacion.objects.filter(idprogramacion = programacion_id).update(estado = False)
             DetalleLabor.objects.filter(idprogramacion = int(programacion_id)).update(horadeuso = horauso_Detimplemento)
-            Tractor.objects.filter(idtractor = int(tractor_id)).update(horainicial = hora_final )
-            Tractor.objects.filter(idtractor = int(tractor_id)).update(horauso = horauso_tractor )
-            Tractor.objects.filter(idtractor = int(tractor_id)).update(estado_actividad = True )
+
+            tractor_supervisor = TractorSupervisor.objects.get(idtractorsupervisor=tractor_id)
+            tractor_supervisor.idtractor.horainicial = hora_final
+            tractor_supervisor.idtractor.horauso = horauso_tractor
+            tractor_supervisor.idtractor.estado_actividad = True
+            tractor_supervisor.idtractor.save()
+            tractor_supervisor.save()
+
             Tractorista.objects.filter(idtractorista = int(tractorista_id)).update(estado_actividad = True )
 
             return redirect('reportetractor')

@@ -66,14 +66,14 @@
           {% for data in detlabor %}
               {% with programacion_usuario=data.idprogramacion.idusuario %}
               <tr {% if programacion_usuario != data.idimplemento.idusuario %} class="" {% endif %} data-idusuario="{{ data.idprogramacion.idusuario.id }}" data-fecha="{{ data.idprogramacion.fechahora|date:"Y-m-d" }}">
-                  <td class="text-center">{{ data.idprogramacion.idtractorista }}</td>
-                  <td class="text-center">{{ data.idprogramacion.idtractor }}</td>
+                  <td td class="text-center">{{ data.idprogramacion.idtractorista }}</td>
+                  <td class="text-center">{{ data.idprogramacion.idtractor.idtractor }}</td>
 
                   <td class="text-center">
                       {% for detalle in data.idprogramacion.detallelabor_set.all %}
-                        {% if detalle.idimplemento.idusuario.id == data.idprogramacion.idusuario.id %}
+                        {% if detalle.idimplemento.idsupervisor.id == data.idprogramacion.idusuario.id %}
                           <strong>
-                          {{ detalle.idimplemento.implemento }}
+                          {{ detalle.idimplemento.idimplemento.implemento }}
                               {% if not forloop.last %}, {% endif %}
                           </strong>
                         {% endif %}
@@ -82,9 +82,9 @@
 
                   <td class="text-center">
                     {% for detalle in data.idprogramacion.detallelabor_set.all %}
-                      {% if detalle.idimplemento.idusuario.id != data.idprogramacion.idusuario.id %}
+                      {% if detalle.idimplemento.idsupervisor.id != data.idprogramacion.idusuario.id %}
                         <strong>
-                        {{ detalle.idimplemento.implemento }}
+                        {{ detalle.idimplemento.idimplemento.implemento }}
                             {% if not forloop.last %}, {% endif %}
                         </strong>
                       {% endif %}

@@ -26,7 +26,7 @@ def programacion(request):
         ahora_utc = timezone.now()
         ahora_peru = ahora_utc - timedelta(hours=5)
         hoy = ahora_peru.date()
-            #Uso del Formateo
+        #Uso del Formateo
         cantidad_tractores_hoy = Programacion.objects.filter(fechahora=hoy, idusuario = request.user).count()
         # Fin Formateo de la fecha
 
