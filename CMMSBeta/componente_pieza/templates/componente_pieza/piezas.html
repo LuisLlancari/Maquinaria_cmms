@@ -125,14 +125,11 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(`./obtener/${id}`)
         .then(res => res.json())
         .then(datos => {
-            // console.log(datos.componentes[0].idsistema.idsistema)
             titulo_modal.textContent = "Editar Componente" ;
             formModal.setAttribute("action", `./modificar/${id}`);
             formModal.setAttribute("method", "POST");
-            // txtComponente.value = datos.pieza[0].idcomponente_id;
             txtPieza.value = datos.pieza[0].pieza;           
-            txtCodPieza.value = datos.pieza[0].codpieza;
-            // txtCantidadPiezas.value = datos.pieza[0].cantidad_piezas;                     
+            txtCodPieza.value = datos.pieza[0].codpieza;                 
             txtTiempovida.value = datos.pieza[0].tiempovida;                  
             txtFrecuenciaMan.value = datos.pieza[0].frecuencia_man;                  
         })

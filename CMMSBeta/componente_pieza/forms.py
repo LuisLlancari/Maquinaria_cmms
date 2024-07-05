@@ -31,7 +31,7 @@ class PiezaForms(forms.ModelForm):
         fields = ['pieza','codpieza', 'frecuencia_man', 'tiempovida']
         widgets = {
             'pieza': forms.TextInput(attrs={'class':'form-control', 'id': 'txtPieza'}),
-            'codpieza': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCodPieza', 'min': 0}),
+            'codpieza': forms.TextInput(attrs={'class':'form-control', 'id': 'txtCodPieza'}),
             'frecuencia_man': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtFrecuenciaMan', 'min': 0}),
             'tiempovida': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtTiempovida', 'min': 0}),
         }

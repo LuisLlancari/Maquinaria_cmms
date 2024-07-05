@@ -63,7 +63,6 @@
 
         {% if user.idrol.rol != "Gerencia" %}
         <td>
-            <button class="btn btn-warning editar d-inline-block" id ="editar-sistema" data-id="{{dato.idcomponente}}" data-bs-toggle="modal" data-bs-target="#modal-componente"><i class="lni lni-pencil editar"></i></button>
             <form action="{% url 'eliminar_componente' dato.idcomponente %}" id="form-{{ dato.idcomponente }}" class="d-inline-block" method="POST">
                 {% csrf_token %}
                 <button class="btn btn-danger eliminar" data-registro="{{ dato.componente }}" data-id="{{ dato.idcomponente }}"><i class="lni lni-trash-can eliminar"></i></button>
@@ -148,24 +147,35 @@
 <div class="modal fade" id="modal-piezas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary justify-content-center" >
+            <div class="modal-header bg-primary justify-content-center">
                 <h1 class="modal-title fs-5 text-light" id="titulo-modal">
                     Piezas Asignadas
                 </h1>
             </div>
-                <form autocomplete="off" id="form-modal">
-                    <div class="modal-body">
-                        {% csrf_token %}    
-                        
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
-                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
-                    </div>
-                </form>
+            <form autocomplete="off" id="form-modal">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <!-- Cabecera de la lista -->
+                     <div class="container">
+                         <div class="row mb-3">
+                             <div class="col-6">
+                                 <h5 class="fw-bold">Nombre de la Pieza</h5>
+                             </div>
+                             <div class="col-6">
+                                 <h5 class="fw-bold text-center">Cantidad</h5>
+                             </div>
+                         </div>
+                         <div class="row mb-3" id="piezas">
+                             
+                         </div>
+                     </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+
 
 
 
@@ -187,13 +197,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const addPieceButton = document.querySelector('.add-piece');
 
     var piezas = document.querySelectorAll('.piezas');
+    var piezas_modal = document.getElementById('piezas');
+
     piezas.forEach(function(button) {
         button.addEventListener('click', function() {
             var idcomponente = this.dataset.id;
-            fetch().
-            then().
-            then().
-            catch((error) => {console.log(error)})
+            fetch(`./obtener_piezas/${idcomponente}`)
+                .then(res => res.json())
+                .then(data => {
+                    piezas_modal.innerHTML = '';
+                    if (data.mensaje == 'Success') {
+                        data.piezas.forEach(pieza => {
+                            piezas_modal.innerHTML += `
+                                <div class="col-6">
+                                        <h5 class="fw-bold">${pieza.pieza}</h5>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <h5 class="fw-bold">${pieza.cantidad}</h5>
+                                </div>
+                                <hr>
+                            `;
+                        })
+                    }
+                    else {
+                        piezas_modal.innerHTML = `
+                            <div class="col-6">
+                                    <h5 class="fw-bold">No hay piezas</h5>
+                            </div>
+                            <div class="col-6">
+                                <h5 class="fw-bold">0</h5>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
     });
         

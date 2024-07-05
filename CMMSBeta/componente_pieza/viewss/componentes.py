@@ -3,6 +3,7 @@ from ..models import Componente
 from ..forms import ComponenteForms, DetalleComponenteForms
 from django.http import JsonResponse
 from ..models import DetalleComponente, Pieza
+from django.db.models import F
 
 #Manejo de errores
 from django.contrib import messages
@@ -45,8 +46,13 @@ def registrarComponente(request):
 def eliminarComponente(request, id_componente):
   registro = get_object_or_404(Componente, pk= id_componente)
   if request.method == 'POST':
-    registro.estado = False
-    registro.save()
+    idcomponente = registro.idcomponente
+    det = DetalleComponente.objects.filter(idcomponente_id=idcomponente)
+    print(det)
+    det.estado = False
+    Componente.objects.filter(idcomponente=idcomponente).update(estado = False)
+    messages.success(request, 'Componente eliminado con exito', extra_tags='success')
+
     return redirect('componente')
   
 def editarComponente(request, id_componente):
@@ -54,7 +60,6 @@ def editarComponente(request, id_componente):
   form = ComponenteForms(request.POST, instance=sistema)
   form.save()
   return redirect('componente')
-
 
 def obtenerDatos(request, id_componente):
   componentes = list(Componente.objects.filter(pk=id_componente).values())
@@ -66,7 +71,10 @@ def obtenerDatos(request, id_componente):
   return JsonResponse(data)
 
 def obtenerPiezas(request, id_componente):
-  piezas = list(DetalleComponente.objects.filter(idcomponente_id=id_componente).values())
+  #PARA OBTENER MAS ESPECIFICA LA CONSULTA
+  piezas = list(DetalleComponente.objects.filter(idcomponente_id=id_componente).annotate(
+    pieza = F('idpieza__pieza'),
+  ). values('pieza','cantidad'))
   if(len(piezas) > 0):
     data = {'mensaje': "Success", 'piezas': piezas}
   else:
