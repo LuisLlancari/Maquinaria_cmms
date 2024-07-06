@@ -33,10 +33,6 @@ def programacion(request):
         #Obtenemos el idusuario
         usuario_id = request.user.id
 
-        #tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
-        #tractor = Tractor.objects.filter(estado = True, estado_actividad = True)
-        #implementos = Implemento.objects.filter(estado = True, estado_actividad = True)
-
         fundos = Fundo.objects.filter(estado = True)
         lotes = Lote.objects.filter(estado = True)
         detalles = DetalleLabor.objects.filter(estado = True, idprogramacion__idusuario = usuario_id)
