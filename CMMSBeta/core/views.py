@@ -90,7 +90,7 @@ def datos_grafico(request, fecha, supervisor, turnos):
 def datos_tabla(request, fecha, supervisor, turno):
   # Definir el filtro para tractores
     filtro_tractores = {'estado': True}
-    filtro_programacion = {'fechahora': fecha, 'turno': turno, 'idtractor__estado': True}
+    filtro_programacion = {'fechahora': fecha, 'turno': turno}
 
     if supervisor != 0:
         filtro_tractores['idsupervisor'] = supervisor
@@ -102,12 +102,9 @@ def datos_tabla(request, fecha, supervisor, turno):
 
     # Obtener los fundos de tractores y contar cuántos tractores hay en cada fundo
     info_fundos = tractores_usuario.values('idtractor__idfundo__fundo', 'idtractor__idfundo').annotate(total_tractores=Count('idtractor__idfundo'))
-
+    
     # Obtener los tractores programados en la fecha y turno especificados en los fundos relacionados al usuario
-    tractores_programados = Programacion.objects.filter(**filtro_programacion).values('idtractor__idtractor__idfundo__fundo').annotate(total_tractores_programados=Count('idtractor')).values()
-
-    # Depuración: imprimir los resultados de tractores programados
-    print("tractores_programados:", list(tractores_programados))
+    tractores_programados = Programacion.objects.filter(**filtro_programacion).annotate(total_tractores_programados=Count('idtractor')).values('total_tractores_programados','idtractor__idtractor__idfundo__fundo')
 
     # Colocar la información en la lista
     resultado = []
