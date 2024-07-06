@@ -2,6 +2,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from operarios.models import Tractorista
 from implemento.models import Implemento, ImplementoSupervisor
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 from django.contrib import messages
 from programacion_labor.models import Programacion, DetalleLabor
 from ..forms import ReporteTractorForm, ReporteTractor, Tractor, TractorSupervisor
@@ -89,9 +91,17 @@ def registrarReporte(request):
 
 @login_required(login_url='login', redirect_field_name='')
 def obtenerHorainicial(request, id_tractor):
-    tractor = list(Tractor.objects.filter(pk = id_tractor).values('horainicial'))
-    if (len(tractor) >0) :
-        data = {'mensaje': "Success", 'tractor': tractor}
+
+    datos = list(Programacion.objects.filter(idprogramacion = id_tractor).annotate(
+        fundo = Concat(F('idlote__idfundo__fundo'),Value(' '),F('idlote__lote')),
+        labor = F('idtipolabor__tipolabor'),
+        tractor = F('idtractor__idtractor__nrotractor'),
+        horainicial = F('idtractor__idtractor__horainicial'),
+        fecha = F('fechahora')
+    ).values('fundo','labor','tractor','fecha','horainicial'))
+
+    if (len(datos) >0) :
+        data = {'mensaje': "Success", 'tractor': datos}
     else:
         data = {'mensaje':"Not found"}
     return JsonResponse(data)

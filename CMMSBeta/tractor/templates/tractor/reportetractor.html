@@ -64,7 +64,7 @@
                     <p class="mt-2 mb-0 fw-bold tractor" style="display: none;">{{ dato.idtractor.nrotractor }}</p>
                 </div>
                 {% if user.idrol.rol != "Gerencia" %}
-                    <button class="btn btn-primary mt-3 finalizar" data-bs-toggle="modal" data-bs-target="#moda-programacion" data-programacion="{{ dato.idprogramacion }}" data-tractor="{{ dato.idtractor_id }}">Finalizar Reporte</button>
+                    <button class="btn btn-primary mt-3 finalizar" data-bs-toggle="modal" data-bs-target="#moda-programacion" data-programacion="{{ dato.idprogramacion }}" data-tractor="{{ dato.idprogramacion }}">Finalizar Reporte</button>
                 {% endif %}
             </div>
         </div>
@@ -82,6 +82,15 @@
             <form action="{% url 'registrar_reporte' %}" id="form-modal" method="POST">
                 <div class="modal-body">
                     {% csrf_token %}
+                    <div class="" id="detalle-modal">
+                        <div class="col col-md-6">
+                          <p><strong>Implemento: </strong> dsadad</p>
+                          <p><strong>Código del Implemento:</strong> ADDSD  </p>
+                        </div>
+                        <div class="col col-md-6">
+                          <p><strong>Fecha del Ingreso:</strong></p>
+                        </div>
+                    </div>
 
                     <label for="txtHorometroinicial" class="form-label mt-1">Horometro tractor Inicial:</label>
                     <input type="text" name="horometroini" class="form-control" id="txtHorometroinicial" required readonly>
@@ -127,24 +136,63 @@
             }
         }, 3000);
 
-        selectUsuario.addEventListener("change", function() {
-            const usuarioSeleccionado = this.value;
+        function filtrarCards() {
+            const usuarioSeleccionado = selectUsuario.value;
+            const fechaSeleccionada = btnFecha.value;
+
             cards.forEach(card => {
                 const idUsuarioCard = card.querySelector(".idususario").textContent.trim();
-                if (usuarioSeleccionado === idUsuarioCard || usuarioSeleccionado === '') {
+                const cardDate = card.getAttribute('data-fecha');
+
+                const coincideUsuario = usuarioSeleccionado === idUsuarioCard || usuarioSeleccionado === '';
+                const coincideFecha = fechaSeleccionada === cardDate || !fechaSeleccionada;
+
+                if (coincideUsuario && coincideFecha) {
                     card.style.display = "block";
                 } else {
                     card.style.display = "none";
                 }
             });
+        }
+
+        selectUsuario.addEventListener('change', filtrarCards);
+        btnFecha.addEventListener('change', filtrarCards);
             
-        });
+        function rederizarDetalleModal(datos){
+            let detModal = document.getElementById('detalle-modal');
+            detModal.innerHTML = '';
+            datos.forEach(dato => {
+                console.log(dato);
+                let render = `
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p><strong>Tractor:</strong> ${dato.tractor}<br></p>
+                    </div>
+                    <div class="col col-md-6">
+                        <p><strong>Fundo:</strong> ${dato.fundo}<br></p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col col-md-6">
+                        <p><strong>Fecha programación:</strong> ${dato.fecha}<br></p>
+                    </div>
+                    <div class="col col-md-6">
+                        <p><strong>Tipo Labor:</strong> ${dato.labor}<br></p>
+                    </div>
+                </div>
         
-        
+                `; 
+                detModal.innerHTML += render;
+            });
+        }
+
         function obtener_horainicial(id){
             fetch(`./reportetractor/obtenerhinicial/${id}`)
             .then(res => res.json())
             .then(datos => {
+                console.log(datos.tractor[0])
+                rederizarDetalleModal(datos.tractor)
                 txtHorometroinicial.value = datos.tractor[0].horainicial
                 horometrofinal = parseInt(txtHorometroinicial.value) + 15
                 id_horometrofinal.setAttribute("max", horometrofinal)
@@ -163,19 +211,6 @@
                 txtProgramacion.value = id_programacion
                 obtener_horainicial(id_tractor);
             });          
-        });
-
-        btnFecha.addEventListener('change', function() {
-             var selectedDate = this.value;
-            cards.forEach(function(card) {
-            var cardDate = card.getAttribute('data-fecha');
-            console.log(cardDate)
-            if (selectedDate === cardDate || !selectedDate) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-            }) ;
         });
 
         btnGuardar.addEventListener("click", function(event) {
