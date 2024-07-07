@@ -49,6 +49,8 @@ def programacion(request):
             pk=Subquery(subquery.values('pk'))
         ).order_by('-idprogramacion__fechahora')
 
+        print(detalles_unicos)
+
         #LISTA DE USUARIO PARA EL SELECT 
         usuario = Usuario.objects.filter(idrol = 3, is_active = 1)
 

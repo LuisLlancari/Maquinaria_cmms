@@ -73,24 +73,30 @@
       <td>{{dato.idimplemento.idimplemento.idtipoimplemento.frecuencia_man}}</td>
 
       {% if dato.tipomantenimiento == 1 %}
-      <td class="preventivo" style="background-color: #3498DB;">
-        <strong>
+      <td class="preventivo">
+        <strong style="color: #3498DB;">
           Preventivo
         </strong>
       </td>
       {% else %}
-      <td class="correctivo" style="background-color: #E74C3C;">
-        <strong>
+      <td class="correctivo">
+        <strong style="color: #E74C3C;">
           Correctivo
         </strong>
       </td>
       {% endif %}
 
       {% if dato.fechaprogramacion %}
-      <td>{{dato.fechaprogramacion}}</td>
+      <td>
+        <strong>
+          {{dato.fechaprogramacion}}
+        </strong>
+      </td>
       {% else %}
       <td>
-        <button class="btn btn-warning d-inline-block registrar" id="registrar-fecha" data-id="{{dato.idprogramacionmantenimiento}}" data-imple_nombre="{{dato.idimplemento.implemento}}" data-idprogramacion="{{dato.idprogramacionmantenimiento}}"  data-bs-toggle="modal" data-bs-target="#registro_fecha">Programar Fecha</button>
+        <button class="btn btn-success d-inline-block registrar" id="registrar-fecha" data-id="{{dato.idprogramacionmantenimiento}}" data-imple_nombre="{{dato.idimplemento.idimplemento}}" data-idprogramacion="{{dato.idprogramacionmantenimiento}}"  data-bs-toggle="modal" data-bs-target="#registro_fecha">
+          <strong>Programar Fecha</strong>
+        </button>
       </td>
       {% endif %}
 
@@ -104,33 +110,33 @@
         <td>
           <form action="{% url 'eliminar_programacion_mantenimiento' dato.idprogramacionmantenimiento%}" class="d-inline-block w-100" method="POST">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger btn-md w-100"><strong>Eliminar</strong></button>
+            <button type="submit" class="btn btn-danger " title="Eliminar"><i class="lni lni-trash-can"></i></button>
           </form> 
         </td>
         <!--Mantenimiento Preventivo-->
         {% elif dato.tipomantenimiento == 1 %}
           {% if dato.fechaprogramacion is null %}
           <td>
-            <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha" disabled><strong>Editar Fecha</strong></button>
+            <button class="btn btn-info  editar" id="editar_fecha" title="Editar Fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha" disabled><i class="lni lni-pencil"></i></button>
           </td>
           {% else %}
           <td>
-            <button class="btn btn-info btn-md w-100 editar" id="editar_fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha"><strong>Editar Fecha</strong></button>
+            <button class="btn btn-info  editar" id="editar_fecha" title="Editar Fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha"><i class="lni lni-pencil"></i></button>
           </td>
           {% endif %}
         {% endif %}
 
       {% elif dato.estado_mantenimiento == 1 %}
       <td>
-        <button class="btn btn-secondary btn-md w-100" id="aceptado" disabled><strong>En proceso</strong></button>
+        <button class="btn btn-secondary " title="Fue aceptado" id="aceptado" disabled><i class="lni lni-spinner-solid"></i></button>
       </td>
       {% elif dato.estado_mantenimiento == 2 %}
       <td>
-        <button class="btn btn-warning btn-md w-100 finalizado" id="finalizado" data-idprogramacion="{{ dato.idprogramacionmantenimiento }}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento" ><strong>Ver diagnostico</strong"></button>
+        <button class="btn btn-warning  finalizado" title="Ver Información" id="finalizado" data-idprogramacion="{{ dato.idprogramacionmantenimiento }}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento" ><i class="lni lni-eye"></i></button>
       </td>
       {% else %}
       <td>
-        <button class="btn btn-secondary btn-md w-100" id="aceptado" disabled><strong>Error</strong></button>
+        <button class="btn btn-secondary " id="aceptado" disabled><strong>Error</strong></button>
       </td>
       {% endif %}
 
@@ -317,6 +323,7 @@
         let idprog = this.dataset.idprogramacion;
 
         console.log(id_programacion_mantenimiento)
+        console.log(imple_nombre)
         formModal.setAttribute("action", `./programacion/registrar_fecha/${id_programacion_mantenimiento}`)
 
         document.getElementById('label_implemento').innerHTML = `Motivos del mantenimiento ${imple_nombre} :`;
@@ -328,49 +335,58 @@
     });
 
     btnCloneMotivos.addEventListener('click', () => {
+      const selectedValues = Array.from(document.querySelectorAll('#selectMotivos')).map(select => select.value);
+
       let clone = `
-            <div id="motivos-container" class="mt-3">
-              <div class="contenedor-motivos">
-                <div class="row mb-3">
-                  <div class="col-md-9">
-                    <select name="idmotivo" id="selectMotivos" class="form-control mt-3" required>
-                      <option value="">-------------------------------------</option>
-                      {% for dato in acciones %}
-                        <option value="{{dato.idaccion}}">{{dato.accion}}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                  <div class="col-md-3 mt-3">
-                    <button type="button" class="btn btn-danger btn-remove">Eliminar</button>
-                  </div>
+        <div id="motivos-container" class="mt-3">
+          <div class="contenedor-motivos">
+            <div class="row mb-3">
+              <div class="col-md-9">
+                <select name="idmotivo" id="selectMotivos" class="form-control mt-3" required>
+                  <option value="">-------------------------------------</option>
+                  {% for dato in acciones %}
+                    <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+                  {% endfor %}
+                </select>
               </div>
-            </div>
+              <div class="col-md-3 mt-3">
+                <button type="button" class="btn btn-danger btn-remove">Eliminar</button>
+              </div>
+          </div>
+        </div>
       `
 
       comienza.innerHTML += clone;
+      document.querySelectorAll('#selectMotivos').forEach((select, index) => {
+        select.value = selectedValues[index] || '';
+      });
     });
 
     btnCloneMotivos2.addEventListener('click', () => {
+      const selectedValues = Array.from(document.querySelectorAll('#selectMotivos')).map(select => select.value);
       let clone = `
-            <div id="motivos-container" class="mt-3">
-              <div class="contenedor-motivos">
-                <div class="row mb-3">
-                  <div class="col-md-9">
-                    <select name="idmotivo" id="selectMotivos" class="form-control mt-3" required>
-                      <option value="">-------------------------------------</option>
-                      {% for dato in acciones %}
-                        <option value="{{dato.idaccion}}">{{dato.accion}}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                  <div class="col-md-3 mt-3">
-                    <button type="button" class="btn btn-danger btn-remove">Eliminar</button>
-                  </div>
+        <div id="motivos-container" class="mt-3">
+          <div class="contenedor-motivos">
+            <div class="row mb-3">
+              <div class="col-md-9">
+                <select name="idmotivo" id="selectMotivos" class="form-control mt-3" required>
+                  <option value="">-------------------------------------</option>
+                  {% for dato in acciones %}
+                    <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+                  {% endfor %}
+                </select>
               </div>
-            </div>
+              <div class="col-md-3 mt-3">
+                <button type="button" class="btn btn-danger btn-remove">Eliminar</button>
+              </div>
+          </div>
+        </div>
       `
 
       comienza2.innerHTML += clone;
+      document.querySelectorAll('#selectMotivos').forEach((select, index) => {
+        select.value = selectedValues[index] || '';
+      });
     });
 
     document.addEventListener('click', (event) => {
@@ -411,6 +427,14 @@
           document.querySelector('#idprogramacion1').value = idprogMantenimiento
         });
       });
+
+    setTimeout(function() {
+      var errorMessage = document.getElementById('message');
+
+      if (errorMessage ) {
+          errorMessage.style.display = 'none';
+      }
+    },5000);
 
   });
 </script>

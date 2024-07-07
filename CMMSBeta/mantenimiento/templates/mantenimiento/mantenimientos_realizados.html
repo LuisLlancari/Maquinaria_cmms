@@ -237,11 +237,11 @@
               <tr>
                 <th colspan="4">Información de las Tareas</th>
               </tr>
-              ${detalle_mantenimiento.map(tarea => `
               <tr>
                 <td colspan="2"><strong>Tarea</strong></td>
                 <td colspan="2"><strong>Estado</strong></td>
-              </tr>
+                </tr>
+              ${detalle_mantenimiento.map(tarea => `
               <tr>
                 <td colspan="2">${tarea.tareas}</td>
                 <td colspan="2">${tarea.completado ? 'Completada' : 'No Completada'}</td>
@@ -250,11 +250,11 @@
               <tr>
                 <th colspan="4">Información de los recambios</th>
               </tr>
-              ${detalle_recambio.length > 0 ? detalle_recambio.map(recambio => `
               <tr>
                 <td colspan="2"><strong>Item</strong></td>
                 <td colspan="2"><strong>Código</strong></td>
-              </tr>
+                </tr>
+              ${detalle_recambio.length > 0 ? detalle_recambio.map(recambio => `
               <tr>
                 <td colspan="2">${recambio.item}</td>
                 <td colspan="2">${recambio.codigo}</td>
