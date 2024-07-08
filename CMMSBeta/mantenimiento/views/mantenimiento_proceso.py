@@ -156,12 +156,18 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
     ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 2, estado = 0)
     # activamos el implemento 
-    implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.idimplemento
-    frecuencia_mantenimiento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.idtipoimplemento.frecuencia_man
-    proximo_mantenimiento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.proximo_mantenimiento
-    nuevo_mantenimiento = proximo_mantenimiento + frecuencia_mantenimiento
+    busqueda = ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion, tipomantenimiento = 1).exists()
+    if busqueda == True:
     
-    Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 1, proximo_mantenimiento = nuevo_mantenimiento ) 
+      implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.idimplemento
+      frecuencia_mantenimiento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.idtipoimplemento.frecuencia_man
+      proximo_mantenimiento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.proximo_mantenimiento
+      nuevo_mantenimiento = proximo_mantenimiento + frecuencia_mantenimiento
+      
+      Implemento.objects.filter(idimplemento = implemento).update(estado_actividad = 1, proximo_mantenimiento = nuevo_mantenimiento )
+      print("El mantenimiento es Preventivo")
+    else:
+      print("El mantenimiento es correctivo")   
     
   return redirect('mantenimiento_proceso')
 
