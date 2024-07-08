@@ -21,7 +21,7 @@ def programacion_mantenimiento(request):
     rol = request.user.idrol.rol
     if rol == "Supervisor":
 
-        datos = ProgramacionMantenimiento.objects.filter(idimplemento__idsupervisor = usuario_id)
+        datos = ProgramacionMantenimiento.objects.filter(idimplemento__idsupervisor = usuario_id).order_by('-fechaprogramacion')
         acciones = Acciones.objects.filter(estado__in=[0, 2])
         implementos = ImplementoSupervisor.objects.filter(estado = True, idsupervisor = usuario_id)
         tipoimplementos = TipoImplemento.objects.filter(estado = True)

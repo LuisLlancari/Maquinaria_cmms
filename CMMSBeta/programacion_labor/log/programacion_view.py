@@ -57,7 +57,7 @@ def programacion(request):
         # Pasamos los datos al contexto
         contexto = {
             'cantidad'          : cantidad_tractores_hoy ,
-            'fecha'             : hoy, 
+            'fecha'             : hoy,  
             'detalle'           : detalles_unicos, 
             'idusuario'         : usuario_id, 
             'lista_usuarios'    : usuario ,

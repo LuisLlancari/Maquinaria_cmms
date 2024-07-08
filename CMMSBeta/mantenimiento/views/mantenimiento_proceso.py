@@ -36,7 +36,7 @@ def datos_mantenimiento(request):
     'apellidos',
     'fechaingreso',
     'estado'
-    ))
+    ).order_by('-idmantenimiento'))
 
   tareas = list(Acciones.objects.filter(estado = 0).values('idaccion','accion'))
 
