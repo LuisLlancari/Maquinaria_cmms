@@ -15,16 +15,38 @@
 </style>
 </style>
 </style>
-<h1 class="text-center"> Finalizar mantenimientos</h1>
+<h1 class="text-center">Mantenimientos Pendientes</h1>
 
-<div class="container">
-  <div class="row" id="cards-mantenimiento">
-
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-2"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento preventivo</strong>
   </div>
+</div>
 
-  <div id="no_resultados" class="alert alert-danger text-center" style="display: none;">
-    No hay mantenimientos por realizar
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-3"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento correctivo</strong>
   </div>
+</div>
+
+<div class="row">
+  <div class="col col-md-2">
+    <select name="" id="filtro_mantenimiento" class="form-select">
+      <option value="">Todo:</option>
+      <option value="1">Preventivo:</option>
+      <option value="0">Correctivo:</option>
+    </select>
+  </div>
+</div>
+
+<div class="row mt-3" id="cards-mantenimiento">
+
+</div>
+
+<div id="no_resultados" class="alert alert-danger text-center" style="display: none;">
+  No hay mantenimientos por realizar
 </div>
 
 
@@ -550,6 +572,33 @@
             datos_mantenimiento = datos.mantenimientos
 
             renderizarMantenimientos(datos_filtrados);   
+            filtro = document.getElementById('filtro_mantenimiento')
+            let prueba2 = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
+            renderizarMantenimientos(prueba2);
+
+            filtro.addEventListener('change', function(){
+              let value = filtro.value
+              console.log(value)
+              if(value == ''){
+                let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
+                renderizarMantenimientos(prueba); 
+              }
+              else if(value == '1'){
+                let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.tipomantenimiento == 1 && mantenimiento.estado == 1);
+                renderizarMantenimientos(prueba);
+              }
+              else if(value == '0'){
+                let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.tipomantenimiento == 0 && mantenimiento.estado == 1);
+                renderizarMantenimientos(prueba);
+              }
+              
+            })
+
+
+            
+            datos_mantenimiento = datos.mantenimientos
+
+              
         })
         .catch((error) => {
             console.log(error);
@@ -588,20 +637,23 @@
         datos.forEach(mantenimiento => {
       
           let nuevacard = `
-          <div class="col col-md-4">
-            <div class="card border-success mb-3" >
-              <div class="card-header bg-transparent border-success text-center">Mantenimiento ${mantenimiento.idmantenimiento}</div>
-                <div class="card-body text-success">
-                  <h5 class="card-text text-center fw-bold"></h5>
-                  <p class="card-text text-success m-0 fs-5"><strong>Implemento: </strong> ${mantenimiento.implemento}</p>
-                  <p class="card-text text-success m-0 fs-5"><strong>Codigo:  </strong> ${mantenimiento.cod_implemento}</p>
-                  <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong> ${mantenimiento.fecha_programada }</p>
-                  <p class="card-text text-success m-0 fs-5"><strong>Fecha Ingreso:</strong> ${mantenimiento.fechaingreso}</p>
-                  </div>
-                  <div class="card-footer bg-transparent border-success">
-                    <button class="btn btn-primary mt-1 finalizar-mantenimiento" data-idmantenimiento="${mantenimiento.idmantenimiento}" data-idprogramacion="${mantenimiento.idprogramacion}" data-idimplemento="${mantenimiento.idimplemento}" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
-                  </div>
+          <div class="col col-md-3 mt-2">
+            <div class="card ${mantenimiento.tipomantenimiento ? 'border-primary' : 'border-danger'} border-primary shadow p-6 bg-white rounded">
+              <div class="card-header ${mantenimiento.tipomantenimiento ? 'bg-primary' : 'bg-danger'} text-center">
+                <strong class="text-white">
+                  Mantenimiento #${mantenimiento.idmantenimiento}
+                </strong>
+              </div>
+              <div class="card-body">
+                <p class="card-text m-0"><strong>Implemento: </strong> ${mantenimiento.implemento}</p>
+                <p class="card-text m-0"><strong>Código:  </strong> ${mantenimiento.cod_implemento}</p>
+                <p class="card-text m-0"><strong>Fecha Programación:</strong> ${mantenimiento.fecha_programada  }</p>
+                <p class="card-text m-0"><strong>Fecha Ingreso:</strong> ${mantenimiento.fechaingreso}</p>
                 </div>
+                <div class="card-footer bg-transparent ${mantenimiento.tipomantenimiento ? 'border-primary' : 'border-danger'} d-flex justify-content-center">
+                  <button class="btn ${mantenimiento.tipomantenimiento ? 'btn-primary' : 'btn-danger'} mt-1 finalizar-mantenimiento" data-idmantenimiento="${mantenimiento.idmantenimiento}" data-idprogramacion="${mantenimiento.idprogramacion}" data-idimplemento="${mantenimiento.idimplemento}" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
+                </div>
+              </div>
             </div>
           </div>
           `;
@@ -635,8 +687,6 @@
       }
 
     }
-
-  
     obtenerMantenimientos();
 
   }); // Fin del DOM

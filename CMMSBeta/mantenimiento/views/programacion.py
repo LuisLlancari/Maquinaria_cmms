@@ -21,7 +21,7 @@ def programacion_mantenimiento(request):
     rol = request.user.idrol.rol
     if rol == "Supervisor":
 
-        datos = ProgramacionMantenimiento.objects.filter(idimplemento__idsupervisor = usuario_id)
+        datos = ProgramacionMantenimiento.objects.filter(idimplemento__idsupervisor = usuario_id).order_by('-fechaprogramacion')
         acciones = Acciones.objects.filter(estado__in=[0, 2])
         implementos = ImplementoSupervisor.objects.filter(estado = True, idsupervisor = usuario_id)
         tipoimplementos = TipoImplemento.objects.filter(estado = True)
@@ -47,7 +47,11 @@ def registrar_fecha(request, id_implemento):
         programacion.save()
 
         for idmotivo in motivos:
-            DetMotivos.objects.create(idprogramacionmantenimiento_id = id_implemento, idaccion_id = idmotivo)
+            if DetMotivos.objects.filter(idprogramacionmantenimiento_id = id_implemento, idaccion_id = idmotivo).exists():
+                motivo = Acciones.objects.get(pk = idmotivo)
+                messages.error(request, f"El motivo {motivo} ya registrado", extra_tags='danger')
+            else:
+                DetMotivos.objects.create(idprogramacionmantenimiento_id = id_implemento, idaccion_id = idmotivo)
 
     return redirect('programacion_mantenimiento')
 
@@ -58,10 +62,27 @@ def registrar(request):
         fecha = request.POST.get('fecha_programacion')
         motivos = request.POST.getlist('idmotivo')
         # tipo_mantnimiento = 0 : Correctivo
-        nueva_programacion =  ProgramacionMantenimiento.objects.create(idimplemento_id = implemento, fechaprogramacion = fecha, tipomantenimiento = 0)
+        buscarprogramacion = ProgramacionMantenimiento.objects.filter(idimplemento_id = implemento, tipomantenimiento = 0, estado_mantenimiento = 0, estado = 1).exists()
+        programacion = ProgramacionMantenimiento.objects.filter(idimplemento_id = implemento, tipomantenimiento = 0, estado_mantenimiento = 1, estado = 1).exists()
+        
+        #true
+        #print(buscarmantenimiento) 
+        if buscarprogramacion == True:
+            messages.error(request, 'La el implemetento ya se encuentra programado', extra_tags='danger')
+            return redirect('programacion_mantenimiento')     
+        elif programacion == True:
+            messages.error(request, 'La el implemetento ya esta en un mantenimiento', extra_tags='danger')
+            return redirect('programacion_mantenimiento')
+        else:
+            nueva_programacion =  ProgramacionMantenimiento.objects.create(idimplemento_id = implemento, fechaprogramacion = fecha, tipomantenimiento = 0)
 
-        for idmotivo in motivos:
-            DetMotivos.objects.create(idprogramacionmantenimiento_id = nueva_programacion.idprogramacionmantenimiento , idaccion_id = idmotivo)
+            for idmotivo in motivos:
+                if DetMotivos.objects.filter(idprogramacionmantenimiento_id = nueva_programacion.idprogramacionmantenimiento, idaccion_id = idmotivo).exists():
+                    motivo = Acciones.objects.get(pk = idmotivo)
+                    messages.error(request, f"El motivo {motivo} ya registrado", extra_tags='danger')
+                else:
+                    DetMotivos.objects.create(idprogramacionmantenimiento_id = nueva_programacion.idprogramacionmantenimiento, idaccion_id = idmotivo)
+                    messages.success(request, 'La programación se ha creado exitosamente', extra_tags='success')
 
     return redirect('programacion_mantenimiento')
 

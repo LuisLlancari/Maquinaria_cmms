@@ -239,82 +239,88 @@
                         </div>
                         
                         <hr>
-
-                        <strong class="text-center">Supervisor:</strong>
-
-                        <div class="row mt-2">
-                            
-                            <div class="col-md-4">
-                                <div class="row mt-2">
-                                    <div class="col-md-8">
-                                        <select name="usuario_id" class="form-select" id="usuario_id">
-                                            {% for supervisor in lista_usuarios %}
-                                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-2 mt-2">
-                                    <div class="col-md-8">
-                                        <strong for="idimplemento" >Lista de implementos a usar:</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button type="button" class="btn btn-success float-end" id="btn-agregar">
-                                            Agregar
-                                        </button>
-                                    </div>
-
-                                    <select name="idimplemento" class="form-select mb-2" id="id_idimplemento" required>
-                                    </select>
-
-                                    <div class="implementos">
-                                        <div class="implemento-item">
-                                            <select id="id_idimplemento">
-                                                <!-- Opciones serán añadidas aquí -->
+                        <div class="row">
+                            <div class="col-md-4" style="background-color: #85929E;">
+                                <strong class="text-center">Supervisor:</strong>
+                                <div class="col-md-12" >
+                                    <div class="row mt-2">
+                                        <div class="col-md-8">
+                                            <select name="usuario_id" class="form-select" id="usuario_id">
+                                                {% for supervisor in lista_usuarios %}
+                                                <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
+                                                {% endfor %}
                                             </select>
                                         </div>
                                     </div>
-                                    
+                                    <div class="row mb-2 mt-2">
+                                        <div class="col-md-8">
+                                            <strong for="idimplemento" >Lista de implementos a usar:</strong>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button type="button" class="btn btn-success float-end" id="btn-agregar">
+                                                Agregar
+                                            </button>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <select name="idimplemento" class="form-select mb-2" id="id_idimplemento" required></select>
+                                            </div>
+                                        </div>
+    
+                                        <div class="implementos">
+                                            <div class="implemento-item">
+                                                <select id="id_idimplemento">
+                                                    <!-- Opciones serán añadidas aquí -->
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="col-md-4">                            
-                                <div class="row mt-2">
-                                    <div class="col-md-8">
-                                        <select name="usuario_id" class="form-select" id="usuario_id_2" required>
-                                            {% for supervisor in lista_usuarios %}
-                                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
-                                            {% endfor %}
-                                        </select>
+                            <div class="col-md-4" style="background-color: #BFC9CA;">
+                                <strong for="idimplemento" >Supervisor:</strong>
+                                <div class="col-md-12" >                            
+                                    <div class="row mt-2">
+                                        <div class="col-md-8">
+                                            <select name="usuario_id" class="form-select" id="usuario_id_2" required>
+                                                {% for supervisor in lista_usuarios %}
+                                                <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row mb-2 mt-2">
-                                    <strong for="idimplemento" >Selecione el Tractor:</strong>
-                                    <div class="mt-4">
-                                        <select name="idtractor" id="id_idtractor" class="form-select" required>
-                                            <option value="">---------</option>
-                                        </select>
+                                    <div class="row mb-2 mt-2">
+                                        <strong for="idimplemento" >Selecione el Tractor:</strong>
+                                        <div class="mt-4">
+                                            <select name="idtractor" id="id_idtractor" class="form-select" required>
+                                                <option value="">---------</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">                            
-                                <div class="row mt-2">
-                                    <div class="col-md-8">
-                                        <select name="usuario_id" class="form-select" id="usuario_id_3" required>
-                                            {% for supervisor in lista_usuarios %}
-                                            <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
-                                            {% endfor %}
-                                        </select>
+                            <div class="col-md-4" style="background-color: #85929E;" >
+                                <strong for="idimplemento" >Supervisor:</strong>
+                                <div class="col-md-12" >                            
+                                    <div class="row mt-2">
+                                        <div class="col-md-8">
+                                            <select name="usuario_id" class="form-select" id="usuario_id_3" required>
+                                                {% for supervisor in lista_usuarios %}
+                                                <option value="{{ supervisor.id }}">{{ supervisor.first_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row mb-2 mt-2">
-                                    <strong for="idimplemento">Selecione al Tractorista:</strong>
-                                    <div class="mt-4">
-                                        <select name="idtractorista" id="id_idtractorista" class="form-select" required>                                   
-                                        </select>
+                                    <div class="row mb-2 mt-2">
+                                        <strong for="idimplemento">Selecione al Tractorista:</strong>
+                                        <div class="mt-4">
+                                            <select name="idtractorista" id="id_idtractorista" class="form-select" required>                                   
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>                            
+                                </div>  
+                            </div>
                         </div>
 
                         <div class="modal-footer">

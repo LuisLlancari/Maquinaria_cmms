@@ -81,18 +81,21 @@
                 <!-- Para Mecanico -->
                 <li class="sidebar-item">
                     <a href="{% url 'mantenimiento_pendiente' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-list"></i>
                         <span class="text-uppercase">Aceptar Ingreso</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item">
                     <a href="{% url 'mantenimiento_proceso' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-pencil"></i>
                         <span class="text-uppercase">Finalizar Mantenimientos</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item">
                     <a href="{% url 'mantenimientos_realizados' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-files"></i>
                         <span class="text-uppercase">Historial Manteniento</span>
                     </a>
                 </li>
@@ -241,11 +244,10 @@
                     </a>
                     <ul id="implemento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                             <li class="sidebar-item">
-                                <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
-                            </li>
-
-                            <li class="sidebar-item">
                                 <a href="{% url 'tipoimplemento' %}" class="sidebar-link" data-path="login">Tipo implemento</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
                             </li>
                             <li class="sidebar-item">
                                 <a href="{% url 'asignar_supervisor_implemento' %}" class="sidebar-link" data-path="login">Asignar supervisor</a>

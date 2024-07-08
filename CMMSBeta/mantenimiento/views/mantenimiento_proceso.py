@@ -36,7 +36,7 @@ def datos_mantenimiento(request):
     'apellidos',
     'fechaingreso',
     'estado'
-    ))
+    ).order_by('-idmantenimiento'))
 
     
   
@@ -154,7 +154,7 @@ def finalizar_mantenimiento(request, id_mantenimiento):
     mantenimiento.save()
 
     programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
-    ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 2)
+    ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 2, estado = 0)
     # activamos el implemento 
     implemento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.idimplemento
     frecuencia_mantenimiento =mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.idtipoimplemento.frecuencia_man

@@ -3,18 +3,37 @@
 {% block titulo %}Implementos Ingreso{% endblock%}
 
 {% block contenido %} 
-<div class="container">
-  <h1 class="text-center">Ingreso de implemento</h1>
-  <!-- filtros -->
-  <div class="row"></div>
-  <!-- fin filtro -->
-
-  <div class="container">
-    <div class="row" id="contenido-cards"></div>
-    <div id="no-results-message" class="alert alert-danger text-center" style="display: none;">
-      No hay implementos por aceptar
-    </div>
+<h1 class="text-center">Ingreso de implemento a Mantenimiento</h1>
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-2"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento preventivo</strong>
   </div>
+</div>
+
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-3"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento correctivo</strong>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col col-md-2">
+    <select name="" id="filtro_mantenimiento" class="form-select">
+      <option value="">Todo:</option>
+      <option value="1">Preventivo:</option>
+      <option value="0">Correctivo:</option>
+    </select>
+  </div>
+</div>
+<!-- filtros -->
+<div class="row"></div>
+<!-- fin filtro -->
+
+<div class="row" id="contenido-cards"></div>
+<div id="no-results-message" class="alert alert-danger text-center mt-2" style="display: none;">
+  No hay implementos por aceptar
 </div>
 
 <script>
@@ -53,20 +72,22 @@
         noResultsMessage.style.display = 'none';
         datos.forEach(pendiente => {
           let nuevaCard = `
-          <div class="col col-md-4">
-            <div class="card border-success mb-3" >
-              <div class="card-header bg-transparent border-success text-center">Mantenimiento ${pendiente.idmantenimiento}</div>
-                <div class="card-body text-success">
-                  <h5 class="card-text text-center fw-bold"></h5>
-                  <p class="card-text text-success m-0 fs-5"><strong>Implemento: </strong> ${pendiente.implemento}</p>
-                  <p class="card-text text-success m-0 fs-5"><strong>Codigo:  </strong> ${pendiente.cod_implemento}</p>
-                  <p class="card-text text-success m-0 fs-5"><strong>Fecha Programacion:</strong> ${pendiente.fecha_programada}</p>
-                </div>
-                <div class="card-footer bg-transparent border-success">
-                  <form>
-                    <button class="btn btn-primary mt-1 w-100 confirmar" data-id="${pendiente.idmantenimiento}">Confirmar Llegada</button>
-                  </form>
-                </div>
+          <div class="col col-md-3 mt-2">
+            <div class="card ${pendiente.tipomantenimiento ? 'border-primary' : 'border-danger'} border-primary shadow p-6 bg-white rounded">
+              <div class="card-header ${pendiente.tipomantenimiento ? 'bg-primary' : 'bg-danger'} text-center">
+                <strong class="text-white">
+                  Mantenimiento #${pendiente.idmantenimiento}
+                </strong>
+              </div>
+              <div class="card-body">
+                <p class="card-text m-0"><strong>Implemento: </strong> ${pendiente.implemento}</p>
+                <p class="card-text m-0"><strong>Codigo:  </strong> ${pendiente.cod_implemento}</p>
+                <p class="card-text m-0"><strong>Fecha Programacion:</strong> ${pendiente.fecha_programada}</p>
+              </div>
+              <div class="card-footer bg-transparent ${pendiente.tipomantenimiento ? 'border-primary' : 'border-danger'}">
+                <form>
+                  <button class="btn ${pendiente.tipomantenimiento ? 'btn-primary' : 'btn-danger'} mt-1 w-100 confirmar" data-id="${pendiente.idmantenimiento}">Confirmar Llegada</button>
+                </form>
               </div>
             </div>
           </div>
@@ -95,7 +116,26 @@
       })
       .then(res => res.json())
       .then(datos => {
+        filtro = document.getElementById('filtro_mantenimiento')
         rederizarMantenimientosPendientes(datos.mantenimiento);
+
+        filtro.addEventListener('change', function(){
+          let value = filtro.value
+          console.log(value)
+          if(value == ''){
+            let prueba = datos.mantenimiento.filter(mantenimiento => mantenimiento.estado == 1);
+            rederizarMantenimientosPendientes(prueba); 
+          }
+          else if(value == '1'){
+            let prueba = datos.mantenimiento.filter(mantenimiento => mantenimiento.tipomantenimiento == 1 && mantenimiento.estado == 1);
+            rederizarMantenimientosPendientes(prueba);
+          }
+          else if(value == '0'){
+            let prueba = datos.mantenimiento.filter(mantenimiento => mantenimiento.tipomantenimiento == 0 && mantenimiento.estado == 1);
+            rederizarMantenimientosPendientes(prueba);
+          }
+          
+        })
       })
       .catch((error) => {
           console.log(error);

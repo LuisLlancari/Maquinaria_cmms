@@ -33,10 +33,6 @@ def programacion(request):
         #Obtenemos el idusuario
         usuario_id = request.user.id
 
-        #tractoristas = Tractorista.objects.filter(estado = True, estado_actividad = True)
-        #tractor = Tractor.objects.filter(estado = True, estado_actividad = True)
-        #implementos = Implemento.objects.filter(estado = True, estado_actividad = True)
-
         fundos = Fundo.objects.filter(estado = True)
         lotes = Lote.objects.filter(estado = True)
         detalles = DetalleLabor.objects.filter(estado = True, idprogramacion__idusuario = usuario_id)
@@ -53,13 +49,15 @@ def programacion(request):
             pk=Subquery(subquery.values('pk'))
         ).order_by('-idprogramacion__fechahora')
 
+        print(detalles_unicos)
+
         #LISTA DE USUARIO PARA EL SELECT 
         usuario = Usuario.objects.filter(idrol = 3, is_active = 1)
 
         # Pasamos los datos al contexto
         contexto = {
             'cantidad'          : cantidad_tractores_hoy ,
-            'fecha'             : hoy, 
+            'fecha'             : hoy,  
             'detalle'           : detalles_unicos, 
             'idusuario'         : usuario_id, 
             'lista_usuarios'    : usuario ,

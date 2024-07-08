@@ -38,7 +38,7 @@ def datos_mantenimientos(request):
     'apellidos',
     'fechaingreso',
     'estado'
-    ))
+    ).order_by('-idmantenimiento'))
 
 
   datos = {'mantenimientos': mantenimiento}

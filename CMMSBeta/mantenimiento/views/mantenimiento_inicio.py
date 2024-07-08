@@ -25,7 +25,7 @@ def datos_mantenimiento(request):
     'idimplemento',
     'tipomantenimiento',
     'fechaingreso',
-    'estado'
+    'estado',
     ))
   
   return JsonResponse({'mantenimiento':mantenimiento})
@@ -38,11 +38,11 @@ def registrar_ingreso(request, id_mantenimiento):
       mantenimiento.fechaingreso = fecha_hoy
       mantenimiento.save()
       implemento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
-      Implemento.objects.filter(idimplemento=implemento).update(estado_actividad=0)
+      #Implemento.objects.filter(idimplemento=implemento).update(estado_actividad=0)
 
       programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
-      ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento = programacion).update(estado_mantenimiento = 1)
-    
+      ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento=programacion).update(estado_mantenimiento=1)
+      
       # Retorna una respuesta JSON
       return JsonResponse({'status': 'success'}, status=200)
 
