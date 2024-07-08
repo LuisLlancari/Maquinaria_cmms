@@ -26,8 +26,8 @@ class TipoImplemento(models.Model):
 class Implemento(models.Model):
     idimplemento = models.AutoField(primary_key=True)
     implemento = models.CharField(max_length=45, verbose_name="Implemento")
-    idusuario = models.ForeignKey(Usuario, on_delete=models.SET_DEFAULT, default=None, verbose_name="Encargado")
-    horasdeuso = models.FloatField(verbose_name="Horas de uso", default=0)
+    # idusuario = models.ForeignKey(Usuario, on_delete=models.SET_DEFAULT, default=None, null=True, blank=True, verbose_name="Encargado")
+    horasdeuso = models.DecimalField(max_digits=15, decimal_places=2, verbose_name="Horas de uso", default=0)
     codimplemento = models.CharField(max_length=12, verbose_name="Codigo de Implemento")
     mantenimientos = models.IntegerField(default=0, null=True, blank=True, verbose_name="Mantenimientos realizados")
     proximo_mantenimiento = models.IntegerField(default=0, null=True, blank=True, verbose_name="Proximo Mantenimiento") 

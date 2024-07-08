@@ -38,18 +38,21 @@ def datos_mantenimiento(request):
     'estado'
     ))
 
-  tareas = list(Acciones.objects.filter(estado = 0).values('idaccion','accion'))
+    
+  
+
 
   encargados = list(Encargado.objects.filter(estado = 1).annotate(
     nombre =Concat(F('idpersona__nombres'),Value(' '), F('idpersona__apellidos')) 
   ).values('idencargado', 'nombre'))
 
   
-  datos = {'mantenimientos': mantenimiento, 'tareas':tareas, 'encargados':encargados}
+  datos = {'mantenimientos': mantenimiento, 'encargados':encargados}
   return JsonResponse(datos)
 
 @login_required(login_url='login', redirect_field_name='')
 def datos_implemento(request, id_programacion, id_implemento):
+
   tareas_implemento = list(DetMotivos.objects.filter(idprogramacionmantenimiento = id_programacion).annotate(
     tarea= F('idaccion__accion'),
     idtarea= F('idaccion__idaccion')
@@ -88,7 +91,9 @@ def datos_implemento(request, id_programacion, id_implemento):
     'pieza': detalle_pieza
   }
 
-  return JsonResponse({'partes': partes, 'tareas':tareas_implemento})
+  tareas = list(Acciones.objects.filter(estado = 2).values('idaccion','accion'))
+
+  return JsonResponse({'partes': partes, 'tareas':tareas_implemento, 'todas_las_tareas':tareas})
 
 @login_required(login_url='login', redirect_field_name='')
 def finalizar_mantenimiento(request, id_mantenimiento):

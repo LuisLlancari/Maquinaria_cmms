@@ -13,7 +13,7 @@
 
         </div>
         <div class="col-md-3 mb-3">
-            <button type="button" class="btn btn-primary" id="asiganar-supervisor" data-bs-toggle="modal" data-bs-target="#modal-asignar">Asignar supervisor</button>
+            <!-- <button type="button" class="btn btn-primary" id="asiganar-supervisor" data-bs-toggle="modal" data-bs-target="#modal-asignar">Asignar supervisor</button> -->
         </div>
     </div>
 
@@ -34,7 +34,7 @@
                       <th scope="col">Supervisor</th>
                       <th scope="col">Fecha inicio</th>
                       <th scope="col">Fecha fin</th>
-                      <th scope="col">Operaciones</th>
+                      <!-- <th scope="col">Operaciones</th> -->
                   </tr>
               </thead>
               <tbody>
@@ -43,8 +43,12 @@
                   <td>{{dato.idtractor.nrotractor}}</td>
                   <td>{{dato.idsupervisor.first_name}} {{dato.idsupervisor.last_name}}</td>
                   <td>{{dato.fechaInicio}}</td>
+                  {% if dato.fechaFin == none %}
+                  <td>Sin asignar</td>
+                  {% else %}
                   <td>{{dato.fechaFin}}</td>
-                  <td>
+                  {% endif %}
+                  <!-- <td>
                       <button class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idtractorsupervisor}}" data-bs-toggle="modal" data-bs-target="#modal-finalizar"><i class="lni lni-pencil editar"></i></button>
                       <form action="{% url 'asignar_supervisor_tractor_eliminar' dato.idtractorsupervisor %}" id="form-{{ dato.idtractorsupervisor }}" class="d-inline-block" method="POST">
                           {% csrf_token %}
@@ -52,7 +56,7 @@
                               <i class="lni lni-trash-can eliminar"></i>
                           </button>
                       </form>
-                  </td>
+                  </td> -->
               </tr>
               {% endfor %}
               </tbody>

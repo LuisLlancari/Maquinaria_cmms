@@ -6,6 +6,13 @@
 <style>
    .big-checkbox {width: 30px; height: 30px;}
    .highlight {background-color: #d3d3d3;}
+
+  .readonly-select {
+          pointer-events: none;
+          background-color: #ffffff;
+          color: #495057;
+      }
+</style>
 </style>
 </style>
 <h1 class="text-center"> Finalizar mantenimientos</h1>
@@ -125,15 +132,119 @@
     let det_tareas = '';
     let det_encargados = '';
     let contador = 0;
+    let contador_compo = 0;
     let fechaProgramacion = '' ;
     let datos_mantenimiento = '';
 
-    btnAgregarTarea.addEventListener('click', function(){
-      contador ++;
-      // console.log(contador);
-      crearTarea(det_tareas, contador);
+
+    // Lista de tareas Seleccionadas
+    let tareas_seleccionadas =[];
+
+    // Lista de componentes Seleccionados
+    let piezas_seleccionadas = [];
+
+    // Funcion que quita las tareas del select
+    function QuitarTareadelSelect(){
+      let elementos = document.querySelectorAll('[name="tareas_asignadas"]');
+
+      // Array para almacenar los valores seleccionados
+      let valoresSeleccionados = [];
+      
+
+      // Iterar sobre cada elemento y obtener su valor
+      elementos.forEach(function(elemento) {
+          let valor = elemento.value;
+          valoresSeleccionados.push(valor); // Obtener el valor como cadena}
+      });
+
+      valoresSeleccionados.forEach(function(valorSeleccionado) {
+        let index = det_tareas.findIndex(function(accion) {
+            return accion.accion === valorSeleccionado;
+        });
+
+        // Solo eliminar si se encontró el valor en acciones
+        if (index !== -1) {
+          let accionMovida = det_tareas.splice(index, 1)[0];
+          tareas_seleccionadas.push(accionMovida)
+        }
+      });
+
+    }
+
+    // Devolver las tareas al select
+    function DevolverTareasSelect(valorDevolver){
+      // Buscar el objeto en otraLista y moverlo a acciones si se encuentra
+      let index = tareas_seleccionadas.findIndex(function(accion) {
+          return accion.accion === valorDevolver;
+      });
+
+      if (index !== -1) {
+          let accionMovida = tareas_seleccionadas.splice(index, 1)[0]; // Elimina el elemento de otraLista
+          det_tareas.push(accionMovida); // Agrega el elemento de nuevo a acciones
+      }
+    }
+
+    // Funcion de quitar componentes
+    function QuitarComponente(){
+      let elementos_input = document.getElementById('searchInput')
+      let valor_input = elementos_input.value
+      let index = datos_busqueda.findIndex(function(item) {
+        return item.value === valor_input;
+      });
+
+      if (index !== -1) {
+          let objetoMovido = datos_busqueda.splice(index, 1)[0]; // Elimina el elemento de datos_busqueda y retorna el elemento eliminado
+          piezas_seleccionadas.push(objetoMovido); // Agrega el elemento a otraLista
+      }
+
+    }
+    
+    // Devolver componentes 
+    function DevolverComponente(valorDevolver){
+      let index = piezas_seleccionadas.findIndex(function(item) {
+        return item.value === valorDevolver;
+      });
+
+      if (index !== -1) {
+          let objetoMovido = piezas_seleccionadas.splice(index, 1)[0]; // Elimina el elemento de datos_busqueda y devuelve el elemento eliminado
+          datos_busqueda.push(objetoMovido); 
+      }
+    }
+
+    // Blorquear select
+    function BloquearSelect(){
+      var selects = document.querySelectorAll('select[name="tareas_asignadas"]');
+        selects.forEach(function(select) {
+          select.classList.add('readonly-select');
+        });
+    }
+    
+    // Boton que crea otro select con las tareas
+    btnAgregarTarea.addEventListener('click', function() {
+      contador++;
+
+      let todos_select = document.querySelectorAll('select[name="tareas_asignadas"]'); // Seleccionamos el ultimo valor con ese name
+      if (todos_select.length > 0) {
+          let ultimoElemento = todos_select[todos_select.length - 1];  
+          let valorUltimoElemento = ultimoElemento.value;
+          if(valorUltimoElemento != null && valorUltimoElemento.trim() !== ''){
+            QuitarTareadelSelect();
+            BloquearSelect();
+            crearTarea(det_tareas, contador);
+          }else{
+            ultimoElemento.setCustomValidity("Debe seleccionar una opción");
+            ultimoElemento.reportValidity();
+          }
+      } else {
+          QuitarTareadelSelect();
+          BloquearSelect();
+          crearTarea(det_tareas, contador);
+      }
+
+
     });
 
+    // Damos formato a los datos de busqueda
     function transformData(data) {
         const transformed = [];
         data.componentes.forEach(componente => {
@@ -145,33 +256,37 @@
         return transformed;
     }
 
+    // Barra de Busqueda
     function searchArray(query) {
-            resultList.innerHTML = ''; // Limpiar los resultados anteriores
-            if (query) {
-                const filteredResults = datos_busqueda.filter(item =>
-                    item.value.toLowerCase().includes(query.toLowerCase())
-                );
+      resultList.innerHTML = ''; // Limpiar los resultados anteriores en el contenedor 'resultList'
+      // Verificar que el query no esté vacío
+      if (query.trim()) {
+          const filteredResults = datos_busqueda.filter(item =>
+              item.value.toLowerCase().includes(query.toLowerCase()) ||
+              item.type.toLowerCase() === query.toLowerCase()
+          );
 
-                // Mostrar resultados
-                filteredResults.forEach((item, index) => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `${item.type.charAt(0).toUpperCase() + item.type.slice(1)}: ${item.value}`;
-                    listItem.classList.add('list-group-item');
-                    listItem.addEventListener('click', () => {
-                        searchInput.value = item.value;
-                        resultList.innerHTML = ''; // Limpiar los resultados después de la selección
-                    });
-                    listItem.addEventListener('mouseover', () => {
-                        highlightItem(index);
-                    });
-                    listItem.addEventListener('mouseout', () => {
-                        removeHighlight(index);
-                    });
-                    resultList.appendChild(listItem);
-                });
-                currentIndex = -1; // Reiniciar el índice actual cuando se actualiza la lista
-            }
-        }
+          filteredResults.forEach((item, index) => {
+              const listItem = document.createElement('li');
+              listItem.textContent = `${item.type.charAt(0).toUpperCase() + item.type.slice(1)}: ${item.value}`;
+              listItem.classList.add('list-group-item');
+              listItem.addEventListener('click', () => {
+                  searchInput.value = item.value;
+                  resultList.innerHTML = ''; // Limpiar resultados después de seleccionar
+              });
+              listItem.addEventListener('mouseover', () => {
+                  highlightItem(index);
+              });
+              listItem.addEventListener('mouseout', () => {
+                  removeHighlight(index);
+              });
+              resultList.appendChild(listItem);
+          });
+
+          currentIndex = -1; // Reiniciar el índice actual cuando se actualiza la lista
+      }
+    }
+
 
     function highlightItem(index) {
         const items = resultList.getElementsByTagName('li');
@@ -213,14 +328,22 @@
         }
     });
 
+    // Boton que genera un input con el dato de la barra de busqueda
     btnAgregarRecambio.addEventListener('click',function(){
       let valorinput = searchInput.value;
-      // console.log(hola)
-      crearComponente(valorinput)
-      searchInput.value = '';
+      if (valorinput != null && valorinput.trim() !== '') {
+          QuitarComponente();
+          crearComponente(valorinput);
+          searchInput.value = '';
+      } else {
+        searchInput.setCustomValidity("El Campo no puede quedar en blanco");
+        searchInput.reportValidity(); // Mostrar el mensaje de error
+      }
     })
 
+    // Crea el imput de recambios
     function crearComponente(valor) {
+      contador_compo ++;
       const row = document.createElement('div');
       row.className = 'row mt-2';
 
@@ -229,6 +352,8 @@
 
       const input = document.createElement('input');
       input.type = 'text';
+      input.setAttribute('readonly', true)
+      input.id = `input-items${contador_compo}`
       input.value = `${valor}`;
       input.name = 'recambios';
       input.className = 'form-control';
@@ -243,7 +368,11 @@
       button.className = 'btn-close mt-2 remover-div';
 
       button.addEventListener('click', function() {
-          row.remove();
+        let input_seleccionado = document.getElementById(`input-items${contador_compo}`)
+        if(input_seleccionado != null){
+          DevolverComponente(input_seleccionado.value)
+        }
+        row.remove();
       });
 
       colMd2.appendChild(button);
@@ -254,7 +383,9 @@
       contenedor_recambio.appendChild(row);
     }
 
+    // Crea el input de Tareas
     function crearTarea(datos, contador) {
+
       const row = document.createElement('div');
       row.className = 'row mt-2';
 
@@ -264,6 +395,7 @@
       const select = document.createElement('select');
       select.name = 'tareas_asignadas';
       select.className = 'form-control';
+      select.id = `select_tarea${contador}`
       const option = document.createElement('option');
       option.value = ``;
       option.textContent = `Seleccione:`;
@@ -273,7 +405,6 @@
           const option = document.createElement('option');
           option.value = `${tarea.accion}`;
           option.textContent = `${tarea.accion}`;
-    
           select.appendChild(option);
       })
       colMd10.appendChild(select);
@@ -305,10 +436,13 @@
       select.addEventListener('change', function(){
         valor_select = select.value;
         checkbox.value = valor_select
-        console.log(valor_select)
       })
+
       button.addEventListener('click', function() {
-        // Remover la fila cuando se hace clic en el botón
+        let tarea_select = document.getElementById(`select_tarea${contador}`)
+        if(tarea_select != null){
+          DevolverTareasSelect(tarea_select.value)
+        }
         checkbox.value = ''
         row.remove();
       });
@@ -322,6 +456,7 @@
       contenedorTareas.appendChild(row);
     }
 
+    // Renderiza las Tareas ya asignadas
     function rederizarTareas(datos){
       contenedorTareas.innerHTML = ''
       datos.forEach(tarea => {
@@ -363,6 +498,7 @@
       });
     }
 
+    // Renderiza Encargados del mantenimiento
     function rederizarEncargado(datos){
       const Select = document.getElementById('encargado')
       Select.innerHTML= ''
@@ -374,6 +510,7 @@
       })
     }
 
+    // Renderiza los datos del mantenimiento en la cabezera del modal
     function renderizarDatosMantenimiento(datos){
      const det_mantenimiento = document.getElementById('detalle-mantenimiento')
      det_mantenimiento.innerHTML = ''
@@ -402,18 +539,16 @@
      });
     }
 
+
     function obtenerMantenimientos(){
         fetch(`./proceso/datos_mantenimiento`)
         .then(res => res.json())
         .then(datos => {
-            // console.log(datos);    
-            det_tareas = datos.tareas
             det_encargados = datos.encargados
-            // console.log(det_encargados)
+            // Filtramos los datos de mantenimiento
             let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
             datos_mantenimiento = datos.mantenimientos
-            console.log(datos_mantenimiento)
-            // console.log(datos_filtrados)
+
             renderizarMantenimientos(datos_filtrados);   
         })
         .catch((error) => {
@@ -431,9 +566,8 @@
       })
       .then(res => res.json())
       .then(datos => {
-          // datos_busqueda= datos;
+          det_tareas = datos.todas_las_tareas
           datos_busqueda = transformData(datos.partes);
-          // console.log(datos_busqueda);
           rederizarTareas(datos.tareas);
           let mant_filtrado = datos_mantenimiento.filter(mantenimiento => mantenimiento.idprogramacion == idprogramacion)
           renderizarDatosMantenimiento(mant_filtrado);
@@ -477,14 +611,23 @@
 
         btnFinalizarMantenimiento.forEach(function(boton){
           boton.addEventListener("click",function(event){
+            // Llenamos variables
             let id_implemento = event.target.dataset.idimplemento;
             let id_mantenimiento = event.target.dataset.idmantenimiento;
             let id_programacion = event.target.dataset.idprogramacion;
-            // console.log(id_implemento, id_programacion)
+
+            piezas_seleccionadas = [];
+            tareas_seleccionadas = [];
+            contador = 0;
+            contador_compo = 0;
+            searchInput.value = ''; 
+            resultList.innerHTML = '';
+
             formDetalle.setAttribute('action', `./proceso/finalizar_mantenimiento/${id_mantenimiento}`)
             formDetalle.reset();
             contenedor_recambio.innerHTML = '';
-            // console.log(id_programacion, id_implemento);
+
+
             obtenerDatosImplementos(id_programacion, id_implemento);
             rederizarEncargado(det_encargados);
           });

@@ -2,9 +2,9 @@ from django.urls import path, include
 from .views import tipotractor, tractor, reportetractor, tractorsupervisor as trcsup
 
 urlpatterns = [
-    path('', reportetractor.reportetractor, name='reportetractor'),
+    path('', tractor.tractor, name='tractor'),
     path('tipotractor', tipotractor.tipotractor, name='tipotractor'),
-    path('tractor/', tractor.tractor, name='tractor'),
+    path('reportetractor/', reportetractor.reportetractor, name='reportetractor'),
 
     # funciones reporte
     path('reportetractor/registrar', reportetractor.registrarReporte, name='registrar_reporte' ),
@@ -18,7 +18,10 @@ urlpatterns = [
     #funciones tractores
     path('eliminartractor/<int:idtractor>', tractor.eliminar_tractor, name='eliminartractor'), 
     path('registrar_tractor', tractor.registrar_tractor, name='registrar_tractor'), 
-    path('editar_tractor', tractor.editar_tractor, name='editar_tractor'),  
+    path('editar_tractor', tractor.editar_tractor, name='editar_tractor'),
+    path('asignar_supervisor/<int:id_tractor>', tractor.AsignarSupervisor, name="tractor_asignar_supervisor"),
+    path('quitar_supervisor/<int:id_tractor>', tractor.QuitarSupervisor, name="tractor_quitar_supervisor"),
+  
 
     path('asignar_supervisor', trcsup.tractorSupervisor, name="asignar_supervisor_tractor" ),
     path('asignar_supervisor/registrar', trcsup.registrartractorSupervisor, name="asignar_supervisor_tractor_registrar" ),

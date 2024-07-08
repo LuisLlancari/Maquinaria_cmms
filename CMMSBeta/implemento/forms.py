@@ -9,15 +9,15 @@ class ImplementoForms(forms.ModelForm):
   def __init__(self, *args, **kwargs):
         super(ImplementoForms, self).__init__(*args, **kwargs)
         self.fields['idtipoimplemento'].queryset = TipoImplemento.objects.filter(estado = True)
-        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 3, is_active = 1)
+        # self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 3, is_active = 1)
         self.fields['idceco'].queryset = Ceco.objects.filter(estado = True)
   class Meta:
     model = Implemento
-    fields = ['idimplemento','idusuario','implemento','horasdeuso', 'codimplemento', 'idtipoimplemento', 'idceco']
+    fields = ['idimplemento','implemento','horasdeuso', 'codimplemento', 'idtipoimplemento', 'idceco']
     widgets = {
       'idimplemento': forms.HiddenInput(),
       'implemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtImplemento'}),
-      'idusuario': forms.Select(attrs={'class':'form-select', 'id':'txtIdUsuario'}),
+      # 'idusuario': forms.Select(attrs={'class':'form-select', 'id':'txtIdUsuario'}),
       'horasdeuso': forms.NumberInput(attrs={'class':'form-control', 'id':'txtHorasUso', 'type':'number', 'min':'0'}),
       'codimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtCodImplemento'}),
       'idtipoimplemento': forms.Select(attrs={'class':'form-control', 'id':'txtIdTipoimplemento'}),

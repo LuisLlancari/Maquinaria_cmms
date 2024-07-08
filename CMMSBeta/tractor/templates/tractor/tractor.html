@@ -44,7 +44,9 @@
         <tr>
             <th scope="col" class="text-center">N°</th>
             <th scope="col" class="text-center">Tipo Tractor</th>
+            {% if user.idrol.rol != "Supervisor" %}
             <th scope="col" class="text-center">Supervisor a Cargo</th>
+            {% endif %}
             <th scope="col" class="text-center">Fundo</th>
             <th scope="col" class="text-center">Nombre Tractor</th>
             <th scope="col" class="text-center">Hora Inicial</th>
@@ -61,7 +63,10 @@
         <tr>
             <th scope="row" class="text-center">{{ forloop.counter }}</th>
             <td class="text-center">{{ data.idtipotractor }}</td>
-            <td class="text-center">{{ data.idusuario }}</td>
+            {% if user.idrol.rol != "Supervisor" %}
+              <!-- <td class="text-center">{{ data.idusuario}}</td> -->
+              <td class="text-center">{{ data.supervisor_nombre_completo}}</td>
+            {% endif %}
             <td class="text-center">{{ data.idfundo }}</td>
             <td class="text-center">{{ data.nrotractor }}</td>
             <td class="text-center">{{ data.horainicial }}</td>
@@ -75,9 +80,14 @@
                 data-horaini="{{data.horainicial}}" data-idtipotractor="{{data.idtipotractor}}" type="button">
                 <i class="lni lni-pencil"></i>
               </button>
-              <form action="{% url 'eliminartractor' data.idtractor %}" id="form-{{ dato.idtractor }}" class="d-inline-block" method="POST">
+              {% if data.idusuario == none %}
+                <button class="btn btn-success btn-sm d-inline-block agregar-supervisor" data-id="{{data.idtractor}}" data-bs-toggle="modal" data-bs-target="#modal-supervisor"><i class="lni lni-user"></i></button>
+              {% else %}
+                <button class="btn btn-secondary btn-sm d-inline-block quitar-supervisor" data-id="{{data.idtractor}}" data-bs-toggle="modal" data-bs-target="#modal-supervisor"><i class="lni lni-users"></i></button>
+              {% endif %}
+              <form action="{% url 'eliminartractor' data.idtractor %}" id="form-{{ data.idtractor }}" class="d-inline-block" method="POST">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm eliminar" data-registro="{{ dato.nrotractor }}" data-id="{{ dato.idtractor }}">
+                <button type="submit" class="btn btn-danger btn-sm eliminar" data-registro="{{ data.nrotractor }}" data-id="{{ data.idtractor }}">
                   <i class="lni lni-trash-can"></i>
                 </button>
               </form>
@@ -221,6 +231,33 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="modal-supervisor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal-supervisor">Supervisor</h1>
+            </div>
+                <form autocomplete="off" id="form-supervisor" >
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <label class="form-label" for="select-usuario">Seleccione al supervisor:</label>
+                        <select class="form-select mt-1" id="select-usuario" name="select-usuario" required>
+                            <option value="">--------</option>
+                            {% for dato in usuario %}
+                            <option value="{{dato.id}}">{{dato.first_name}} {{dato.last_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'core/js/swet_alert.js' %}"></script>
 
@@ -233,30 +270,67 @@
       const formRegistrar = document.getElementById("form-tractor")
       const btnGuardarCambios = document.getElementById("guardar-cambios");
       const btnGuardarRegristro = document.getElementById("guardar-datos");
+      const btnAgregarSupervisor = document.querySelectorAll(".agregar-supervisor")
+      const btnQuitarSupervisor = document.querySelectorAll(".quitar-supervisor")
+      const formModalSupervisor = document.getElementById("form-supervisor")
+      const formTituloModalSupervisor = document.getElementById("titulo-modal-supervisor")
 
+      function asignarAtributosFormularioSupervisor(id, tipoboton){
+        console.log(id)
+        console.log(tipoboton)
+        if (tipoboton == 1) {
+            formTituloModalSupervisor.innerHTML = "Asignar Supervisor"
+            formModalSupervisor.setAttribute("action", `./asignar_supervisor/${id}`);
+            formModalSupervisor.setAttribute("method", "POST");
+        }if (tipoboton == 2) {
+
+            formTituloModalSupervisor.innerHTML = "Cambiar de Supervisor"
+            formModalSupervisor.setAttribute("action", `./quitar_supervisor/${id}`);
+            formModalSupervisor.setAttribute("method", "POST");
+        } 
+      }
+    
+      btnAgregarSupervisor.forEach(function(boton) {
+      boton.addEventListener("click", function(event) {
+
+        let id_dato = event.currentTarget.dataset.id;
+        console.log(id_dato); 
+        asignarAtributosFormularioSupervisor(id_dato,1)
+
+        });
+      });
+
+      btnQuitarSupervisor.forEach(function(boton) {
+      boton.addEventListener("click", function(event) {
+
+        let id_dato2 = event.currentTarget.dataset.id;
+        console.log(id_dato2); 
+        asignarAtributosFormularioSupervisor(id_dato2,2)
+        });
+      });
 
     
 
 
         // Agregar un event listener para el evento de entrada en el campo de búsqueda
-        Busqueda.addEventListener("input", function() {
-            
-            var valorBusqueda = Busqueda.value.toLowerCase();
+      Busqueda.addEventListener("input", function() {
+          
+          var valorBusqueda = Busqueda.value.toLowerCase();
 
-            // Iterar sobre los implementos y mostrar u ocultar según el término de búsqueda
-            tractores.forEach(function(tractor) {
-                var tipoTractor = tractor.querySelector("td:nth-child(2)").textContent.toLowerCase(); 
-                var supervisor = tractor.querySelector("td:nth-child(3)").textContent.toLowerCase(); 
-                var nombreTractor = tractor.querySelector("td:nth-child(5)").textContent.toLowerCase();
-                
-                // Verificar si alguno de los campos coincide con el término de búsqueda
-                if (tipoTractor.includes(valorBusqueda) || supervisor.includes(valorBusqueda) || nombreTractor.includes(valorBusqueda)) {
-                    tractor.style.display = ""; 
-                } else {
-                    tractor.style.display = "none";
-                }
-            });
-        });
+          // Iterar sobre los implementos y mostrar u ocultar según el término de búsqueda
+          tractores.forEach(function(tractor) {
+              var tipoTractor = tractor.querySelector("td:nth-child(2)").textContent.toLowerCase(); 
+              var supervisor = tractor.querySelector("td:nth-child(3)").textContent.toLowerCase(); 
+              var nombreTractor = tractor.querySelector("td:nth-child(5)").textContent.toLowerCase();
+              
+              // Verificar si alguno de los campos coincide con el término de búsqueda
+              if (tipoTractor.includes(valorBusqueda) || supervisor.includes(valorBusqueda) || nombreTractor.includes(valorBusqueda)) {
+                  tractor.style.display = ""; 
+              } else {
+                  tractor.style.display = "none";
+              }
+          });
+      });
 
       setTimeout(function() {
             var errorMessage = document.getElementById('message');
@@ -279,7 +353,7 @@
           document.getElementById("nrotractor").value = nroTractor;
           document.getElementById("horainicial").value = horaini;
           document.getElementById("horauso").value = horauso;
-          document.getElementById("idusuario").value = usuario;
+          // document.getElementById("idusuario").value = usuario;
           document.getElementById("idfundo").value = fundo;
         });
       });
