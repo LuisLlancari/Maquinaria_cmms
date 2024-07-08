@@ -188,7 +188,7 @@
         }
 
         function obtener_horainicial(id){
-            fetch(`./reportetractor/obtenerhinicial/${id}`)
+            fetch(`./obtenerhinicial/${id}`)
             .then(res => res.json())
             .then(datos => {
                 console.log(datos.tractor[0])

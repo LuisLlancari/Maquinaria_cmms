@@ -52,7 +52,7 @@ def registrarReporte(request):
 
             programa = Programacion.objects.filter(pk = programacion_id).values('idtractorista').first()
             tractorista_id = programa['idtractorista']
-
+            
             # Calculando Horas de uso del tractor 
             horauso_implemento = float((hora_final - hora_inicial) *0.9)
             horauso_Detimplemento = (hora_final - hora_inicial)
@@ -99,6 +99,7 @@ def obtenerHorainicial(request, id_tractor):
         horainicial = F('idtractor__idtractor__horainicial'),
         fecha = F('fechahora')
     ).values('fundo','labor','tractor','fecha','horainicial'))
+    print(datos)
 
     if (len(datos) >0) :
         data = {'mensaje': "Success", 'tractor': datos}
