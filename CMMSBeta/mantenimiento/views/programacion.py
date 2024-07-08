@@ -62,10 +62,16 @@ def registrar(request):
         fecha = request.POST.get('fecha_programacion')
         motivos = request.POST.getlist('idmotivo')
         # tipo_mantnimiento = 0 : Correctivo
-        buscar = ProgramacionMantenimiento.objects.filter(idimplemento_id = implemento, tipomantenimiento = 0, estado_mantenimiento = 0).exists()
-        print(buscar)
-        if buscar == True:
-            messages.error(request, 'El implemento ya tiene una programación', extra_tags='danger')
+        buscarprogramacion = ProgramacionMantenimiento.objects.filter(idimplemento_id = implemento, tipomantenimiento = 0, estado_mantenimiento = 0, estado = 1).exists()
+        programacion = ProgramacionMantenimiento.objects.filter(idimplemento_id = implemento, tipomantenimiento = 0, estado_mantenimiento = 1, estado = 1).exists()
+        
+        #true
+        #print(buscarmantenimiento) 
+        if buscarprogramacion == True:
+            messages.error(request, 'La el implemetento ya se encuentra programado', extra_tags='danger')
+            return redirect('programacion_mantenimiento')     
+        elif programacion == True:
+            messages.error(request, 'La el implemetento ya esta en un mantenimiento', extra_tags='danger')
             return redirect('programacion_mantenimiento')
         else:
             nueva_programacion =  ProgramacionMantenimiento.objects.create(idimplemento_id = implemento, fechaprogramacion = fecha, tipomantenimiento = 0)

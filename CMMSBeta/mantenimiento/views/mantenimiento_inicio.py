@@ -25,7 +25,7 @@ def datos_mantenimiento(request):
     'idimplemento',
     'tipomantenimiento',
     'fechaingreso',
-    'estado'
+    'estado',
     ))
   
   return JsonResponse({'mantenimiento':mantenimiento})

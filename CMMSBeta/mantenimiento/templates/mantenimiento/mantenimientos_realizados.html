@@ -3,18 +3,37 @@
 {% block titulo %}Mantenimientos Realizados{% endblock%}
 
 {% block contenido %} 
-<div class="container">
-  <h1 class="text-center">Mantenimientos Realizados</h1>
-  <!-- filtros -->
-  <div class="row"></div>
+<h1 class="text-center">Mantenimientos Realizados</h1>
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-2"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento preventivo</strong>
+  </div>
+</div>
+
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-3"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento correctivo</strong>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col col-md-2">
+    <select name="" id="filtro_mantenimiento" class="form-select">
+      <option value="">Todo:</option>
+      <option value="1">Preventivo:</option>
+      <option value="0">Correctivo:</option>
+    </select>
+  </div>
+</div>
+<!-- filtros -->
+<div class="row"></div>
 
 <!-- fin filtro -->
 
-  <div class="container">
-    <div class="row" id="contenido-cards">
+<div class="row" id="contenido-cards">
 
-    </div>
-  </div>
 </div>
 
 <div class="modal fade" id="detalle_mantenimiento" tabindex="-1" aria-labelledby="example" aria-hidden="true">
@@ -136,24 +155,24 @@
 
       datos.forEach(realizado => {
         nuevaCard = `
-      </div>  <div class="col col-md-4">
-        <div class="card border-success mb-3" >
-          <div class="card-header bg-transparent border-success text-center">Mantenimiento ${realizado.idmantenimiento}</div>
-            <div class="card-body text-success">
+      <div class="col col-md-3 mt-2">
+        <div class="card ${realizado.tipomantenimiento ? 'border-primary' : 'border-danger'}  mb-3" >
+          <div class="card-header ${realizado.tipomantenimiento ? 'bg-primary' : 'bg-danger'} text-center text-white"><strong>Mantenimiento #${realizado.idmantenimiento}</strong></div>
+            <div class="card-body">
               <h5 class="card-text text-center fw-bold"></h5>
-              <p class="card-text text-success m-0 fs-5"><strong>Implemento: </strong> ${realizado.implemento}</p>
-              <p class="card-text text-success m-0 fs-5"><strong>Codigo:  </strong> ${realizado.cod_implemento}</p>
-              <p class="card-text text-success m-0 fs-5" ><strong>Fecha Programacion:</strong> ${realizado.fecha_programada }</p>
-              <p class="card-text text-success m-0 fs-5"><strong>Fecha Ingreso:</strong> ${realizado.fechaingreso}</p>
-              <p class="card-text text-success m-0 fs-5"><strong>Fecha Salida:</strong> ${realizado.fechasalida}</p>
-              <p class="card-text text-success m-0 fs-5"><strong>Encargado:</strong> ${realizado.nombres} ${realizado.apellidos}</p>
+              <p class="card-text m-0"><strong>Implemento: </strong> ${realizado.implemento}</p>
+              <p class="card-text m-0"><strong>Codigo:  </strong> ${realizado.cod_implemento}</p>
+              <p class="card-text m-0" ><strong>Fecha Programacion:</strong> ${realizado.fecha_programada }</p>
+              <p class="card-text m-0"><strong>Fecha Ingreso:</strong> ${realizado.fechaingreso}</p>
+              <p class="card-text m-0"><strong>Fecha Salida:</strong> ${realizado.fechasalida}</p>
+              <p class="card-text m-0"><strong>Encargado:</strong> ${realizado.nombres} ${realizado.apellidos}</p>
             </div>
-            <div class="card-footer bg-transparent border-success">
+            <div class="card-footer bg-transparent ${realizado.tipomantenimiento ? 'border-primary' : 'border-danger'}">
               <form>
-                <button type= "button" class="btn btn-primary mt-1 w-100 ver-detalle" data-id="${realizado.idmantenimiento}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento">Ver detalle</button>
+                <button type= "button" class="btn ${realizado.tipomantenimiento ? 'btn-primary' : 'btn-danger'} mt-1 w-100 ver-detalle" data-id="${realizado.idmantenimiento}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento">Ver detalle</button>
               </form>
             </div>
-            </div>
+          </div>
         </div>
       </div>
         `;
@@ -181,8 +200,26 @@
       })
       .then(res => res.json())
       .then(datos => {
+        filtro = document.getElementById('filtro_mantenimiento')
         datosGenerales = datos.mantenimientos
         rederizarMantenimientosPendientes(datos.mantenimientos)
+        filtro.addEventListener('change', function(){
+          let value = filtro.value
+          console.log(value)
+          if(value == ''){
+            let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 0);
+            rederizarMantenimientosPendientes(prueba); 
+          }
+          else if(value == '1'){
+            let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.tipomantenimiento == 1 && mantenimiento.estado == 0);
+            rederizarMantenimientosPendientes(prueba);
+          }
+          else if(value == '0'){
+            let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.tipomantenimiento == 0 && mantenimiento.estado == 0);
+            rederizarMantenimientosPendientes(prueba);
+          }
+          
+        })
       })
       .catch((error) => {
           console.log(error);
