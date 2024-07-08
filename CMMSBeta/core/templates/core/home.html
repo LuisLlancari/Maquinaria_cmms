@@ -35,8 +35,10 @@
     <div class="col col-md-4 mb-1">
         <label for="" class="form-label"><strong>TURNO:</strong></label>
         <select name="" class="form-select" id="turno">
+            <option value="O">----------</option>
             <option value="M">Mañana</option>
             <option value="T">Tarde</option>
+            <option value="N">Noche</option>
         </select>
     </div>
 </div>
@@ -281,7 +283,7 @@
         try {
             const response = await fetch(`./datos_graficos/${fecha}/${supervisor}/${turno}`);
             let datos = await response.json();
-            // console.log(datos.resultados_solicitantes);
+            console.log(datos.resultados_solicitantes); 
 
             graficoDona.data.labels = datos.resultados_solicitantes.map(registro => registro.nombre)
             graficoDona.data.datasets[0].data = datos.resultados_solicitantes.map(registro => registro.registros)
@@ -435,9 +437,7 @@
         // console.log(fecha, supervisor, turno)
         datosGrafico(fecha,supervisor,turno);
         datosTablaTractores(fecha,supervisor,turno);
-
-
-        
+      
     });
 
     Turno.addEventListener("change",function() {

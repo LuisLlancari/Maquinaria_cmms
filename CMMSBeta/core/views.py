@@ -37,16 +37,21 @@ def home(request,):
 def datos_grafico(request, fecha, supervisor, turnos):
     # Definir los filtros comunes
     filtro_tractores = {'estado': True}
-    filtro_programacion = {'fechahora': fecha, 'turno': turnos, 'idtractor__estado': True}
+    filtro_programacion = {'fechahora': fecha}
 
     if supervisor != 0:
-        filtro_tractores['idsupervisor'] = supervisor
-        filtro_programacion.update({'idusuario': supervisor, 'idtractor__idtractor__idusuario': supervisor})
+        filtro_tractores.update({'idsupervisor':supervisor})
+        filtro_programacion.update({'idusuario': supervisor, 'idtractor__idsupervisor': supervisor})
+
+    if turnos != 'O':
+        filtro_programacion.update({'turno': turnos})
+
+    tractores_trabajados_subquery = Programacion.objects.filter(**filtro_programacion).values('idtractor')
+    print(list(tractores_trabajados_subquery))
 
     # Consulta para encontrar los tractores que no estuvieron programados
     tractores_no_programados = TractorSupervisor.objects.filter(**filtro_tractores).exclude(
-        programacion__fechahora=fecha,
-        programacion__turno=turnos
+        idtractorsupervisor__in=Subquery(tractores_trabajados_subquery)
     )
 
     # Contar el número de tractores no programados
@@ -90,12 +95,14 @@ def datos_grafico(request, fecha, supervisor, turnos):
 def datos_tabla(request, fecha, supervisor, turno):
   # Definir el filtro para tractores
     filtro_tractores = {'estado': True}
-    filtro_programacion = {'fechahora': fecha, 'turno': turno}
+    filtro_programacion = {'fechahora': fecha}
 
     if supervisor != 0:
-        filtro_tractores['idsupervisor'] = supervisor
-        filtro_tractores['estado'] = True
-        filtro_programacion['idtractor__idsupervisor'] = supervisor
+        filtro_tractores.update({'idsupervisor': supervisor})
+        filtro_programacion.update({'idtractor__idsupervisor': supervisor})
+
+    if turno != 'O':
+        filtro_programacion.update({'turno': turno})
 
     # Obtener todos los tractores relacionados con el supervisor
     tractores_usuario = TractorSupervisor.objects.filter(**filtro_tractores)
@@ -130,13 +137,13 @@ def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
     filtro_tractores = {'idtractor__idfundo': idfundo, 'estado': True}
     filtro_programacion = {
         'fechahora': fecha,
-        'turno': turno,
+        # 'turno': turno,
         'idtractor__idtractor__idfundo': idfundo,
         'idtractor__idtractor__estado': True  # Asegurar que sólo tractores activos sean considerados
     }
     filtro_detprogramaciones = {
         'idprogramacion__fechahora': fecha,
-        'idprogramacion__turno': turno,
+        # 'idprogramacion__turno': turno,
         'idprogramacion__idtractor__idtractor__idfundo': idfundo,
         'idprogramacion__idtractor__idtractor__estado': True  # Asegurar que sólo tractores activos sean considerados
     }
@@ -145,6 +152,10 @@ def datos_tabla_detalle(request, fecha, supervisor, turno, idfundo):
         filtro_tractores['idsupervisor'] = supervisor
         filtro_programacion['idtractor__idsupervisor'] = supervisor
         filtro_detprogramaciones['idprogramacion__idtractor__idsupervisor'] = supervisor
+
+    if turno != 'O':
+        filtro_programacion.update({'turno': turno})
+        filtro_detprogramaciones.update({'idprogramacion__turno': turno})
 
     # Tractores no Asignados
     tractores_programados = Programacion.objects.filter(**filtro_programacion).values('idtractor')

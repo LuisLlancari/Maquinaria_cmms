@@ -64,7 +64,7 @@
                     <p class="mt-2 mb-0 fw-bold tractor" style="display: none;">{{ dato.idtractor.nrotractor }}</p>
                 </div>
                 {% if user.idrol.rol != "Gerencia" %}
-                    <button class="btn btn-primary mt-3 finalizar" data-bs-toggle="modal" data-bs-target="#moda-programacion" data-programacion="{{ dato.idprogramacion }}" data-tractor="{{ dato.idprogramacion }}">Finalizar Reporte</button>
+                    <button class="btn btn-primary mt-3 finalizar" data-bs-toggle="modal" data-bs-target="#moda-programacion" data-programacion="{{ dato.idprogramacion }}" data-tractor="{{ dato.idtractor.idtractor.idtractor}}">Finalizar Reporte</button>
                 {% endif %}
             </div>
         </div>
@@ -188,11 +188,11 @@
         }
 
         function obtener_horainicial(id){
-            fetch(`./reportetractor/obtenerhinicial/${id}`)
+            fetch(`./obtenerhinicial/${id}`)
             .then(res => res.json())
             .then(datos => {
-                console.log(datos.tractor[0])
-                rederizarDetalleModal(datos.tractor)
+                let datos_tracor = datos.tractor
+                rederizarDetalleModal(datos_tracor)
                 txtHorometroinicial.value = datos.tractor[0].horainicial
                 horometrofinal = parseInt(txtHorometroinicial.value) + 15
                 id_horometrofinal.setAttribute("max", horometrofinal)
@@ -207,16 +207,18 @@
         btnFinalizar.forEach(function(boton){
             boton.addEventListener("click", function(event) {
                 let id_programacion = event.target.dataset.programacion;
+                console.log(id_programacion)
                 let id_tractor = event.target.dataset.tractor;
+                console.log(id_tractor)
                 txtProgramacion.value = id_programacion
-                obtener_horainicial(id_tractor);
+                obtener_horainicial(id_programacion);
             });          
         });
 
-        btnGuardar.addEventListener("click", function(event) {
-        event.preventDefault();
-        PreguntarGuardar(function(){formModal.submit();});
-       });
+    //     btnGuardar.addEventListener("click", function(event) {
+    //     event.preventDefault();
+    //     PreguntarGuardar(function(){formModal.submit();});
+    //    });
 
 
     
