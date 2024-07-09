@@ -47,7 +47,6 @@ def datos_grafico(request, fecha, supervisor, turnos):
         filtro_programacion.update({'turno': turnos})
 
     tractores_trabajados_subquery = Programacion.objects.filter(**filtro_programacion).values('idtractor')
-    print(list(tractores_trabajados_subquery))
 
     # Consulta para encontrar los tractores que no estuvieron programados
     tractores_no_programados = TractorSupervisor.objects.filter(**filtro_tractores).exclude(

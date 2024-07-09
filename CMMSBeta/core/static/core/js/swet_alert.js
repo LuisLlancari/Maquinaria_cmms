@@ -95,7 +95,23 @@ function PreguntarConfirmarLlegadss(titulo, mensaje) {
 
 function PreguntarConfirmarLlegada(callback) {
   return Swal.fire({
-    title: '¿Estás seguro de eceptar el implemento?',
+    title: '¿Estás seguro de aceptar la entrada del implemento?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Aceptar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#2E86C1',
+    cancelButtonColor: '#797D7F',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            callback()
+        }
+    });
+}
+
+function PreguntarFinalizarMantenimiento(callback) {
+  return Swal.fire({
+    title: '¿Estás seguro de finalizar el mantenimiento?',
     icon: 'question',
     showCancelButton: true,
     confirmButtonText: 'Aceptar',

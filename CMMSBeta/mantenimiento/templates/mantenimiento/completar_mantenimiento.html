@@ -3,6 +3,8 @@
 {% block titulo %}Estado Mantenimientos{% endblock%} 
 
 {%block contenido %}
+{% load static %}
+
 <style>
    .big-checkbox {width: 30px; height: 30px;}
    .highlight {background-color: #d3d3d3;}
@@ -132,14 +134,16 @@
     </div>
   </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function(){
     const cards = document.getElementById('cards-mantenimiento');
+    const btnGuardar = document.getElementById("Guardar");
+    const formDetalle = document.getElementById('form-detalle');
     const contenedorComponente = document.getElementById('contenedor-componentes');
     const contenedor_recambio = document.getElementById('recambios');
     const contenedorTareas = document.getElementById('contenedor-tareas');
-    const formDetalle = document.getElementById('form-detalle');
     const btnAgregarItem = document.getElementById('agregar-item');
     const btnAgregarTarea = document.getElementById('agregar-tarea');
     const btnAgregarRecambio = document.getElementById('agregarRecambio');
@@ -163,6 +167,15 @@
     let contador_compo = 0;
     let fechaProgramacion = '' ;
     let datos_mantenimiento = '';
+
+
+    btnGuardar.addEventListener("click", function(event) {
+      if (!formDetalle.checkValidity()) {
+          return;
+      }
+      event.preventDefault();
+      PreguntarFinalizarMantenimiento(function(){formDetalle.submit();});
+    });
 
 
     // Lista de tareas Seleccionadas
@@ -358,14 +371,15 @@
 
     // Boton que genera un input con el dato de la barra de busqueda
     btnAgregarRecambio.addEventListener('click',function(){
-      lista.innerHTML = 'Lista de Recambios:';
       let valorinput = searchInput.value;
+
       if (valorinput != null && valorinput.trim() !== '') {
+          lista.innerHTML = 'Lista de Recambios:';
           QuitarComponente();
           crearComponente(valorinput);
           searchInput.value = '';
       } else {
-        searchInput.setCustomValidity("El Campo no puede quedar en blanco");
+        searchInput.setCustomValidity("El campo no puede quedar en blanco");
         searchInput.reportValidity(); // Mostrar el mensaje de error
       }
     })
@@ -423,7 +437,7 @@
 
       const select = document.createElement('select');
       select.name = 'tareas_asignadas';
-      select.className = 'form-control';
+      select.className = 'form-control border-primary';
       select.id = `select_tarea${contador}`
       const option = document.createElement('option');
       option.value = ``;
@@ -446,7 +460,7 @@
 
       let checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
-      checkbox.className = 'form-check-input big-checkbox mr-3';
+      checkbox.className = 'form-check-input big-checkbox mr-3 border-primary';
       checkbox.name = 'realizado'
       checkbox.id = `inlineCheckbox${contador}`;
       checkbox.value = ``;
@@ -472,6 +486,7 @@
         if(tarea_select != null){
           DevolverTareasSelect(tarea_select.value)
         }
+        lista.innerHTML= ''
         checkbox.value = ''
         row.remove();
       });
@@ -677,6 +692,7 @@
 
         btnFinalizarMantenimiento.forEach(function(boton){
           boton.addEventListener("click",function(event){
+            lista.innerHTML= ''
             // Llenamos variables
             let id_implemento = event.target.dataset.idimplemento;
             let id_mantenimiento = event.target.dataset.idmantenimiento;
