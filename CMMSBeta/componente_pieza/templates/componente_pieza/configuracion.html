@@ -4,14 +4,14 @@
 
 {% block contenido %}
 {% load static %}
-<h1 class="text-center mb-2">Creacion del nombre de los componentes</h1>
+<h1 class="text-center mb-2">Creación del nombre de los componentes</h1>
 <div class="row mt-4">
     <div class="col md-3 mb-3">
         <form>
-            <div class="input-group">
+            <!-- <div class="input-group">
                 <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
                 <button class="btn btn-md btn-outline-secondary">Buscar</i></button>
-            </div>
+            </div> -->
         </form>
     </div>
     <div class="col-md-3 mb-3">
@@ -33,11 +33,9 @@
         </colgroup> -->
         <tr>
             <th scope="col">N°</th>
-            <th scope="col">Nombre de la configuracion</th>
+            <th scope="col">Nombre de la configuración</th>
             <th scope="col">Componentes Asignados</th>
-            {% if user.idrol.rol != "Gerencia" %}
             <th scope="col">Operaciones</th>
-            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -50,14 +48,12 @@
                 <i class="lni lni-eye"></i>
             </button>
         </td>
-        {% if user.idrol.rol != "Gerencia" %}
         <td>
-            <form action="{% url 'eliminar_configuracion' dato.idconfiguraciontipoimplemento %}" id="form-{{ dato.nombre_configuracion }}" class="d-inline-block" method="POST">
+            <form action="{% url 'eliminar_configuracion' dato.idconfiguraciontipoimplemento %}" id="form-{{ dato.idconfiguraciontipoimplemento }}" class="d-inline-block" method="POST">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger flex-fill" ><i class="lni lni-trash-can eliminar"></i></button>
+                <button type="submit" class="btn btn-danger flex-fill eliminar" data-registro="{{ dato.nombre_configuracion }}" data-id="{{ dato.idconfiguraciontipoimplemento }}" ><i class="lni lni-trash-can eliminar"></i></button>
             </form>
         </td>
-        {% endif %}
      </tr>
     {% endfor %}
     </tbody>
@@ -95,7 +91,7 @@
                         <span id="error-message" class="text-danger d-none">El mínimo de contenedores es uno.</span>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="agregar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
                         <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
                     </div>
                 </form>
@@ -133,6 +129,8 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const pieceContainer = document.getElementById('contenedor-pieza');
@@ -141,6 +139,18 @@
 
         var componentes = document.querySelectorAll('.componente');
         var componentes_modal = document.getElementById('componentes');
+
+        const btnGuardar = document.getElementById("guardar");
+        const formModal = document.getElementById("form-modal");
+        const btnEliminar = document.querySelectorAll(".eliminar");
+
+
+        setTimeout(function() {
+            var mensaje = document.getElementById('mensaje');
+            if (mensaje) {
+                mensaje.style.display = 'none';
+            }
+        }, 3000);
 
         componentes.forEach(function(button) {
             button.addEventListener('click', function() {
@@ -202,6 +212,26 @@
         document.querySelectorAll('.remove-piece').forEach(button => {
             button.addEventListener('click', removePiece);
         });
+
+        btnGuardar.addEventListener("click", function(event) {
+            if (!formModal.checkValidity()) {
+            return;
+            }
+            event.preventDefault();
+            PreguntarGuardar(function(){formModal.submit();});
+        });
+
+        btnEliminar.forEach(function(boton) {
+            boton.addEventListener("click", function(event) {
+            event.preventDefault();
+            let componente = event.currentTarget.dataset.registro;
+            let formId = event.currentTarget.dataset.id;
+                PreguntarEliminar(componente, function() {
+                    document.getElementById('form-' + formId).submit();
+                });
+            });
+        });
+
     });
 </script>
 {% endblock %}

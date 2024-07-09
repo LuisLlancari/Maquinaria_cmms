@@ -64,17 +64,19 @@ def obtener_lote(request):
 def editar_lote(request):
   if request.method == 'POST':
     lote_id = request.POST.get('lote_id')
+
     lote_instance = get_object_or_404(Lote, pk=lote_id)
+    
     form = LoteForm(request.POST, instance=lote_instance)
 
     lote = request.POST.get('lote').lstrip()
-    existe_lote = Lote.objects.filter(lote = lote, estado = True).exists()
-    print(existe_lote)
+   
+    existe_lote = Lote.objects.filter(lote=lote, estado=True).exclude(pk=lote_id).exists()
 
-    if form.is_valid() and existe_lote == False:
+    if not existe_lote:
       form.save()
       messages.success(request, 'Lote actualizado con exito', extra_tags='primary')
       return redirect('lote')
     else:
-      messages.error(request, 'La actualización fallo', extra_tags='danger')
-  return redirect('lote')
+      messages.error(request, 'El lote ya existe', extra_tags='danger')
+      return redirect('lote')

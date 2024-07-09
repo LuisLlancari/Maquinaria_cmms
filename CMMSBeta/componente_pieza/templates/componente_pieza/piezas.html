@@ -172,6 +172,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     btnGuardar.addEventListener("click", function(event) {
+        if (!formModal.checkValidity()) {
+         return;
+        }
         event.preventDefault();
         PreguntarGuardar(function(){formModal.submit();});
     });

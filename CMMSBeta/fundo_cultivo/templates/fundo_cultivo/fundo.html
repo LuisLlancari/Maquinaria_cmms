@@ -83,7 +83,7 @@
             </div>
         </div>
     </div>
-    <!--MODAL PARA ACTUALIZAR-->
+    
     <div class="modal fade" id="modalActualizar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -104,7 +104,7 @@
 
                         <div class="form-group mt-2">
                             <label for="nombrefundo">Fundo</label>
-                            <input type="text" class="form-control" name="fundo" id="nombrefundo">
+                            <input type="text" class="form-control" name="fundo" id="nombrefundo" required>
                         </div>
                         
                         
@@ -120,7 +120,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", () => {
         const h1 = document.querySelector('#h1-remplazar');
         const buscador = document.querySelector('#buscador');
         const filasTabla = document.querySelectorAll('#tabla-fundo tbody tr');
@@ -185,12 +185,19 @@
         });
 
         btnGuardarRegristro.addEventListener("click", function(event){
+            if (!formRegistrar.checkValidity()) {
+                return;
+            }
+
             event.preventDefault();
             PreguntarGuardar(function(){formRegistrar.submit();});
 
         });
 
         btnGuardarCambios.addEventListener("click", function(event){
+            if (!formEditar.checkValidity()) {
+                return;
+            }
             event.preventDefault();
             PreguntarGuardar(function(){formEditar.submit();});
 
