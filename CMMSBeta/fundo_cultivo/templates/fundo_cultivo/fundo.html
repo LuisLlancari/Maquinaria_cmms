@@ -65,11 +65,11 @@
     <div class="modal fade" id="modalRegistrar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="">Nuevo Fundo</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="">Nuevo Fundo</h5>
                 </div>
+                <form method="post" action="{% url 'registrar_fundo' %}" autocomplete="off" id="form-fundo">
                 <div class="modal-body">
-                    <form method="post" action="{% url 'registrar_fundo' %}" autocomplete="off" id="form-fundo">
                         {% csrf_token %}
                         <label class="mt-2">Sede</label>
                         {{ form_fundo.idsede }}
@@ -77,9 +77,12 @@
                         <label class="mt-2">Fundo</label>
                         {{form_fundo.fundo}}
 
-                        <button type="submit" id="guardar-datos" class="btn btn-primary">Guardar</button>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar-datos" class="btn btn-outline-primary flex-fill">Guardar</button>
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -87,11 +90,11 @@
     <div class="modal fade" id="modalActualizar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="">Editar Fundos</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="">Editar Fundos</h5>
                 </div>
+                <form method="post" action="{% url 'editar_fundo' %}" autocomplete="" id="form-editar-fundo">
                 <div class="modal-body">
-                    <form method="post" action="{% url 'editar_fundo' %}" autocomplete="" id="form-editar-fundo">
                         {% csrf_token %}
                         <input type="hidden" name="fundo_id" id="fundo_id">
                         
@@ -108,10 +111,13 @@
                         </div>
                         
                         
-                        <button type="submit" id="guardar-cambios" class="btn btn-primary mt-3">Guardar Cambios</button>
-                    </form>
-                                    
-                </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar-cambios" class="btn btn-outline-primary flex-fill">Guardar Cambios</button>
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -169,7 +175,8 @@
 
                 document.querySelector('#fundo_id').value = idFundo;
                 document.querySelector('#nombrefundo').value = nombrefundo;
-                document.querySelector('#idsede').value = idSede;
+                nombresede.value = idSede;
+                // document.getElementById('#nombresede').value = idSede;
             });
         });
 

@@ -27,12 +27,12 @@ def registrar_ceco(request):
     if request.method == 'POST':
         form = CecoForm(request.POST)
         ceco = request.POST.get('ceco').strip()
-        print(ceco)
+
         ceco_existe = Ceco.objects.filter(ceco = ceco, estado = True).exists()
-        print(ceco_existe)
+        
         if form.is_valid() and ceco_existe == False:
             form.save()
-            messages.success(request, 'Ceco registrado con exito', extra_tags='success')
+            messages.success(request, 'Ceco registrado con éxito', extra_tags='success')
             return redirect('ceco')
         else:
             messages.error(request, 'El centro de costo ya existe', extra_tags='danger')
@@ -50,7 +50,7 @@ def editar_ceco(request):
         ceco_existe = Ceco.objects.filter(ceco = ceco, estado = True).exists()
         if form.is_valid() and ceco_existe == False:
             form.save()
-            messages.success(request, 'Ceco actualizado con exito', extra_tags='primary')
+            messages.success(request, 'Ceco actualizado con éxito', extra_tags='primary')
             return redirect('ceco')
         else:
             messages.error(request, 'El centro de costo ya existe', extra_tags='danger')

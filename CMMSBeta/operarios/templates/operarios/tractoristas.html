@@ -80,7 +80,7 @@
     </table>
 </div>
 <div class="modal fade" id="modal-tractorista" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header bg-primary justify-content-center" >
                 <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar tractorista</h1>
@@ -90,7 +90,7 @@
                             {% csrf_token %}
                             <label for="txtUsuario" class="form-label">Supervisor a cargo:</label>
                             <select class="form-select mb-3" name="usuario" id="txtUsuario" required>
-                                <option selected>Seleccione: </option>
+                                <option value="" selected>Seleccione: </option>
                                 {% for usuario in datos_usuarios %}
                                 <option value="{{usuario.id}}">{{usuario.first_name}} {{usuario.last_name}}</option>
                                 {% endfor %}
