@@ -45,10 +45,14 @@ def eliminarImplemento(request, id):
 def editarTipoImplemento(request, id_tipo):
   if request.method == 'POST':
     tipo_implmento = get_object_or_404(TipoImplemento, pk=id_tipo)
+    tiempo_vida = request.POST.get('tiempo_vida')
+    print(tiempo_vida)
+    frecuencia_man = request.POST.get('frecuencia_man')
+    print(frecuencia_man)
     form = TipoImplementoForms(request.POST, instance=tipo_implmento)
     tipoimplemento = request.POST.get('tipoimplemento')
     #Verificamos si el tipo de implemento ya existe
-    existe_implemento = TipoImplemento.objects.filter(tipoimplemento=tipoimplemento, estado=True).exists()
+    existe_implemento = TipoImplemento.objects.filter(tipoimplemento=tipoimplemento, tiempo_vida=tiempo_vida, frecuencia_man=frecuencia_man, estado=True).exists()
     print(existe_implemento)
     if form.is_valid():
       if existe_implemento == False:

@@ -166,17 +166,6 @@
               </select>
             </div>
 
-            <!-- Campo idusuario con Bootstrap -->
-            <div class="form-group">
-              <label for="idusuario">Usuario</label>
-              <select name="idusuario" id="idusuario" class="form-control mt-2 mb-2">
-                <option value="">-----------</option>
-                {% for usuario in usuario %}
-                  <option value="{{usuario.id}}">{{usuario.first_name}} {{usuario.last_name}}</option>
-                {% endfor %}
-              </select>
-            </div>
-
             <!-- Campo idfundo con Bootstrap -->
             <div class="form-group">
               <label for="idfundo">Fundo</label>

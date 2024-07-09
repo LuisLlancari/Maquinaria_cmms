@@ -18,7 +18,7 @@ class ImplementoForms(forms.ModelForm):
       'idimplemento': forms.HiddenInput(),
       'implemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtImplemento'}),
       # 'idusuario': forms.Select(attrs={'class':'form-select', 'id':'txtIdUsuario'}),
-      'horasdeuso': forms.NumberInput(attrs={'class':'form-control', 'id':'txtHorasUso', 'type':'number', 'min':'0'}),
+      'horasdeuso': forms.NumberInput(attrs={'class':'form-control', 'id':'txtHorasUso', 'type':'number', 'min':'0', 'readonly':'readonly'}),
       'codimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtCodImplemento'}),
       'idtipoimplemento': forms.Select(attrs={'class':'form-control', 'id':'txtIdTipoimplemento'}),
       'idceco': forms.Select(attrs={'class':'form-control', 'id':'txtIdCeco'}),

@@ -131,7 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
             txtPieza.value = datos.pieza[0].pieza;           
             txtCodPieza.value = datos.pieza[0].codpieza;                 
             txtTiempovida.value = datos.pieza[0].tiempovida;                  
-            txtFrecuenciaMan.value = datos.pieza[0].frecuencia_man;                  
+            txtFrecuenciaMan.value = datos.pieza[0].frecuencia_man;
+            txtPieza.readOnly = true;  
+            txtCodPieza.readOnly = true;                
         })
         .catch((error) => {
             console.log(error);
@@ -143,6 +145,9 @@ document.addEventListener("DOMContentLoaded", () => {
         formModal.reset();
         formModal.setAttribute("action", "{% url 'pieza_registro' %}");
         formModal.setAttribute("method", "POST");
+        txtPieza.readOnly = false;
+        txtCodPieza.readOnly = false;
+        
     });
 
     btnModificar.forEach(function(boton) {

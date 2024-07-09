@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from ..models import Sistema
 from ..forms import SistemaForms
 from django.http import JsonResponse
+from django.contrib import messages
 
 
 def sistema(request):
@@ -13,10 +14,14 @@ def registrarSistema(request):
     form = SistemaForms(request.POST)
     if form.is_valid():
       form.save()
+      messages.success(request, 'El sistema creado correctamente', extra_tags='success')
+      return redirect('sistema')
+    else:
+      messages.success(request, 'El sistema ya existe', extra_tags='danger')
       return redirect('sistema')
   else:
-      form = SistemaForms()
-      return render(request, 'componente_pieza/sistema.html',{'form':form})
+      messages.success(request, 'El formulario es inválido', extra_tags='danger')
+      return redirect('sistema')
 
 
 def eliminarSistema(request, id_sistema):
