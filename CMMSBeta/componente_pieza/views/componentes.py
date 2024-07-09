@@ -15,28 +15,35 @@ def componente(request):
 def registrarComponente(request):
   if request.method == 'POST':
       form = ComponenteForms(request.POST)
+      cod_compo = request.POST.get('codcomponente')
       piezas = request.POST.getlist('idpieza')
       cantidades = request.POST.getlist('cantidad')
+      busqueda = Componente.objects.filter(codcomponente = cod_compo, estado = True).exists()
+      print(busqueda)
       if form.is_valid():  # Verifica si los datos son válidos
-        componente = form.save()
-        idcomponente = componente.idcomponente
+        if busqueda == False:
+          componente = form.save()
+          idcomponente = componente.idcomponente
 
-        for idpieza, cantidad in zip(piezas, cantidades):
-          if DetalleComponente.objects.filter(idcomponente_id=idcomponente, idpieza_id=idpieza).exists():
-            dato = Pieza.objects.get(pk=idpieza) 
-            messages.error(
-                request,
-                f'La pieza {dato.pieza} ya se encuentra registrada	.',
-                extra_tags='danger'
-            )           
-          else:
-            DetalleComponente.objects.create(
-                idcomponente_id=idcomponente,
-                idpieza_id=idpieza,
-                cantidad=cantidad
-            )
+          for idpieza, cantidad in zip(piezas, cantidades):
+            if DetalleComponente.objects.filter(idcomponente_id=idcomponente, idpieza_id=idpieza).exists():
+              dato = Pieza.objects.get(pk=idpieza) 
+              messages.error(
+                  request,
+                  f'La pieza {dato.pieza} ya se encuentra registrada	.',
+                  extra_tags='danger'
+              )           
+            else:
+              DetalleComponente.objects.create(
+                  idcomponente_id=idcomponente,
+                  idpieza_id=idpieza,
+                  cantidad=cantidad
+              )
 
-          messages.success(request, 'Componente registrado con exito', extra_tags='success')
+            messages.success(request, 'Componente registrado con exito', extra_tags='success')
+            return redirect('componente')
+        else:
+          messages.error(request, 'El componente ya existe', extra_tags='danger')
           return redirect('componente')
   else:
       messages.error(request, 'El formulario es inválido', extra_tags='danger')

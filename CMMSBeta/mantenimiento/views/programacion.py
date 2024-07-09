@@ -22,7 +22,7 @@ def programacion_mantenimiento(request):
     if rol == "Supervisor":
 
         datos = ProgramacionMantenimiento.objects.filter(idimplemento__idsupervisor = usuario_id).order_by('-fechaprogramacion')
-        acciones = Acciones.objects.filter(estado__in=[0, 2])
+        acciones = Acciones.objects.filter(estado__in=[0, 2], estado_actividad = True)
         implementos = ImplementoSupervisor.objects.filter(estado = True, idsupervisor = usuario_id)
         tipoimplementos = TipoImplemento.objects.filter(estado = True)
         contexto = {
@@ -82,7 +82,7 @@ def registrar(request):
                     messages.error(request, f"El motivo {motivo} ya registrado", extra_tags='danger')
                 else:
                     DetMotivos.objects.create(idprogramacionmantenimiento_id = nueva_programacion.idprogramacionmantenimiento, idaccion_id = idmotivo)
-                    messages.success(request, 'La programación se ha creado exitosamente', extra_tags='success')
+            messages.success(request, 'La programación se ha creado exitosamente', extra_tags='success')
 
     return redirect('programacion_mantenimiento')
 

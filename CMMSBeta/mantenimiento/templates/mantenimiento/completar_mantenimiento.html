@@ -71,21 +71,24 @@
                 <p><strong>Fecha del Ingreso:</strong></p>
               </div>
             </div>
-            
             <div class="row">
+              <h3 class="text-center"><strong>Informe de Salida</strong></h3>
               <div class="col col-md-6">
-                <label for="fecha-salida" class="forml-label">Fecha de Salida:</label>
+                <label for="fecha-salida" class="forml-label"><strong>Fecha de Salida:</strong></label>
                 <input type="date" name="fecha-salida" id="fecha-salida" class="form-control mt-2" required> 
               </div>
               <div class="col col-md-6">
-                <label for="encargado" class="form-label">Encargado:</label>
+                <label for="encargado" class="form-label"><strong>Encargado:</strong></label>
                 <select name="encargado" id="encargado" class="form-select" required>
                   <option value="">Seleccione:</option>
                 </select>
               </div>
             </div>
-            <h1 class="text-center mt-3" > Acciones</h1>
-            <button type="button" class="btn btn-success " id="agregar-tarea">Agregar acciones</button>
+            <h5 class="text-center mt-3"><strong>Tareas</strong></h5>
+
+            <div class="text-end">
+              <button type="button" class="btn btn-primary" id="agregar-tarea">Agregar tarea</button>
+            </div>
             <div id="contenedor-tareas">
               <div class="container tarea" id="cuerpo-acciones">
               </div>
@@ -96,23 +99,26 @@
 
 
           <div class="container">
-            <h1 class="text-center mt-3">Recambios</h1>
+            <hr>
+            <h5 class="text-center mt-3"><strong>Recambios</strong></h5>
+            <span style="font-style: italic;">*Si se realizaron recambios agrege a la lista*</span>
             <!-- <button type="button" class="btn btn-success mb-3" id="agregarRecambio">agregar </button> -->
             <div class="row mb-3">
               <div class="col-md-10">
-                <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
+                <input type="text" id="searchInput" class="form-control border-success" placeholder="Buscar componente o pieza...">
                 <ul id="resultList" class="list-group">
                 </ul>
               </div>
               <div class="col-md-2">
-                <button type="button" class="btn btn-success " id="agregarRecambio">agregar </button>
+                <button type="button" class="btn btn-success " id="agregarRecambio">Agregar</button>
               </div>
             </div>
+            <strong id="lista"></strong>
           </div>
-
           <div class="mb-3 container" id="recambios">
 
           </div>
+
 
     
     
@@ -352,6 +358,7 @@
 
     // Boton que genera un input con el dato de la barra de busqueda
     btnAgregarRecambio.addEventListener('click',function(){
+      lista.innerHTML = 'Lista de Recambios:';
       let valorinput = searchInput.value;
       if (valorinput != null && valorinput.trim() !== '') {
           QuitarComponente();
@@ -491,7 +498,7 @@
         let input = document.createElement('input');
         input.type = 'text';
         input.name = 'tareas_asignadas'
-        input.className = 'form-control';
+        input.className = 'form-control border-primary';
         input.value = `${tarea.tarea}`
         input.setAttribute('readonly', true)
         colmd1.appendChild(input);
@@ -505,7 +512,7 @@
         let checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.name = 'realizado';
-        checkbox.className = 'form-check-input big-checkbox';
+        checkbox.className = 'form-check-input big-checkbox border-primary';
         checkbox.id = 'inlineCheckbox1';
         checkbox.value = `${tarea.tarea}`;
 
@@ -538,26 +545,33 @@
      det_mantenimiento.innerHTML = ''
      datos.forEach(detman =>{
         var div1 = document.createElement('div');
-        div1.className = 'col col-md-6';
+        div1.className = 'col col-md-4';
 
         var p1 = document.createElement('p');
         p1.innerHTML = `<strong>Implemento: </strong>${detman.implemento}`;
         div1.appendChild(p1);
 
-        var p2 = document.createElement('p');
-        p2.innerHTML = `<strong>Código del Implemento: </strong>${detman.cod_implemento}`;
-        div1.appendChild(p2);
-
         var div2 = document.createElement('div');
-        div2.className = 'col col-md-6';
+        div2.className = 'col col-md-4';
+        var p2 = document.createElement('p');
+        p2.innerHTML = `<strong>Ingreso: </strong>${detman.fechaingreso}`;
+        div2.appendChild(p2);
 
+        var div3 = document.createElement('div');
+        div3.className = 'col col-md-4';
         var p3 = document.createElement('p');
-        p3.innerHTML = `<strong>Fecha del Ingreso: </strong>${detman.fechaingreso}`;
-        div2.appendChild(p3);
+        p3.innerHTML = `<strong>Cod-Implemento: </strong>${detman.cod_implemento}`;
+        div3.appendChild(p3);
 
+
+        var hr = document.createElement('hr');
+        
+        
         // Agregar los divs creados al contenedor específico
         det_mantenimiento.appendChild(div1);
+        det_mantenimiento.appendChild(div3);
         det_mantenimiento.appendChild(div2);
+        det_mantenimiento.appendChild(hr);
      });
     }
 

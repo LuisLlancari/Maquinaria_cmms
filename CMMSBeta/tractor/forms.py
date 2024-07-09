@@ -31,7 +31,7 @@ class TractorForm(forms.ModelForm):
             'idfundo': forms.Select(attrs={'class': 'form-control'}),
             'nrotractor': forms.TextInput(attrs={'class': 'form-control'}),
             'horainicial': forms.NumberInput(attrs={'class': 'form-control'}),
-            'horauso': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+            'horauso': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'readonly': True}),
         }
 
 
