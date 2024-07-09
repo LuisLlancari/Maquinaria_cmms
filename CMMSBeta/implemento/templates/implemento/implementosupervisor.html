@@ -5,7 +5,7 @@
 {% block contenido %}
 {% load static %}
 
-    <h1 class="text-center mb-2">Asignar Supervisor</h1>
+    <h1 class="text-center mb-2">Rangos de Fechas de Supervisor por Implemento</h1>
     <div class="row mt-4">
         <div class="col md-3 mb-3">
         </div>
@@ -30,16 +30,18 @@
           <table class="table table-striped table-sm table-bordered mt-3 text-center" id="tabla-implemento">
               <thead class="table-dark text-center">
                   <tr>
+                      <th scope="col" class="text-center">N°</th>
                       <th scope="col">Implemento</th>
                       <th scope="col">Supervisor</th>
                       <th scope="col">Fecha inicio</th>
                       <th scope="col">Fecha fin</th>
                       <!-- <th scope="col">Operaciones</th> -->
-                  </tr>
-              </thead>
-              <tbody>
-              {% for dato in datos %}
-              <tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dato in datos %}
+                    <tr>
+                  <th class="text-center">{{ forloop.counter }}</th>
                   <td>{{dato.idimplemento.implemento}}</td>
                   <td>{{dato.idsupervisor.first_name}} {{dato.idsupervisor.last_name}}</td>
                   <td>{{dato.fechaInicio}}</td>

@@ -7,10 +7,6 @@ from django.http import JsonResponse
 from django.db.models import OuterRef, Subquery, Value, F, CharField, IntegerField
 from django.utils import timezone
 from django.db.models.functions import Concat, Coalesce
-
-
-
-#Manejo de errores
 from django.contrib import messages
 
 
@@ -103,10 +99,20 @@ def registrarImplemento(request):
 
 @login_required(login_url='login', redirect_field_name='')
 def eliminarimplemento(request, id_implemento):
-  registro = get_object_or_404(Implemento, pk= id_implemento)
   if request.method == 'POST':
+
+    registro = get_object_or_404(Implemento, pk= id_implemento)
+    ahora = timezone.localtime()
+    fecha_actual = ahora.date()
+
+    tractor_sup= get_object_or_404(ImplementoSupervisor, idimplemento=id_implemento , estado = True)
+    tractor_sup.fechaFin = fecha_actual
+    tractor_sup.estado = False
+    tractor_sup.save()
+
     registro.estado = False
     registro.save()
+
     return redirect('implemento')
   
 @login_required(login_url='login', redirect_field_name='')

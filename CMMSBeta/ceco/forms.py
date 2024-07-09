@@ -6,5 +6,5 @@ class CecoForm(forms.ModelForm):
         model = Ceco
         fields = ['ceco']
         widgets = {
-            'ceco': forms.TextInput(attrs={'class': 'form-control mb-2'}),
+            'ceco': forms.TextInput(attrs={'class': 'form-control mb-2', 'required':'true'}),
         }

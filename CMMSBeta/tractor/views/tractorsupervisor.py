@@ -8,7 +8,7 @@ from django.contrib import messages
 
 @login_required(login_url='login', redirect_field_name='')
 def tractorSupervisor(request):
-  datos = list(TractorSupervisor.objects.filter(estado = True))
+  datos = list(TractorSupervisor.objects.all())
   contexto ={
     'datos':datos,
     'form':TractorSupervisorForms

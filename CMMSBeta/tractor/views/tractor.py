@@ -100,10 +100,19 @@ def tractor(request):
 
 @login_required(login_url='login', redirect_field_name='')
 def eliminar_tractor(request, idtractor):
-    tractor = get_object_or_404(Tractor, pk = idtractor)
     if request.method == 'POST':
+        ahora = timezone.localtime()
+        fecha_actual = ahora.date()
+
+        tractor_sup= get_object_or_404(TractorSupervisor, idtractor = idtractor, estado = True)
+        tractor_sup.fechaFin = fecha_actual
+        tractor_sup.estado = False
+        tractor_sup.save()
+
+        tractor = get_object_or_404(Tractor, pk = idtractor)
         tractor.estado = False
         tractor.save()
+
         return redirect('tractor')
     
 @login_required(login_url='login', redirect_field_name='')
@@ -126,19 +135,16 @@ def registrar_tractor(request):
 def editar_tractor(request):
     if request.method == 'POST':
         idtractor = request.POST.get('idtractor')
-
+        tipotractor = request.POST.get('idtipotractor')
         nom_tractor = request.POST.get('nrotractor').strip()
-        idusuario = request.POST.get('idusuario')
         idfundo = request.POST.get('idfundo')
 
         print(nom_tractor)
-        print(idusuario)
         print(idfundo)
         tractor = get_object_or_404(Tractor, pk = idtractor)
         form = TractorForm(request.POST, instance=tractor)
 
-        existe_tractor = Tractor.objects.filter(nrotractor = nom_tractor, idusuario = idusuario, idfundo = idfundo, estado = True).exists()
-        print(existe_tractor)
+        existe_tractor = Tractor.objects.filter(nrotractor = nom_tractor, idfundo = idfundo, idtipotractor = tipotractor ,estado = True).exists()
         if form.is_valid() and existe_tractor == False:
             form.save()
             messages.success(request, "El tractor ha sido modificado correctamente", extra_tags='primary')

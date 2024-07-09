@@ -3,7 +3,7 @@
 {% block contenido %}
 {% load static %}
 <div class="container">
-  <h1 class="text-center mt-3 mb-3">Gestion Tractores</h1>
+  <h1 class="text-center mt-3 mb-3">Gestión Tractores</h1>
   <div class="row">
     <div class="col-md-4">
       <input
@@ -52,7 +52,7 @@
             <th scope="col" class="text-center">Hora Inicial</th>
             <th scope="col" class="text-center">Hora de Uso</th>
             {% if user.idrol.rol == "Admin" %}
-            <th scope="col" class="text-center">Acción</th>
+            <th scope="col" class="text-center">Operaciones</th>
             {% endif %}
         </tr>
     </thead>
@@ -114,11 +114,7 @@
           <h5 class="modal-title" id="modalNuevoTractorLabel">Nuevo Tractor</h5>
         </div>
         <div class="modal-body">
-          <form
-            method="post"
-            action="{% url 'registrar_tractor' %}"
-            autocomplete="off"
-            id="form-tractor"
+          <form method="post" action="{% url 'registrar_tractor' %}" autocomplete="off" id="form-tractor"
           >
             {% csrf_token %} 
             {{form}}
@@ -162,17 +158,6 @@
               <select name="idtipotractor" id="idtipotractor" class="form-control mt-2 mb-2" >
                 {% for tipo in tipotractor %}
                   <option value="{{tipo.idtipotractor}}">{{tipo.TipoTractor}}</option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <!-- Campo idusuario con Bootstrap -->
-            <div class="form-group">
-              <label for="idusuario">Usuario</label>
-              <select name="idusuario" id="idusuario" class="form-control mt-2 mb-2">
-                <option value="">-----------</option>
-                {% for usuario in usuario %}
-                  <option value="{{usuario.id}}">{{usuario.first_name}} {{usuario.last_name}}</option>
                 {% endfor %}
               </select>
             </div>
