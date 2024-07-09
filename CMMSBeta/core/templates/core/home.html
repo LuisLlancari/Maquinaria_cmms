@@ -11,35 +11,43 @@
     }
 </style>
 
-<h1 class="text-center">Dashboard</h1>
 <div class="alert alert-danger alert-dismissible fade show" style="display: none;" id="error-alert" role="alert">
     <strong id="mensaje-alert"></strong>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 
 <!-- FILTROS -->
-<div class="row">
-    <div class="col col-md-4 mb-1">
-        <label for="" class="form-label"><strong>FECHA:</strong></label>
-        <input type="date" name="" class="form-control" id="fecha">
-    </div>
-    <div class="col col-md-4 mb-1">
-        <label for="" class="form-label"><strong>SUPERVISOR:</strong></label>
-        <select name="" class="form-select" id="supervisor">
-            <option value="0">----------</option>
-            {% for data in usuarios %}
-            <option value="{{ data.id }}">{{ data.first_name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col col-md-4 mb-1">
-        <label for="" class="form-label"><strong>TURNO:</strong></label>
-        <select name="" class="form-select" id="turno">
-            <option value="O">----------</option>
-            <option value="M">Mañana</option>
-            <option value="T">Tarde</option>
-            <option value="N">Noche</option>
-        </select>
+<div class="row m-3">
+    <div class="row shadow p-6 bg-white rounded">
+        <h4 class="text-center mt-2">
+            <strong>Filtros</strong>
+        </h4>
+        <div class="col col-md-12 mb-4">
+            <div class="row">
+                <div class="col col-md-4 mb-1">
+                    <label for="" class="form-label"><strong>FECHA:</strong></label>
+                    <input type="date" name="" class="form-control" id="fecha">
+                </div>
+                <div class="col col-md-4 mb-1">
+                    <label for="" class="form-label"><strong>SUPERVISOR:</strong></label>
+                    <select name="" class="form-select" id="supervisor">
+                        <option value="0">----------</option>
+                        {% for data in usuarios %}
+                        <option value="{{ data.id }}">{{ data.first_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col col-md-4 mb-1">
+                    <label for="" class="form-label"><strong>TURNO:</strong></label>
+                    <select name="" class="form-select" id="turno">
+                        <option value="O">----------</option>
+                        <option value="M">Mañana</option>
+                        <option value="T">Tarde</option>
+                        <option value="N">Noche</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -49,7 +57,7 @@
 
         <div class="col col-md-6 mt-2">
             <h1 class="text-center mt-2">Programaciones por solicitante</h1>
-            <canvas id="grafico-donut"></canvas>
+            <canvas id="grafico-donut" class="p-5"></canvas>
         </div>
 
         <div class="col col-md-6 mt-2">

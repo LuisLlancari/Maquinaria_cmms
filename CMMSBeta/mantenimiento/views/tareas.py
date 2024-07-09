@@ -9,7 +9,7 @@ from django.http import JsonResponse
 
 @login_required(login_url='login', redirect_field_name='')
 def tareas(request):
-  tareas = Acciones.objects.all()
+  tareas = Acciones.objects.filter(estado_actividad = True)
   contexto = {
     'datos':tareas,
     'form': AccionesForms
@@ -46,7 +46,8 @@ def editar_tareas(request, id_tarea):
 def eliminar_tareas(request, id_tarea): 
   if request.method == 'POST':
     tarea = get_object_or_404(Acciones, idaccion=id_tarea)
-    tarea.delete()
+    print(tarea.idaccion)
+    Acciones.objects.filter(idaccion=tarea.idaccion).update(estado_actividad = False)
     return redirect('tareas')
   
 @login_required(login_url='login', redirect_field_name='')

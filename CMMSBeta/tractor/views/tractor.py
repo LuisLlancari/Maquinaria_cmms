@@ -138,6 +138,7 @@ def editar_tractor(request):
         tipotractor = request.POST.get('idtipotractor')
         nom_tractor = request.POST.get('nrotractor').strip()
         idfundo = request.POST.get('idfundo')
+        tipotractor = request.POST.get('idtipotractor')
 
         print(nom_tractor)
         print(idfundo)
@@ -145,6 +146,7 @@ def editar_tractor(request):
         form = TractorForm(request.POST, instance=tractor)
 
         existe_tractor = Tractor.objects.filter(nrotractor = nom_tractor, idfundo = idfundo, idtipotractor = tipotractor ,estado = True).exists()
+        print(existe_tractor)
         if form.is_valid() and existe_tractor == False:
             form.save()
             messages.success(request, "El tractor ha sido modificado correctamente", extra_tags='primary')

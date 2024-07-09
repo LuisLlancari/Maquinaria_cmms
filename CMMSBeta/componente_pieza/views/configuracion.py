@@ -20,26 +20,32 @@ def configuracion(request):
 def registrarConfiguracion(request):
   if request.method == 'POST':
     form = ConfiguracionTipoImplementoForms(request.POST)
+    nom_config = request.POST.get('nombre_configuracion')
     componentes = request.POST.getlist('idcomponente')
+    busqueda = ConfiguracionTipoImplemento.objects.filter(nombre_configuracion = nom_config, estado = True).exists()
+    print(busqueda)
     if form.is_valid():
-      config = form.save()
-      idconfig = config.idconfiguraciontipoimplemento
+      if busqueda == False:
+        config = form.save()
+        idconfig = config.idconfiguraciontipoimplemento
 
-      for iddetconf in componentes:
-        if DetalleConfiguracion.objects.filter(idconfiguracion_id=idconfig, idcomponente_id=iddetconf).exists():
-          dato = Componente.objects.get(pk=iddetconf) 
-          messages.error(
-              request,
-              f'El componente {dato.componente} ya se encuentra registrada	.',
-              extra_tags='danger'
-          )
-        else:
-          DetalleConfiguracion.objects.create(
-              idcomponente_id=iddetconf,
-              idconfiguracion_id=idconfig
-          )
-      messages.success(request, 'Configuración registrada con exito', extra_tags='success')
-      return redirect('configuracion')
+        for iddetconf in componentes:
+          if DetalleConfiguracion.objects.filter(idconfiguracion_id=idconfig, idcomponente_id=iddetconf).exists():
+            dato = Componente.objects.get(pk=iddetconf) 
+            messages.error(
+                request,
+                f'El componente {dato.componente} ya se encuentra registrada	.',
+                extra_tags='danger'
+            )
+          else:
+            DetalleConfiguracion.objects.create(
+                idcomponente_id=iddetconf,
+                idconfiguracion_id=idconfig
+            )
+        messages.success(request, 'Configuración registrada con exito', extra_tags='success')
+        return redirect('configuracion')
+      else:
+        messages.error(request, 'Ya EXISTE UNA CONFIGURACIÓN CON ESE NOMBRE', extra_tags='danger')
   else:
     messages.success(request, 'El formulario es inválido', extra_tags='danger')
   return redirect('configuracion')

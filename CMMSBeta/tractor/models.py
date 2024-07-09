@@ -17,7 +17,7 @@ class Tractor(models.Model):
     idtipotractor = models.ForeignKey(TipoTractor, on_delete=models.PROTECT, verbose_name='Tipo Tractor')
     idfundo = models.ForeignKey(Fundo, on_delete=models.PROTECT, verbose_name='Fundo', null=True)
     nrotractor = models.CharField(max_length=100 , verbose_name='Nombre Tractor')
-    horainicial = models.IntegerField(verbose_name='Hora Inicial')
+    horainicial = models.IntegerField(verbose_name='Horometro Inicial')
     horauso = models.IntegerField(verbose_name='Hora Uso', default=0)
     estado = models.BooleanField(default=True, verbose_name='Estado')
     estado_actividad = models.BooleanField(default=True, verbose_name="Estado Actividad")

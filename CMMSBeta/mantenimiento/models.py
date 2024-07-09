@@ -66,6 +66,7 @@ class Acciones(models.Model):
     idaccion = models.AutoField(primary_key=True)
     accion = models.CharField(max_length=45, verbose_name="Acción de mantenimiento", unique=True)
     estado = models.IntegerField(choices=ESTADO_CHOICES, verbose_name="Rol")
+    estado_actividad = models.BooleanField(default=True, verbose_name="Estado", null=True, blank=True)
 
     class Meta:
         verbose_name = "Acción"

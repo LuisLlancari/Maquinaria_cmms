@@ -5,7 +5,6 @@ from django.http import JsonResponse
 from django.contrib import messages
 
 
-
 def sistema(request):
   datos_sistema = Sistema.objects.filter(estado=True)
   return render(request, 'componente_pieza/sistema.html',{'datos_sistema':datos_sistema, 'form':SistemaForms})
@@ -13,13 +12,18 @@ def sistema(request):
 def registrarSistema(request):
   if request.method == 'POST':
     form = SistemaForms(request.POST)
-    print(form)
+    sistema = request.POST.get('txtsistema')
+    buscar = Sistema.objects.filter(sistema = sistema,estado = True).exists()
     if form.is_valid():
-      form.save()
-      messages.success(request, 'Sistema se ha registrado con éxito', extra_tags='success')
-      return redirect('sistema')
+      if buscar == False:
+        form.save()
+        messages.success(request, 'Sistema se ha registrado con éxito', extra_tags='success')
+        return redirect('sistema')
+      else:
+        messages.success(request, 'Sistema ya Existe', extra_tags='danger')
+        return redirect('sistema')
     else:
-      messages.success(request, 'Sistema ya Existe', extra_tags='danger')
+      messages.success(request, 'Error en el formulario', extra_tags='danger')
       return redirect('sistema')
 
 def eliminarSistema(request, id_sistema):

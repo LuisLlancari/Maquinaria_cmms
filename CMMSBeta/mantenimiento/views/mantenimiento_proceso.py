@@ -91,7 +91,7 @@ def datos_implemento(request, id_programacion, id_implemento):
     'pieza': detalle_pieza
   }
 
-  tareas = list(Acciones.objects.filter(estado = 2).values('idaccion','accion'))
+  tareas = list(Acciones.objects.filter(estado = 2, estado_actividad = True).values('idaccion','accion'))
 
   return JsonResponse({'partes': partes, 'tareas':tareas_implemento, 'todas_las_tareas':tareas})
 
