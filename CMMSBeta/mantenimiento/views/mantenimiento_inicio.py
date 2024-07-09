@@ -37,8 +37,8 @@ def registrar_ingreso(request, id_mantenimiento):
       mantenimiento = get_object_or_404(Mantenimiento, idmantenimiento=id_mantenimiento, estado=1)
       mantenimiento.fechaingreso = fecha_hoy
       mantenimiento.save()
-      implemento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento
-      #Implemento.objects.filter(idimplemento=implemento).update(estado_actividad=0)
+      implemento = mantenimiento.idprogramacionmantenimiento.idimplemento.idimplemento.idimplemento
+      Implemento.objects.filter(idimplemento=implemento).update(estado_actividad=0)
 
       programacion = mantenimiento.idprogramacionmantenimiento.idprogramacionmantenimiento
       ProgramacionMantenimiento.objects.filter(idprogramacionmantenimiento=programacion).update(estado_mantenimiento=1)

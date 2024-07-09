@@ -6,7 +6,7 @@
 {% load static %}
 
 <div class="container">
-    <h1 class="text-center mt-4 mb-3">Gestion de Variedad</h1>
+    <h1 class="text-center mt-4 mb-3">Gestión de Variedad</h1>
     <div class="row">
         <div class="col-md-4">
             <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
@@ -34,7 +34,7 @@
                     <th scope="col">Variedad</th>
                     <th scope="col">Cultivo</th>
                     {% if user.idrol.rol != "Gerencia" %}
-                    <th scope="col">Operacion</th>
+                    <th scope="col">Operaciones</th>
                     {% endif %}
                 </tr>
             </thead>

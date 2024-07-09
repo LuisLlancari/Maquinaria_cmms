@@ -1,7 +1,7 @@
 {% extends "core/base.html" %} 
 {% block titulo %} Base {% endblock titulo %} {% block contenido %}
 <div class="container">
-  <h1 class="text-start mb-3">Gestion Bases</h1>
+  <h1 class="text-start mb-3">Gestión Bases</h1>
   <div class="row mb-3">
     <div class="col-md-4">
       <input
@@ -45,7 +45,7 @@
           <th class="text-center" scope="col">Base</th>
           <th class="text-center" scope="col">Sede</th>
           {% if user.idrol.rol != "Gerencia" %}
-          <th class="text-center" scope="col">Operacion</th>
+          <th class="text-center" scope="col">Operaciones</th>
           {% endif %}
         </tr>
       </thead>

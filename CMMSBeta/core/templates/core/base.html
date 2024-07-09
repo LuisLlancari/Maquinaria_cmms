@@ -167,7 +167,7 @@
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#ceco" aria-expanded="false" aria-controls="ceco">
                         <i class="lni lni-invest-monitor"></i>
-                        <span>CECO - RESPONSABLE</span>
+                        <span>CECO</span>
                     </a>
                     <ul id="ceco" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
@@ -180,7 +180,7 @@
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#localizacion" aria-expanded="false" aria-controls="localizacion">
                         <i class="lni lni-map-marker"></i>
-                        <span>localizacion</span>
+                        <span>localización</span>
                     </a>
                     <ul id="localizacion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <!-- <li class="sidebar-item">
@@ -218,7 +218,7 @@
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#componente" aria-expanded="false" aria-controls="componente">
                         <i class="lni lni-cogs"></i>
-                        <span>Configuracion</span>
+                        <span>Configuración</span>
                     </a>
                     <ul id="componente" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
@@ -231,7 +231,7 @@
                             <a href="{% url 'componente' %}" class="sidebar-link">Componentes</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'configuracion' %}" class="sidebar-link">Configuracion</a>
+                            <a href="{% url 'configuracion' %}" class="sidebar-link">Configuración</a>
                         </li>
                     </ul>
                 </li>
@@ -294,7 +294,7 @@
                     </a>
                     <ul id="operarios" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="{% url 'responsable' %}" class="sidebar-link" data-path="login">Responsable</a>
+                            <a href="{% url 'responsable' %}" class="sidebar-link" data-path="login">Encargado</a>
                         </li>
                         <li class="sidebar-item">
                             <a href="{% url 'tiposolicitante' %}" class="sidebar-link">Tipo solicitante</a>
@@ -321,7 +321,7 @@
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                     data-bs-target="#programacion" aria-expanded="false" aria-controls="programacion">
                     <i class="lni lni-pencil-alt"></i>
-                    <span>Programacion</span>
+                    <span>Programación</span>
                 </a>
                 <ul id="programacion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     {% if user.idrol.rol == "Admin" %}
@@ -332,7 +332,7 @@
 
                     {% if user.idrol.rol == "Supervisor" %}
                     <li class="sidebar-item">
-                        <a href=" {% url 'programacion' %} " class="sidebar-link" data-path="login">Crear Programacion</a>
+                        <a href=" {% url 'programacion' %} " class="sidebar-link" data-path="login">Crear Programación</a>
                     </li>
                     {% endif %}
                     <!-- <li class="sidebar-item">
@@ -362,7 +362,7 @@
             <div class="sidebar-footer">
                 <a href="{% url 'logout' %}" class="sidebar-link">
                     <i class="lni lni-exit"></i>
-                    <span>Cerrar sesion</span>
+                    <span>Cerrar sesión</span>
                 </a>
             </div>
             {% endif %}

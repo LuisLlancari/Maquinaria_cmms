@@ -8,7 +8,7 @@ from django.contrib import messages
 
 @login_required(login_url='login', redirect_field_name='')
 def implementoSupervisor(request):
-  datos = list(ImplementoSupervisor.objects.filter(estado = True))
+  datos = list(ImplementoSupervisor.objects.filter())
   contexto ={
     'datos':datos,
     'form':ImplementoSupervisorForms

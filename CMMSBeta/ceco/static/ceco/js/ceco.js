@@ -43,12 +43,20 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   btnGuardarRegistro.addEventListener("click", function(event){
+    console.log("holsda")
+    if (!formRegistrar.checkValidity()) {
+      return;
+    }
     event.preventDefault();
     PreguntarGuardar(function(){formRegistrar.submit();});
 
   });
 
   btnGuardarCambios.addEventListener("click", function(event){
+    console.log("holsda")
+    if (!formEditar.checkValidity()) {
+      return;
+    }
     event.preventDefault();
     PreguntarGuardar(function(){formEditar.submit();});
 

@@ -38,7 +38,7 @@
       
     {% endif %}
     <table class="table table-striped  table-sm table-bordered text-center" id="tabla-sistema">
-        <thead class="thead-dark">
+        <thead class="table-dark">
             <!-- <colgroup>
                 <col width="25%">
                 <col width="25%">       
@@ -46,19 +46,21 @@
                 <col width="25%">
             </colgroup> -->
             <tr>
+                <th scope="col" class="text-center">N°</th>
                 <th scope="col">Tipo Solicitante</th>
                 <th scope="col">DNI</th>
                 <th scope="col">Apellidos</th>
                 <th scope="col">Nombres</th>
-                <th scope="col">Codigo</th>
+                <th scope="col">Código</th>
                 {% if user.idrol.rol != "Gerencia" %}
                 <th scope="col">Operaciones</th>
                 {% endif %}
             </tr>
         </thead>
         <tbody>
-        {% for dato in datos_solicitantes %}
+            {% for dato in datos_solicitantes %}
          <tr>
+            <th scope="row" class="text-center">{{ forloop.counter }}</th>
             <td>{{dato.idtiposolicitante}}</td>
             <td>{{dato.idpersona.dni}}</td>
             <td>{{dato.idpersona.apellidos}}</td>
@@ -91,7 +93,7 @@
 
                             <label for="txtTipoSolicitante" class="form-label">Tipo solicitante:</label>
                             <select class="form-select mb-3" name="tiposolicitante" id="txtTipoSolicitante" required>
-                                <option selected>Seleccione: </option>
+                                <option value= "" selected>Seleccione: </option>
                                 {% for tipo in datos_tiposolicitante %}
                                 <option value="{{tipo.idtiposolicitante}}">{{tipo.tiposolicitante}}</option>
                                 {% endfor %}
@@ -180,11 +182,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    btnGuardar.addEventListener("click", function(event) {
-    event.preventDefault();
-        PreguntarGuardar(function(){formModal.submit();});
-    });
+    // btnGuardar.addEventListener("click", function(event) {
+    // event.preventDefault();
+    //     PreguntarGuardar(function(){formModal.submit();});
+    // });
 
+    btnGuardar.addEventListener("click", function(event) {
+    // Previene el envío del formulario si no es válido
+    if (!formModal.checkValidity()) {
+        return;
+    }
+
+    event.preventDefault();
+        PreguntarGuardar(function() {
+            formModal.submit();
+        });
+    });
 
 });
 

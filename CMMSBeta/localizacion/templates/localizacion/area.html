@@ -2,7 +2,7 @@
 {% block titulo %} Area {% endblock titulo %} 
 {% block contenido %}
 <div class="container">
-  <h1 class="text-start mb-3">Gestion de Areas</h1>
+  <h1 class="text-start mb-3">Gestión de Areas</h1>
   <div class="row">
     <div class="col-md-4">
       <input
@@ -45,7 +45,7 @@
           <th class="text-center" scope="col">Area</th>
           <th class="text-center" scope="col">Base</th>
           {% if user.idrol.rol != "Gerencia" %}
-          <th class="text-center" scope="col">Operacion</th>
+          <th class="text-center" scope="col">Operaciones</th>
           {% endif %}
         </tr>
       </thead>

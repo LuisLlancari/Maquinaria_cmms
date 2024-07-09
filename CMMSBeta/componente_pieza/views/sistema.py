@@ -12,30 +12,36 @@ def sistema(request):
 def registrarSistema(request):
   if request.method == 'POST':
     form = SistemaForms(request.POST)
+    print(form)
     if form.is_valid():
       form.save()
-      messages.success(request, 'El sistema creado correctamente', extra_tags='success')
+      messages.success(request, 'Sistema se ha registrado con éxito', extra_tags='success')
       return redirect('sistema')
     else:
-      messages.success(request, 'El sistema ya existe', extra_tags='danger')
+      messages.success(request, 'Sistema ya Existe', extra_tags='danger')
       return redirect('sistema')
-  else:
-      messages.success(request, 'El formulario es inválido', extra_tags='danger')
-      return redirect('sistema')
-
 
 def eliminarSistema(request, id_sistema):
   registro = get_object_or_404(Sistema, pk= id_sistema)
   if request.method == 'POST':
     registro.estado = False
+
     registro.save()
+    messages.success(request, 'El sistema se ha eliminado con éxito', extra_tags='danger')
     return redirect('sistema')
   
 def editarSistema(request, id_sistema):
-  sistema = get_object_or_404(Sistema, pk=id_sistema)
-  form = SistemaForms(request.POST, instance=sistema)
-  form.save()
-  return redirect('sistema')
+  if request.method == 'POST':
+    sistema = get_object_or_404(Sistema, pk=id_sistema)
+    form = SistemaForms(request.POST, instance=sistema)
+
+    if form.is_valid():
+      form.save()
+      messages.success(request, 'Sistema se ha modificado con éxito', extra_tags='success')
+      return redirect('sistema')
+    else:
+      messages.success(request, 'Sistema ya Existe', extra_tags='danger')
+      return redirect('sistema')
 
 
 def obtenerDatos(request, id_sistema):

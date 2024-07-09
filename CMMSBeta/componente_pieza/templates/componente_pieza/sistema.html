@@ -4,7 +4,7 @@
 
 {% block contenido %}
 {% load static %}
-<h1 class="text-center mb-2">Gestion de Sistema de Componentes</h1>
+<h1 class="text-center mb-2">Gestión de Sistema de los Componentes</h1>
 <div class="row mt-4">
     <div class="col md-3 mb-3">
     </div>
@@ -45,12 +45,12 @@
     <tbody>
     {% for dato in datos_sistema %}
      <tr>
-        <td>{{forloop.counter}}</td>
+        <th>{{forloop.counter}}</th>
         <td>{{dato.sistema}}</td>
         {% if user.idrol.rol != "Gerencia" %}
             <td>
                 <button onclick="" class="btn btn-warning editar d-inline-block" id="editar-sistema" data-id="{{dato.idsistema}}" data-bs-toggle="modal" data-bs-target="#modal-sistema "><i class="lni lni-pencil editar"></i></button>
-                <form action="{% url 'eliminar_sistema' dato.idsistema %}" id="form-{{ dato.idimplemento }}" class="d-inline-block" method="POST">
+                <form action="{% url 'eliminar_sistema' dato.idsistema %}" id="form-{{ dato.idsistema }}" class="d-inline-block" method="POST">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger flex-fill eliminar" data-registro="{{ dato.sistema }}" data-id="{{ dato.idsistema }}"><i class="lni lni-trash-can eliminar"></i></button>
                 </form>
@@ -94,49 +94,60 @@
         const btnEliminar = document.querySelectorAll(".eliminar")
         const btnGuardar = document.getElementById('guardar')
             
-    function obtener_sistema(id){
-    fetch(`./obtener/${id}`)
-        .then(res => res.json())
-        .then(datos => {
-            titulo_modal.textContent = "Editar Sistema" ;
-            formModal.setAttribute("action", `./modificar/${id}`);
-            formModal.setAttribute("method", "POST");
-            txtsistema.value = datos.componentes[0].sistema;           
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    }
-    
-    btnAgregar.addEventListener("click", function() {
-        titulo_modal.textContent = "Agregar Sistema" ;
-        formModal.reset();
-        formModal.setAttribute("action", "{% url 'sistema_registro' %}");
-        formModal.setAttribute("method", "POST");
-    });
+        setTimeout(function() {
+            var mensaje = document.getElementById('mensaje');
+            if (mensaje) {
+                mensaje.style.display = 'none';
+            }
+        }, 3000);
 
-    btnModificar.forEach(function(boton) {
-    boton.addEventListener("click", function(event) {
-        let idsis = event.currentTarget.dataset.id;
-        obtener_sistema(idsis);
+        function obtener_sistema(id){
+        fetch(`./obtener/${id}`)
+            .then(res => res.json())
+            .then(datos => {
+                titulo_modal.textContent = "Editar Sistema" ;
+                formModal.setAttribute("action", `./modificar/${id}`);
+                formModal.setAttribute("method", "POST");
+                txtsistema.value = datos.componentes[0].sistema;           
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        }
+        
+        btnAgregar.addEventListener("click", function() {
+            titulo_modal.textContent = "Agregar Sistema" ;
+            formModal.reset();
+            formModal.setAttribute("action", "{% url 'sistema_registro' %}");
+            formModal.setAttribute("method", "POST");
         });
-    });
-    
-    btnEliminar.forEach(function(boton) {
+
+        btnModificar.forEach(function(boton) {
         boton.addEventListener("click", function(event) {
-            event.preventDefault();
-            let sistema = event.currentTarget.dataset.registro;
-            let formId = event.currentTarget.dataset.id;
-            PreguntarEliminar(sistema, function() {
-                document.getElementById('form-' + formId).submit();
+            let idsis = event.currentTarget.dataset.id;
+            obtener_sistema(idsis);
             });
         });
-    });
+        
+        btnEliminar.forEach(function(boton) {
+                boton.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    let sistema = event.currentTarget.dataset.registro;
+                    let formId = event.currentTarget.dataset.id;
+                    PreguntarEliminar(sistema, function() {
+                        document.getElementById('form-' + formId).submit();
+                    });
+                });
+            });
 
-    btnGuardar.addEventListener("click", function(event) {
-        event.preventDefault();
-        PreguntarGuardar(function(){formModal.submit();});
-    });
+        btnGuardar.addEventListener("click", function(event) {
+            if (!formModal.checkValidity()) {
+                return;
+            }
+            event.preventDefault();
+            PreguntarGuardar(function(){formModal.submit();});
+
+        });
 
 });
 

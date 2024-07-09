@@ -35,14 +35,14 @@
                     <th scope="col">Nombres</th>
                     <th scope="col">Apellidos</th>
                     <th scope="col">DNI</th>
-                    <th scope="col">Operacion</th>
+                    <th scope="col">Operaciones</th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for data in datos %}
                 <tr>
-                    <td scope="row">{{ forloop.counter }}</td>
+                    <th scope="row">{{ forloop.counter }}</th>
                     <td>{{data.idpersona.nombres}}</td>
                     <td>{{data.idpersona.apellidos}}</td>
                     <td>{{data.idpersona.dni}}</td>

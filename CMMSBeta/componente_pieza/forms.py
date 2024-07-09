@@ -20,7 +20,7 @@ class ComponenteForms(forms.ModelForm):
         widgets = {
             'idsistema': forms.Select(attrs={'class':'form-control', 'id': 'txtsistema'}),
             'componente': forms.TextInput(attrs={'class':'form-control', 'id': 'txtComponente'}),
-            'codcomponente': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCodigoComp', 'min': 0}),
+            'codcomponente': forms.TextInput(attrs={'class':'form-control', 'id': 'txtCodigoComp', 'min': 0}),
             'tiempovida': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtTiempovida', 'min': 0}),
             'frecuencia_man': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtFrecuenciaMan', 'min': 0}),
         }

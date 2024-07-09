@@ -21,7 +21,6 @@ class TractorForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Filtrar las opciones del campo idtipotractor
         self.fields['idtipotractor'].queryset = TipoTractor.objects.filter(estado=True)
-        # self.fields['idusuario'].queryset = Usuario.objects.filter(idrol=3)
         self.fields['idfundo'].queryset = Fundo.objects.filter(estado=True)
     class Meta:
         model = Tractor
@@ -29,7 +28,6 @@ class TractorForm(forms.ModelForm):
         widgets = {
             'idtractor': forms.HiddenInput(),  # Campo oculto
             'idtipotractor': forms.Select(attrs={'class': 'form-control'}),
-            # 'idusuario': forms.Select(attrs={'class': 'form-control'}),
             'idfundo': forms.Select(attrs={'class': 'form-control'}),
             'nrotractor': forms.TextInput(attrs={'class': 'form-control'}),
             'horainicial': forms.NumberInput(attrs={'class': 'form-control'}),
