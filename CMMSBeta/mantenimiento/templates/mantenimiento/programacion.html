@@ -221,7 +221,9 @@
           <select name="idmotivo" id="" class="form-control mt-3" required>
             <option value="">-------------------------------------</option>
             {% for dato in acciones %}
-              <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+              {% if dato.idaccion != 1 %}
+                <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+              {% endif %}
             {% endfor %}
           </select>
 
@@ -345,7 +347,9 @@
                 <select name="idmotivo" id="selectMotivos" class="form-control mt-3" required>
                   <option value="">-------------------------------------</option>
                   {% for dato in acciones %}
-                    <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+                    {% if dato.idaccion != 1 %}
+                      <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+                    {% endif %}
                   {% endfor %}
                 </select>
               </div>
@@ -372,7 +376,9 @@
                 <select name="idmotivo" id="selectMotivos" class="form-control mt-3" required>
                   <option value="">-------------------------------------</option>
                   {% for dato in acciones %}
-                    <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+                    {% if dato.idaccion != 1 %}
+                      <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+                    {% endif %}
                   {% endfor %}
                 </select>
               </div>
