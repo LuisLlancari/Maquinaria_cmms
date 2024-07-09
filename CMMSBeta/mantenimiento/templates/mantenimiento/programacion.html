@@ -6,7 +6,9 @@
 <h1 class="text-center">Programación de los Mantenimientos</h1>
 
 <div class="d-flex justify-content-end m-4">
-  <button class="btn btn-primary" data-toggle="modal" data-target="#programar">Crear programación</button>
+  <button class="btn btn-danger uppercase" data-toggle="modal" data-target="#programar">
+    <strong>Crear Mat Correctivo</strong>
+  </button>
 </div>
 
 <div class="d-flex align-items-center mb-2 justify-content-end">
@@ -187,8 +189,8 @@
 <div class="modal fade" id="programar" tabindex="-1" aria-labelledby="" aria-hidden="true">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
-      <div class="modal-header bg-primary justify-content-center">
-        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Crear un mantenimiento</h1>
+      <div class="modal-header bg-danger justify-content-center">
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Crear un mantenimiento correctivo</h1>
       </div>
 
       <form autocomplete="off" id="" method="POST" action="./programacion/registrar">
