@@ -62,16 +62,21 @@
     <div class="modal fade" id="modalNuevoCeco" tabindex="-1" role="dialog" aria-labelledby="modalNuevoCecoLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalNuevoCecoLabel">Nuevo Centro de Costo</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="modalNuevoCecoLabel">Nuevo Centro de Costo</h5>
                 </div>
-                <div class="modal-body">
-                    <form method="post" action="{% url 'registrar_ceco' %}" autocomplete="off" id="form-ceco">
+                <form method="post" action="{% url 'registrar_ceco' %}" autocomplete="off" id="form-ceco">
+                    <div class="modal-body">
                         {% csrf_token %}
                         {{ form_ceco }}
-                        <button type="submit" id="guardar-datos" class="btn btn-primary">Guardar</button>
-                    </form>
-                </div>
+
+                    </div>
+                        <div class="modal-footer">
+                            <button type="submit" id="guardar-datos" class="btn btn-outline-primary flex-fill">Guardar</button>
+                            <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+
+                        </div>
+                </form>
             </div>
         </div>
     </div>
@@ -80,11 +85,11 @@
     <div class="modal fade" id="modalEditarCeco" tabindex="-1" role="dialog" aria-labelledby="modalEditarCecoLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditarCecoLabel">Editar Centro de Costo</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="modalEditarCecoLabel">Editar Centro de Costo</h5>
                 </div>
+                <form method="post" action="{% url 'editar_ceco' %}" autocomplete="off" id="form-editar-ceco">
                 <div class="modal-body">
-                    <form method="post" action="{% url 'editar_ceco' %}" autocomplete="off" id="form-editar-ceco">
                         {% csrf_token %}
                         <input type="hidden" id="ceco_id" name="ceco_id">
                         <div class="form-group">
@@ -92,9 +97,12 @@
                             <!-- el forms toma el name-->
                             <input type="text" class="form-control mb-2" id="nombre_ceco" name="ceco" required>
                         </div>
-                        <button type="submit" id="guardar-cambios" class="btn btn-primary">Guardar Cambios</button>
-                    </form>                    
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar-cambios" class="btn btn-outline-primary flex-fill">Guardar</button>
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>                    
             </div>
         </div>
     </div>

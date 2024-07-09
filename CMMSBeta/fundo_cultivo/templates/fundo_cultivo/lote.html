@@ -69,8 +69,8 @@
     <div class="modal fade" id="modalRegistrar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="">Nuevo Lote</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="">Nuevo Lote</h5>
                 </div>
                 <div class="modal-body">
                     <form method="post" action="{% url 'registrar_lote' %}" autocomplete="off" id="form-lote">
@@ -91,7 +91,7 @@
                         <div class="row">
                             <div class="col col-md-6 mb-3" >
                                 <label class="form-label">Cultivo:</label>
-                                <select name="cultivo" id="txtCultivo" class="form-select">
+                                <select name="cultivo" id="txtCultivo" class="form-select" required>
                                     <option value="">---------</option>
                                     {% for cultivo in cultivos %}
                                     <option value="{{ cultivo.idcultivo }}">{{ cultivo.cultivo }}</option>
@@ -100,7 +100,7 @@
                             </div>
                             <div class="col col-md-6 mb-3">
                                 <label class="form-label">Variedad</label>
-                                <select name="idvariedad" id="id_idvariedad" class="form-select">
+                                <select name="idvariedad" id="id_idvariedad" class="form-select" required>
                                     <option value="">---------</option>
                                     
                                 </select>
@@ -108,10 +108,12 @@
                             </div>
                         </div>
 
-                        
-                        <button type="submit" id="guardar-datos" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
+                <div class="modal-footer">
+                    <button type="submit" id="guardar-datos" class="btn btn-outline-primary flex-fill">Guardar</button>
+                    <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                  </div>
             </div>
         </div>
     </div>
@@ -121,8 +123,8 @@
     <div class="modal fade" id="modalActualizar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="">Editar Lotes</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="">Editar Lotes</h5>
                 </div>
                 <div class="modal-body">
                     <form method="post" action="{% url 'editar_lote' %}" autocomplete="" id="form-editar-lote">
@@ -132,7 +134,7 @@
                             <div class="col col-md-6">
                                 <div class="form-group">
                                     <label for="nombrelote">Lote</label>
-                                    <input type="text" class="form-control" name="lote" id="nombrelote">
+                                    <input type="text" class="form-control" name="lote" id="nombrelote" required>
                                 </div>
                             </div>
                             <div class="col col-md-6">
@@ -145,25 +147,38 @@
                             </div>
                         </div>
 
-                        <label for="idcultivo" class="form-label mt-3">Cultivo</label>
-                        <select name="idcultivo" id="nombrecultivo" class="form-control">
-                            {% for cultivo in cultivos %}
-                                <option value="{{ cultivo.idcultivo }}">{{ cultivo.cultivo }}</option>
-                            {% endfor %}
-                        </select>
 
-                        <label for="idvariedad" class="form-label mt-3">Variedad</label>
-                        <select name="idvariedad" id="nombrevariedad" class="form-control">
-                            {% for variedad in variedades %}
-                                <option value="{{ variedad.idvariedad }}">{{ variedad.variedad }}</option>
-                            {% endfor %}
-                        </select>
-                        
-                        
-                        <button type="submit" id="guardar-cambios" class="btn btn-primary mt-2">Guardar Cambios</button>
-                    </form>
+
+                        <div class="row">
+                            <div class="col col-md-6 mb-3" >
+
+                                <label class="form-label">Cultivo:</label>
+                                <select name="cultivo" id="txtCultivo2" class="form-select" required>
+                                    <option value="">---------</option>
+                                    {% for cultivo in cultivos %}
+                                    <option value="{{ cultivo.idcultivo }}">{{ cultivo.cultivo }}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                            <div class="col col-md-6 mb-3">
+
+                                <label class="form-label">Variedad</label>
+                                <select name="idvariedad" id="id_idvariedad2" class="form-select" required>
+                                    <option value="">---------</option>
                                     
+                                </select>
+                                
+                            </div>
+                        </div>
+
+                    </form>
+                    
                 </div>
+                <div class="modal-footer">
+                    <button type="submit" id="guardar-cambios" class="btn btn-outline-primary flex-fill">Guardar</button>
+                    <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                  </div>
             </div>
         </div>
     </div>
@@ -182,7 +197,9 @@
         const formRegistrar = document.getElementById("form-lote")
         const btnGuardarCambios = document.getElementById("guardar-cambios");
         const btnGuardarRegistro = document.getElementById("guardar-datos");
-
+        const txtCultivo = document.getElementById("txtCultivo")
+        const txtCultivo2 = document.getElementById("txtCultivo2")
+        
         //Funciones
         function filtrarTabla() {
             const valorBusqueda = buscador.value.trim().toLowerCase();
@@ -223,23 +240,32 @@
 
                 document.querySelector('#lote_id').value = idlote;
                 document.querySelector('#nombrelote').value = nombrelote;
-                document.querySelector('#nombrecultivo').value = idCultivo;
-                document.querySelector('#nombrevariedad').value = idVariedad;
+                txtCultivo2.value = idCultivo;
+                id_idvariedad2.value = idVariedad;
                 document.querySelector('#idfundo').value = idFundo;
 
-                console.log(idVariedad)
+                obtener_datos(idCultivo, 3, idVariedad)
 
             });
         });
 
 
-        function obtener_datos(idcultivo){
+        function obtener_datos(idcultivo, NumModal, idvariedad){
         fetch(`./lote/obtenerdatos/`)
         .then(res => res.json())
         .then(datos => {
 
             let datos_filtrados = datos.variedad.filter(variedad => variedad.idcultivo_id == idcultivo);
-            renderizarOpciones(datos_filtrados);
+
+            // Dependiendo de donde se llame obtener datos, se rederizaran opciones diferentes
+            if(NumModal == 1){
+                renderizarOpciones(datos_filtrados);
+            }else if(NumModal == 2){
+                renderizarOpcionesModalModificar(datos_filtrados);
+            }
+            else{ 
+                rederizarVariedad(datos_filtrados, idvariedad)
+            }
         })
         .catch((error) => {
             console.log(error);
@@ -249,7 +275,6 @@
         function renderizarOpciones(variedades) {
             const select = document.getElementById('id_idvariedad'); 
             select.innerHTML = ''; 
-
             variedades.forEach(variedad => {
                 const option = document.createElement('option');
                 option.value = variedad.idvariedad;
@@ -258,10 +283,44 @@
             });
         }
 
+        function renderizarOpcionesModalModificar(variedades) {
+            const select = document.getElementById('id_idvariedad2'); 
+            select.innerHTML = ''; 
+            variedades.forEach(variedad => {
+                const option = document.createElement('option');
+                option.value = variedad.idvariedad;
+                option.text = variedad.variedad;
+                select.appendChild(option);
+            });
+        }
+
+        function rederizarVariedad(variedades, id_variedad){
+            if(id_variedad != 0){
+                const select = document.getElementById('id_idvariedad2'); 
+                select.innerHTML = ''; 
+                variedades.forEach(variedad => {
+                    const option = document.createElement('option');
+                    option.value = variedad.idvariedad;
+                    option.text = variedad.variedad;
+                    if(id_variedad == variedad.idvariedad){
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+            }
+        }
+
+
         txtCultivo.addEventListener('change', function(){
             let valorseleccionado = txtCultivo.value;       
             console.log(valorseleccionado)
-            obtener_datos(valorseleccionado)
+            obtener_datos(valorseleccionado, 1, 0)
+        });
+
+        txtCultivo2.addEventListener('change', function(){
+            let valorseleccionado = txtCultivo2.value;       
+            console.log(valorseleccionado, 2)
+            obtener_datos(valorseleccionado,2,0)
         });
 
         btnEliminar.forEach(function(boton) {
@@ -276,12 +335,18 @@
       });
 
       btnGuardarRegistro.addEventListener("click", function(event){
+        if (!formRegistrar.checkValidity()) {
+            return;
+        }
         event.preventDefault();
         PreguntarGuardar(function(){formRegistrar.submit();});
 
       });
 
       btnGuardarCambios.addEventListener("click", function(event){
+        if (!formEditar.checkValidity()) {
+            return;
+        }
         event.preventDefault();
         PreguntarGuardar(function(){formEditar.submit();});
 

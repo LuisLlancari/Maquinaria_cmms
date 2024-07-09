@@ -65,16 +65,19 @@
     <div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalNuevaVariedadLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="header-variedad">Nuevo Centro de Costo</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="header-variedad">Nueva variedad</h5>
                 </div>
-                <div class="modal-body">
-                    <form method="post" action="{% url 'registrar_variedad' %}" autocomplete="off" id="form-variedad">
+                <form method="post" action="{% url 'registrar_variedad' %}" autocomplete="off" id="form-variedad">
+                    <div class="modal-body">
                         {% csrf_token %}
                         {{ form_variedad }}
-                        <button type="submit" id="guardar-datos" class="btn btn-primary">Guardar</button>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar-datos" class="btn btn-outline-primary flex-fill">Guardar</button>
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -83,11 +86,11 @@
     <div class="modal fade" id="modalActualizar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="">Editar Variedad</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="">Editar Variedad</h5>
                 </div>
+                <form method="post" action="{% url 'editar_variedad' %}" autocomplete="off" id="form-editar-variedad">
                 <div class="modal-body">
-                    <form method="post" action="{% url 'editar_variedad' %}" autocomplete="off" id="form-editar-variedad">
                         {% csrf_token %}
                         <input type="hidden" id="variedad_id" name="variedad_id">
                         
@@ -104,9 +107,12 @@
                             <!-- el forms toma el name-->
                             <input type="text" class="form-control mb-2" id="nombre_variedad" name="variedad" required>
                         </div>
-                        <button type="submit" id="guardar-cambios" class="btn btn-primary">Guardar Cambios</button>
-                    </form>                    
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar-cambios" class="btn btn-outline-primary flex-fill">Guardar</button>
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>                    
             </div>
         </div>
     </div>
@@ -177,12 +183,18 @@
         });
 
         btnGuardarRegistro.addEventListener("click", function(event){
+            if (!formRegistrar.checkValidity()) {
+                return;
+            }
             event.preventDefault();
             PreguntarGuardar(function(){formRegistrar.submit();});
 
         });
 
         btnGuardarCambios.addEventListener("click", function(event){
+            if (!formEditar.checkValidity()) {
+                return;
+            }
             event.preventDefault();
             PreguntarGuardar(function(){formEditar.submit();});
 

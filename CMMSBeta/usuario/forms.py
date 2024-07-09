@@ -12,7 +12,7 @@ class PersonaForm(forms.ModelForm):
         widgets = {
             'nombres': forms.TextInput(attrs={'class': 'form-control mb-3', 'id': 'txtNombres'}),
             'apellidos': forms.TextInput(attrs={'class': 'form-control mb-3', 'id': 'txtApellidos'}),
-            'dni': forms.TextInput(attrs={'class': 'form-control mb-3', 'id': 'txtDni', 'type': 'number', 'maxlength': '8'}),
+            'dni': forms.TextInput(attrs={'class': 'form-control mb-3', 'id': 'txtDni', 'type': 'number', 'maxlength': '8', 'required':'True'}),
         }
 
 class RolForm(forms.ModelForm):

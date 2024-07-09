@@ -21,17 +21,28 @@
 <div class="row">
   <div class="col col-md-2">
     <select name="" id="filtro_mantenimiento" class="form-select">
-      <option value="">Todo:</option>
-      <option value="1">Preventivo:</option>
-      <option value="0">Correctivo:</option>
+      <option value="">Todo</option>
+      <option value="1">Preventivo</option>
+      <option value="0">Correctivo</option>
     </select>
   </div>
 </div>
+
 <!-- filtros -->
 <div class="row"></div>
 
 <!-- fin filtro -->
+{% if messages %}
+{% for message in messages %}
+<div id="message" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    
+    <strong>{{ message }}</strong>
+    
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+{% endfor %}
 
+{% endif %}
 <div class="row" id="contenido-cards">
 
 </div>
@@ -80,6 +91,13 @@
     let datosGenerales = ''
     let datosMantenimiento =''
     let datosRecambio  = ''
+
+    setTimeout(function() {
+        var errorMessage = document.getElementById('message');
+        if (errorMessage) {
+            errorMessage.style.display = 'none';
+        }
+       }, 3000);
 
     function RenderizarDetalleRecambio(datos) {
       let nuevafila = '';
@@ -161,8 +179,8 @@
             <div class="card-body">
               <h5 class="card-text text-center fw-bold"></h5>
               <p class="card-text m-0"><strong>Implemento: </strong> ${realizado.implemento}</p>
-              <p class="card-text m-0"><strong>Codigo:  </strong> ${realizado.cod_implemento}</p>
-              <p class="card-text m-0" ><strong>Fecha Programacion:</strong> ${realizado.fecha_programada }</p>
+              <p class="card-text m-0"><strong>Código:  </strong> ${realizado.cod_implemento}</p>
+              <p class="card-text m-0" ><strong>Fecha Programada:</strong> ${realizado.fecha_programada }</p>
               <p class="card-text m-0"><strong>Fecha Ingreso:</strong> ${realizado.fechaingreso}</p>
               <p class="card-text m-0"><strong>Fecha Salida:</strong> ${realizado.fechasalida}</p>
               <p class="card-text m-0"><strong>Encargado:</strong> ${realizado.nombres} ${realizado.apellidos}</p>

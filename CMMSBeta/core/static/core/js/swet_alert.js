@@ -47,6 +47,7 @@ function PreguntarGuardar(callback) {
         }
     });
 }
+
 function PreguntarEliminar(registro,callback) {
   return Swal.fire({
     title: `¿Estás seguro de eliminar ${registro} del registro?`,
@@ -76,4 +77,50 @@ function PreguntarRegistrar(titulo, mensaje) {
     cancelButtonColor: '#797D7F',
     footer: 'Sistema'
   });
+}
+
+function PreguntarConfirmarLlegadss(titulo, mensaje) {
+  return Swal.fire({
+    title: titulo,
+    text: mensaje,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Aceptar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#2E86C1',
+    cancelButtonColor: '#797D7F',
+    footer: 'Sistema'
+  });
+}
+
+function PreguntarConfirmarLlegada(callback) {
+  return Swal.fire({
+    title: '¿Estás seguro de aceptar la entrada del implemento?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Aceptar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#2E86C1',
+    cancelButtonColor: '#797D7F',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            callback()
+        }
+    });
+}
+
+function PreguntarFinalizarMantenimiento(callback) {
+  return Swal.fire({
+    title: '¿Estás seguro de finalizar el mantenimiento?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Aceptar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#2E86C1',
+    cancelButtonColor: '#797D7F',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            callback()
+        }
+    });
 }

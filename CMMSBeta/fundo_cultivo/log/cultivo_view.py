@@ -24,6 +24,7 @@ def registrar_cultivo(request):
     #.lstrip(): Elimina los espacios al principio
     #.rstrip(): Elimina los espacios al final
     #.strip(): Elimina los espacios al principio y al final
+
     cultivo = request.POST.get('cultivo').lstrip()
     existe_cultivo = Cultivo.objects.filter(cultivo = cultivo, estado = True).exists()
     form = CultivoForm(request.POST)
@@ -43,8 +44,10 @@ def editar_cultivo(request):
     form = CultivoForm(request.POST, instance=cultivo_instance)
 
     cultivo = request.POST.get('cultivo').lstrip()
-    existe_cultivo = Cultivo.objects.filter(cultivo = cultivo, estado = True).exists()
-    if form.is_valid() and existe_cultivo == False:
+
+    existe_cultivo = Cultivo.objects.filter(cultivo = cultivo, estado = True).exclude(pk=cultivo_id).exists()
+
+    if not existe_cultivo:
       form.save()
       messages.success(request, 'Cultivo actualizado con exito', extra_tags='primary')
       return redirect('cultivo')
