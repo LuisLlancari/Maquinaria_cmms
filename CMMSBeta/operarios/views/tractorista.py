@@ -21,9 +21,6 @@ def tractoristas(request):
 @login_required(login_url='login', redirect_field_name='')
 def registrarTractorista(request):
   datos_tractoristas = Tractorista.objects.filter(estado = True)
-
-
-
   if request.method == 'POST':
     id_usuario = request.POST.get('usuario')
 
@@ -42,6 +39,10 @@ def registrarTractorista(request):
       Tractorista.objects.create(idusuario = usuario , idpersona = persona)
 
       messages.success(request, 'Tractorista registrado con exito', extra_tags='success')
+      return redirect('tractorista')
+
+    else:
+      messages.error(request, 'El tractorista ya existe', extra_tags='danger')
       return redirect('tractorista')
   else:
      messages.error(request, 'El tractorista ya existe', extra_tags='danger')
