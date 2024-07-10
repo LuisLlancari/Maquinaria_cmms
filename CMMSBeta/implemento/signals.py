@@ -50,12 +50,15 @@ def creacionDetalleImplemento(sender, instance, created, **kwargs):
 def creacion_programacion(FM, HU, proximo_mantenimiento, id_implemento):
     if FM is None or HU is None:
         return 0, 0
-    print("Llego")
+    
     horas_antes = proximo_mantenimiento - 50
+
     # Obtenemos el implemento ligado al usuario
     implemento = get_object_or_404(ImplementoSupervisor, estado=True, idimplemento = id_implemento)
+
     if HU >= horas_antes:
         ProgramacionMantenimiento.objects.create(idimplemento = implemento, tipomantenimiento = 1)
+        pass
 
 
 @receiver(pre_save, sender=Implemento)
@@ -63,16 +66,26 @@ def verificar_horasdeuso(sender, instance, **kwargs):
    if instance.pk:
     old_instance = Implemento.objects.get(pk = instance.pk)
     if old_instance.horasdeuso != instance.horasdeuso:  
+        print("El implemento tiene un modicacion de horauso")
 
 
         id_implemento = instance.pk
+
+        implemento_sup = get_object_or_404(ImplementoSupervisor, idimplemento = id_implemento, estado = True)
+        id_implementosup = implemento_sup.idimplementosupervisor
+
         hora_uso = instance.horasdeuso
         frecuencia_mantenimiento = instance.idtipoimplemento.frecuencia_man
         proximo_mantenimiento = instance.proximo_mantenimiento
-        print("esta por llegar")
-        if not ProgramacionMantenimiento.objects.filter(idimplemento = id_implemento , estado = 0).exists():
-            creacion_programacion(frecuencia_mantenimiento, proximo_mantenimiento, hora_uso, id_implemento)
 
+
+        if not ProgramacionMantenimiento.objects.filter(idimplemento = id_implementosup , estado = True).exists():
+            print('no existe ninguna programacion con este implemento')
+            creacion_programacion(frecuencia_mantenimiento, hora_uso, proximo_mantenimiento, id_implemento)
+        else:
+            print('El implemento tiene una programacion activa')
+
+# Crea el proximo mantenimiento cuando un implemento es creado
 @receiver(pre_save, sender=Implemento)
 def set_proximo_mantenimiento(sender, instance, **kwargs):
     if instance._state.adding and instance.idtipoimplemento and instance.horasdeuso is not None:
