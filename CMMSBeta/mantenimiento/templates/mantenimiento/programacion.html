@@ -213,7 +213,12 @@
           </select>
 
           <label for="" class="form-label mt-3">Fecha de la programación:</label>
-          <input type="date" name="fecha_programacion" id="fecha2" class="form-control" required>
+          <select name="fecha_programacion" class="form-control" id="selectFecha" required>
+            <option value="">Ingrese una fecha</option>
+            <option value="hoy" id="hoy_op"></option>
+            <option value="manana" id="manana_op"></option>
+            <option value="pasado" id="pasado_op"></option>
+          </select>
 
           <div class="d-flex justify-content-between align-items-center mt-3">
             <label for="" class="form-label mb-0" name="1" id="label_implemento">Motivos del mantenimiento:</label>
@@ -246,8 +251,8 @@
 <div class="modal fade" id="editarFecha" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Editar Fecha</h5>
+      <div class="modal-header bg-secondary text-light">
+        <h5 class="modal-title" id="exampleModalLabel"><strong>Editar Fecha</strong></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form id="form-editar-fecha" method="POST" action="./programacion/editarFecha" autocomplete="off">
@@ -302,8 +307,40 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const today = new Date().toISOString().split('T')[0];
+
+    ///////////////////////
+    // Fecha correctivo
     const fecha = document.getElementById('fecha2');
+    const { DateTime } = luxon;
+    const zonaHorariaPeru = 'America/Lima';
+    let fechaActual = DateTime.now().setZone(zonaHorariaPeru);
+    let fechaMañana = fechaActual.plus({ days: 1 });
+    let fechaPasadoMañana = fechaActual.plus({ days: 2 });
+
+    let hoy = fechaActual.toFormat('yyyy-MM-dd');
+    let mañana = fechaMañana.toFormat('yyyy-MM-dd');
+    let pasado = fechaPasadoMañana.toFormat('yyyy-MM-dd');
+
+    let hoy_2 = fechaActual.toFormat('dd/MM/yyyy');
+    let mañana_2 = fechaMañana.toFormat('dd/MM/yyyy');
+    let pasado_2 = fechaPasadoMañana.toFormat('dd/MM/yyyy');
+
+
+    hoy_op.value = hoy
+    manana_op.value = mañana
+    pasado_op.value = pasado
+
+    hoy_op.innerHTML = `HOY - ${hoy_2}`
+    manana_op.innerHTML = `MAÑANA - ${mañana_2}`	
+    pasado_op.innerHTML = `PASADOMAÑANA - ${pasado_2}`
+
+    console.log(hoy, mañana, pasado);
+    ////////////////////
+
+
+    //Fecha preventivo
     const fecha2 = document.getElementById('fecha');
+    //Editar fecha
     const fecha3 = document.getElementById('fecha3');
     const formModal = document.getElementById("form-modal");
     const btnCloneMotivos = document.getElementById('clone-motivos');
@@ -314,7 +351,7 @@
     const tipoImplementoSelect = document.getElementById('idtipoimplemento');
     const implementoSelect = document.getElementById('idimplemento');
 
-    fecha.setAttribute('min', today);
+    //fecha.setAttribute('min', today);
     fecha2.setAttribute('min', today);
     fecha3.setAttribute('min', today);
     selectMotivo.value = 1

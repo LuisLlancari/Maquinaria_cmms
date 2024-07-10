@@ -5,7 +5,7 @@ from . models import Implemento, TipoImplemento, DetImplementos
 @admin.register(Implemento)
 class implementoAdmin(admin.ModelAdmin):
   readonly_fields= ['estado']
-  list_display = ['implemento', 'horasdeuso', 'idimplemento']
+  list_display = ['implemento', 'horasdeuso', 'idimplemento', 'proximo_mantenimiento']
 
 @admin.register(TipoImplemento)
 class tipoimplementoAdmin(admin.ModelAdmin):

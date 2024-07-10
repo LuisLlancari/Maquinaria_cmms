@@ -12,7 +12,7 @@
   <div class="row mt-3">
     <div class="col col-md-4">
       <select name="" id="supervisorSelect" class="form-select">
-        <option value="#" class="form-select text-center" selected>SELECCIONE UN SUPERVISOR</option>
+        <option value="" class="form-select text-center" selected>SELECCIONE UN SUPERVISOR</option>
         {% for data in list_sup %}
           <option value="{{ data.id }}" class="text-center">
               {{ data.first_name }} {{ data.last_name }} 
@@ -144,7 +144,7 @@
     //
 
     supervisorSelect.addEventListener('change', function () {
-        fechaSelect.value = '#';
+        fechaSelect.value = '';
         var selectedSupervisorId = supervisorSelect.value;
         no_coincidencia.innerHTML = "";
 
@@ -160,7 +160,7 @@
     });
 
     fechaSelect.addEventListener('change', function () {
-        supervisorSelect.value = '#';
+        supervisorSelect.value = '';
         var visiblesFilas = 0;
         var selectedDate = fechaSelect.value;
         
