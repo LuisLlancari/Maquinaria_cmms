@@ -96,19 +96,17 @@
             aria-label="Close"
           ></button>
         </div>
+        <form method="post" action="{% url 'registrar_tipotractor'  %}" autocomplete="off" id="form-tipotractor">
         <div class="modal-body">
-          <form
-            method="post"
-            action="{% url 'registrar_tipotractor'  %}"
-            autocomplete="off"
-            id="form-tipotractor"
-          >
             {% csrf_token %} 
             
             {{form}}
-            <button type="submit" id="guardar-datos" class="btn btn-primary mt-3">Guardar</button>
-          </form>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" id="guardar-datos" class="btn btn-outline-primary flex-fill">Guardar</button>
+            <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

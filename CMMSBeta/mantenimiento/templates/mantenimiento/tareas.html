@@ -68,16 +68,16 @@
         <div class="modal-header bg-secondary">
           <h5 class="modal-title text-light" id="titulo-modal">Nueva Tarea</h5>
         </div>
+        <form autocomplete="off" id="form-modal">
         <div class="modal-body">
-          <form autocomplete="off" id="form-modal">
             {% csrf_token %} 
             {{form}}
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill">Guardar</button>
-          <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill">Guardar</button>
+            <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -136,8 +136,11 @@
     });
 
     btnGuardar.addEventListener("click", function(event) {
-            event.preventDefault();
-            PreguntarGuardar(function(){formModal.submit();});
+      if (!formModal.checkValidity()) {
+        return;
+      }
+      event.preventDefault();
+      PreguntarGuardar(function(){formModal.submit();});
     });
   
     btnEliminar.forEach(function(boton) {
