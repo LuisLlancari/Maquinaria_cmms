@@ -202,3 +202,10 @@ select {
 .tooltip.bs-tooltip-top .arrow::before {
     border-top-color: #28a745; /* Color de la flecha del tooltip */
 }
+
+.modal-header {
+    background-color: #6C757D;
+}
+.modal-title {
+    color: white;
+}
