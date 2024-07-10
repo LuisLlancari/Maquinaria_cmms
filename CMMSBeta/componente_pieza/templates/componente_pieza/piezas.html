@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(`./obtener/${id}`)
         .then(res => res.json())
         .then(datos => {
-            titulo_modal.textContent = "Editar Componente" ;
+            titulo_modal.textContent = "Editar Pieza" ;
             formModal.setAttribute("action", `./modificar/${id}`);
             formModal.setAttribute("method", "POST");
             txtPieza.value = datos.pieza[0].pieza;           
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     btnAgregar.addEventListener("click", function() {
-        titulo_modal.textContent = "Agregar Componente" ;
+        titulo_modal.textContent = "Agregar Pieza" ;
         formModal.reset();
         formModal.setAttribute("action", "{% url 'pieza_registro' %}");
         formModal.setAttribute("method", "POST");

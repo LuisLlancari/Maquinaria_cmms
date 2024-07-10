@@ -42,7 +42,7 @@ def registrarConfiguracion(request):
                 idcomponente_id=iddetconf,
                 idconfiguracion_id=idconfig
             )
-        messages.success(request, 'Configuración registrada con exito', extra_tags='success')
+        messages.success(request, 'Configuración registrada con éxito', extra_tags='success')
         return redirect('configuracion')
       else:
         messages.error(request, 'Ya EXISTE UNA CONFIGURACIÓN CON ESE NOMBRE', extra_tags='danger')
@@ -69,5 +69,5 @@ def eliminarConfiguracion(request, id_configuracion):
     print(det)
     det.estado = False
     ConfiguracionTipoImplemento.objects.filter(idconfiguraciontipoimplemento=idconfig).update(estado = False)
-    messages.success(request, 'Configuración eliminada con exito', extra_tags='success')
+    messages.success(request, 'Configuración eliminada con éxito', extra_tags='success')
     return redirect('configuracion')
