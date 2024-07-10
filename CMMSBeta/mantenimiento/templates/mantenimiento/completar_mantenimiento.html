@@ -600,7 +600,7 @@
             let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
             datos_mantenimiento = datos.mantenimientos
 
-            renderizarMantenimientos(datos_filtrados);   
+            // renderizarMantenimientos(datos_filtrados);   
             filtro = document.getElementById('filtro_mantenimiento')
             let prueba2 = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
             renderizarMantenimientos(prueba2);
@@ -644,7 +644,9 @@
       })
       .then(res => res.json())
       .then(datos => {
+          console.log(datos)
           det_tareas = datos.todas_las_tareas
+          console.log(datos.todas_las_tareas)
           datos_busqueda = transformData(datos.partes);
           rederizarTareas(datos.tareas);
           let mant_filtrado = datos_mantenimiento.filter(mantenimiento => mantenimiento.idprogramacion == idprogramacion)
