@@ -67,13 +67,16 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="titulo-modal">Registrar al Encargado</h5>
                 </div>
-                <div class="modal-body">
-                    <form autocomplete="off" id="form-modal">
+                <form autocomplete="off" id="form-modal">
+                    <div class="modal-body">
                         {% csrf_token %}
                         {{ form }}
-                        <button type="submit" id="guardar" class="btn btn-primary">Guardar</button>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill">Guardar</button>
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

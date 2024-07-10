@@ -113,14 +113,16 @@
         <div class="modal-header">
           <h5 class="modal-title" id="modalNuevoTractorLabel">Nuevo Tractor</h5>
         </div>
+        <form method="post" action="{% url 'registrar_tractor' %}" autocomplete="off" id="form-tractor">
         <div class="modal-body">
-          <form method="post" action="{% url 'registrar_tractor' %}" autocomplete="off" id="form-tractor"
-          >
             {% csrf_token %} 
             {{form}}
-            <button type="submit" id="guardar-datos" class="btn btn-primary mt-3">Guardar</button>
-          </form>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" id="guardar-datos" class="btn btn-outline-primary flex-fill">Guardar</button>
+            <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -141,13 +143,8 @@
             Editar Tractor
           </h5>
         </div>
+        <form method="post" action="{% url 'editar_tractor' %}" autocomplete="off" id="form-editar-tractor" >
         <div class="modal-body">
-          <form
-            method="post"
-            action="{% url 'editar_tractor' %}"
-            autocomplete="off"
-            id="form-editar-tractor"
-          >
             {% csrf_token %}
             <input type="hidden" id="idtractor" name="idtractor" />
 
@@ -180,7 +177,7 @@
                 id="nrotractor"
                 name="nrotractor"
                 class="form-control"
-              />
+               required/>
             </div>
 
             <!-- Campo horainicial con Bootstrap -->
@@ -198,12 +195,7 @@
             <!-- Campo horauso con Bootstrap -->
             <div class="form-group">
               <label for="horauso">Hora de Uso</label>
-              <input
-                type="number"
-                id="horauso"
-                name="horauso"
-                class="form-control bg-secondary"
-                readonly
+              <input type="number" id="horauso" name="horauso" class="form-control bg-secondary" readonly
               />
             </div>
 
