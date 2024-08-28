@@ -1,0 +1,727 @@
+{% extends 'core/base.html' %} 
+
+{% block titulo %}Estado Mantenimientos{% endblock%} 
+
+{%block contenido %}
+{% load static %}
+
+<style>
+   .big-checkbox {width: 30px; height: 30px;}
+   .highlight {background-color: #d3d3d3;}
+
+  .readonly-select {
+          pointer-events: none;
+          background-color: #ffffff;
+          color: #495057;
+      }
+</style>
+</style>
+</style>
+<h1 class="text-center">Mantenimientos Pendientes</h1>
+
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-2"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento preventivo</strong>
+  </div>
+</div>
+
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-3"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento correctivo</strong>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col col-md-2">
+    <select name="" id="filtro_mantenimiento" class="form-select">
+      <option value="">Todo:</option>
+      <option value="1">Preventivo:</option>
+      <option value="0">Correctivo:</option>
+    </select>
+  </div>
+</div>
+
+<div class="row mt-3" id="cards-mantenimiento">
+
+</div>
+
+<div id="no_resultados" class="alert alert-danger text-center" style="display: none;">
+  No hay mantenimientos por realizar
+</div>
+
+
+<div class="modal fade" id="registro_diagnostico" tabindex="-1" aria-labelledby="example" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary justify-content-center bg-black">
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Detalle</h1>
+      </div>
+
+      <form autocomplete="off" id="form-detalle" method="POST">
+        {% csrf_token %}
+        <div class="modal-body " style="background-color: #E5E8E8">
+          <div class="container">
+            
+            <div class="row" id="detalle-mantenimiento">
+              <div class="col col-md-6">
+                <p><strong>Implemento: </strong> dsadad</p>
+                <p><strong>Código del Implemento:</strong> ADDSD  </p>
+              </div>
+              <div class="col col-md-6">
+                <p><strong>Fecha del Ingreso:</strong></p>
+              </div>
+            </div>
+            <div class="row">
+              <h3 class="text-center"><strong>Informe de Salida</strong></h3>
+              <div class="col col-md-6">
+                <label for="fecha-salida" class="forml-label"><strong>Fecha de Salida:</strong></label>
+                <input type="date" name="fecha-salida" id="fecha-salida" class="form-control mt-2" required> 
+              </div>
+              <div class="col col-md-6">
+                <label for="encargado" class="form-label"><strong>Encargado:</strong></label>
+                <select name="encargado" id="encargado" class="form-select" required>
+                  <option value="">Seleccione:</option>
+                </select>
+              </div>
+            </div>
+            <h5 class="text-center mt-3"><strong>Tareas</strong></h5>
+
+            <div class="text-end">
+              <button type="button" class="btn btn-primary" id="agregar-tarea">Agregar tarea</button>
+            </div>
+            <div id="contenedor-tareas">
+              <div class="container tarea" id="cuerpo-acciones">
+              </div>
+            </div>  
+
+            <!-- Fin del div.container   -->
+          </div>
+
+
+          <div class="container">
+            <hr>
+            <h5 class="text-center mt-3"><strong>Recambios</strong></h5>
+            <span style="font-style: italic;">*Si se realizaron recambios agrege a la lista*</span>
+            <!-- <button type="button" class="btn btn-success mb-3" id="agregarRecambio">agregar </button> -->
+            <div class="row mb-3">
+              <div class="col-md-10">
+                <input type="text" id="searchInput" class="form-control border-success" placeholder="Buscar componente o pieza...">
+                <ul id="resultList" class="list-group">
+                </ul>
+              </div>
+              <div class="col-md-2">
+                <button type="button" class="btn btn-success " id="agregarRecambio">Agregar</button>
+              </div>
+            </div>
+            <strong id="lista"></strong>
+          </div>
+          <div class="mb-3 container" id="recambios">
+
+          </div>
+
+
+    
+    
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button>
+          <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    const cards = document.getElementById('cards-mantenimiento');
+    const btnGuardar = document.getElementById("Guardar");
+    const formDetalle = document.getElementById('form-detalle');
+    const contenedorComponente = document.getElementById('contenedor-componentes');
+    const contenedor_recambio = document.getElementById('recambios');
+    const contenedorTareas = document.getElementById('contenedor-tareas');
+    const btnAgregarItem = document.getElementById('agregar-item');
+    const btnAgregarTarea = document.getElementById('agregar-tarea');
+    const btnAgregarRecambio = document.getElementById('agregarRecambio');
+    const searchInput = document.getElementById('searchInput');
+    const resultList = document.getElementById('resultList');
+    const salida = document.getElementById('fecha-salida');
+    const today = new Date().toISOString().split('T')[0];
+    
+    salida.setAttribute('min', today);
+
+
+    let currentIndex = -1;
+    
+    var CSRF_TOKEN = '{{ csrf_token }}';
+    
+    let datos_busqueda = '';
+    let det_componente = '';
+    let det_tareas = '';
+    let det_encargados = '';
+    let contador = 0;
+    let contador_compo = 0;
+    let fechaProgramacion = '' ;
+    let datos_mantenimiento = '';
+
+
+    btnGuardar.addEventListener("click", function(event) {
+      if (!formDetalle.checkValidity()) {
+          return;
+      }
+      event.preventDefault();
+      PreguntarFinalizarMantenimiento(function(){formDetalle.submit();});
+    });
+
+
+    // Lista de tareas Seleccionadas
+    let tareas_seleccionadas =[];
+
+    // Lista de componentes Seleccionados
+    let piezas_seleccionadas = [];
+
+    // Funcion que quita las tareas del select
+    function QuitarTareadelSelect(){
+      let elementos = document.querySelectorAll('[name="tareas_asignadas"]');
+
+      // Array para almacenar los valores seleccionados
+      let valoresSeleccionados = [];
+      
+
+      // Iterar sobre cada elemento y obtener su valor
+      elementos.forEach(function(elemento) {
+          let valor = elemento.value;
+          valoresSeleccionados.push(valor); // Obtener el valor como cadena}
+      });
+
+      valoresSeleccionados.forEach(function(valorSeleccionado) {
+        let index = det_tareas.findIndex(function(accion) {
+            return accion.accion === valorSeleccionado;
+        });
+
+        // Solo eliminar si se encontró el valor en acciones
+        if (index !== -1) {
+          let accionMovida = det_tareas.splice(index, 1)[0];
+          tareas_seleccionadas.push(accionMovida)
+        }
+      });
+
+    }
+
+    // Devolver las tareas al select
+    function DevolverTareasSelect(valorDevolver){
+      // Buscar el objeto en otraLista y moverlo a acciones si se encuentra
+      let index = tareas_seleccionadas.findIndex(function(accion) {
+          return accion.accion === valorDevolver;
+      });
+
+      if (index !== -1) {
+          let accionMovida = tareas_seleccionadas.splice(index, 1)[0]; // Elimina el elemento de otraLista
+          det_tareas.push(accionMovida); // Agrega el elemento de nuevo a acciones
+      }
+    }
+
+    // Funcion de quitar componentes
+    function QuitarComponente(){
+      let elementos_input = document.getElementById('searchInput')
+      let valor_input = elementos_input.value
+      let index = datos_busqueda.findIndex(function(item) {
+        return item.value === valor_input;
+      });
+
+      if (index !== -1) {
+          let objetoMovido = datos_busqueda.splice(index, 1)[0]; // Elimina el elemento de datos_busqueda y retorna el elemento eliminado
+          piezas_seleccionadas.push(objetoMovido); // Agrega el elemento a otraLista
+      }
+
+    }
+    
+    // Devolver componentes 
+    function DevolverComponente(valorDevolver){
+      let index = piezas_seleccionadas.findIndex(function(item) {
+        return item.value === valorDevolver;
+      });
+
+      if (index !== -1) {
+          let objetoMovido = piezas_seleccionadas.splice(index, 1)[0]; // Elimina el elemento de datos_busqueda y devuelve el elemento eliminado
+          datos_busqueda.push(objetoMovido); 
+      }
+    }
+
+    // Blorquear select
+    function BloquearSelect(){
+      var selects = document.querySelectorAll('select[name="tareas_asignadas"]');
+        selects.forEach(function(select) {
+          select.classList.add('readonly-select');
+        });
+    }
+    
+    // Boton que crea otro select con las tareas
+    btnAgregarTarea.addEventListener('click', function() {
+      contador++;
+
+      let todos_select = document.querySelectorAll('select[name="tareas_asignadas"]'); // Seleccionamos el ultimo valor con ese name
+      if (todos_select.length > 0) {
+          let ultimoElemento = todos_select[todos_select.length - 1];  
+          let valorUltimoElemento = ultimoElemento.value;
+          if(valorUltimoElemento != null && valorUltimoElemento.trim() !== ''){
+            QuitarTareadelSelect();
+            BloquearSelect();
+            crearTarea(det_tareas, contador);
+          }else{
+            ultimoElemento.setCustomValidity("Debe seleccionar una opción");
+            ultimoElemento.reportValidity();
+          }
+      } else {
+          QuitarTareadelSelect();
+          BloquearSelect();
+          crearTarea(det_tareas, contador);
+      }
+
+
+    });
+
+    // Damos formato a los datos de busqueda
+    function transformData(data) {
+        const transformed = [];
+        data.componentes.forEach(componente => {
+            transformed.push({ type: 'componente', value: componente.componente, codigo: componente.codigo });
+        });
+        data.pieza.forEach(pieza => {
+            transformed.push({ type: 'pieza', value: pieza.pieza, codigo: pieza.codigo });
+        });
+        return transformed;
+    }
+
+    // Barra de Busqueda
+    function searchArray(query) {
+      resultList.innerHTML = ''; // Limpiar los resultados anteriores en el contenedor 'resultList'
+      // Verificar que el query no esté vacío
+      if (query.trim()) {
+          const filteredResults = datos_busqueda.filter(item =>
+              item.value.toLowerCase().includes(query.toLowerCase()) ||
+              item.type.toLowerCase() === query.toLowerCase()
+          );
+
+          filteredResults.forEach((item, index) => {
+              const listItem = document.createElement('li');
+              listItem.textContent = `${item.type.charAt(0).toUpperCase() + item.type.slice(1)}: ${item.value}`;
+              listItem.classList.add('list-group-item');
+              listItem.addEventListener('click', () => {
+                  searchInput.value = item.value;
+                  resultList.innerHTML = ''; // Limpiar resultados después de seleccionar
+              });
+              listItem.addEventListener('mouseover', () => {
+                  highlightItem(index);
+              });
+              listItem.addEventListener('mouseout', () => {
+                  removeHighlight(index);
+              });
+              resultList.appendChild(listItem);
+          });
+
+          currentIndex = -1; // Reiniciar el índice actual cuando se actualiza la lista
+      }
+    }
+
+
+    function highlightItem(index) {
+        const items = resultList.getElementsByTagName('li');
+        for (let i = 0; i < items.length; i++) {
+            if (i === index) {
+                items[i].classList.add('highlight');
+            } else {
+                items[i].classList.remove('highlight');
+            }
+        }
+        currentIndex = index; // Actualizar el índice actual al que está resaltado
+    }
+
+    function removeHighlight(index) {
+        const items = resultList.getElementsByTagName('li');
+        if (index >= 0 && index < items.length) {
+            items[index].classList.remove('highlight');
+        }
+    }
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value;
+        searchArray(query);
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+        const items = resultList.getElementsByTagName('li');
+        if (items.length > 0) {
+            if (e.key === 'ArrowDown') {
+                currentIndex = (currentIndex + 1) % items.length;
+                highlightItem(currentIndex);
+            } else if (e.key === 'ArrowUp') {
+                currentIndex = (currentIndex - 1 + items.length) % items.length;
+                highlightItem(currentIndex);
+            } else if (e.key === 'Enter' && currentIndex >= 0) {
+                searchInput.value = items[currentIndex].textContent;
+                resultList.innerHTML = ''; // Limpiar los resultados después de la selección
+            }
+        }
+    });
+
+    // Boton que genera un input con el dato de la barra de busqueda
+    btnAgregarRecambio.addEventListener('click',function(){
+      let valorinput = searchInput.value;
+
+      if (valorinput != null && valorinput.trim() !== '') {
+          lista.innerHTML = 'Lista de Recambios:';
+          QuitarComponente();
+          crearComponente(valorinput);
+          searchInput.value = '';
+      } else {
+        searchInput.setCustomValidity("El campo no puede quedar en blanco");
+        searchInput.reportValidity(); // Mostrar el mensaje de error
+      }
+    })
+
+    // Crea el imput de recambios
+    function crearComponente(valor) {
+      contador_compo ++;
+      const row = document.createElement('div');
+      row.className = 'row mt-2';
+
+      const colMd10 = document.createElement('div');
+      colMd10.className = 'col col-md-10';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.setAttribute('readonly', true)
+      input.id = `input-items${contador_compo}`
+      input.value = `${valor}`;
+      input.name = 'recambios';
+      input.className = 'form-control';
+
+      colMd10.appendChild(input);
+
+      const colMd2 = document.createElement('div');
+      colMd2.className = 'col col-md-2';
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'btn-close mt-2 remover-div';
+
+      button.addEventListener('click', function() {
+        let input_seleccionado = document.getElementById(`input-items${contador_compo}`)
+        if(input_seleccionado != null){
+          DevolverComponente(input_seleccionado.value)
+        }
+        row.remove();
+      });
+
+      colMd2.appendChild(button);
+
+      row.appendChild(colMd10);
+      row.appendChild(colMd2);
+
+      contenedor_recambio.appendChild(row);
+    }
+
+    // Crea el input de Tareas
+    function crearTarea(datos, contador) {
+
+      const row = document.createElement('div');
+      row.className = 'row mt-2';
+
+      const colMd10 = document.createElement('div');
+      colMd10.className = 'col-md-10';
+
+      const select = document.createElement('select');
+      select.name = 'tareas_asignadas';
+      select.className = 'form-control border-primary';
+      select.id = `select_tarea${contador}`
+      const option = document.createElement('option');
+      option.value = ``;
+      option.textContent = `Seleccione:`;
+
+      select.appendChild(option);
+      datos.forEach(tarea => {
+          const option = document.createElement('option');
+          option.value = `${tarea.accion}`;
+          option.textContent = `${tarea.accion}`;
+          select.appendChild(option);
+      })
+      colMd10.appendChild(select);
+
+      let colMd1Checkbox = document.createElement('div');
+      colMd1Checkbox.className = 'col-md-1';
+
+      let formCheck = document.createElement('div');
+      formCheck.className = 'form-check form-check-inline';
+
+      let checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'form-check-input big-checkbox mr-3 border-primary';
+      checkbox.name = 'realizado'
+      checkbox.id = `inlineCheckbox${contador}`;
+      checkbox.value = ``;
+
+      formCheck.appendChild(checkbox);
+      colMd1Checkbox.appendChild(formCheck);
+
+      // Crear la tercera columna (botón remover tarea)
+      let colMd1Button = document.createElement('div');
+      colMd1Button.className = 'col-md-1';
+
+      let button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'btn-close mt-2 remover-tarea';
+
+      select.addEventListener('change', function(){
+        valor_select = select.value;
+        checkbox.value = valor_select
+      })
+
+      button.addEventListener('click', function() {
+        let tarea_select = document.getElementById(`select_tarea${contador}`)
+        if(tarea_select != null){
+          DevolverTareasSelect(tarea_select.value)
+        }
+        lista.innerHTML= ''
+        checkbox.value = ''
+        row.remove();
+      });
+
+      colMd1Button.appendChild(button);
+
+      row.appendChild(colMd10);
+      row.appendChild(colMd1Checkbox);
+      row.appendChild(colMd1Button);
+
+      contenedorTareas.appendChild(row);
+    }
+
+    // Renderiza las Tareas ya asignadas
+    function rederizarTareas(datos){
+      contenedorTareas.innerHTML = ''
+      datos.forEach(tarea => {
+        let row = document.createElement('div');
+        row.className = 'row mt-2 ';
+
+        let colmd1 = document.createElement('div');
+        colmd1.className = 'col col-md-10';
+
+        let input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'tareas_asignadas'
+        input.className = 'form-control border-primary';
+        input.value = `${tarea.tarea}`
+        input.setAttribute('readonly', true)
+        colmd1.appendChild(input);
+
+        let colmd2 = document.createElement('div');
+        colmd2.className = 'col col-md-2';
+
+        let formCheck = document.createElement('div');
+        formCheck.className = 'form-check form-check-inline';
+
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = 'realizado';
+        checkbox.className = 'form-check-input big-checkbox border-primary';
+        checkbox.id = 'inlineCheckbox1';
+        checkbox.value = `${tarea.tarea}`;
+
+        formCheck.appendChild(checkbox);
+
+        colmd2.appendChild(formCheck);
+
+        row.appendChild(colmd1);
+        row.appendChild(colmd2);
+
+        contenedorTareas.appendChild(row);   
+      });
+    }
+
+    // Renderiza Encargados del mantenimiento
+    function rederizarEncargado(datos){
+      const Select = document.getElementById('encargado')
+      Select.innerHTML= ''
+      datos.forEach(encargado => {
+        const option = document.createElement('option');
+        option.value = encargado.idencargado
+        option.text = encargado.nombre;
+        Select.appendChild(option)
+      })
+    }
+
+    // Renderiza los datos del mantenimiento en la cabezera del modal
+    function renderizarDatosMantenimiento(datos){
+     const det_mantenimiento = document.getElementById('detalle-mantenimiento')
+     det_mantenimiento.innerHTML = ''
+     datos.forEach(detman =>{
+        var div1 = document.createElement('div');
+        div1.className = 'col col-md-4';
+
+        var p1 = document.createElement('p');
+        p1.innerHTML = `<strong>Implemento: </strong>${detman.implemento}`;
+        div1.appendChild(p1);
+
+        var div2 = document.createElement('div');
+        div2.className = 'col col-md-4';
+        var p2 = document.createElement('p');
+        p2.innerHTML = `<strong>Ingreso: </strong>${detman.fechaingreso}`;
+        div2.appendChild(p2);
+
+        var div3 = document.createElement('div');
+        div3.className = 'col col-md-4';
+        var p3 = document.createElement('p');
+        p3.innerHTML = `<strong>Cod-Implemento: </strong>${detman.cod_implemento}`;
+        div3.appendChild(p3);
+
+
+        var hr = document.createElement('hr');
+        
+        
+        // Agregar los divs creados al contenedor específico
+        det_mantenimiento.appendChild(div1);
+        det_mantenimiento.appendChild(div3);
+        det_mantenimiento.appendChild(div2);
+        det_mantenimiento.appendChild(hr);
+     });
+    }
+
+
+    function obtenerMantenimientos(){
+        fetch(`./proceso/datos_mantenimiento`)
+        .then(res => res.json())
+        .then(datos => {
+            det_encargados = datos.encargados
+            // Filtramos los datos de mantenimiento
+            let datos_filtrados = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
+            datos_mantenimiento = datos.mantenimientos
+
+            // renderizarMantenimientos(datos_filtrados);   
+            filtro = document.getElementById('filtro_mantenimiento')
+            let prueba2 = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
+            renderizarMantenimientos(prueba2);
+
+            filtro.addEventListener('change', function(){
+              let value = filtro.value
+              console.log(value)
+              if(value == ''){
+                let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 1);
+                renderizarMantenimientos(prueba); 
+              }
+              else if(value == '1'){
+                let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.tipomantenimiento == 1 && mantenimiento.estado == 1);
+                renderizarMantenimientos(prueba);
+              }
+              else if(value == '0'){
+                let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.tipomantenimiento == 0 && mantenimiento.estado == 1);
+                renderizarMantenimientos(prueba);
+              }
+              
+            })
+
+
+            
+            datos_mantenimiento = datos.mantenimientos
+
+              
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
+    function obtenerDatosImplementos(idprogramacion, idimplemento){
+      fetch(`./proceso/datos_implemento/${idprogramacion}/${idimplemento}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN
+        },
+      })
+      .then(res => res.json())
+      .then(datos => {
+          console.log(datos)
+          det_tareas = datos.todas_las_tareas
+          console.log(datos.todas_las_tareas)
+          datos_busqueda = transformData(datos.partes);
+          rederizarTareas(datos.tareas);
+          let mant_filtrado = datos_mantenimiento.filter(mantenimiento => mantenimiento.idprogramacion == idprogramacion)
+          renderizarDatosMantenimiento(mant_filtrado);
+        })
+      .catch((error) => {
+          console.log(error);
+      });
+    }
+
+    function renderizarMantenimientos(datos) {
+      cards.innerHTML = '';
+      if (datos.length === 0) {
+        no_resultados.style.display = 'block';
+      }else {
+        no_resultados.style.display = 'none';
+      
+
+        datos.forEach(mantenimiento => {
+      
+          let nuevacard = `
+          <div class="col col-md-3 mt-2">
+            <div class="card ${mantenimiento.tipomantenimiento ? 'border-primary' : 'border-danger'} border-primary shadow p-6 bg-white rounded">
+              <div class="card-header ${mantenimiento.tipomantenimiento ? 'bg-primary' : 'bg-danger'} text-center">
+                <strong class="text-white">
+                  Mantenimiento #${mantenimiento.idmantenimiento}
+                </strong>
+              </div>
+              <div class="card-body">
+                <p class="card-text m-0"><strong>Implemento: </strong> ${mantenimiento.implemento}</p>
+                <p class="card-text m-0"><strong>Código:  </strong> ${mantenimiento.cod_implemento}</p>
+                <p class="card-text m-0"><strong>Fecha Programación:</strong> ${mantenimiento.fecha_programada  }</p>
+                <p class="card-text m-0"><strong>Fecha Ingreso:</strong> ${mantenimiento.fechaingreso}</p>
+                </div>
+                <div class="card-footer bg-transparent ${mantenimiento.tipomantenimiento ? 'border-primary' : 'border-danger'} d-flex justify-content-center">
+                  <button class="btn ${mantenimiento.tipomantenimiento ? 'btn-primary' : 'btn-danger'} mt-1 finalizar-mantenimiento" data-idmantenimiento="${mantenimiento.idmantenimiento}" data-idprogramacion="${mantenimiento.idprogramacion}" data-idimplemento="${mantenimiento.idimplemento}" data-bs-toggle="modal" data-bs-target="#registro_diagnostico">Finalizar Mantenimiento</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          `;
+          cards.innerHTML += nuevacard;
+        }); 
+        const btnFinalizarMantenimiento = document.querySelectorAll('.finalizar-mantenimiento')
+
+        btnFinalizarMantenimiento.forEach(function(boton){
+          boton.addEventListener("click",function(event){
+            lista.innerHTML= ''
+            // Llenamos variables
+            let id_implemento = event.target.dataset.idimplemento;
+            let id_mantenimiento = event.target.dataset.idmantenimiento;
+            let id_programacion = event.target.dataset.idprogramacion;
+
+            piezas_seleccionadas = [];
+            tareas_seleccionadas = [];
+            contador = 0;
+            contador_compo = 0;
+            searchInput.value = ''; 
+            resultList.innerHTML = '';
+
+            formDetalle.setAttribute('action', `./proceso/finalizar_mantenimiento/${id_mantenimiento}`)
+            formDetalle.reset();
+            contenedor_recambio.innerHTML = '';
+
+
+            obtenerDatosImplementos(id_programacion, id_implemento);
+            rederizarEncargado(det_encargados);
+          });
+        })
+      }
+
+    }
+    obtenerMantenimientos();
+
+  }); // Fin del DOM
+</script>
+
+{% endblock%}

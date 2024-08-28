@@ -33,7 +33,7 @@
 {% endif %}
 
 <table class="table table-striped  table-sm table-bordered text-center" id="tabla-componente">
-    <thead class="thead-dark">
+    <thead class="table-dark">
         <tr>
             <th scope="col">Componente</th>
             <th scope="col">Pieza</th>
@@ -101,8 +101,8 @@
                                 </div>
                             </div>
                         </div>
+                        <span id="error-message" class="text-danger d-none">El mínimo de contenedores es uno.</span>
                     </div>
-                    <span id="error-message" class="text-danger d-none">El mínimo de contenedores es uno.</span>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>

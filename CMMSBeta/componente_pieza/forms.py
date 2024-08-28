@@ -20,7 +20,7 @@ class ComponenteForms(forms.ModelForm):
         widgets = {
             'idsistema': forms.Select(attrs={'class':'form-control', 'id': 'txtsistema'}),
             'componente': forms.TextInput(attrs={'class':'form-control', 'id': 'txtComponente'}),
-            'codcomponente': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCodigoComp', 'min': 0}),
+            'codcomponente': forms.TextInput(attrs={'class':'form-control', 'id': 'txtCodigoComp', 'min': 0}),
             'tiempovida': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtTiempovida', 'min': 0}),
             'frecuencia_man': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtFrecuenciaMan', 'min': 0}),
         }
@@ -31,7 +31,7 @@ class PiezaForms(forms.ModelForm):
         fields = ['pieza','codpieza', 'frecuencia_man', 'tiempovida']
         widgets = {
             'pieza': forms.TextInput(attrs={'class':'form-control', 'id': 'txtPieza'}),
-            'codpieza': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtCodPieza', 'min': 0}),
+            'codpieza': forms.TextInput(attrs={'class':'form-control', 'id': 'txtCodPieza'}),
             'frecuencia_man': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtFrecuenciaMan', 'min': 0}),
             'tiempovida': forms.NumberInput(attrs={'class':'form-control', 'id': 'txtTiempovida', 'min': 0}),
         }
@@ -55,6 +55,9 @@ class ConfiguracionTipoImplementoForms(forms.ModelForm):
         }
 
 class DettaleConfiguracionForms(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['idcomponente'].queryset = Componente.objects.filter(estado=1)
     class Meta:
         model = DetalleConfiguracion
         fields = ['idconfiguracion', 'idcomponente']

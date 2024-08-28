@@ -1,24 +1,24 @@
 from django import forms
-from . models import Implemento, DetImplementos, TipoImplemento
+from . models import Implemento, DetImplementos, TipoImplemento, ImplementoSupervisor
 from usuario.models import Usuario
-
 from ceco.models import Ceco
-from localizacion.models import Area
+from django.utils import timezone
+
 
 class ImplementoForms(forms.ModelForm):
   def __init__(self, *args, **kwargs):
         super(ImplementoForms, self).__init__(*args, **kwargs)
         self.fields['idtipoimplemento'].queryset = TipoImplemento.objects.filter(estado = True)
-        self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 3, is_active = 1)
+        # self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 3, is_active = 1)
         self.fields['idceco'].queryset = Ceco.objects.filter(estado = True)
   class Meta:
     model = Implemento
-    fields = ['idimplemento','idusuario','implemento','horasdeuso', 'codimplemento', 'idtipoimplemento', 'idceco']
+    fields = ['idimplemento','implemento','horasdeuso', 'codimplemento', 'idtipoimplemento', 'idceco']
     widgets = {
       'idimplemento': forms.HiddenInput(),
       'implemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtImplemento'}),
-      'idusuario': forms.Select(attrs={'class':'form-select', 'id':'txtIdUsuario'}),
-      'horasdeuso': forms.NumberInput(attrs={'class':'form-control', 'id':'txtHorasUso', 'type':'number', 'min':'0'}),
+      # 'idusuario': forms.Select(attrs={'class':'form-select', 'id':'txtIdUsuario'}),
+      'horasdeuso': forms.NumberInput(attrs={'class':'form-control', 'id':'txtHorasUso', 'type':'number', 'min':'0', 'readonly':'readonly'}),
       'codimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtCodImplemento'}),
       'idtipoimplemento': forms.Select(attrs={'class':'form-control', 'id':'txtIdTipoimplemento'}),
       'idceco': forms.Select(attrs={'class':'form-control', 'id':'txtIdCeco'}),
@@ -41,8 +41,30 @@ class TipoImplementoForms(forms.ModelForm):
     model = TipoImplemento
     fields = ['tipoimplemento', 'idconfiguracion_implemento', 'tiempo_vida', 'frecuencia_man']
     widgets = {
-      'tipoimplemento': forms.TextInput(attrs={'class':'form-control', 'id':'txtTipoImplemento'}),
-      'idconfiguracion_implemento': forms.Select(attrs={'class':'form-select', 'id':'txtIdConfiguracionImplemento'}),
-      'tiempo_vida': forms.NumberInput(attrs={'class':'form-control', 'id':'txtTiempoVida', 'type':'number', 'min':'0'}),
-      'frecuencia_man': forms.NumberInput(attrs={'class':'form-control', 'id':'txtFrecuenciaMan', 'type':'number', 'min':'0'}),
+      'tipoimplemento': forms.TextInput(attrs={'class':'form-control mb-2', 'id':'txtTipoImplemento'}),
+      'idconfiguracion_implemento': forms.Select(attrs={'class':'form-select mb-2', 'id':'txtIdConfiguracionImplemento'}),
+      'tiempo_vida': forms.NumberInput(attrs={'class':'form-control mb-2', 'id':'txtTiempoVida', 'type':'number', 'min':'0'}),
+      'frecuencia_man': forms.NumberInput(attrs={'class':'form-control mb-2', 'id':'txtFrecuenciaMan', 'type':'number', 'min':'0'}),
     }
+  
+class ImplementoSupervisorForms(forms.ModelForm):
+   def __init__(self, *args, **kwargs):
+      super(ImplementoSupervisorForms, self).__init__(*args, **kwargs)
+      self.fields['idsupervisor'].queryset = Usuario.objects.filter(idrol = 3, is_active = 1)
+
+      # obtenemos los id de los tractores que ya estan en la registro
+      excluir_implementos = ImplementoSupervisor.objects.filter(estado=True).values_list('idimplemento', flat=True)
+      self.fields['idimplemento'].queryset = Implemento.objects.filter(estado = True).exclude(idimplemento__in=excluir_implementos)
+
+
+   class Meta:
+      ahora = timezone.localtime()
+      fecha_actual = ahora.date()
+
+      model = ImplementoSupervisor
+      fields = ['idimplemento', 'idsupervisor', 'fechaInicio']
+      widgets = {
+         'idimplemento': forms.Select(attrs={'class':'form-select', 'id':'txtImplemento'}),
+         'idsupervisor': forms.Select(attrs={'class':'form-select', 'id':'txtSupervisor'}),
+         'fechaInicio': forms.DateInput(attrs={'class':'form-control', 'type':'date', 'id':'txtFechainicio', 'min':fecha_actual}),
+      }

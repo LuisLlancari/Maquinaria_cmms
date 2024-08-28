@@ -1,0 +1,340 @@
+{% extends 'core/base.html' %}
+
+{% block titulo %}Mantenimientos Realizados{% endblock%}
+
+{% block contenido %} 
+<h1 class="text-center">Mantenimientos Realizados</h1>
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-2"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento preventivo</strong>
+  </div>
+</div>
+
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-3"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento correctivo</strong>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col col-md-2">
+    <select name="" id="filtro_mantenimiento" class="form-select">
+      <option value="">Todo</option>
+      <option value="1">Preventivo</option>
+      <option value="0">Correctivo</option>
+    </select>
+  </div>
+</div>
+
+<!-- filtros -->
+<div class="row"></div>
+
+<!-- fin filtro -->
+{% if messages %}
+{% for message in messages %}
+<div id="message" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    
+    <strong>{{ message }}</strong>
+    
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+{% endfor %}
+
+{% endif %}
+<div class="row" id="contenido-cards">
+
+</div>
+
+<div class="modal fade" id="detalle_mantenimiento" tabindex="-1" aria-labelledby="example" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary justify-content-center">
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Detalle Mantenimiento</h1>
+      </div>
+
+      <form autocomplete="off" id="form-detalle" >
+        <div class="modal-body">
+          <table class="table table-bordered" id="tabla_detalle">
+            <thead>
+              <tr>
+                <th colspan="4" >Información del Mantenimiento</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+
+
+        </div>
+        <div class="modal-footer">
+          <!-- <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill" >Guardar</button> -->
+          <a type="button" id="reporte" class="btn btn-outline-success flex-fill">Generar Reporte </a>
+          <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal" >Cerrar </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const contenerdoCards = document.getElementById('contenido-cards');
+    const contenerdorTareas = document.getElementById('cuerpo_tareas');
+    const contenerdorRecambio = document.getElementById('cuerpo_recambios');
+    const cuerpoTabla = document.querySelector('#tabla_detalle tbody')
+    const reporte = document.getElementById('reporte')
+    var CSRF_TOKEN = '{{ csrf_token }}';
+
+    let datosGenerales = ''
+    let datosMantenimiento =''
+    let datosRecambio  = ''
+
+    setTimeout(function() {
+        var errorMessage = document.getElementById('message');
+        if (errorMessage) {
+            errorMessage.style.display = 'none';
+        }
+       }, 3000);
+
+    function RenderizarDetalleRecambio(datos) {
+      let nuevafila = '';
+      contenerdorRecambio.innerHTML = '';
+      
+      if (datos.length > 0) {
+        datos.forEach(recambio => {
+          nuevafila += `
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <input type="text" class="form-control border border-0 text-center" value="${recambio.item}" readonly>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control border border-0 text-center" value="${recambio.codigo}" readonly>
+              </div>
+            </div>
+          `;
+        });
+        contenerdorRecambio.innerHTML = nuevafila;
+      } else {
+        contenerdorRecambio.innerHTML = '<h1 class="text-center">No hay Recambios para este mantenimiento</h1>';
+      }
+    }
+          
+    function RenderizarDetalleMantenimiento(datos){
+      let nuevafila = '';
+      contenerdorTareas.innerHTML='';
+      datos.forEach(tarea =>{
+        if (tarea.completado == true){
+          dato = `<div class="col-md-6 text-center text-success"><strong>Realizado</strong></div>`
+        }else{
+          dato = `<div class="col-md-6 text-center text-danger"><strong>No realizado</strong></div>`
+        }
+
+        nuevafila = `
+        <div class="row mt-2" id="contenerdor-tareas">
+          <div class="col-md-6">
+            <input type="text" class="form-control border border-0 text-center" value="${tarea.tareas}" readonly>
+          </div>
+          ${dato}
+        </div>
+        `;
+        contenerdorTareas.innerHTML += nuevafila;
+      })
+    }
+
+    function obtenerDetalleMantenimiento(idmantenimiento){
+      fetch(`./realizado/detalle_mantenimiento/${idmantenimiento}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN
+        },
+      })
+      .then(res => res.json())
+      .then(datos => {
+        console.log(datos.tareas)
+        datosMantenimiento = datos.tareas
+        datosRecambio = datos.recambios
+        let datosfiltrados = datosGenerales.filter(mantenimiento => mantenimiento.idmantenimiento == idmantenimiento)
+        renderizarTablaDetalle(datosfiltrados, datos.tareas, datos.recambios)
+        // RenderizarDetalleRecambio(datos.recambios)
+        // RenderizarDetalleMantenimiento(datos.tareas)
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+    }
+
+    function rederizarMantenimientosPendientes(datos){
+      contenerdoCards.innerHTML=''
+      let nuevaCard = ''
+
+      datos.forEach(realizado => {
+        nuevaCard = `
+      <div class="col col-md-3 mt-2">
+        <div class="card ${realizado.tipomantenimiento ? 'border-primary' : 'border-danger'}  mb-3" >
+          <div class="card-header ${realizado.tipomantenimiento ? 'bg-primary' : 'bg-danger'} text-center text-white"><strong>Mantenimiento #${realizado.idmantenimiento}</strong></div>
+            <div class="card-body">
+              <h5 class="card-text text-center fw-bold"></h5>
+              <p class="card-text m-0"><strong>Implemento: </strong> ${realizado.implemento}</p>
+              <p class="card-text m-0"><strong>Código:  </strong> ${realizado.cod_implemento}</p>
+              <p class="card-text m-0" ><strong>Fecha Programada:</strong> ${realizado.fecha_programada }</p>
+              <p class="card-text m-0"><strong>Fecha Ingreso:</strong> ${realizado.fechaingreso}</p>
+              <p class="card-text m-0"><strong>Fecha Salida:</strong> ${realizado.fechasalida}</p>
+              <p class="card-text m-0"><strong>Encargado:</strong> ${realizado.nombres} ${realizado.apellidos}</p>
+            </div>
+            <div class="card-footer bg-transparent ${realizado.tipomantenimiento ? 'border-primary' : 'border-danger'}">
+              <form>
+                <button type= "button" class="btn ${realizado.tipomantenimiento ? 'btn-primary' : 'btn-danger'} mt-1 w-100 ver-detalle" data-id="${realizado.idmantenimiento}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento">Ver detalle</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+        `;
+        contenerdoCards.innerHTML += nuevaCard;
+      });
+
+      const btnConfimarFecha = document.querySelectorAll('.ver-detalle')
+      btnConfimarFecha.forEach(function(boton) {
+      boton.addEventListener("click", function(event) {
+        let idmantenimiento = event.target.dataset.id
+        reporte.setAttribute('href', `./realizados/reporte_mantenimiento/${idmantenimiento}`)
+        obtenerDetalleMantenimiento(idmantenimiento)
+        });
+      });
+
+    }
+
+    function obtenerDatosMantenimientosRealizados(){
+      fetch(`./realizados/datos_mantenimiento`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN
+        },
+      })
+      .then(res => res.json())
+      .then(datos => {
+        filtro = document.getElementById('filtro_mantenimiento')
+        datosGenerales = datos.mantenimientos
+        rederizarMantenimientosPendientes(datos.mantenimientos)
+        filtro.addEventListener('change', function(){
+          let value = filtro.value
+          console.log(value)
+          if(value == ''){
+            let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.estado == 0);
+            rederizarMantenimientosPendientes(prueba); 
+          }
+          else if(value == '1'){
+            let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.tipomantenimiento == 1 && mantenimiento.estado == 0);
+            rederizarMantenimientosPendientes(prueba);
+          }
+          else if(value == '0'){
+            let prueba = datos.mantenimientos.filter(mantenimiento => mantenimiento.tipomantenimiento == 0 && mantenimiento.estado == 0);
+            rederizarMantenimientosPendientes(prueba);
+          }
+          
+        })
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+    }
+
+    function generarReporte(idmantenimiento){
+      fetch(`./realizados/reporte_mantenimiento/${idmantenimiento}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN
+        },
+      })
+      .then(res => res.json())
+      .then(datos => {
+     
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+    }
+
+    function renderizarTablaDetalle(datosGeneral, detalle_mantenimiento, detalle_recambio){
+      cuerpoTabla.innerHTML = '';
+      datosGeneral.forEach(datosGeneral =>{
+        cuerpoTabla.innerHTML = `
+              <tr>
+                <td><strong>Fecha de Ingreso:</strong></td>
+                <td>${datosGeneral.fechaingreso}</td>
+                <td><strong>Fecha de Salida:</strong></td>
+                <td>${datosGeneral.fechasalida}</td>
+              </tr>
+              <tr>
+                <td><strong>Mecanico:</strong></td>
+                <td>${datosGeneral.nombres} ${datosGeneral.apellidos}</td>
+                <td><strong>Estado:</strong></td>
+                <td>${datosGeneral.estado ? 'Pendiente' : 'Completado'}</td>
+              </tr>
+              <tr>
+                <td><strong>Fecha Programada:</strong></td>
+                <td>${datosGeneral.fecha_programada}</td>
+                <td><strong>Tipo de Mantenimiento:</strong></td>
+                <td>${datosGeneral.tipomantenimiento === 1 ? 'Preventivo' : 'Correctivo'}</td>
+              </tr>
+              <tr>
+                <td><strong>Implemento:</strong></td>
+                <td>${datosGeneral.implemento}</td>
+                <td><strong>Código de Implemento:</strong></td>
+                <td>${datosGeneral.cod_implemento}</td>
+              </tr>
+              <tr>
+                <th colspan="4">Información de las Tareas</th>
+              </tr>
+              <tr>
+                <td colspan="2"><strong>Tarea</strong></td>
+                <td colspan="2"><strong>Estado</strong></td>
+                </tr>
+              ${detalle_mantenimiento.map(tarea => `
+              <tr>
+                <td colspan="2">${tarea.tareas}</td>
+                <td colspan="2">${tarea.completado ? 'Completada' : 'No Completada'}</td>
+              </tr>
+            `).join('')}
+              <tr>
+                <th colspan="4">Información de los recambios</th>
+              </tr>
+              <tr>
+                <td colspan="2"><strong>Item</strong></td>
+                <td colspan="2"><strong>Código</strong></td>
+                </tr>
+              ${detalle_recambio.length > 0 ? detalle_recambio.map(recambio => `
+              <tr>
+                <td colspan="2">${recambio.item}</td>
+                <td colspan="2">${recambio.codigo}</td>
+              </tr>
+            `).join('') : `
+              <tr>
+                <td colspan="4">No hay recambios.</td>
+              </tr>
+            `}
+              
+            `;
+      })
+      
+    }
+    
+    // reporte.addEventListener('click',function(event){
+    //   let id_mantenimento = event.target.dataset.id
+    //   console.log(id_mantenimento)
+    //   generarReporte(id_mantenimento)
+    // });
+
+    obtenerDatosMantenimientosRealizados();
+
+
+  });
+</script>
+
+{% endblock %}

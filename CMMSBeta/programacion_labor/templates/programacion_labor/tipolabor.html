@@ -19,8 +19,8 @@
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table table-striped table-bordered mt-3" id="tabla-tipolabor">
-            <thead class="text-center">
+        <table class="table table-striped table-sm table-bordered mt-3 text-center" id="tabla-tipolabor">
+            <thead class="text-center table-dark">
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Tipo de Labor</th>
@@ -38,9 +38,9 @@
                     {% if user.idrol.rol != "Gerencia" %}
                     <td>
                         <button class="btn btn-warning btn-sm editar d-inline-block" id="tipolabor" data-toggle="modal" data-target="#modalEditar" data-idtipolabor="{{ data.idtipolabor }}" data-nombretipolabor="{{ data.tipolabor }}" type="button"><i class="lni lni-pencil"></i></button>
-                        <form action="{% url 'eliminar_tipolabor' data.idtipolabor %}" id="form-{{ dato.idtipolabor }}" class="d-inline-block" method="POST">
+                        <form action="{% url 'eliminar_tipolabor' data.idtipolabor %}" id="form-{{ data.idtipolabor }}" class="d-inline-block" method="POST">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm eliminar" data-registro="{{ dato.tipolabor }}" data-id="{{ dato.idtipolabor }}"><i class="lni lni-trash-can"></i></button>
+                            <button type="submit" class="btn btn-danger btn-sm eliminar" data-registro="{{ data.tipolabor }}" data-id="{{ data.idtipolabor }}"><i class="lni lni-trash-can"></i></button>
                         </form>                       
                     </td>  
                     {% endif %}
@@ -143,6 +143,7 @@
                 event.preventDefault();
                 let implemento = event.currentTarget.dataset.registro;
                 let formId = event.currentTarget.dataset.id;
+                // console.log(formId)
                 PreguntarEliminar(implemento, function() {
                     document.getElementById('form-' + formId).submit();
                 });
@@ -150,12 +151,18 @@
         });
 
         btnGuardarRegristro.addEventListener("click", function(event){
+            if (!formRegistrar.checkValidity()) {
+            return;
+            }
             event.preventDefault();
             PreguntarGuardar(function(){formRegistrar.submit();});
 
         });
 
         btnGuardarCambios.addEventListener("click", function(event){
+            if (!formEditar.checkValidity()) {
+            return;
+            }
             event.preventDefault();
             PreguntarGuardar(function(){formEditar.submit();});
 

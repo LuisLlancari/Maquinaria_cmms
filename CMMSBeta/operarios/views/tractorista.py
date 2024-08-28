@@ -1,23 +1,26 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from ..models import Tractorista
 from ..forms import TractoristaForms
 from usuario.models import Persona, Usuario
 from usuario.forms import PersonaForm
 from django.http import JsonResponse
-
-#Manejo de errores
 from django.contrib import messages
 
-def tractoristas(request):
-  datos_tractoristas = Tractorista.objects.filter(estado = True)
-  datos_usuarios = Usuario.objects.filter(idrol = 3)
-  return render(request, 'operarios/tractoristas.html', {'datos_tractoristas':datos_tractoristas, 'form':PersonaForm, 'datos_usuarios':datos_usuarios })
 
+@login_required(login_url='login', redirect_field_name='')
+def tractoristas(request):
+  rol = request.user.idrol.rol
+  if rol == "Admin":
+    datos_tractoristas = Tractorista.objects.filter(estado = True)
+    datos_usuarios = Usuario.objects.filter(idrol = 3)
+    return render(request, 'operarios/tractoristas.html', {'datos_tractoristas':datos_tractoristas, 'form':PersonaForm, 'datos_usuarios':datos_usuarios })
+  else:
+    return redirect('home')
+  
+@login_required(login_url='login', redirect_field_name='')
 def registrarTractorista(request):
   datos_tractoristas = Tractorista.objects.filter(estado = True)
-
-
-
   if request.method == 'POST':
     id_usuario = request.POST.get('usuario')
 
@@ -37,10 +40,15 @@ def registrarTractorista(request):
 
       messages.success(request, 'Tractorista registrado con exito', extra_tags='success')
       return redirect('tractorista')
+
+    else:
+      messages.error(request, 'El tractorista ya existe', extra_tags='danger')
+      return redirect('tractorista')
   else:
      messages.error(request, 'El tractorista ya existe', extra_tags='danger')
      return render(request, 'operarios/tractoristas.html', {'datos_tractoristas': datos_tractoristas})
 
+@login_required(login_url='login', redirect_field_name='')
 def eliminarTractorista(request, id_tractorista):
   registro = get_object_or_404(Tractorista, pk= id_tractorista)
   if request.method == 'POST':
@@ -48,6 +56,7 @@ def eliminarTractorista(request, id_tractorista):
     registro.save()
     return redirect('tractorista')
 
+@login_required(login_url='login', redirect_field_name='')
 def editarTractoristas(request, id_tractorista):
   if request.method == 'POST':
     # Obtenemos el valor de usuario acargo
@@ -74,6 +83,7 @@ def editarTractoristas(request, id_tractorista):
   else:
     return redirect('tractorista')
 
+@login_required(login_url='login', redirect_field_name='')
 def obtenerDatos(request, id_tractorista):
   # Obtenmos los datos del tractorista por el id
   tractorista = list(Tractorista.objects.filter(pk=id_tractorista).values())

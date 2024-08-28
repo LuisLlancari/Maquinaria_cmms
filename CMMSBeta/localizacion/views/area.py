@@ -7,16 +7,20 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login', redirect_field_name='')
 def area(request):
-    areas = Area.objects.filter(estado = True)
-    bases = Base.objects.filter(estado = True)
-    formArea = AreaForm()
-    datos = {
-        'areas': areas,
-        'formArea': formArea,
-        'bases': bases
-    }
-    return render(request, '../templates/localizacion/area.html', datos)
-
+    rol = request.user.idrol.rol
+    if rol == "Admin":
+        areas = Area.objects.filter(estado = True)
+        bases = Base.objects.filter(estado = True)
+        formArea = AreaForm()
+        datos = {
+            'areas': areas,
+            'formArea': formArea,
+            'bases': bases
+        }
+        return render(request, '../templates/localizacion/area.html', datos)
+    else:
+        return redirect('home')
+    
 @login_required(login_url='login', redirect_field_name='')
 def eliminar_area(request, idarea):
     area = get_object_or_404(Area, pk = idarea)

@@ -7,6 +7,7 @@ from ceco.models import Ceco
 from componente_pieza.models import ConfiguracionTipoImplemento, Componente, Pieza, DetalleComponente
 from usuario.models import Usuario
 
+
 class TipoImplemento(models.Model):
     idtipoimplemento = models.AutoField(primary_key=True)
     tipoimplemento = models.CharField(max_length=45, verbose_name="Tipo Implemento")
@@ -26,8 +27,7 @@ class TipoImplemento(models.Model):
 class Implemento(models.Model):
     idimplemento = models.AutoField(primary_key=True)
     implemento = models.CharField(max_length=45, verbose_name="Implemento")
-    idusuario = models.ForeignKey(Usuario, on_delete=models.SET_DEFAULT, default=None, verbose_name="Encargado")
-    horasdeuso = models.FloatField(verbose_name="Horas de uso", default=0)
+    horasdeuso = models.DecimalField(max_digits=15, decimal_places=2, verbose_name="Horas de uso", default=0)
     codimplemento = models.CharField(max_length=12, verbose_name="Codigo de Implemento")
     mantenimientos = models.IntegerField(default=0, null=True, blank=True, verbose_name="Mantenimientos realizados")
     proximo_mantenimiento = models.IntegerField(default=0, null=True, blank=True, verbose_name="Proximo Mantenimiento") 
@@ -45,10 +45,6 @@ class Implemento(models.Model):
     def __str__(self):
         return self.implemento
     
-
-    
-
-
 class DetImplementos(models.Model):
     iddetalleimplemento = models.AutoField(primary_key=True)
     idimplemento = models.ForeignKey(Implemento, on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento")
@@ -70,3 +66,20 @@ class DetImplementos(models.Model):
 
     def _str_(self):
         return str(self.iddetalleimplemento)
+    
+class ImplementoSupervisor(models.Model):
+    idimplementosupervisor = models.AutoField(primary_key=True, verbose_name="id")
+    idimplemento = models.ForeignKey(Implemento,on_delete=models.SET_DEFAULT, default=None, verbose_name="Implemento") 
+    idsupervisor = models.ForeignKey(Usuario, on_delete=models.SET_DEFAULT, default=None, verbose_name="Usuario")
+    fechaInicio = models.DateField(verbose_name="Fecha Inicio")
+    fechaFin = models.DateField(null=True, blank=True, verbose_name="Fecha Fin")
+    estado = models.BooleanField(default=True, verbose_name="Estado")
+
+    class Meta:
+        verbose_name = "Implemento por supervisor"
+        verbose_name_plural = "Implementos por supervisores"
+    
+    def __str__(self):
+        return str( self.idimplementosupervisor)
+
+

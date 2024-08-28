@@ -14,7 +14,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.3.0/luxon.min.js"></script>
     
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     {% if user.idrol.rol == "Supervisor" or user.idrol.rol == "Mecanico" or user.idrol.rol == "Asistente" or user.idrol.rol == "Gerencia" %}
     <style>
@@ -24,6 +23,29 @@
             overflow: hidden;
         }
     
+        .main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+    </style>
+    {% else %}
+    <style>
+        .wrapper {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+    
+        .sidebar {
+            flex: 0 0 auto;
+            width: 250px;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: #343a40;
+            color: white;
+        }
+
         .main {
             flex-grow: 1;
             overflow-y: auto;
@@ -42,80 +64,112 @@
                     <i class="lni lni-grid-alt"></i>
                 </button>
                 <div class="sidebar-logo">
-                    <a href="">CMMS Falcot</a>
+                    <a href="#">CMMS Falcot</a>
                 </div>
             </div>
             <ul class="sidebar-nav">
+
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link" data-path="inicio">
                         <i class="lni lni-user"></i>
-                        <span class="text-uppercase">{{user.first_name}} {{user.last_name}} {{user.idrol}}</span>
+                        <span class="text-uppercase">{{user.first_name}} {{user.last_name}}</>
+                        <p class="text-uppercase text-center text-white">{{ user.idrol }}</p> <!-- Aquí se muestra el rol del supervisor -->
+                    </a>
+                </li>
+                
+                {% if user.idrol.rol == "Mecanico"%}
+                <!-- Para Mecanico -->
+                <li class="sidebar-item">
+                    <a href="{% url 'mantenimiento_pendiente' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-list"></i>
+                        <span class="text-uppercase">Aceptar Ingreso</span>
                     </a>
                 </li>
 
-                 <!-- Para Gerencia -->
+                <li class="sidebar-item">
+                    <a href="{% url 'mantenimiento_proceso' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-pencil"></i>
+                        <span class="text-uppercase">Finalizar Mantenimientos</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="{% url 'mantenimientos_realizados' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-files"></i>
+                        <span class="text-uppercase">Historial Manteniento</span>
+                    </a>
+                </li>
+                <!-- Fin Mecanico -->
+                {% endif %}
+
                 {% if user.idrol.rol == "Gerencia" %}
+                <!-- Para Gerencia -->
                 <li class="sidebar-item">
                     <a href="{% url 'home' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-grid-alt"></i>
                         <span class="text-uppercase">Dashboard</span>
                     </a>
                 </li>
+
                 <li class="sidebar-item">
                     <a href="{% url 'test' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-list"></i>
                         <span class="text-uppercase">Lista de Programaciones</span>
                     </a>
                 </li>
+                <!-- Fin Gerencia -->
                 {% endif %}
-                <!-- fin Gerencia -->
-
-                <!-- Asistente -->
+               
                 {% if user.idrol.rol == "Asistente" %}
+                <!-- Asistente -->
                 <li class="sidebar-item">
                     <a href="{% url 'reportetractor' %}" class="sidebar-link" data-path="test">
                         <i class="lni lni-clipboard"></i>
                         <span class="text-uppercase">Reporte Tractor</span>
                     </a>
                 </li>
-                {% endif %}
                 <!-- Fin Asistente -->
+                {% endif %}
 
-
-                <!-- Supervisor-->
                 {% if user.idrol.rol == "Supervisor" %}
+                <!-- Supervisor-->
                 <li class="sidebar-item">
                     <a href="{% url 'implemento' %}" class="sidebar-link" data-path="test">
                         <i class="lni lni-construction-hammer"></i>
                         <span class="text-uppercase">Implemento</span>
                     </a>
                 </li>
+
                 <li class="sidebar-item">
                     <a href="{% url 'tractor' %}" class="sidebar-link" data-path="test">
                         <i class="lni lni-ambulance"></i>
                         <span class="text-uppercase">Tractor</span>
                     </a>
                 </li>
+
                 <li class="sidebar-item">
                     <a href="{% url 'programacion' %}" class="sidebar-link" data-path="test">
                         <i class="lni lni-pencil-alt"></i>
                         <span class="text-uppercase">Programación Labor</span>
                     </a>
                 </li>
-                {% endif %}
-                
+
+                <li class="sidebar-item">
+                    <a href="{% url 'programacion_mantenimiento' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-cog"></i>
+                        <span class="text-uppercase">Prog mantenimiento</span>
+                    </a>
+                </li>
                 <!-- Fin Supervisor-->
-
-
-
+                {% endif %}
 
                 {% if user.idrol.rol == "Admin"%}
-
-                
+                <!-- Para Admin -->
                 <li class="sidebar-item">
-                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#ceco" aria-expanded="false" aria-controls="ceco">
                         <i class="lni lni-invest-monitor"></i>
-                        <span>CECO - RESPONSABLE</span>
+                        <span>CECO</span>
                     </a>
                     <ul id="ceco" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
@@ -124,12 +178,11 @@
                     </ul>
                 </li>
 
-
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#localizacion" aria-expanded="false" aria-controls="localizacion">
                         <i class="lni lni-map-marker"></i>
-                        <span>localizacion</span>
+                        <span>localización</span>
                     </a>
                     <ul id="localizacion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <!-- <li class="sidebar-item">
@@ -142,7 +195,6 @@
                 </li>
 
                 <li class="sidebar-item">
-                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#fundo" aria-expanded="false" aria-controls="fundo">
                         <i class="lni lni-sprout"></i>
@@ -168,32 +220,23 @@
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#componente" aria-expanded="false" aria-controls="componente">
                         <i class="lni lni-cogs"></i>
-                        <span>Configuracion</span>
+                        <span>Configuración</span>
                     </a>
                     <ul id="componente" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
                             <a href="{% url 'sistema' %}" class="sidebar-link">Sistemas</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'componente' %}" class="sidebar-link">Componentes</a>
-                        </li>
-                        <li class="sidebar-item">
                             <a href="{% url 'pieza' %}" class="sidebar-link">Piezas</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'det_componente' %}" class="sidebar-link">Asignacion Componente</a>
+                            <a href="{% url 'componente' %}" class="sidebar-link">Componentes</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="{% url 'configuracion' %}" class="sidebar-link">Configuracion</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'detalle_cong' %}" class="sidebar-link">Detalle configuracion</a>
+                            <a href="{% url 'configuracion' %}" class="sidebar-link">Configuración</a>
                         </li>
                     </ul>
                 </li>
-
-                
-                
 
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -202,133 +245,130 @@
                         <span>Implemento</span>
                     </a>
                     <ul id="implemento" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        {% if user.idrol.rol == "Admin"%}
-                            <li class="sidebar-item">
-                                <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
-                            </li>
-                        {% endif %}
-
-                        {% if user.idrol.rol == "Admin" %}
                             <li class="sidebar-item">
                                 <a href="{% url 'tipoimplemento' %}" class="sidebar-link" data-path="login">Tipo implemento</a>
                             </li>
-                        {% endif %}
+                            <li class="sidebar-item">
+                                <a href="{% url 'implemento' %}" class="sidebar-link" data-path="login">implemento</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="{% url 'asignar_supervisor_implemento' %}" class="sidebar-link" data-path="login">Asignar supervisor</a>
+                            </li>
+          
                     </ul>
                 </li>
 
-                {% endif %}
-
-                {% if user.idrol.rol == "Admin"%}
-                    <li class="sidebar-item">
-                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#tractor" aria-expanded="false" aria-controls="tractor">
-                            <i class="lni lni-ambulance"></i>
-                            <span>Tractor</span>
-                        </a>
-                        <ul id="tractor" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-
-                            {% if user.idrol.rol == "Asistente" %}
-                            <li class="sidebar-item">
-                                <a href="{% url 'reportetractor' %}" class="sidebar-link" data-path="login">Reporte Tractor</a>
-                            </li>
-                            {% endif %}
-                            
-                            
-                            {% if user.idrol.rol == "Supervisor" or user.idrol.rol == "Admin" %}
-                            <li class="sidebar-item">
-                                <a href="{% url 'tractor' %}" class="sidebar-link" data-path="login">Tractor</a>
-                            </li>
-                            {% endif %}
-
-                            {% if user.idrol.rol == "Admin" %}
-                            <li class="sidebar-item">
-                                <a href="{% url 'tipotractor' %}" class="sidebar-link" data-path="s">Tipo Tractor</a>
-                            </li>
-                            {% endif %}
-                        </ul>
-                    </li>
-                {% endif %}
-
-                {% if user.idrol.rol == "Admin" %}
-
-                    <li class="sidebar-item">
-                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#operarios" aria-expanded="false" aria-controls="operarios">
-                            <i class="lni lni-helmet"></i>
-                            <span>Operarios</span>
-                        </a>
-                        <ul id="operarios" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                            <li class="sidebar-item">
-                                <a href="{% url 'tiposolicitante' %}" class="sidebar-link">Tipo solicitante</a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="{% url 'solicitante'%}" class="sidebar-link">Solicitante</a>
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="{% url 'tractorista' %}" class="sidebar-link">Tractoristas</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    
-
-                {% endif %}
-
-                {% if user.idrol.rol == "Admin" %}
-                
-                    <li class="sidebar-item">
-                        <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
-                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#programacion" aria-expanded="false" aria-controls="programacion">
-                        <i class="lni lni-pencil-alt"></i>
-                        <span>Programacion</span>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#tractor" aria-expanded="false" aria-controls="tractor">
+                        <i class="lni lni-ambulance"></i>
+                        <span>Tractor</span>
                     </a>
-                    <ul id="programacion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        {% if user.idrol.rol == "Admin" %}
-                        <li class="sidebar-item">
-                            <a href=" {% url 'tipolabor' %}" class="sidebar-link" data-path="login">Tipos de Labores</a>
-                        </li>
-                        {% endif %}
+                    <ul id="tractor" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
 
-                        {% if user.idrol.rol == "Supervisor" %}
+                        {% if user.idrol.rol == "Asistente" %}
                         <li class="sidebar-item">
-                            <a href=" {% url 'programacion' %} " class="sidebar-link" data-path="login">Crear Programacion</a>
+                            <a href="{% url 'reportetractor' %}" class="sidebar-link" data-path="login">Reporte Tractor</a>
                         </li>
                         {% endif %}
+                        
+                        
+                        <li class="sidebar-item">
+                            <a href="{% url 'tractor' %}" class="sidebar-link" data-path="login">Tractor</a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="{% url 'tipotractor' %}" class="sidebar-link" data-path="">Tipo Tractor</a>
+                        </li>
+                        
+                        <li class="sidebar-item">
+                            <a href="{% url 'asignar_supervisor_tractor' %}" class="sidebar-link" data-path="">Historial de supervisores</a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#operarios" aria-expanded="false" aria-controls="operarios">
+                        <i class="lni lni-helmet"></i>
+                        <span>Operarios</span>
+                    </a>
+                    <ul id="operarios" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'responsable' %}" class="sidebar-link" data-path="login">Encargado</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'tiposolicitante' %}" class="sidebar-link">Tipo solicitante</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'solicitante'%}" class="sidebar-link">Solicitante</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{% url 'tractorista' %}" class="sidebar-link">Tractoristas</a>
+                        </li>
                         
                     </ul>
                 </li>
 
-                
+                <li class="sidebar-item">
+                    <a href="{% url 'tareas' %}" class="sidebar-link" data-path="test">
+                        <i class="lni lni-briefcase-alt"></i>
+                        <span class="text-uppercase">Tareas</span>
+                    </a>
+                </li>
 
-           
-
-                {% endif %}
-
-                {% if user.idrol.rol == "Admin" %}
+                <li class="sidebar-item">
+                    <!--Cambiar las variables del 'data-bs-target=#fundo', por una id unica para que no halla conflicto con el scrip -->
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                    data-bs-target="#programacion" aria-expanded="false" aria-controls="programacion">
+                    <i class="lni lni-pencil-alt"></i>
+                    <span>Programación</span>
+                </a>
+                <ul id="programacion" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    {% if user.idrol.rol == "Admin" %}
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                            data-bs-target="#usuarios" aria-expanded="false" aria-controls="usuarios">
-                            <i class="lni lni-users"></i>
-                            <span>Usuarios</span>
-                        </a>
-                        <ul id="usuarios" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                            <li class="sidebar-item">
-                                <a href="{% url 'registro_usuario' %}" class="sidebar-link">Registar Usuarios</a>
-                            </li>
-                        </ul>
+                        <a href=" {% url 'tipolabor' %}" class="sidebar-link" data-path="login">Tipos de Labores</a>
                     </li>
+                    {% endif %}
+
+                    {% if user.idrol.rol == "Supervisor" %}
+                    <li class="sidebar-item">
+                        <a href=" {% url 'programacion' %} " class="sidebar-link" data-path="login">Crear Programación</a>
+                    </li>
+                    {% endif %}
+                    <!-- <li class="sidebar-item">
+                        <a href=" {% url 'detallelabor' %}" class="sidebar-link" data-path="login">Detalles Programacion</a>
+                    </li> -->
+                    
+                </ul>
+                </li>
+
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#usuarios" aria-expanded="false" aria-controls="usuarios">
+                        <i class="lni lni-users"></i>
+                        <span>Usuarios</span>
+                    </a>
+                    <ul id="usuarios" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="{% url 'registro_usuario' %}" class="sidebar-link">Registar Usuarios</a>
+                        </li>
+                    </ul>
+                </li>
                 {% endif %}
 
             </ul>
+
             {% if user.is_authenticated %}
-                <div class="sidebar-footer">
-                    <a href="{% url 'logout' %}" class="sidebar-link">
-                        <i class="lni lni-exit"></i>
-                        <span>Cerrar sesion</span>
-                    </a>
-                </div>
+            <div class="sidebar-footer">
+                <a href="{% url 'logout' %}" class="sidebar-link">
+                    <i class="lni lni-exit"></i>
+                    <span>Cerrar sesión</span>
+                </a>
+            </div>
             {% endif %}
+            
         </aside>
         
         <div class="main p-3 " style="background-color: #E5E8E8;">
@@ -337,12 +377,12 @@
     </div>
   
     <script src="{% static 'core/vendor/bootstrap5/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- <script src="{% static 'core/vendor/bootstrap5/js/bootstrap.min.js' %}"></script> -->
     <script src="{% static 'core/js/base.js' %}"></script>
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
+from django.contrib.auth.decorators import login_required
 from ..forms import UsuarioForm, RestablecerContraseña
 from django.contrib.auth.forms import SetPasswordForm
 
@@ -7,10 +8,16 @@ from django.contrib import messages
 from django.http import JsonResponse
 
 
+@login_required(login_url='login', redirect_field_name='')
 def gestorUsuario(request):
-  datos_usuarios = Usuario.objects.filter(is_active = True)
-  return render(request, 'usuario/registro_usuario.html', {'form':UsuarioForm, 'usuarios':datos_usuarios, 'form2': RestablecerContraseña})
-
+  rol = request.user.idrol.rol
+  if rol == "Admin":
+    datos_usuarios = Usuario.objects.filter(is_active = True)
+    return render(request, 'usuario/registro_usuario.html', {'form':UsuarioForm, 'usuarios':datos_usuarios, 'form2': RestablecerContraseña})
+  else:
+    return redirect('home')
+  
+@login_required(login_url='login', redirect_field_name='')
 def registrarUsuario(request):
   if request.method == 'POST':
     user_name = request.POST.get('username')
@@ -33,6 +40,7 @@ def registrarUsuario(request):
       messages.error(request, 'El usuario ya existe',extra_tags='danger')
       return redirect('registro_usuario')
 
+@login_required(login_url='login', redirect_field_name='')
 def editarUsuario(request, id_usuario):
   if request.method == 'POST':
     user_name = request.POST.get('username')
@@ -64,7 +72,8 @@ def editarUsuario(request, id_usuario):
     return redirect('registro_usuario')
   else:
     return redirect('registro_usuario')
-  
+
+@login_required(login_url='login', redirect_field_name='')  
 def eliminarUsuario(request, id_usuario):
   if request.method == 'POST':
     # Obtenemos el usuario a eliminar 
@@ -78,7 +87,7 @@ def eliminarUsuario(request, id_usuario):
   else:
     return redirect('registro_usuario')
 
-
+@login_required(login_url='login', redirect_field_name='')
 def restablecerContraseña(request, id_usuario):
   usuario = get_object_or_404(Usuario, pk=id_usuario) 
   if request.method == 'POST':
@@ -94,7 +103,7 @@ def restablecerContraseña(request, id_usuario):
       form = RestablecerContraseña(usuario)
       return render(request, 'usuario/registro_usuario.html', {'form': form})
 
-
+@login_required(login_url='login', redirect_field_name='')
 def obtenerUsuario(request, id_usuario):
    usuario = list(Usuario.objects.filter(pk = id_usuario).values())
    data = {'usuarios': usuario}

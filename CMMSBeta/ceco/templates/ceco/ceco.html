@@ -5,52 +5,49 @@
 
 {% load static %}
 <div class="container">
-    <h1 class="text-start mb-3">Gestion de Costos</h1>
+    <h1 class="text-center mb-3">Gestión de los Centros de costos</h1>
     <div class="row">
         <div class="col-md-4">
-            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+            <!-- <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar..."> -->
         </div>
         <div class="col-md-6"></div>
         <div class="col-md-2">
             {% if user.idrol.rol != "Gerencia" %}
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoCeco">Nuevo Ceco</button>
-                <button type="button" class="btn btn-success" id="boton_secundario" >togle</button>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoCeco">Agregar CECO</button>
             {% endif %}
         </div>
     </div>
     <div class="table-responsive">
         {% if messages %}
             {% for message in messages %}
-                <div id="mensaje" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <div id="mensaje" class="alert alert-{{ message.tags }} alert-dismissible fade show mt-2" role="alert">
                     <strong>{{ message }}</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
-        <table class="table table-striped" id="tabla-ceco">
-            <thead>
+        <table class="table table-striped table-sm table-bordered mt-3" id="tabla-ceco">
+            <thead class="text-center table-dark" >
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Centro de costo</th>
-                    <th scope="col">Estado</th>
                     {% if user.idrol.rol != "Gerencia" %}
-                    <th scope="col">Operacion</th>
+                    <th scope="col">Operaciones</th>
                     {% endif %}
                 </tr>
             </thead>
 
             <tbody>
                 {% for data in datos %}
-                <tr>
+                <tr class="text-center">
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ data.ceco }}</td>
-                    <td>{{ data.estado }}</td>
                     {% if user.idrol.rol != "Gerencia" %}
                         <td>
                             <button class="btn btn-warning btn-sm editar d-inline-block" id="ceco" data-toggle="modal" data-target="#modalEditarCeco" data-idceco="{{ data.idceco }}" data-nombrececo="{{ data.ceco }}" type="button"><i class="lni lni-pencil"></i></button>
-                            <form action="{% url 'eliminar_ceco' data.idceco %}" class="d-inline-block" method="POST">
+                            <form action="{% url 'eliminar_ceco' data.idceco %}" id="form-{{ data.idceco }}" class="d-inline-block" method="POST">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                                <button type="submit" class="btn btn-danger btn-sm eliminar" data-registro="{{ data.ceco }}" data-id="{{ data.idceco }}"><i class="lni lni-trash-can"></i></button>
                             </form>                       
                         </td>  
                     {% endif %}
@@ -65,16 +62,21 @@
     <div class="modal fade" id="modalNuevoCeco" tabindex="-1" role="dialog" aria-labelledby="modalNuevoCecoLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalNuevoCecoLabel">Nuevo Centro de Costo</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="modalNuevoCecoLabel">Nuevo Centro de Costo</h5>
                 </div>
-                <div class="modal-body">
-                    <form method="post" action="{% url 'registrar_ceco' %}" autocomplete="off" id="form-ceco">
+                <form method="post" action="{% url 'registrar_ceco' %}" autocomplete="off" id="form-ceco">
+                    <div class="modal-body">
                         {% csrf_token %}
                         {{ form_ceco }}
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </form>
-                </div>
+
+                    </div>
+                        <div class="modal-footer">
+                            <button type="submit" id="guardar-datos" class="btn btn-outline-primary flex-fill">Guardar</button>
+                            <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+
+                        </div>
+                </form>
             </div>
         </div>
     </div>
@@ -83,11 +85,11 @@
     <div class="modal fade" id="modalEditarCeco" tabindex="-1" role="dialog" aria-labelledby="modalEditarCecoLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditarCecoLabel">Editar Centro de Costo</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="modalEditarCecoLabel">Editar Centro de Costo</h5>
                 </div>
+                <form method="post" action="{% url 'editar_ceco' %}" autocomplete="off" id="form-editar-ceco">
                 <div class="modal-body">
-                    <form method="post" action="{% url 'editar_ceco' %}" autocomplete="off" id="form-editar-ceco">
                         {% csrf_token %}
                         <input type="hidden" id="ceco_id" name="ceco_id">
                         <div class="form-group">
@@ -95,13 +97,18 @@
                             <!-- el forms toma el name-->
                             <input type="text" class="form-control mb-2" id="nombre_ceco" name="ceco" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                    </form>                    
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar-cambios" class="btn btn-outline-primary flex-fill">Guardar</button>
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>                    
             </div>
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script src="{% static 'ceco/js/ceco.js' %}"></script>
 <!--<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>-->
 <!--<script src="{% static 'core/js/swet_alert.js' %}"></script>-->

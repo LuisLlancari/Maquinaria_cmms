@@ -8,12 +8,12 @@
 <h1 class="text-center mb-2">Tipo Solicitante</h1>
 <div class="row mt-4">
     <div class="col md-3 mb-3">
-        <form>
+        <!-- <form>
             <div class="input-group">
                 <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
                 <button class="btn btn-md btn-outline-secondary">Buscar</i></button>
             </div>
-        </form>
+        </form> -->
     </div>
     <div class="col-md-3 mb-3">
 
@@ -36,8 +36,8 @@
     {% endfor %}
 
     {% endif %}
-<table class="table table-striped table-bordered " id="tabla-sistema">
-    <thead class="thead-dark text-center">
+<table class="table table-striped table-sm table-bordered mt-3 text-center" id="tabla-sistema">
+    <thead class="table-dark text-center">
         <!-- <colgroup>
         </colgroup> -->
         <tr>
@@ -51,7 +51,7 @@
     <tbody class="text-center">
     {% for dato in datos_tipos %}
      <tr>
-        <td>{{forloop.counter}}</td>
+        <th>{{forloop.counter}}</th>
         <td>{{dato.tiposolicitante}}</td>
         {% if user.idrol.rol != "Gerencia" %}
         <td>
@@ -67,9 +67,9 @@
     </tbody>
 </table>
 <div class="modal fade" id="modal-tipo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
-            <div class="modal-header bg-primary justify-content-center" >
+            <div class="modal-header justify-content-center" >
                 <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Tipo solicitante</h1>
             </div>
                 <form autocomplete="off" id="form-modal">
@@ -150,6 +150,9 @@
         });
 
        btnGuardar.addEventListener("click", function(event) {
+        if (!formModal.checkValidity()) {
+            return;
+        }
         event.preventDefault();
         PreguntarGuardar(function(){formModal.submit();});
        });

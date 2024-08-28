@@ -5,46 +5,42 @@
 {% block contenido %}
 
 <div class="container">
-    <h1 class="text-start mb-3">Gestion de Responsables</h1>
+    <h1 class="text-start mb-3 text-center">Gestión de Encargado</h1>
     <div class="row">
+
         <div class="col-md-4">
-            <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
+            <!-- <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar..."> -->
         </div>
         <div class="col-md-6"></div>
         <div class="col-md-2">
-            {% if user.idrol.rol != "Gerencia" %}
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNuevoCeco">Nuevo Ceco</button>
-            {% endif %}
+            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalNuevoCeco">Registrar Encargado</button>
         </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-striped" id="tabla-area">
-            <thead>
+    <div class="table-responsive mt-3">
+        <table class="table table-striped text-center table-bordered" id="tabla-area">
+            <thead class="table-dark">
                 <tr>
                     <th scope="col">N°</th>
-                    <th scope="col">Nombre responsable</th>
-                    <th scope="col">Estado</th>
-                    {% if user.idrol.rol != "Gerencia" %}
+                    <th scope="col">Nombres</th>
+                    <th scope="col">Apellidos</th>
                     <th scope="col">Operacion</th>
-                    {% endif %}
                 </tr>
             </thead>
 
             <tbody>
                 {% for data in datos %}
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ data.responsable }}</td>
-                    <td>{{ data.estado }}</td>
-                    {% if user.idrol.rol != "Gerencia" %}
-                        <td>
-                            <button class="btn btn-warning btn-sm editar d-inline-block" id="responsable" data-toggle="modal" data-target="#modalEditarResponsable" data-idresponsable="{{ data.idresponsable }}" data-responsable="{{ data.responsable }}" type="button">Editar</button>
-                            <form action="{% url 'eliminar_responsable' data.idresponsable %}" class="d-inline-block" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
-                            </form>
-                        </td>  
-                    {% endif %}
+                    <td scope="row">{{ forloop.counter }}</td>
+                    <td>{{ data.idpersona.nombres}}</td>
+                    <td>{{data.idpersona.apellidos}}</td>
+
+                    <td>
+                        <button class="btn btn-warning btn-sm editar d-inline-block" id="responsable" data-toggle="modal" data-target="#modalEditarResponsable" type="button">Editar</button>
+                        <form action="" class="d-inline-block" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="lni lni-trash-can"></i></button>
+                        </form>
+                    </td>  
                 </tr>
                 {% endfor %}
             </tbody>

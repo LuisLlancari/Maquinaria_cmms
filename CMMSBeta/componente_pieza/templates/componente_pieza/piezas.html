@@ -5,15 +5,9 @@
 {% block contenido %} 
 {% load static %}
 
-<h1 class="text-center mb-2">Piezas</h1>
+<h1 class="text-center mb-2">Creacion de Piezas</h1>
 <div class="row mt-4">
     <div class="col md-3 mb-3">
-        <form>
-            <div class="input-group">
-                <input type="text" class="form-control" id="buscar" value="" placeholder="Buscar...">
-                <button class="btn btn-md btn-outline-secondary">Buscar</i></button>
-            </div>
-        </form>
     </div>
     <div class="col-md-3 mb-3">
 
@@ -35,7 +29,7 @@
 {% endif %}
 
 <table class="table table-striped  table-sm table-bordered text-center" id="tabla-componente">
-    <thead class="thead-dark">
+    <thead class="table-dark">
         <tr>
             <th scope="col">Pieza</th>
             <th scope="col">Codigo Pieza</th>
@@ -125,16 +119,15 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(`./obtener/${id}`)
         .then(res => res.json())
         .then(datos => {
-            // console.log(datos.componentes[0].idsistema.idsistema)
-            titulo_modal.textContent = "Editar Componente" ;
+            titulo_modal.textContent = "Editar Pieza" ;
             formModal.setAttribute("action", `./modificar/${id}`);
             formModal.setAttribute("method", "POST");
-            // txtComponente.value = datos.pieza[0].idcomponente_id;
             txtPieza.value = datos.pieza[0].pieza;           
-            txtCodPieza.value = datos.pieza[0].codpieza;
-            // txtCantidadPiezas.value = datos.pieza[0].cantidad_piezas;                     
+            txtCodPieza.value = datos.pieza[0].codpieza;                 
             txtTiempovida.value = datos.pieza[0].tiempovida;                  
-            txtFrecuenciaMan.value = datos.pieza[0].frecuencia_man;                  
+            txtFrecuenciaMan.value = datos.pieza[0].frecuencia_man;
+            txtPieza.readOnly = true;  
+            txtCodPieza.readOnly = true;                
         })
         .catch((error) => {
             console.log(error);
@@ -142,10 +135,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     btnAgregar.addEventListener("click", function() {
-        titulo_modal.textContent = "Agregar Componente" ;
+        titulo_modal.textContent = "Agregar Pieza" ;
         formModal.reset();
         formModal.setAttribute("action", "{% url 'pieza_registro' %}");
         formModal.setAttribute("method", "POST");
+        txtPieza.readOnly = false;
+        txtCodPieza.readOnly = false;
+        
     });
 
     btnModificar.forEach(function(boton) {
@@ -175,6 +171,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     btnGuardar.addEventListener("click", function(event) {
+        if (!formModal.checkValidity()) {
+         return;
+        }
         event.preventDefault();
         PreguntarGuardar(function(){formModal.submit();});
     });

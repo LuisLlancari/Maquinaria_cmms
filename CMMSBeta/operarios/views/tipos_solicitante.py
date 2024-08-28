@@ -1,13 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+
 from ..models import TipoSolicitante
 from ..forms import TiposolicitanteForms
 from django.http import JsonResponse
 from django.contrib import messages
 
+@login_required(login_url='login', redirect_field_name='')
 def tipoSolicitante(request):
-  datos_tipos = TipoSolicitante.objects.filter(estado = True)
-  return render(request, 'operarios/tiposolicitante.html', {'datos_tipos':datos_tipos, 'form':TiposolicitanteForms})
-
+  rol = request.user.idrol.rol
+  if rol == "Admin":
+    datos_tipos = TipoSolicitante.objects.filter(estado = True)
+    return render(request, 'operarios/tiposolicitante.html', {'datos_tipos':datos_tipos, 'form':TiposolicitanteForms})
+  else:
+    return redirect('home')
+  
+@login_required(login_url='login', redirect_field_name='')
 def registrartipoSolicitante(request):
   datos_tipos = TipoSolicitante.objects.filter(estado = True)
   if request.method == 'POST':
@@ -24,7 +32,7 @@ def registrartipoSolicitante(request):
   else:
     return redirect('tiposolicitante')
 
-
+@login_required(login_url='login', redirect_field_name='')
 def eliminarTiposolicitante(request, id_tipo):
   registro = get_object_or_404(TipoSolicitante, pk= id_tipo)
   if request.method == 'POST':
@@ -32,6 +40,7 @@ def eliminarTiposolicitante(request, id_tipo):
     registro.save()
     return redirect('tiposolicitante')
 
+@login_required(login_url='login', redirect_field_name='')
 def editarTiposolicitante(request, id_tipo):
   if request.method == 'POST':
     tipoSolicitante = get_object_or_404(TipoSolicitante, pk=id_tipo)
@@ -52,7 +61,7 @@ def editarTiposolicitante(request, id_tipo):
   else:
       return redirect('tiposolicitante')
 
-
+@login_required(login_url='login', redirect_field_name='')
 def obtenerDatos(request, id_tipo):
   tipo_solicitante = list(TipoSolicitante.objects.filter(pk=id_tipo).values())
   if(len(tipo_solicitante) > 0):

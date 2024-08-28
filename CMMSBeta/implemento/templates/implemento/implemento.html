@@ -34,7 +34,7 @@
                 </div>
             {% endfor %}
         {% endif %}
-        <table class="table table-striped table-sm table-bordered mt-3 text-center" id="tabla-implemento">
+        <table class="table table-striped table-sm table-bordered mt-3 text-center" id="tabla-implemento">
             <thead class="table-dark">
                 <tr>
                     <th scope="col">Tipo Implemento</th>
@@ -42,29 +42,39 @@
                     <th scope="col">Tiempo Vida</th>
                     <th scope="col">FM</th>
                     <th scope="col">Horas de uso</th>
-                    <th scope="col">Codigo implemento</th>
+                    <th scope="col">Código</th>
                     <th scope="col">CECO</th>
-                    <th scope="col">Supervisor</th>
                     {% if user.idrol.rol == "Admin" %}
+                    <th scope="col">Supervisor</th>
                     <th scope="col">Operaciones</th>
                     {% endif %}
                 </tr>
             </thead>
             <tbody>
             {% for dato in datos %}
-
+            <h1>{{dato.}}</h1>
             <tr>
                 <td>{{dato.idtipoimplemento}}</td>
                 <td>{{dato.implemento}}</td>
+                {% if user.idrol.rol == "Admin" %}
                 <td>{{dato.idtipoimplemento.tiempo_vida}}</td>
                 <td>{{dato.idtipoimplemento.frecuencia_man}}</td>
+                {% else %}
+                <td>{{dato.tiempo_vida}}</td>
+                <td>{{dato.frecuencia_man}}</td>
+                {% endif %}
                 <td>{{dato.horasdeuso}}</td>
                 <td>{{dato.codimplemento}}</td>
                 <td>{{dato.idceco}}</td>
-                <td>{{dato.idusuario.first_name}}</td>
                 {% if user.idrol.rol == "Admin" %}
+                <td>{{dato.supervisor_nombre_completo}}</td>
                 <td>
                     <button class="btn btn-warning editar d-inline-block" id="editar-implemento" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-implemento"><i class="lni lni-pencil editar"></i></button>
+                    {% if dato.idusuario == none %}
+                        <button class="btn btn-success d-inline-block agregar-supervisor" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-supervisor"><i class="lni lni-user"></i></button>
+                    {% else %}
+                        <button class="btn btn-secondary d-inline-block quitar-supervisor" data-id="{{dato.idimplemento}}" data-bs-toggle="modal" data-bs-target="#modal-supervisor"><i class="lni lni-users"></i></button>
+                    {% endif %}
                    <form action="{% url 'eliminar_implemento' dato.idimplemento %}" id="form-{{ dato.idimplemento }}" class="d-inline-block" method="POST">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger flex-fill eliminar" data-registro="{{ dato.implemento }}" data-id="{{ dato.idimplemento }}">
@@ -83,7 +93,7 @@
 <div class="modal fade" id="modal-implemento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary justify-content-center" >
+            <div class="modal-header justify-content-center" >
                 <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Implemento</h1>
             </div>
                 <form autocomplete="off" id="form-modal" >
@@ -107,15 +117,14 @@
                             </div>
 
                             <div class="row mt-2">
-                                <div class="col col-md-5">
+                                <!-- <div class="col col-md-5">
                                     <label for="txtIdUsuario" class="form-label">Supervisor a cargo:</label>
-                                    {{form.idusuario}}
-                                </div>
-                                <div class="col col-md-4">
+                                </div> -->
+                                <div class="col col-md-6">
                                     <label for="txtHorasUso" class="form-label">Horas de Uso:</label>
                                     {{form.horasdeuso}}
                                 </div>
-                                <div class="col col-md-3">
+                                <div class="col col-md-6">
                                     <label for="txtIdCeco" class="form-label">Ceco:</label>
                                     {{form.idceco}}
                                 </div>
@@ -133,6 +142,33 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-supervisor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary justify-content-center" >
+                <h1 class="modal-title fs-5 text-light" id="titulo-modal-supervisor">Supervisor</h1>
+            </div>
+                <form autocomplete="off" id="form-supervisor" >
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <label class="form-label" for="select-usuario">Seleccione al supervisor:</label>
+                        <select class="form-select mt-1" id="select-usuario" name="select-usuario" required>
+                            <option value="">--------</option>
+                            {% for usuario in usuarios %}
+                            <option value="{{usuario.id}}">{{usuario.first_name}} {{usuario.last_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar" class="btn btn-outline-primary flex-fill"><i class="bi bi-check-square-fill"></i>Guardar</button>
+                        <button type="button" id="cerrar" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal"><i class="bi bi-x-square-fill"></i>Cerrar</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
@@ -147,29 +183,11 @@
         const btnEliminar = document.querySelectorAll(".eliminar")
         const implementos = document.querySelectorAll("#tabla-implemento tbody tr");
         const Busqueda = document.getElementById("buscar");
+        const btnAgregarSupervisor = document.querySelectorAll(".agregar-supervisor")
+        const btnQuitarSupervisor = document.querySelectorAll(".quitar-supervisor")
+        const formModalSupervisor = document.getElementById("form-supervisor")
+        const formTituloModalSupervisor = document.getElementById("titulo-modal-supervisor")
 
-    
-
-
-        // Agregar un event listener para el evento de entrada en el campo de búsqueda
-        Busqueda.addEventListener("input", function() {
-            
-            var valorBusqueda = Busqueda.value.toLowerCase();
-
-            // Iterar sobre los implementos y mostrar u ocultar según el término de búsqueda
-            implementos.forEach(function(implemento) {
-                var area = implemento.querySelector("td:nth-child(1)").textContent.toLowerCase(); 
-                var supervisor = implemento.querySelector("td:nth-child(8)").textContent.toLowerCase(); 
-                var nombreImplemento = implemento.querySelector("td:nth-child(3)").textContent.toLowerCase();
-                
-                // Verificar si alguno de los campos coincide con el término de búsqueda
-                if (area.includes(valorBusqueda) || supervisor.includes(valorBusqueda) || nombreImplemento.includes(valorBusqueda)) {
-                    implemento.style.display = ""; 
-                } else {
-                    implemento.style.display = "none";
-                }
-            });
-        });
 
         function obtener_implemento(id){
         fetch(`./obtener/${id}`)
@@ -183,7 +201,7 @@
             txtIdTipoimplemento.value = datos.implemento[0].idtipoimplemento_id;           
                 txtImplemento.value = datos.implemento[0].implemento;           
                 txtCodImplemento.value = datos.implemento[0].codimplemento;           
-                txtIdUsuario.value = datos.implemento[0].idusuario_id;          
+                // txtIdUsuario.value = datos.implemento[0].idusuario_id;          
                 txtHorasUso.value = datos.implemento[0].horasdeuso;     
                 txtIdCeco.value = datos.implemento[0].idceco_id;           
         })
@@ -206,16 +224,47 @@
             }
         }, 3000);
     
+        function asignarAtributosFormularioSupervisor(id, tipoboton){
+            console.log(id)
+            console.log(tipoboton)
+            if (tipoboton == 1) {
+                formTituloModalSupervisor.innerHTML = "Asignar Supervisor"
+                formModalSupervisor.setAttribute("action", `./asignar_supervisor/${id}`);
+                formModalSupervisor.setAttribute("method", "POST");
+            }if (tipoboton == 2) {
+
+                formTituloModalSupervisor.innerHTML = "Cambiar de Supervisor"
+                formModalSupervisor.setAttribute("action", `./quitar_supervisor/${id}`);
+                formModalSupervisor.setAttribute("method", "POST");
+            } 
+        }
+    
+        btnAgregarSupervisor.forEach(function(boton) {
+        boton.addEventListener("click", function(event) {
+
+            let id_dato = event.currentTarget.dataset.id;
+            console.log(id_dato); 
+            asignarAtributosFormularioSupervisor(id_dato,1)
+
+            });
+        });
+
+        btnQuitarSupervisor.forEach(function(boton) {
+        boton.addEventListener("click", function(event) {
+
+            let id_dato2 = event.currentTarget.dataset.id;
+            console.log(id_dato2); 
+            asignarAtributosFormularioSupervisor(id_dato2,2)
+            });
+        });
+
         btnModificar.forEach(function(boton) {
         boton.addEventListener("click", function(event) {
 
             let id_implemento = event.currentTarget.dataset.id;
             console.log(id_implemento); 
             formModal.reset();
-            console.log("das")
 
-
-            // console.log(id_pieza);
             obtener_implemento(id_implemento);
             });
         });
@@ -232,6 +281,9 @@
         });
 
        btnGuardar.addEventListener("click", function(event) {
+        if (!formModal.checkValidity()) {
+            return;
+        }
         event.preventDefault();
         PreguntarGuardar(function(){formModal.submit();});
        });

@@ -1,0 +1,598 @@
+{% extends 'core/base.html' %} 
+
+{% block titulo %}Programación mantenimiento{% endblock %} 
+
+{% block contenido %}
+<h1 class="text-center">Programación de los Mantenimientos</h1>
+
+<div class="d-flex justify-content-end m-4">
+  <button class="btn btn-danger uppercase" data-toggle="modal" data-target="#programar">
+    <strong>Crear Mat Correctivo</strong>
+  </button>
+</div>
+
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-2"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento preventivo</strong>
+  </div>
+</div>
+
+<div class="d-flex align-items-center mb-2 justify-content-end">
+  <div class="legend-color-3"></div>
+  <div class="legend-text">
+      <strong>Mantenimiento correctivo</strong>
+  </div>
+</div>
+
+{% if messages %}
+  {% for message in messages %}
+  <div id="message" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      <strong>
+          {{ message }}
+      </strong>                       
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+
+{% endif %}
+
+<div class="row">
+  <div class="col col-md-4">
+    <label for="" class="form-label">Tipo mantenimiento</label>
+    <select name="" id="tipo-mantenimiento" class="form-select">
+      <option value="">--------</option>
+      <option value="0">Correctivo</option>
+      <option value="1">Preventivo</option>
+    </select>
+  </div>
+  <div class="col col-md-4"></div>
+  <div class="col col-md-4"></div>
+</div>
+
+<table class="table table-striped table-sm table-bordered text-center table-responsive mt-3" id="tabla-implemento">
+  <thead class="thead-dark">
+    <tr class="table-dark">
+      <th>Implemento</th>
+      <th>Tipo Implemento</th>
+      <th>Código</th>
+      <!-- <th>Tiempo Vida</th> -->
+      <th>Horas de uso</th>
+      <th>F M</th>
+      <th>Tipo Mantenimiento</th>
+      <th>Fecha Asignada</th>
+      <th>Operaciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for dato in datos %}
+    <tr data-tipo="{{ dato.tipomantenimiento }}">
+      <td>{{dato.idimplemento.idimplemento.implemento}}</td>
+      <td>{{dato.idimplemento.idimplemento.idtipoimplemento.tipoimplemento}}</td>
+      <td>{{dato.idimplemento.idimplemento.codimplemento}}</td>
+      <!-- <td>{{dato.idimplemento.idtipoimplemento.tiempo_vida}}</td> -->
+      <td>{{dato.idimplemento.idimplemento.horasdeuso}}</td>
+      <td>{{dato.idimplemento.idimplemento.idtipoimplemento.frecuencia_man}}</td>
+
+      {% if dato.tipomantenimiento == 1 %}
+      <td class="preventivo">
+        <strong style="color: #3498DB;">
+          Preventivo
+        </strong>
+      </td>
+      {% else %}
+      <td class="correctivo">
+        <strong style="color: #E74C3C;">
+          Correctivo
+        </strong>
+      </td>
+      {% endif %}
+
+      {% if dato.fechaprogramacion %}
+      <td>
+        <strong>
+          {{dato.fechaprogramacion}}
+        </strong>
+      </td>
+      {% else %}
+      <td>
+        <button class="btn btn-success d-inline-block registrar" id="registrar-fecha" data-id="{{dato.idprogramacionmantenimiento}}" data-imple_nombre="{{dato.idimplemento.idimplemento}}" data-idprogramacion="{{dato.idprogramacionmantenimiento}}"  data-bs-toggle="modal" data-bs-target="#registro_fecha">
+          <strong>Programar Fecha</strong>
+        </button>
+      </td>
+      {% endif %}
+
+      
+      
+
+      <!-- PRIMERO VERIFICAMOS SI YA LO ACEPTARON  -->
+      {% if dato.estado_mantenimiento == 0 %}
+        <!--Mantenimiento correctivo-->
+        {% if dato.tipomantenimiento == 0 %}
+        <td>
+          <form action="{% url 'eliminar_programacion_mantenimiento' dato.idprogramacionmantenimiento%}" class="d-inline-block w-100" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger " title="Eliminar"><i class="lni lni-trash-can"></i></button>
+          </form> 
+        </td>
+        <!--Mantenimiento Preventivo-->
+        {% elif dato.tipomantenimiento == 1 %}
+          {% if dato.fechaprogramacion is null %}
+          <td>
+            <button class="btn btn-info  editar" id="editar_fecha" title="Editar Fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha" disabled><i class="lni lni-pencil"></i></button>
+          </td>
+          {% else %}
+          <td>
+            <button class="btn btn-info  editar" id="editar_fecha" title="Editar Fecha" data-idprogramacion="{{dato.idprogramacionmantenimiento}}" data-bs-toggle="modal" data-bs-target="#editarFecha"><i class="lni lni-pencil"></i></button>
+          </td>
+          {% endif %}
+        {% endif %}
+
+      {% elif dato.estado_mantenimiento == 1 %}
+      <td>
+        <button class="btn btn-secondary " title="Fue aceptado" id="aceptado" disabled><i class="lni lni-spinner-solid"></i></button>
+      </td>
+      {% elif dato.estado_mantenimiento == 2 %}
+      <td>
+        <button class="btn btn-warning  finalizado" title="Ver Información" id="finalizado" data-idprogramacion="{{ dato.idprogramacionmantenimiento }}" data-bs-toggle="modal" data-bs-target="#detalle_mantenimiento" ><i class="lni lni-eye"></i></button>
+      </td>
+      {% else %}
+      <td>
+        <button class="btn btn-secondary " id="aceptado" disabled><strong>Error</strong></button>
+      </td>
+      {% endif %}
+
+
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="modal fade" id="registro_fecha" tabindex="-1" aria-labelledby="registro_fecha_label" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary justify-content-center">
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Registrar Fecha Mantenimiento</h1>
+      </div>
+
+      <form autocomplete="off" id="form-modal" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <input type="text" name="idprogramacion" id="idprogramacion" value="0" hidden>
+          <label for="" class="form-label">Fecha de la programación</label>
+          <input type="date" name="fecha_programacion" id="fecha" class="form-control" required>
+
+          <label for="" class="form-label mt-3" name="1" id="label_implemento">Motivos del mantenimiento:</label>
+          <button type="button" id="clone-motivos" class="btn btn-success ms-2">Añadir Motivo</button>
+
+          <select name="idmotivo" id="selectMotivo" class="form-control mt-3" disabled>
+            {% for dato in acciones %}
+              <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+            {% endfor %}
+          </select>
+
+          <div id="comienza">
+            
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill">Guardar</button>
+          <button type="button" id="cerrar" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="programar" tabindex="-1" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-danger justify-content-center">
+        <h1 class="modal-title fs-5 text-light" id="titulo-modal">Crear un mantenimiento correctivo</h1>
+      </div>
+
+      <form autocomplete="off" id="" method="POST" action="./programacion/registrar">
+        {% csrf_token %}
+        <div class="modal-body">
+          <label for="idimplemento" class="form-label">Selecione el tipo de Implemento:</label>
+          <select name="idtipoimplemento" id="idtipoimplemento" class="form-control" required>
+            <option value="">--------------------</option>
+            {% for dato in tipoimplementos %}
+              <option value="{{dato.idtipoimplemento}}">{{dato.tipoimplemento}}</option>
+            {% endfor %}
+          </select>
+
+          <label for="idimplemento" class="form-label">Selecione el implemento:</label>
+          <select name="idimplemento" id="idimplemento" class="form-control" required>
+            <option value="">--------------------</option>
+            {% for dato in implementos %}
+              <option value="{{dato.idimplementosupervisor}}" data-impletipo="{{dato.idimplemento.idtipoimplemento.idtipoimplemento}}" >{{dato.idimplemento.implemento}}</option>
+            {% endfor %}
+          </select>
+
+          <label for="" class="form-label mt-3">Fecha de la programación:</label>
+          <select name="fecha_programacion" class="form-control" id="selectFecha" required>
+            <option value="">Ingrese una fecha</option>
+            <option value="hoy" id="hoy_op"></option>
+            <option value="manana" id="manana_op"></option>
+            <option value="pasado" id="pasado_op"></option>
+          </select>
+
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <label for="" class="form-label mb-0" name="1" id="label_implemento">Motivos del mantenimiento:</label>
+            <button type="button" id="clone-motivos2" class="btn btn-success ms-2">Añadir Motivo</button>
+          </div>
+
+          <select name="idmotivo" id="" class="form-control mt-3" required>
+            <option value="">-------------------------------------</option>
+            {% for dato in acciones %}
+              {% if dato.idaccion != 1 %}
+                <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+
+          <div id="comienza2">
+            
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" id="Guardar" class="btn btn-outline-primary flex-fill">Guardar</button>
+          <button type="button" id="cerrar" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editarFecha" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-secondary text-light">
+        <h5 class="modal-title" id="exampleModalLabel"><strong>Editar Fecha</strong></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="form-editar-fecha" method="POST" action="./programacion/editarFecha" autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-body">
+          <input type="hidden" id="idprogramacion1" name="idprogramacion">
+          <label for="idimplemento" class="form-label">Fecha de la programación:</label>
+          <input type="date" name="fechaprogramacion" id="fecha3" class="form-control" required>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="detalle_mantenimiento" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Detalle del Mantenimiento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="form_det_mantenimiento" method="POST" action="" autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div id="maintable">
+            <table class="table table-bordered" id="detalle_mantenimiento">
+              <thead>
+                <tr>
+                  <th colspan="4" >Información del Mantenimiento</th>
+                </tr>
+              </thead>
+              <tbody>
+  
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a type="button" id="reporte" class="btn btn-success" href="#" >Generar Reporte</a>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const today = new Date().toISOString().split('T')[0];
+
+    ///////////////////////
+    // Fecha correctivo
+    const fecha = document.getElementById('fecha2');
+    const { DateTime } = luxon;
+    const zonaHorariaPeru = 'America/Lima';
+    let fechaActual = DateTime.now().setZone(zonaHorariaPeru);
+    let fechaMañana = fechaActual.plus({ days: 1 });
+    let fechaPasadoMañana = fechaActual.plus({ days: 2 });
+
+    let hoy = fechaActual.toFormat('yyyy-MM-dd');
+    let mañana = fechaMañana.toFormat('yyyy-MM-dd');
+    let pasado = fechaPasadoMañana.toFormat('yyyy-MM-dd');
+
+    let hoy_2 = fechaActual.toFormat('dd/MM/yyyy');
+    let mañana_2 = fechaMañana.toFormat('dd/MM/yyyy');
+    let pasado_2 = fechaPasadoMañana.toFormat('dd/MM/yyyy');
+
+
+    hoy_op.value = hoy
+    manana_op.value = mañana
+    pasado_op.value = pasado
+
+    hoy_op.innerHTML = `HOY - ${hoy_2}`
+    manana_op.innerHTML = `MAÑANA - ${mañana_2}`	
+    pasado_op.innerHTML = `PASADOMAÑANA - ${pasado_2}`
+
+    console.log(hoy, mañana, pasado);
+    ////////////////////
+
+
+    //Fecha preventivo
+    const fecha2 = document.getElementById('fecha');
+    //Editar fecha
+    const fecha3 = document.getElementById('fecha3');
+    const formModal = document.getElementById("form-modal");
+    const btnCloneMotivos = document.getElementById('clone-motivos');
+    const btnCloneMotivos2 = document.getElementById('clone-motivos2');
+    const nombre = document.getElementById('label_implemento');
+
+    //Para filtrar en el campo de tipoimplemento - Implementos
+    const tipoImplementoSelect = document.getElementById('idtipoimplemento');
+    const implementoSelect = document.getElementById('idimplemento');
+
+    //fecha.setAttribute('min', today);
+    fecha2.setAttribute('min', today);
+    fecha3.setAttribute('min', today);
+    selectMotivo.value = 1
+
+    var btnRegistrarFecha = document.querySelectorAll('.registrar');
+    btnRegistrarFecha.forEach(function (button) {
+      button.addEventListener('click', function () {
+        let id_programacion_mantenimiento = this.dataset.id;
+        let imple_nombre = this.dataset.imple_nombre;
+        let idprog = this.dataset.idprogramacion;
+
+        console.log(id_programacion_mantenimiento)
+        console.log(imple_nombre)
+        formModal.setAttribute("action", `./programacion/registrar_fecha/${id_programacion_mantenimiento}`)
+
+        document.getElementById('label_implemento').innerHTML = `Motivos del mantenimiento ${imple_nombre} :`;
+      });
+    });
+
+    formModal.addEventListener('submit', function() {
+      selectMotivo.disabled = false;
+    });
+
+    btnCloneMotivos.addEventListener('click', () => {
+      const selectedValues = Array.from(document.querySelectorAll('#selectMotivos')).map(select => select.value);
+
+      let clone = `
+        <div id="motivos-container" class="mt-3">
+          <div class="contenedor-motivos">
+            <div class="row mb-3">
+              <div class="col-md-9">
+                <select name="idmotivo" id="selectMotivos" class="form-control mt-3" required>
+                  <option value="">-------------------------------------</option>
+                  {% for dato in acciones %}
+                    {% if dato.idaccion != 1 %}
+                      <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3 mt-3">
+                <button type="button" class="btn btn-danger btn-remove">Eliminar</button>
+              </div>
+          </div>
+        </div>
+      `
+
+      comienza.innerHTML += clone;
+      document.querySelectorAll('#selectMotivos').forEach((select, index) => {
+        select.value = selectedValues[index] || '';
+      });
+    });
+
+    btnCloneMotivos2.addEventListener('click', () => {
+      const selectedValues = Array.from(document.querySelectorAll('#selectMotivos')).map(select => select.value);
+      let clone = `
+        <div id="motivos-container" class="mt-3">
+          <div class="contenedor-motivos">
+            <div class="row mb-3">
+              <div class="col-md-9">
+                <select name="idmotivo" id="selectMotivos" class="form-control mt-3" required>
+                  <option value="">-------------------------------------</option>
+                  {% for dato in acciones %}
+                    {% if dato.idaccion != 1 %}
+                      <option value="{{dato.idaccion}}">{{dato.accion}}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-3 mt-3">
+                <button type="button" class="btn btn-danger btn-remove">Eliminar</button>
+              </div>
+          </div>
+        </div>
+      `
+
+      comienza2.innerHTML += clone;
+      document.querySelectorAll('#selectMotivos').forEach((select, index) => {
+        select.value = selectedValues[index] || '';
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (event.target.classList.contains('btn-remove')) {
+        event.target.closest('#motivos-container').remove();
+      }
+    });
+
+    // Ocultar todas las opciones de implementos inicialmente
+    Array.from(implementoSelect.options).forEach(option => {
+      if (option.value !== "") {
+        option.style.display = 'none';
+      }
+    });
+
+    tipoImplementoSelect.addEventListener('change', function() {
+      const selectedTipo = this.value;
+
+      // Mostrar solo los implementos que coincidan con el tipoimplemento seleccionado
+      Array.from(implementoSelect.options).forEach(option => {
+        if (option.getAttribute('data-impletipo') === selectedTipo || option.value === "") {
+          option.style.display = 'block';
+        } else {
+          option.style.display = 'none';
+        }
+      });
+
+      // Resetear el valor del select de implementos
+      implementoSelect.value = "";
+    });
+
+
+    var editButtons = document.querySelectorAll(".editar");
+      editButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var idprogMantenimiento = this.dataset.idprogramacion;
+          console.log(idprogMantenimiento)
+          document.querySelector('#idprogramacion1').value = idprogMantenimiento
+        });
+      });
+
+    setTimeout(function() {
+      var errorMessage = document.getElementById('message');
+
+      if (errorMessage ) {
+          errorMessage.style.display = 'none';
+      }
+    },5000);
+
+  });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const reporte = document.getElementById('reporte')
+  const selectTipoMantenimiento = document.getElementById('tipo-mantenimiento');
+  const filasTabla = document.querySelectorAll('#tabla-implemento tbody tr');
+
+  // filtro
+
+  selectTipoMantenimiento.addEventListener('change', function() {
+    const tipoMantenimientoSeleccionado = this.value;
+    
+
+    filasTabla.forEach(fila => {
+      const tipoMantenimientoFila = fila.getAttribute('data-tipo');
+      
+      if (tipoMantenimientoSeleccionado === "" || tipoMantenimientoSeleccionado === tipoMantenimientoFila) {
+        fila.style.display = '';
+      } else {
+        fila.style.display = 'none';
+      }
+    });
+  });
+
+  function detalle_mantenimiento(id) {
+      fetch(`./programacion/datos_mantenimiento/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          const mantenimiento = data.mantenimientos[0];
+          const tareas = data.tareas;
+          const recambios = data.recambios;
+
+          const tbody = document.querySelector('#detalle_mantenimiento tbody');
+
+          // Información del mantenimiento
+          tbody.innerHTML = `
+            <tr>
+              <td><strong>Fecha de Ingreso:</strong></td>
+              <td>${mantenimiento.fechaingreso}</td>
+              <td><strong>Fecha de Salida:</strong></td>
+              <td>${mantenimiento.fechasalida}</td>
+            </tr>
+            <tr>
+              <td><strong>Mecanico:</strong></td>
+              <td>${mantenimiento.nombres} ${mantenimiento.apellidos}</td>
+              <td><strong>Estado:</strong></td>
+              <td>${mantenimiento.estado ? 'Pendiente' : 'Completado'}</td>
+            </tr>
+            <tr>
+              <td><strong>Fecha Programada:</strong></td>
+              <td>${mantenimiento.fecha_programada}</td>
+              <td><strong>Tipo de Mantenimiento:</strong></td>
+              <td>${mantenimiento.tipomantenimiento === 1 ? 'Preventivo' : 'Correctivo'}</td>
+            </tr>
+            <tr>
+              <td><strong>Implemento:</strong></td>
+              <td>${mantenimiento.implemento}</td>
+              <td><strong>Código de Implemento:</strong></td>
+              <td>${mantenimiento.cod_implemento}</td>
+            </tr>
+            <tr>
+              <th colspan="4">Información de las Tareas</th>
+            </tr>
+            <tr>
+              <td colspan="2"><strong>Tarea</strong></td>
+              <td colspan="2"><strong>Estado</strong></td>
+            </tr>
+            ${tareas.map(tarea => `
+              <tr>
+                <td colspan="2">${tarea.tareas}</td>
+                <td colspan="2">${tarea.completado ? 'Completada' : 'No Completada'}</td>
+              </tr>
+            `).join('')}
+            <tr>
+              <th colspan="4">Información de los Recambios</th>
+            </tr>
+            <tr>
+              <td colspan="2"><strong>Item</strong></td>
+              <td colspan="2"><strong>Codigo</strong></td>
+            </tr>
+            ${recambios.length > 0 ? recambios.map(recambio => `
+              <tr>
+                <td colspan="2">${recambio.item}</td>
+                <td colspan="2">${recambio.codigo}</td>
+              </tr>
+            `).join('') : `
+              <tr>
+                <td colspan="4">No hay recambios.</td>
+              </tr>
+            `}
+          `;
+        })
+        .catch(error => console.error('Error al cargar los datos:', error));
+  }
+  //detalle_mantenimiento();
+  var finalizado = document.querySelectorAll(".finalizado");
+    finalizado.forEach(function (button) {
+      button.addEventListener("click", function () {
+        var id = this.dataset.idprogramacion;
+        console.log(id)
+        reporte.setAttribute('href', `./programacion/reporte_mantenimiento/${id}`)
+        detalle_mantenimiento(id);
+      });
+    }
+  );
+
+});
+</script>
+
+
+
+
+{% endblock %}

@@ -6,7 +6,7 @@
 {% load static %}
 
 <div class="container">
-    <h1 class="text-center mt-3 mb-3">Gestion de Fundos</h1>
+    <h1 class="text-center mt-3 mb-3">Gestión de Fundos</h1>
     <div class="row">
         <div class="col-md-4">
             <input type="text" id="buscador" class="form-control mb-2" placeholder="Buscar...">
@@ -28,8 +28,8 @@
                 </div>
             {% endfor %}
         {% endif %}
-        <table class="table table-striped table-bordered" id="tabla-fundo">
-            <thead class="text-center">
+        <table class="table table-striped table-sm table-bordered mt-3 text-center" id="tabla-fundo">
+            <thead class="text-center table-dark">
                 <tr>
                     <th scope="col">N°</th>
                     <th scope="col">Fundo</th>
@@ -65,11 +65,11 @@
     <div class="modal fade" id="modalRegistrar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-secondary">
                     <h5 class="modal-title" id="">Nuevo Fundo</h5>
                 </div>
+                <form method="post" action="{% url 'registrar_fundo' %}" autocomplete="off" id="form-fundo">
                 <div class="modal-body">
-                    <form method="post" action="{% url 'registrar_fundo' %}" autocomplete="off" id="form-fundo">
                         {% csrf_token %}
                         <label class="mt-2">Sede</label>
                         {{ form_fundo.idsede }}
@@ -77,21 +77,24 @@
                         <label class="mt-2">Fundo</label>
                         {{form_fundo.fundo}}
 
-                        <button type="submit" id="guardar-datos" class="btn btn-primary">Guardar</button>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar-datos" class="btn btn-outline-primary flex-fill">Guardar</button>
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <!--MODAL PARA ACTUALIZAR-->
+    
     <div class="modal fade" id="modalActualizar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="">Editar Fundos</h5>
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title text-light" id="">Editar Fundos</h5>
                 </div>
+                <form method="post" action="{% url 'editar_fundo' %}" autocomplete="" id="form-editar-fundo">
                 <div class="modal-body">
-                    <form method="post" action="{% url 'editar_fundo' %}" autocomplete="" id="form-editar-fundo">
                         {% csrf_token %}
                         <input type="hidden" name="fundo_id" id="fundo_id">
                         
@@ -104,14 +107,17 @@
 
                         <div class="form-group mt-2">
                             <label for="nombrefundo">Fundo</label>
-                            <input type="text" class="form-control" name="fundo" id="nombrefundo">
+                            <input type="text" class="form-control" name="fundo" id="nombrefundo" required>
                         </div>
                         
                         
-                        <button type="submit" id="guardar-cambios" class="btn btn-primary mt-3">Guardar Cambios</button>
-                    </form>
-                                    
-                </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="guardar-cambios" class="btn btn-outline-primary flex-fill">Guardar Cambios</button>
+                        <button type="button" data-bs-dismiss="modal" class="btn btn-outline-danger flex-fill" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -120,7 +126,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'core/js/swet_alert.js' %}"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", () => {
         const h1 = document.querySelector('#h1-remplazar');
         const buscador = document.querySelector('#buscador');
         const filasTabla = document.querySelectorAll('#tabla-fundo tbody tr');
@@ -169,7 +175,8 @@
 
                 document.querySelector('#fundo_id').value = idFundo;
                 document.querySelector('#nombrefundo').value = nombrefundo;
-                document.querySelector('#nombresede').value = idSede;
+                nombresede.value = idSede;
+                // document.getElementById('#nombresede').value = idSede;
             });
         });
 
@@ -185,12 +192,19 @@
         });
 
         btnGuardarRegristro.addEventListener("click", function(event){
+            if (!formRegistrar.checkValidity()) {
+                return;
+            }
+
             event.preventDefault();
             PreguntarGuardar(function(){formRegistrar.submit();});
 
         });
 
         btnGuardarCambios.addEventListener("click", function(event){
+            if (!formEditar.checkValidity()) {
+                return;
+            }
             event.preventDefault();
             PreguntarGuardar(function(){formEditar.submit();});
 

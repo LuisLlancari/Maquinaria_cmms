@@ -14,6 +14,7 @@ class TractoristaForms(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TractoristaForms, self).__init__(*args, **kwargs)
         self.fields['idusuario'].queryset = Usuario.objects.filter(idrol = 2)
+        
     class Meta:
         model = Tractorista
         fields = ['idusuario','idpersona']
@@ -32,6 +33,6 @@ class SolicitanteForms(forms.ModelForm):
         model = Solicitante
         fields = ['idtiposolicitante', 'idpersona']
         widgets = {
-            'idtiposolicitante': forms.Select(attrs={'class': 'form-select', 'id': 'txtSolicitante'}),
+            'idtiposolicitante': forms.Select(attrs={'class': 'form-select', 'id': 'txtSolicitante', 'required': 'true'}),
             'idpersona': forms.TextInput(attrs={'class': 'form-control', 'id': 'txtApellidos'}),
         }

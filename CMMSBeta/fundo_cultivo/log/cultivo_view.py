@@ -10,15 +10,21 @@ from django.contrib import messages
 
 @login_required(login_url='login', redirect_field_name='')
 def cultivo(request):
-  cultivos = Cultivo.objects.filter(estado=True)
-  return render(request, 'fundo_cultivo/cultivo.html',{'datos': cultivos, 'form_cultivo': CultivoForm})
+  rol = request.user.idrol.rol
+  if rol == "Admin":
+    cultivos = Cultivo.objects.filter(estado=True)
+    return render(request, 'fundo_cultivo/cultivo.html',{'datos': cultivos, 'form_cultivo': CultivoForm})
+  else:
+    return redirect('home')
 
+@login_required(login_url='login', redirect_field_name='')
 def registrar_cultivo(request):
   if request.method == 'POST':
     #Manejo de caracteres el blanco 
     #.lstrip(): Elimina los espacios al principio
     #.rstrip(): Elimina los espacios al final
     #.strip(): Elimina los espacios al principio y al final
+
     cultivo = request.POST.get('cultivo').lstrip()
     existe_cultivo = Cultivo.objects.filter(cultivo = cultivo, estado = True).exists()
     form = CultivoForm(request.POST)
@@ -30,6 +36,7 @@ def registrar_cultivo(request):
       messages.error(request, 'El cultivo ya existe', extra_tags='danger')
   return redirect('cultivo')
 
+@login_required(login_url='login', redirect_field_name='')
 def editar_cultivo(request):
   if request.method == 'POST':
     cultivo_id = request.POST.get('cultivo_id')
@@ -37,15 +44,18 @@ def editar_cultivo(request):
     form = CultivoForm(request.POST, instance=cultivo_instance)
 
     cultivo = request.POST.get('cultivo').lstrip()
-    existe_cultivo = Cultivo.objects.filter(cultivo = cultivo, estado = True).exists()
-    if form.is_valid() and existe_cultivo == False:
+
+    existe_cultivo = Cultivo.objects.filter(cultivo = cultivo, estado = True).exclude(pk=cultivo_id).exists()
+
+    if not existe_cultivo:
       form.save()
       messages.success(request, 'Cultivo actualizado con exito', extra_tags='primary')
       return redirect('cultivo')
     else:
       messages.error(request, 'Error al actualizar el cultivo', extra_tags='danger')
   return redirect('cultivo')
-  
+
+@login_required(login_url='login', redirect_field_name='')  
 def eliminar_cultivo(request, id_cultivo):
   registro = get_object_or_404(Cultivo, pk=id_cultivo)
   if request.method == 'POST':

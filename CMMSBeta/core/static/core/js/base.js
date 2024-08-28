@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             localStorage.setItem("sidebarState", "collapsed");
         }
+
+
     });
 
     const sidebarItems = document.querySelectorAll(".sidebar-item.has-dropdown");
