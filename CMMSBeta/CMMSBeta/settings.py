@@ -1,3 +1,8 @@
+# IMPORTAMOS VARIABLES DE ENTORNO
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 """
 Django settings for CMMSBeta project.
 
@@ -89,11 +94,11 @@ WSGI_APPLICATION = 'CMMSBeta.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'maquinaria_cmms',
+        'NAME': os.getenv('DB_NAME'),
         'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'PASSWORD': os.getenv('DB_PASS'),
+        'HOST': os.getenv('HOST'),
+        'PORT': os.getenv('PORT'),
     }
 }
 

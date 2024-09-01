@@ -10,6 +10,7 @@ openpyxl = "*"
 xhtml2pdf = "*"
 plotly = "*"
 matplotlib = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
